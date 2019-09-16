@@ -36,7 +36,7 @@ install:
 
 script:
   - yarn run lint
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test; else yarn test; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test --ci; else yarn test --ci; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test:e2e; else yarn test:e2e; fi
 
 before_cache:
