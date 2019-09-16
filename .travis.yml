@@ -32,13 +32,9 @@ cache:
     - $HOME/.npm/_prebuilds
 
 install:
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      brew install yarn;
-    fi
+  - yarn install --frozen-lockfile
 
 script:
-  - yarn install --frozen-lockfile
   - yarn run lint
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test; else yarn test; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test:e2e; else yarn test:e2e; fi
