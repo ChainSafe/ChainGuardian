@@ -31,6 +31,7 @@ install:
     fi
 
 script:
+  - yarn install --frozen-lockfile
   - yarn run lint
   - yarn run test
   - yarn run test:e2e
