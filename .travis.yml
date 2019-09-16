@@ -1,12 +1,19 @@
+env:
+  global:
+    - ELECTRON_CACHE=$HOME/.cache/electron
+    - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
+sudo: required
+
+addons:
+  chrome: stable
+
 matrix:
   include:
     - os: osx
       osx_image: xcode9.4
       language: node_js
       node_js: "10"
-      env:
-        - ELECTRON_CACHE=$HOME/.cache/electron
-        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
     - os: windows
       language: node_js
@@ -23,6 +30,7 @@ cache:
     - node_modules
     - $HOME/.cache/electron
     - $HOME/.cache/electron-builder
+    - $HOME/.npm/_prebuilds
 
 install:
   - |
@@ -33,8 +41,8 @@ install:
 script:
   - yarn install --frozen-lockfile
   - yarn run lint
-  - yarn run test
-  - yarn run test:e2e
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test; else yarn test; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test:e2e; else yarn test:e2e; fi
 
 before_cache:
-  - rm -rf $HOME/.cache/electron-builder/wine
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then rm -rf $HOME/.cache/electron-builder/wine; fi
