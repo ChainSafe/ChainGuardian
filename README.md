@@ -1,36 +1,31 @@
-# electron-react-typescript
+# ChainGuardian
 
-### A Boilerplate for an Easy Start with TypeScript, React, and Electron.
 
-[![React](docs/img/react.png)](https://reactjs.org/)
-[![Webpack](docs/img/webpack.png)](https://webpack.js.org/)
-[![TypeScript](docs/img/ts.png)](https://www.typescriptlang.org/)
-[![Electron](docs/img/electron.png)](https://electronjs.org/)
-[![Redux](docs/img/redux.png)](https://redux.js.org/)
-[![Jest](docs/img/jest.png)](https://facebook.github.io/jest/)
+![Discord](https://img.shields.io/discord/608204864593461248?color=blue&label=Discord&logo=discord)
+![GitHub](https://img.shields.io/github/license/NodeFactoryIo/ChainGuardian)
 
-[Electron](https://electronjs.org/) application boilerplate based on [React](https://reactjs.org/), [Redux](https://redux.js.org/), and [Webpack](https://webpack.js.org/) for rapid application development using [TypeScript](https://www.typescriptlang.org/).
+Eth2.0 desktop validator client.
 
 ## Install
 Clone the repository with Git:
 
 ```bash
-git clone --depth=1 git@github.com:Robinfr/electron-react-typescript.git <your-project-name>
+git clone git@github.com:nodefactoryio/ChainGuardian.git
 ```
 
 And then install the dependencies:
 
 ```bash
-cd <your-project-name>
-npm install
+cd ChainGuardian
+yarn install
 ```
 
 ## Usage
 Both processes have to be started **simultaneously** in different console tabs:
 
 ```bash
-npm run start-renderer-dev
-npm run start-main-dev
+yarn run start-renderer-dev
+yarn run start-main-dev
 ```
 
 This will start the application with hot-reload so you can instantly start developing your application.
@@ -38,7 +33,7 @@ This will start the application with hot-reload so you can instantly start devel
 You can also run do the following to start both in a single process:
 
 ```bash
-npm run start-dev
+yanr run start-dev
 ```
 
 ## Packaging
@@ -56,21 +51,24 @@ You can make builds for specific platforms (or multiple platforms) by using the 
 npm run dist -- -mwl
 ```
 
-## Husky and Prettier
-This project comes with both Husky and Prettier setup to ensure a consistent code style. 
-
-To change the code style, you can change the configuration in `.prettierrc`. 
-
-In case you want to get rid of this, you can removing the following from `package.json`:
-
-1. Remove `precommit` from the `scripts` section
-1. Remove the `lint-staged` section
-1. Remove `lint-staged`, `prettier`, `tslint-config-prettier`, and `husky` from the `devDependencies`
-
-Also remove `tslint-config-prettier` from the `extends` section in `tslint.json`.
-
-## About this project
-This project was set up from scratch but is heavily influenced by the [Electron React Boilerplate project](https://github.com/chentsulin/electron-react-boilerplate) and [React Redux TypeScript guide](https://github.com/piotrwitek/react-redux-typescript-guide).
-
 ## License
-MIT © [R. Franken](https://github.com/Robinfr)
+[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)
+
+## Built with:
+
+[![React](docs/img/react.png)](https://reactjs.org/)
+[![Webpack](docs/img/webpack.png)](https://webpack.js.org/)
+[![TypeScript](docs/img/ts.png)](https://www.typescriptlang.org/)
+[![Electron](docs/img/electron.png)](https://electronjs.org/)
+[![Redux](docs/img/redux.png)](https://redux.js.org/)
+[![Jest](docs/img/jest.png)](https://facebook.github.io/jest/)
+
+## Donations
+
+We are blockchain development agency from Croatia, our open source work is funded by grants.
+This project is funded by MolochDAO. If you like our work and find this project useful, you can donate to 
+this address: 
+[0xbD9f96663E07a83ff18915c9074d9dc04d8E64c9](https://etherscan.io/address/0xbD9f96663E07a83ff18915c9074d9dc04d8E64c9)
+
+
+[![NodeFactory](docs/img/nodefactory.png)](https://nodefactory.io)

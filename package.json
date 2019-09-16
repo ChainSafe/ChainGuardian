@@ -1,7 +1,15 @@
 {
   "name": "chain-guardian",
   "version": "0.0.1",
-  "description": "",
+  "description": "Eth2.0 desktop validator client",
+  "keywords": [
+    "eth2",
+    "serenity",
+    "validator",
+    "blockchain",
+    "electron",
+    "typescript"
+  ],
   "main": "./dist/main.js",
   "contributors": [
     "NodeFactory <info@nodefactory.io>"
