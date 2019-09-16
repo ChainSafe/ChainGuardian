@@ -1,6 +1,6 @@
 # ChainGuardian
 
-
+[![Build Status](https://travis-ci.org/NodeFactoryIo/ChainGuardian.svg?branch=master)](https://travis-ci.org/NodeFactoryIo/ChainGuardian)
 ![Discord](https://img.shields.io/discord/608204864593461248?color=blue&label=Discord&logo=discord)
 ![GitHub](https://img.shields.io/github/license/NodeFactoryIo/ChainGuardian)
 
