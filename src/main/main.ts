@@ -9,9 +9,7 @@ const installExtensions = async () => {
     const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
     const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
 
-    return Promise.all(
-        extensions.map(name => installer.default(installer[name], forceDownload))
-    ).catch(console.log);
+    return Promise.all(extensions.map(name => installer.default(installer[name], forceDownload))).catch(console.log);
 };
 
 const createWindow = async () => {
@@ -19,7 +17,7 @@ const createWindow = async () => {
         await installExtensions();
     }
 
-    win = new BrowserWindow({ width: 800, height: 600 });
+    win = new BrowserWindow({ width: 800, height: 600, webPreferences: { nodeIntegration: true } });
 
     if (process.env.NODE_ENV !== 'production') {
         process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
