@@ -13,16 +13,15 @@ matrix:
     - os: osx
       osx_image: xcode9.4
       language: node_js
-      node_js: "10"
+      node_js: "12.4.0"
 
     - os: windows
       language: node_js
-      node_js: "10"
+      node_js: "12.4.0"
 
     - os: linux
-      services: docker
-      language: generic
-      node_js: "10"
+      language: node_js
+      node_js: "12.4.0"
 
 cache:
   yarn: true
