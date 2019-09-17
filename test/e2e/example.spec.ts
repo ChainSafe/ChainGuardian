@@ -10,7 +10,9 @@ describe('Main window', () => {
     beforeEach(() => {
         app = new Application({
             path: electronPath.toString(),
-            args: [path.join(__dirname, '..', '..')]
+            args: [path.join(__dirname, '..', '..')],
+            startTimeout: 10000,
+            waitTimeout: 10000
         });
 
         return app.start();
