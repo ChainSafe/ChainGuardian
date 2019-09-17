@@ -38,7 +38,7 @@
     "lint": "tslint '{src,test,mocks}/**/*.{ts,tsx}' --project ./tsconfig.json",
     "test": "jest \"test/components\"",
     "pretest:e2e": "npm run build",
-    "test:e2e": "jest \"./test/e2e/.*\"",
+    "test:e2e": "jest \"/test/e2e\"",
     "pack": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder",
     "postinstall": "electron-builder install-app-deps"
