@@ -11,8 +11,8 @@ describe('Main window', () => {
         app = new Application({
             path: electronPath.toString(),
             args: [path.join(__dirname, '..', '..')],
-            startTimeout: 10000,
-            waitTimeout: 10000
+            startTimeout: 20000,
+            waitTimeout: 20000
         });
 
         return app.start();
