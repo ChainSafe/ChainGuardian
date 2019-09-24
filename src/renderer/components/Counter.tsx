@@ -15,7 +15,7 @@ const Counter: React.FunctionComponent<Props> = ({ value, incrementValue, decrem
         <p>
             <img src={redCubeImg} />
         </p>
-        <p id="counter-value">Current value: {value}</p>
+        <p id="counter-value">Current value: {value} </p>
         <p>
             <button id="increment" onClick={incrementValue}>
                 Increment

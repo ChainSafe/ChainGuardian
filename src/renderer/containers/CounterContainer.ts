@@ -14,4 +14,7 @@ const mapDispatchToProps = (dispatch: Dispatch<CounterAction>) => ({
     decrementValue: () => dispatch(decrement())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Counter);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Counter);
