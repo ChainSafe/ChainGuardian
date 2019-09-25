@@ -1,4 +1,4 @@
-import { Epoch, Slot, Shard, BLSPubkey, BeaconBlock, uint8 } from '@chainsafe/eth2.0-types';
+import { Epoch, Slot, Shard, BLSPubkey, BeaconBlock, uint8, IndexedAttestation } from '@chainsafe/eth2.0-types';
 
 export const API_URL: String = `https://${process.env.HOSTNAME || 'localhost'}:${process.env.PORT || '3000'}`;
 
@@ -34,4 +34,8 @@ export const PRODUCE_ATTESTATION: Function = (
     shard: Shard
 ) => {
     return `${API_URL}/validator/attestation?validator_pubkey=${validator_pubkey}&poc_bit=${poc_bit}&slot=${slot}&shard=${shard}`;
+};
+
+export const PUBLISH_SIGNED_ATTESTATION: Function = (attestation: IndexedAttestation) => {
+    return `${API_URL}/validator/attestation?attestation=${attestation}`;
 };
