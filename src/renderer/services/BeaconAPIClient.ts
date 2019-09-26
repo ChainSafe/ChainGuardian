@@ -17,7 +17,12 @@ import {
     FETCH_NODE_VERSION,
     FETCH_GENESIS_TIME,
     POLL_NODE_SYNCING,
-    FETCH_FORK_INFORMATION
+    FETCH_FORK_INFORMATION,
+    FETCH_VALIDATOR_DUTIES,
+    FETCH_VALIDATOR_BLOCK,
+    PUBLISH_SIGNED_BLOCK,
+    PRODUCE_ATTESTATION,
+    PUBLISH_SIGNED_ATTESTATION
 } from '../constants/apiUrls';
 
 interface Syncing {
@@ -30,77 +35,129 @@ interface ForkInformation {
     fork: Fork;
 }
 
-enum Responses {
-    'Success' = 200,
-    'InvalidRequest' = 400,
-    'NotFound' = 404,
-    'InternalError' = 500,
-    'CurrentlySyncing' = 503
-}
-
 interface BeaconAPIClientInterface {
     fetchNodeVersion(): Promise<string>;
     fetchGenesisTime(): Promise<uint64>;
     fetchNodeSyncing(): Promise<Syncing>;
     fetchForkInformation(): Promise<ForkInformation>;
-    /*
-  fetchValidatorDuties(validator_pubkeys: BLSPubkey[], epoch: Epoch): ValidatorDuty;
-  fetchValidatorBlock(slot: Slot, randao_reveal: string): BeaconBlock;
-  publishSignedBlock(beacon_block: BeaconBlock): Responses;
-  produceAttestation(validator_pubkey: BLSPubkey,
-    poc_bit: uint8,
-    slot: Slot,
-    shard: Shard): IndexedAttestation
-  publishSignedAttestation(attestation: IndexedAttestation): Responses
-  */
+    fetchValidatorDuties(validator_pubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty>;
+    fetchValidatorBlock(slot: Slot, randao_reveal: string): Promise<BeaconBlock>;
+    publishSignedBlock(beacon_block: BeaconBlock): Promise<any>;
+    produceAttestation(
+        validator_pubkey: BLSPubkey,
+        poc_bit: uint8,
+        slot: Slot,
+        shard: Shard
+    ): Promise<IndexedAttestation>;
+    publishSignedAttestation(attestation: IndexedAttestation): Promise<any>;
 }
 
 export class BeaconAPIClient implements BeaconAPIClientInterface {
     async fetchNodeVersion() {
-        let result: string = '';
-
-        const promise: Promise<string> = new Promise((res, rej) => {
-            this.fetchFromApi(FETCH_NODE_VERSION, (err: any, response: string) => {
-                if (!err) {
-                    res(response);
-                } else {
-                    console.log(err);
-                }
-            });
-        });
-
-        // wait until the promise returns us a value
-        result = await promise;
-        return result;
+        // TODO handle error catch
+        try {
+            const result = await this.genericFetch<string>(FETCH_NODE_VERSION);
+            return result;
+        } catch (error) {
+            return error.response.status;
+        }
     }
 
     async fetchGenesisTime() {
-        let result: uint64 = '';
-
-        const promise: Promise<uint64> = new Promise((res, rej) => {
-            this.fetchFromApi(FETCH_GENESIS_TIME, (err: any, response: uint64) => {
-                if (!err) {
-                    res(response);
-                } else {
-                    console.log(err);
-                }
-            });
-        });
-
-        // wait until the promise returns us a value
-        result = await promise;
-        return result;
+        // TODO handle error catch
+        try {
+            const result = await this.genericFetch<uint64>(FETCH_GENESIS_TIME);
+            return result;
+        } catch (error) {
+            return error.response.status;
+        }
     }
 
     async fetchNodeSyncing() {
-        let result: any = null;
+        // TODO handle error catch
+        try {
+            const result = await this.genericFetch<Syncing>(POLL_NODE_SYNCING);
+            return result;
+        } catch (error) {
+            return error.response.status;
+        }
+    }
 
-        const promise: Promise<Syncing> = new Promise((res, rej) => {
-            this.fetchFromApi(POLL_NODE_SYNCING, (err: any, response: Syncing) => {
+    async fetchForkInformation() {
+        // TODO handle error catch
+        try {
+            const result = this.genericFetch<ForkInformation>(FETCH_FORK_INFORMATION);
+            return result;
+        } catch (error) {
+            return error.response.status;
+        }
+    }
+
+    async fetchValidatorDuties(validator_pubkeys: BLSPubkey[], epoch: Epoch) {
+        // TODO handle error catch
+        try {
+            const result = this.genericFetch<ValidatorDuty>(FETCH_VALIDATOR_DUTIES(validator_pubkeys, epoch));
+            return result;
+        } catch (error) {
+            return error.response.status;
+        }
+    }
+
+    async fetchValidatorBlock(slot: Slot, randao_reveal: string) {
+        // TODO handle error catch
+        try {
+            const result = this.genericFetch<BeaconBlock>(FETCH_VALIDATOR_BLOCK(slot, randao_reveal));
+            return result;
+        } catch (error) {
+            return error.response.status;
+        }
+    }
+
+    async publishSignedBlock(beacon_block: BeaconBlock) {
+        // TODO handle error catch
+        try {
+            const result = await this.genericPost<any>(PUBLISH_SIGNED_BLOCK(beacon_block));
+            return result.status;
+        } catch (error) {
+            return error.response.status;
+        }
+    }
+
+    async produceAttestation(validator_pubkey: BLSPubkey, poc_bit: uint8, slot: Slot, shard: Shard) {
+        // TODO handle error catch
+        try {
+            const result = await this.genericFetch<IndexedAttestation>(
+                PRODUCE_ATTESTATION(validator_pubkey, poc_bit, slot, shard)
+            );
+            return result;
+        } catch (error) {
+            return error.response.status;
+        }
+    }
+
+    async publishSignedAttestation(attestation: IndexedAttestation) {
+        // TODO handle error catch
+        try {
+            const result = await this.genericPost<any>(PUBLISH_SIGNED_ATTESTATION(attestation));
+            return result.status;
+        } catch (error) {
+            return error.response.status;
+        }
+    }
+
+    /**
+     * Function that encapsulate executing GET method and returns Promise with generic type
+     * @param url endpoint for fetch
+     */
+    async genericFetch<T>(url: string): Promise<T> {
+        let result: T;
+
+        const promise: Promise<T> = new Promise((resolve, reject) => {
+            this.fetchFromApi(url, (err: any, response: any) => {
                 if (!err) {
-                    res(response);
+                    resolve(response.data);
                 } else {
-                    console.log(err);
+                    reject(err);
                 }
             });
         });
@@ -110,15 +167,20 @@ export class BeaconAPIClient implements BeaconAPIClientInterface {
         return result;
     }
 
-    async fetchForkInformation() {
-        let result: any = null;
+    /**
+     * Function that encapsulate executing POST method and returns Promise with generic type
+     * @param url endpoint for fetch
+     * @param data body for POST method
+     */
+    async genericPost<T>(url: string, ...data: any[]): Promise<T> {
+        let result: T;
 
-        const promise: Promise<ForkInformation> = new Promise((res, rej) => {
-            this.fetchFromApi(FETCH_FORK_INFORMATION, (err: any, response: ForkInformation) => {
+        const promise: Promise<T> = new Promise((resolve, reject) => {
+            this.postToApi(url, data, (err: any, response: any) => {
                 if (!err) {
-                    res(response);
+                    resolve(response);
                 } else {
-                    console.log(err);
+                    reject(err);
                 }
             });
         });
@@ -141,6 +203,7 @@ export class BeaconAPIClient implements BeaconAPIClientInterface {
                 callback(null, response);
             })
             .catch(err => {
+                // TODO handle error.response, error.request
                 callback(err, null);
             });
     };
@@ -151,49 +214,13 @@ export class BeaconAPIClient implements BeaconAPIClientInterface {
      * @param callback callback function that will return either response or error
      */
     fetchFromApi = (url: string, callback: Function) => {
-        // TODO call real API
-
-        // NOTE timeout simaluting real API call
-        setTimeout(() => {
-            switch (url) {
-                case FETCH_NODE_VERSION:
-                    callback(null, '1');
-                    break;
-                case FETCH_GENESIS_TIME:
-                    callback(null, 2);
-                    break;
-                case POLL_NODE_SYNCING:
-                    callback(null, {
-                        is_syncing: true,
-                        sync_status: {
-                            startingBlock: 1,
-                            currentBlock: 2,
-                            highestBlock: 3
-                        }
-                    });
-                    break;
-                case FETCH_FORK_INFORMATION:
-                    callback(null, {
-                        chain_id: 1,
-                        fork: {
-                            previousVersion: 1,
-                            currentVersion: 2,
-                            epoch: 3
-                        }
-                    });
-                    break;
-                default:
-                    break;
-            }
-        }, 1000);
-
-        /*
-    axios.get(url)
-        .then(response => {
-            callback(null, response)
-        }).catch(err => {
-            callback(err, null)
-        })
-    */
+        axios
+            .get(url)
+            .then(response => {
+                callback(null, response);
+            })
+            .catch(err => {
+                callback(err, null);
+            });
     };
 }
