@@ -19,11 +19,7 @@ export enum Bucket {
     exit, // hash -> VoluntaryExit
     transfer, // hash -> Transfer
     proposerSlashing, // hash -> ProposerSlashing
-    attesterSlashing, // hash -> AttesterSlashing
-    merkleTree, // depositIndex -> MerkleTree
-    // validator
-    lastProposedBlock,
-    proposedAttestations
+    attesterSlashing // hash -> AttesterSlashing
 }
 
 export enum Key {
@@ -31,11 +27,7 @@ export enum Key {
 
     latestState,
     finalizedState,
-    justifiedState,
-
-    finalizedBlock,
-    justifiedBlock,
-    progressiveMerkleTree
+    justifiedState
 }
 
 /**

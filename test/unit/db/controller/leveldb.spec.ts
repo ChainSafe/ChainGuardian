@@ -2,21 +2,18 @@ import { assert, expect } from 'chai';
 // @ts-ignore
 import level from 'level';
 import leveldown from 'leveldown';
-import { LevelDbController } from '../../../../src/db/controller';
-import { ILogger, WinstonLogger } from '../../../../src/logger';
+import { LevelDbController } from '../../../../src/renderer/services/db/controller';
 import { promisify } from 'util';
 
 describe('LevelDB controller', () => {
-    const logger: ILogger = new WinstonLogger();
     const dbLocation = './.__testdb';
     const testDb = level(dbLocation, {
         keyEncoding: 'binary',
         valueEncoding: 'binary'
     });
-    const db = new LevelDbController({ db: testDb, name: dbLocation }, { logger });
+    const db = new LevelDbController({ db: testDb, name: dbLocation });
 
     beforeAll(async () => {
-        logger.silent = true;
         await db.start();
     });
 
@@ -24,7 +21,6 @@ describe('LevelDB controller', () => {
         await db.stop();
         const lvldown = new leveldown(dbLocation);
         await promisify(lvldown.destroy)(dbLocation);
-        logger.silent = false;
     });
 
     it('test put', async () => {

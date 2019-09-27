@@ -8,7 +8,6 @@ import { IDatabaseController, ISearchOptions } from '../interface';
 import { EventEmitter } from 'events';
 // @ts-ignore
 import level from 'level';
-import { ILogger } from '../../../logger';
 import { IDatabaseOptions } from '../../options';
 
 export interface ILevelDBOptions extends IDatabaseOptions {
@@ -23,18 +22,14 @@ export class LevelDbController extends EventEmitter implements IDatabaseControll
 
     private opts: ILevelDBOptions;
 
-    private logger: ILogger;
-
-    public constructor(opts: ILevelDBOptions, { logger }: { logger: ILogger }) {
+    public constructor(opts: ILevelDBOptions) {
         super();
         this.opts = opts;
-        this.logger = logger;
-        this.db = opts.db || level(opts.name || 'beaconchain', { keyEncoding: 'binary', valueEncoding: 'binary' });
+        this.db = opts.db || level(opts.name || 'chainguardian', { keyEncoding: 'binary', valueEncoding: 'binary' });
     }
 
     public async start(): Promise<void> {
         await this.db.open();
-        this.logger.info(`Connected to LevelDB database at ${this.opts.name}`);
     }
 
     public async stop(): Promise<void> {

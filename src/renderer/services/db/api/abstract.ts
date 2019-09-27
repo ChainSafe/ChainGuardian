@@ -8,8 +8,8 @@ export interface IDatabaseApiOptions {
 }
 
 export abstract class DatabaseService implements IService {
-    protected config: IBeaconConfig;
-    protected db: IDatabaseController;
+    protected readonly config: IBeaconConfig;
+    protected readonly db: IDatabaseController;
 
     protected constructor(opts: IDatabaseApiOptions) {
         this.config = opts.config;

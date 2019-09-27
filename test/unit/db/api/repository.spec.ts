@@ -6,9 +6,10 @@ import { serialize, SimpleContainerType } from '@chainsafe/ssz';
 import { bytes32 } from '@chainsafe/eth2.0-types';
 import { config } from '@chainsafe/eth2.0-config/lib/presets/mainnet';
 
-import { BulkRepository } from '../../../../src/db/api/repository';
-import { IDatabaseController, LevelDbController } from '../../../../src/db/controller';
-import { Bucket } from '../../../../src/db/schema';
+import { BulkRepository } from '../../../../src/renderer/services/db/api/repository';
+import { IDatabaseController, LevelDbController } from '../../../../src/renderer/services/db/controller';
+import { Bucket } from '../../../../src/renderer/services/db/schema';
+import ssz from '../../../../src/renderer/services/db/serializers/ssz';
 
 chai.use(chaiAsPromised);
 
@@ -23,7 +24,7 @@ interface TestType {
 
 class TestRepository extends BulkRepository<TestType> {
     public constructor(db: IDatabaseController) {
-        super(config, db, Bucket.deposit, TestSSZType);
+        super(config, db, ssz, Bucket.deposit, TestSSZType);
     }
 }
 

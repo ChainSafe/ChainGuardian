@@ -1,7 +1,7 @@
 // tslint:disable-next-line: import-name
 import BN from 'bn.js';
 
-import { Bucket, encodeKey } from '../../../src/db/schema';
+import { Bucket, encodeKey } from '../../../src/renderer/services/db/schema';
 
 describe('encodeKey', () => {
     const testCases = [
