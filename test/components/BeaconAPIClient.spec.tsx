@@ -22,8 +22,10 @@ import {
     FETCH_VALIDATOR_BLOCK,
     PUBLISH_SIGNED_BLOCK,
     PRODUCE_ATTESTATION,
-    PUBLISH_SIGNED_ATTESTATION
+    PUBLISH_SIGNED_ATTESTATION,
+    API_URL
 } from '../../src/renderer/constants/apiUrls';
+import { IBeaconApiClientOptions } from '../../src/renderer/services/interface';
 
 jest.setTimeout(10000);
 
@@ -94,17 +96,18 @@ mock.onGet(FETCH_FORK_INFORMATION).reply(200, mockForkInformation);
 const dutiesString = FETCH_VALIDATOR_DUTIES(mockValidatorKeys, mockEpoch);
 mock.onGet(dutiesString).reply(200, mockValidatorDuty);
 
+const dutiesStringWrong = FETCH_VALIDATOR_DUTIES(mockValidatorKeys, 100);
+mock.onGet(dutiesStringWrong).reply(404);
+
 const blockString = FETCH_VALIDATOR_BLOCK(mockSlot, mockRandaoReveal);
 mock.onGet(blockString).reply(200, mockBeaconBlock);
 
-const publishBlockString = PUBLISH_SIGNED_BLOCK(mockBeaconBlock);
-mock.onPost(publishBlockString).reply(200);
+mock.onPost(PUBLISH_SIGNED_BLOCK, mockBeaconBlock).reply(200, {});
 
 const produceAttestationString = PRODUCE_ATTESTATION(mockValidatorKeys[0], mockPocBit, mockSlot, mockShard);
 mock.onGet(produceAttestationString).reply(200, {} as IndexedAttestation);
 
-const publishSignedAttestation = PUBLISH_SIGNED_ATTESTATION({} as IndexedAttestation);
-mock.onPost(publishSignedAttestation).reply(200);
+mock.onPost(PUBLISH_SIGNED_ATTESTATION).reply(200, {});
 
 /**
  * *************
@@ -115,7 +118,9 @@ describe('Beacon API client', () => {
     let client: BeaconAPIClient;
 
     beforeEach(() => {
-        client = new BeaconAPIClient();
+        client = new BeaconAPIClient({
+            urlPrefix: API_URL
+        });
     });
 
     it('should return node version', async () => {
@@ -143,8 +148,11 @@ describe('Beacon API client', () => {
 
     it('should fetch validator duties', async () => {
         const responseValidatorDuty = await client.fetchValidatorDuties(mockValidatorKeys, mockEpoch);
+        const responseValidatorDutyWrong = await client.fetchValidatorDuties(mockValidatorKeys, 99);
 
         expect(responseValidatorDuty).toMatchObject(mockValidatorDuty);
+        expect(responseValidatorDutyWrong).not.toMatchObject(mockValidatorDuty);
+        expect(responseValidatorDutyWrong).toMatchObject(new Error('404'));
     });
 
     it('should fetch validator block', async () => {
@@ -156,7 +164,7 @@ describe('Beacon API client', () => {
     it('should publish block', async () => {
         const response = await client.publishSignedBlock(mockBeaconBlock);
 
-        expect(response).toBe(200);
+        expect(response).toMatchObject({});
     });
 
     it('should produce attestation', async () => {
@@ -168,6 +176,6 @@ describe('Beacon API client', () => {
     it('should publish signed attestation', async () => {
         const response = await client.publishSignedAttestation({} as IndexedAttestation);
 
-        expect(response).toBe(200);
+        expect(response).toMatchObject({});
     });
 });

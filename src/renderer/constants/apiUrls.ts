@@ -1,6 +1,8 @@
 import { Epoch, Slot, Shard, BLSPubkey, BeaconBlock, uint8, IndexedAttestation } from '@chainsafe/eth2.0-types';
+import { DEFAULT_HOSTNAME, DEFAULT_PORT } from './defaultConstants';
 
-export const API_URL: String = `https://${process.env.HOSTNAME || 'localhost'}:${process.env.PORT || '3000'}`;
+export const API_URL: string = `https://${process.env.HOSTNAME || DEFAULT_HOSTNAME}:${process.env.PORT ||
+    DEFAULT_PORT}`;
 
 /**
  * Minimal Beacon Node API for Validator
@@ -10,32 +12,23 @@ export const API_URL: String = `https://${process.env.HOSTNAME || 'localhost'}:$
  * 2.0 phase 0 beacon chain.
  */
 
-export const FETCH_NODE_VERSION: string = `${API_URL}/node/version`;
-export const FETCH_GENESIS_TIME: string = `${API_URL}/node/genesis_time`;
-export const POLL_NODE_SYNCING: string = `${API_URL}/node/syncing`;
-export const FETCH_FORK_INFORMATION: string = `${API_URL}/node/fork`;
+export const FETCH_NODE_VERSION: string = `/node/version`;
+export const FETCH_GENESIS_TIME: string = `/node/genesis_time`;
+export const POLL_NODE_SYNCING: string = `/node/syncing`;
+export const FETCH_FORK_INFORMATION: string = `/node/fork`;
+export const PUBLISH_SIGNED_BLOCK: string = `/validator/block?beacon_block`;
+export const PUBLISH_SIGNED_ATTESTATION: string = `/validator/attestation`;
 
-export const FETCH_VALIDATOR_DUTIES: Function = (validator_pubkeys: BLSPubkey[], epoch: Epoch) => {
-    return `${API_URL}/validator/duties?validator_pubkeys=${validator_pubkeys}&epoch=${epoch}`;
+export const FETCH_VALIDATOR_DUTIES: Function = (validatorPubKeys: BLSPubkey[], epoch: Epoch) => {
+    const hexPubKeys = validatorPubKeys.map(key => key.toString('hex'));
+    return `/validator/duties?validator_pubkeys=${hexPubKeys}&epoch=${epoch}`;
 };
 
-export const FETCH_VALIDATOR_BLOCK: Function = (slot: Slot, randao_reveal: string) => {
-    return `${API_URL}/validator/block?slot=${slot}&randao_reveal=${randao_reveal}`;
+export const FETCH_VALIDATOR_BLOCK: Function = (slot: Slot, randaoReveal: string) => {
+    return `/validator/block?slot=${slot}&randao_reveal=${randaoReveal}`;
 };
 
-export const PUBLISH_SIGNED_BLOCK: Function = (beacon_block: BeaconBlock) => {
-    return `${API_URL}/validator/block?beacon_block=${beacon_block}`;
-};
-
-export const PRODUCE_ATTESTATION: Function = (
-    validator_pubkey: BLSPubkey,
-    poc_bit: uint8,
-    slot: Slot,
-    shard: Shard
-) => {
-    return `${API_URL}/validator/attestation?validator_pubkey=${validator_pubkey}&poc_bit=${poc_bit}&slot=${slot}&shard=${shard}`;
-};
-
-export const PUBLISH_SIGNED_ATTESTATION: Function = (attestation: IndexedAttestation) => {
-    return `${API_URL}/validator/attestation?attestation=${attestation}`;
+export const PRODUCE_ATTESTATION: Function = (validatorPubkey: BLSPubkey, pocBit: uint8, slot: Slot, shard: Shard) => {
+    const hexPubKey = validatorPubkey.toString('hex');
+    return `/validator/attestation?validator_pubkey=${hexPubKey}&poc_bit=${pocBit}&slot=${slot}&shard=${shard}`;
 };
