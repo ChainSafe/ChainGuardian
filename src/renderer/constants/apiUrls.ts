@@ -1,8 +1,4 @@
-import { Epoch, Slot, Shard, BLSPubkey, BeaconBlock, uint8, IndexedAttestation } from '@chainsafe/eth2.0-types';
-import { DEFAULT_HOSTNAME, DEFAULT_PORT } from './defaultConstants';
-
-export const API_URL: string = `https://${process.env.HOSTNAME || DEFAULT_HOSTNAME}:${process.env.PORT ||
-    DEFAULT_PORT}`;
+import { Epoch, Slot, Shard, BLSPubkey, uint8 } from '@chainsafe/eth2.0-types';
 
 /**
  * Minimal Beacon Node API for Validator

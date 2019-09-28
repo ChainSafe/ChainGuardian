@@ -11,7 +11,6 @@ import {
     IndexedAttestation,
     Shard
 } from '@chainsafe/eth2.0-types';
-import axiosMockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
 import {
     FETCH_NODE_VERSION,
@@ -22,15 +21,17 @@ import {
     FETCH_VALIDATOR_BLOCK,
     PUBLISH_SIGNED_BLOCK,
     PRODUCE_ATTESTATION,
-    PUBLISH_SIGNED_ATTESTATION,
-    API_URL
+    PUBLISH_SIGNED_ATTESTATION
 } from '../../src/renderer/constants/apiUrls';
+import axiosMockAdapter from 'axios-mock-adapter';
+import { DEFAULT_HOSTNAME, DEFAULT_PORT } from '../../src/renderer/constants/defaultConstants';
 import { IBeaconApiClientOptions } from '../../src/renderer/services/interface';
 
 jest.setTimeout(10000);
 
 // This sets the mock adapter on the default instance
 const mock: MockAdapter = new MockAdapter(axios);
+const API_URL: string = `https://${process.env.HOSTNAME || DEFAULT_HOSTNAME}:${process.env.PORT || DEFAULT_PORT}`;
 
 /**
  * ***********************************
@@ -114,7 +115,15 @@ mock.onPost(PUBLISH_SIGNED_ATTESTATION).reply(200, {});
  * Tests begins
  * *************
  */
-describe('Beacon API client', () => {
+describe('Beacon API client constructor', () => {
+    it('should throw error when empty url is provided', async () => {
+        expect(() => {
+            new BeaconAPIClient({} as IBeaconApiClientOptions);
+        }).toThrow();
+    });
+});
+
+describe('Beacon API client methods', () => {
     let client: BeaconAPIClient;
 
     beforeEach(() => {

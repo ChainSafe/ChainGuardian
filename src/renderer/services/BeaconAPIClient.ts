@@ -18,17 +18,20 @@ import {
     FETCH_VALIDATOR_BLOCK,
     PUBLISH_SIGNED_BLOCK,
     PRODUCE_ATTESTATION,
-    PUBLISH_SIGNED_ATTESTATION,
-    API_URL
+    PUBLISH_SIGNED_ATTESTATION
 } from '../constants/apiUrls';
 import { Syncing, ForkInformation, IBeaconAPIClient, IBeaconApiClientOptions } from './interface';
 import { HttpClient } from './httpClient';
+import { EmptyUrlError } from './errors/EmptyUrlError';
 
 export class BeaconAPIClient implements IBeaconAPIClient {
     options: IBeaconApiClientOptions;
     httpClient: HttpClient;
 
     constructor(options: IBeaconApiClientOptions) {
+        if (!options.urlPrefix) {
+            throw new EmptyUrlError();
+        }
         this.options = options;
         this.httpClient = new HttpClient(options.urlPrefix);
     }

@@ -3,9 +3,9 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 export class HttpClient {
     private client: AxiosInstance;
 
-    public constructor(opt: Partial<string>) {
+    public constructor(baseURL: string) {
         this.client = Axios.create({
-            baseURL: opt || ''
+            baseURL
         });
     }
 
