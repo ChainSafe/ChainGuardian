@@ -30,7 +30,7 @@ import { IBeaconApiClientOptions } from '../../src/renderer/services/interface';
 jest.setTimeout(10000);
 
 // This sets the mock adapter on the default instance
-const mock: MockAdapter = new MockAdapter(axios);
+const mock: axiosMockAdapter = new axiosMockAdapter(axios);
 const API_URL: string = `https://${process.env.HOSTNAME || DEFAULT_HOSTNAME}:${process.env.PORT || DEFAULT_PORT}`;
 
 /**

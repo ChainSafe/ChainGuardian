@@ -4,7 +4,7 @@ export class HttpClient {
     private client: AxiosInstance;
 
     public constructor(baseURL: string) {
-        this.client = Axios.create({
+        this.client = axios.create({
             baseURL
         });
     }
