@@ -1,6 +1,5 @@
-import { Reducer } from 'redux';
-
-import { DECREMENT, INCREMENT, CounterAction } from '../actions/counterActions';
+import {Reducer} from "redux";
+import {CounterAction, DECREMENT, INCREMENT} from "../actions/counterActions";
 
 export interface CounterState {
     readonly value: number;
