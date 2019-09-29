@@ -1,6 +1,5 @@
 // tslint:disable-next-line: import-name
 import BN from 'bn.js';
-import { AnySSZType, deserialize, hashTreeRoot, serialize } from '@chainsafe/ssz';
 import { IBeaconConfig } from '@chainsafe/eth2.0-config';
 
 import { IDatabaseController } from '../controller';

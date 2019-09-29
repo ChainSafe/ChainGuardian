@@ -5,7 +5,7 @@ class SSZSerializer implements CGSerialization<AnySSZType> {
     serialize(value: any, type: AnySSZType): Buffer {
         return serialize(value, type);
     }
-    deserialize(value: Buffer, type: AnySSZType): any {
+    deserialize<R>(value: Buffer, type: AnySSZType): R {
         return deserialize(value, type);
     }
     hashTreeRoot(value: any, type: AnySSZType): Buffer {
@@ -13,6 +13,4 @@ class SSZSerializer implements CGSerialization<AnySSZType> {
     }
 }
 
-const SSZ = new SSZSerializer();
-
-export default SSZ;
+export const SSZ = new SSZSerializer();
