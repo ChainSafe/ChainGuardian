@@ -39,10 +39,11 @@ install:
     fi
 
 script:
-  - yarn install --frozen-lockfile
-  - yarn run lint
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test; else yarn test; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test:e2e; else yarn test:e2e; fi
+  yarn install --frozen-lockfile;
+  yarn run lint;
+  yarn run check-types;
+  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test; else yarn test; fi;
+  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test:e2e; else yarn test:e2e; fi;
 
 before_cache:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then rm -rf $HOME/.cache/electron-builder/wine; fi
