@@ -1,4 +1,5 @@
 import path from "path";
+import * as electronPath from "electron";
 import {Application} from "spectron";
 
 jest.setTimeout(10000);
@@ -8,7 +9,8 @@ describe("Main window", () => {
 
     beforeEach(() => {
         app = new Application({
-            path: path.join(require.resolve("electron"), "../dist/electron"),
+            // @ts-ignore
+            path: electronPath.default,
             args: [path.join(__dirname, "..", "..")]
         });
 

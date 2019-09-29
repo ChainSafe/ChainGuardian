@@ -29,6 +29,7 @@ module.exports = {
         "@typescript-eslint/member-ordering": "error",
         "@typescript-eslint/no-explicit-any": "warn",
         "@typescript-eslint/no-require-imports": "error",
+        "@typescript-eslint/ban-ts-ignore": "off",
         "@typescript-eslint/no-unused-vars": ["error", {
             "varsIgnorePattern": "^_"
         }],
