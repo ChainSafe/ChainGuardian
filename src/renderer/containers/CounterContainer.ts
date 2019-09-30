@@ -13,4 +13,7 @@ const mapStateToProps = (state: RootState): {value: number} => ({
         decrementValue: (): ReturnType<typeof dispatch> => dispatch(decrement())
     });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Counter);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Counter);
