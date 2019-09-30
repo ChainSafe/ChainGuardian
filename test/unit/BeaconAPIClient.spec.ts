@@ -1,5 +1,5 @@
 /* eslint-disable */
-import {BeaconAPIClient} from "../../src/renderer/services/BeaconAPIClient";
+import {BeaconAPIClient} from "../../src/renderer/services/api/BeaconAPIClient";
 import {
     BeaconBlock,
     BeaconBlockBody,
@@ -25,7 +25,7 @@ import {
 } from "../../src/renderer/constants/apiUrls";
 import axiosMockAdapter from "axios-mock-adapter";
 import {DEFAULT_HOSTNAME, DEFAULT_PORT} from "../../src/renderer/constants/defaultConstants";
-import {IBeaconApiClientOptions} from "../../src/renderer/services/interface";
+import {IBeaconApiClientOptions} from "../../src/renderer/services/api/interface";
 
 jest.setTimeout(10000);
 
