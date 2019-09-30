@@ -4,15 +4,15 @@ import {RootState, rootReducer} from "../reducers";
 
 const configureStore = (initialState?: RootState): Store<RootState | undefined> => {
     const middlewares: Middleware[] = [],
-     enhancer = composeWithDevTools(applyMiddleware(...middlewares));
+        enhancer = composeWithDevTools(applyMiddleware(...middlewares));
     return createStore(rootReducer, initialState, enhancer);
-},
+};
 
- store = configureStore();
+const store = configureStore();
 
 if (typeof module.hot !== "undefined") {
     module.hot.accept("../reducers", () =>
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
         store.replaceReducer(require("../reducers").rootReducer)
     );
 }

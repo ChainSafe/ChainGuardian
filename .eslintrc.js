@@ -21,7 +21,7 @@ module.exports = {
     ],
     "rules": {
         "@typescript-eslint/class-name-casing": "error",
-        "@typescript-eslint/indent": "off",
+        "@typescript-eslint/indent": ["error", 4],
         "@typescript-eslint/interface-name-prefix": "error",
         "@typescript-eslint/member-delimiter-style": "off",
         "@typescript-eslint/no-this-alias": "error",
