@@ -8,13 +8,18 @@ describe("Main window", () => {
     let app: Application;
 
     beforeEach(() => {
-        app = new Application({
-            // @ts-ignore
-            path: electronPath.default,
-            args: [path.join(__dirname, "..", "..")]
-        });
+        try {
+            console.log("electorn path", electronPath.default);
+            app = new Application({
+                // @ts-ignore
+                path: electronPath.default,
+                args: [path.join(__dirname, "..", "..")]
+            });
 
-        return app.start();
+            return app.start();
+        } catch (e) {
+            console.log(e);
+        }
     });
 
     afterEach(() => {
