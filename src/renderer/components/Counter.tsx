@@ -2,13 +2,13 @@ import React from "react";
 import "./Counter.scss";
 import redCubeImg from "./RedCube.jpg";
 
-export interface Props {
+export interface ICounterProps {
     value: number;
     incrementValue: () => void;
     decrementValue: () => void;
 }
 
-const Counter: React.FunctionComponent<Props> = ({value, incrementValue, decrementValue}) => (
+const Counter: React.FunctionComponent<ICounterProps> = ({value, incrementValue, decrementValue}) => (
     <div className="counter">
         <p>
             <img src={redCubeImg} />

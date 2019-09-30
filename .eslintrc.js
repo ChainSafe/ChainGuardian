@@ -8,13 +8,12 @@ module.exports = {
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "project": "tsconfig.json",
-        "sourceType": "module"
+        "project": "./tsconfig.json"
     },
     "plugins": [
         "@typescript-eslint"
     ],
-    extends: [
+    "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:react/recommended"
@@ -22,7 +21,7 @@ module.exports = {
     "rules": {
         "@typescript-eslint/class-name-casing": "error",
         "@typescript-eslint/indent": ["error", 4],
-        "@typescript-eslint/interface-name-prefix": "error",
+        "@typescript-eslint/interface-name-prefix": ["error", { "prefixWithI": "always" }],
         "@typescript-eslint/member-delimiter-style": "off",
         "@typescript-eslint/no-this-alias": "error",
         "@typescript-eslint/type-annotation-spacing": "error",

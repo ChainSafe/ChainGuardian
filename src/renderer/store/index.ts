@@ -1,8 +1,8 @@
 import {Store, applyMiddleware, createStore, Middleware} from "redux";
 import {composeWithDevTools} from "redux-devtools-extension";
-import {RootState, rootReducer} from "../reducers";
+import {IRootState, rootReducer} from "../reducers";
 
-const configureStore = (initialState?: RootState): Store<RootState | undefined> => {
+const configureStore = (initialState?: IRootState): Store<IRootState | undefined> => {
     const middlewares: Middleware[] = [],
         enhancer = composeWithDevTools(applyMiddleware(...middlewares));
     return createStore(rootReducer, initialState, enhancer);

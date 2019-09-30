@@ -1,10 +1,10 @@
 import {connect} from "react-redux";
 import {Dispatch} from "redux";
 import Counter from "../components/Counter";
-import {RootState} from "../reducers";
+import {IRootState} from "../reducers";
 import {CounterAction, decrement, increment} from "../actions/counterActions";
 
-const mapStateToProps = (state: RootState): {value: number} => ({
+const mapStateToProps = (state: IRootState): {value: number} => ({
         value: state.counter.value
     }),
 
