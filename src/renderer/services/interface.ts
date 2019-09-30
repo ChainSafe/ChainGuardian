@@ -29,18 +29,18 @@ export interface IBeaconApiClientOptions {
 }
 
 export interface IBeaconAPIClient {
-    fetchNodeVersion(): Promise<string | Error>;
-    fetchGenesisTime(): Promise<uint64 | Error>;
-    fetchNodeSyncing(): Promise<Syncing | Error>;
-    fetchForkInformation(): Promise<ForkInformation | Error>;
-    fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty | Error>;
-    fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock | Error>;
-    publishSignedBlock(beacon_block: BeaconBlock): Promise<any | Error>;
+    fetchNodeVersion(): Promise<string>;
+    fetchGenesisTime(): Promise<uint64>;
+    fetchNodeSyncing(): Promise<Syncing>;
+    fetchForkInformation(): Promise<ForkInformation>;
+    fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty>;
+    fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock>;
+    publishSignedBlock(beacon_block: BeaconBlock): Promise<any>;
     produceAttestation(
         validatorPubkey: BLSPubkey,
         pocBit: uint8,
         slot: Slot,
         shard: Shard
-    ): Promise<IndexedAttestation | Error>;
-    publishSignedAttestation(attestation: IndexedAttestation): Promise<any | Error>;
+    ): Promise<IndexedAttestation>;
+    publishSignedAttestation(attestation: IndexedAttestation): Promise<any>;
 }
