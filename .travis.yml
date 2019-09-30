@@ -33,6 +33,7 @@ cache:
     - $HOME/.npm/_prebuilds
 
 script:
+  set -e;
   yarn install --frozen-lockfile;
   yarn run lint;
   yarn run check-types;
