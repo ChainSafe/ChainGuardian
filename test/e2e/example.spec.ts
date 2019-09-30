@@ -6,14 +6,14 @@ jest.setTimeout(10000);
 describe("Main window", () => {
     let app: Application;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         try {
             app = new Application({
                 path: path.join(__dirname, "../../node_modules/.bin/electron"),
-                args: [path.join(__dirname, "..", "..")]
+                args: [path.join(__dirname, "..", "..")],
+                startTimeout: 10000,
             });
-
-            return app.start();
+            await app.start();
         } catch (e) {
             console.log(e);
         }
