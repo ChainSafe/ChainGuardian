@@ -32,12 +32,6 @@ cache:
     - $HOME/.cache/electron-builder
     - $HOME/.npm/_prebuilds
 
-install:
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      brew install yarn;
-    fi
-
 script:
   yarn install --frozen-lockfile;
   yarn run lint;
