@@ -9,6 +9,7 @@ describe("Main window", () => {
 
     beforeEach(() => {
         try {
+            // @ts-ignore
             console.log("electorn path", electronPath.default);
             app = new Application({
                 // @ts-ignore
