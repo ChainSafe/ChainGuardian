@@ -36,37 +36,37 @@ export class BeaconAPIClient implements IBeaconAPIClient {
         this.httpClient = new HttpClient(options.urlPrefix);
     }
 
-    async fetchNodeVersion(): Promise<string> {
+    async fetchNodeVersion(): Promise<string | Error> {
         const result = await this.httpClient.get<string>(FETCH_NODE_VERSION);
         return result;
     }
 
-    async fetchGenesisTime(): Promise<uint64> {
+    async fetchGenesisTime(): Promise<uint64 | Error> {
         const result = await this.httpClient.get<uint64>(FETCH_GENESIS_TIME);
         return result;
     }
 
-    async fetchNodeSyncing(): Promise<Syncing> {
+    async fetchNodeSyncing(): Promise<Syncing | Error> {
         const result = await this.httpClient.get<Syncing>(POLL_NODE_SYNCING);
         return result;
     }
 
-    async fetchForkInformation(): Promise<ForkInformation> {
+    async fetchForkInformation(): Promise<ForkInformation | Error> {
         const result = await this.httpClient.get<ForkInformation>(FETCH_FORK_INFORMATION);
         return result;
     }
 
-    async fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty> {
+    async fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty | Error> {
         const result = await this.httpClient.get<ValidatorDuty>(FETCH_VALIDATOR_DUTIES(validatorPubkeys, epoch));
         return result;
     }
 
-    async fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock> {
+    async fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock | Error> {
         const result = await this.httpClient.get<BeaconBlock>(FETCH_VALIDATOR_BLOCK(slot, randaoReveal));
         return result;
     }
 
-    async publishSignedBlock(beaconBlock: BeaconBlock): Promise<any> {
+    async publishSignedBlock(beaconBlock: BeaconBlock): Promise<any | Error> {
         const result = await this.httpClient.post<BeaconBlock, any>(PUBLISH_SIGNED_BLOCK, beaconBlock);
         return result;
     }
@@ -76,14 +76,14 @@ export class BeaconAPIClient implements IBeaconAPIClient {
         pocBit: uint8,
         slot: Slot,
         shard: Shard
-    ): Promise<IndexedAttestation> {
+    ): Promise<IndexedAttestation | Error> {
         const result = await this.httpClient.get<IndexedAttestation>(
             PRODUCE_ATTESTATION(validatorPubkey, pocBit, slot, shard)
         );
         return result;
     }
 
-    async publishSignedAttestation(attestation: IndexedAttestation): Promise<any> {
+    async publishSignedAttestation(attestation: IndexedAttestation): Promise<any | Error> {
         const result = await this.httpClient.post<IndexedAttestation, any>(PUBLISH_SIGNED_ATTESTATION, attestation);
         return result;
     }
