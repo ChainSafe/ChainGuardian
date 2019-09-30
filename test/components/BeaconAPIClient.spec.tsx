@@ -157,11 +157,9 @@ describe('Beacon API client methods', () => {
 
     it('should fetch validator duties', async () => {
         const responseValidatorDuty = await client.fetchValidatorDuties(mockValidatorKeys, mockEpoch);
-        const responseValidatorDutyWrong = await client.fetchValidatorDuties(mockValidatorKeys, 99);
 
         expect(responseValidatorDuty).toMatchObject(mockValidatorDuty);
-        expect(responseValidatorDutyWrong).not.toMatchObject(mockValidatorDuty);
-        expect(responseValidatorDutyWrong).toMatchObject(new Error('404'));
+        expect(client.fetchValidatorDuties(mockValidatorKeys, 100)).rejects.toEqual(new Error('404'));
     });
 
     it('should fetch validator block', async () => {

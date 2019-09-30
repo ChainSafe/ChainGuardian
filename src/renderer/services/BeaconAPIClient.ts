@@ -37,74 +37,38 @@ export class BeaconAPIClient implements IBeaconAPIClient {
     }
 
     async fetchNodeVersion(): Promise<string> {
-        // TODO handle error catch
-        try {
-            const result = await this.httpClient.get<string>(FETCH_NODE_VERSION);
-            return result;
-        } catch (error) {
-            return error;
-        }
+        const result = await this.httpClient.get<string>(FETCH_NODE_VERSION);
+        return result;
     }
 
     async fetchGenesisTime(): Promise<uint64> {
-        // TODO handle error catch
-        try {
-            const result = await this.httpClient.get<uint64>(FETCH_GENESIS_TIME);
-            return result;
-        } catch (error) {
-            return error;
-        }
+        const result = await this.httpClient.get<uint64>(FETCH_GENESIS_TIME);
+        return result;
     }
 
     async fetchNodeSyncing(): Promise<Syncing> {
-        // TODO handle error catch
-        try {
-            const result = await this.httpClient.get<Syncing>(POLL_NODE_SYNCING);
-            return result;
-        } catch (error) {
-            return error;
-        }
+        const result = await this.httpClient.get<Syncing>(POLL_NODE_SYNCING);
+        return result;
     }
 
     async fetchForkInformation(): Promise<ForkInformation> {
-        // TODO handle error catch
-        try {
-            const result = await this.httpClient.get<ForkInformation>(FETCH_FORK_INFORMATION);
-            return result;
-        } catch (error) {
-            return error;
-        }
+        const result = await this.httpClient.get<ForkInformation>(FETCH_FORK_INFORMATION);
+        return result;
     }
 
     async fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty> {
-        // TODO handle error catch
-        try {
-            const result = await this.httpClient.get<ValidatorDuty>(FETCH_VALIDATOR_DUTIES(validatorPubkeys, epoch));
-            return result;
-        } catch (error) {
-            return error;
-        }
+        const result = await this.httpClient.get<ValidatorDuty>(FETCH_VALIDATOR_DUTIES(validatorPubkeys, epoch));
+        return result;
     }
 
     async fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock> {
-        // TODO handle error catch
-        try {
-            const result = await this.httpClient.get<BeaconBlock>(FETCH_VALIDATOR_BLOCK(slot, randaoReveal));
-            return result;
-        } catch (error) {
-            return error;
-        }
+        const result = await this.httpClient.get<BeaconBlock>(FETCH_VALIDATOR_BLOCK(slot, randaoReveal));
+        return result;
     }
 
     async publishSignedBlock(beaconBlock: BeaconBlock): Promise<any> {
-        // TODO handle error catch
-
-        try {
-            const result = await this.httpClient.post<BeaconBlock, any>(PUBLISH_SIGNED_BLOCK, beaconBlock);
-            return result;
-        } catch (error) {
-            return error;
-        }
+        const result = await this.httpClient.post<BeaconBlock, any>(PUBLISH_SIGNED_BLOCK, beaconBlock);
+        return result;
     }
 
     async produceAttestation(
@@ -113,24 +77,14 @@ export class BeaconAPIClient implements IBeaconAPIClient {
         slot: Slot,
         shard: Shard
     ): Promise<IndexedAttestation> {
-        // TODO handle error catch
-        try {
-            const result = await this.httpClient.get<IndexedAttestation>(
-                PRODUCE_ATTESTATION(validatorPubkey, pocBit, slot, shard)
-            );
-            return result;
-        } catch (error) {
-            return error;
-        }
+        const result = await this.httpClient.get<IndexedAttestation>(
+            PRODUCE_ATTESTATION(validatorPubkey, pocBit, slot, shard)
+        );
+        return result;
     }
 
     async publishSignedAttestation(attestation: IndexedAttestation): Promise<any> {
-        // TODO handle error catch
-        try {
-            const result = await this.httpClient.post<IndexedAttestation, any>(PUBLISH_SIGNED_ATTESTATION, attestation);
-            return result;
-        } catch (error) {
-            return error;
-        }
+        const result = await this.httpClient.post<IndexedAttestation, any>(PUBLISH_SIGNED_ATTESTATION, attestation);
+        return result;
     }
 }
