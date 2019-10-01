@@ -22,9 +22,12 @@ interface TestType {
     bytes: bytes32;
 }
 
+const BucketMock = 'testBucket';
+
 class TestRepository extends BulkRepository<TestType> {
     public constructor(db: IDatabaseController) {
-        super(config, db, SSZ, Bucket.test, TestSSZType);
+        // @ts-ignore
+        super(config, db, SSZ, BucketMock, TestSSZType);
     }
 }
 
