@@ -16,6 +16,12 @@
                 "SwitchCase": 1
             }
         ],
+        "import-name": [
+            true,
+            {
+                "electron-log": "logger"
+            }
+        ],
         "variable-name": false,
         "jsx-alignment": true,
         "jsx-equals-spacing": [true, "never"],
