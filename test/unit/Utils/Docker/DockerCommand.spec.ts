@@ -36,4 +36,10 @@ describe('DockerCommand unit tests', () => {
     it('should check if restart command generating properly', () => {
         expect(DockerCommand.restart('test-container')).toBe('docker restart test-container');
     });
+
+    // logs command
+    it('should check if logs command generating properly', () => {
+        expect(DockerCommand.logs('test-container')).toBe('docker logs test-container');
+        expect(DockerCommand.logs('test-container', true)).toBe('docker logs --follow test-container');
+    });
 });

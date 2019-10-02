@@ -31,6 +31,15 @@ export async function runCmd(command: string, getStreams?: boolean): Promise<Cmd
     });
 }
 
+export function streamToString(stream: Readable): Promise<string> {
+    const chunks: string[] = [];
+    return new Promise((resolve, reject) => {
+        stream.on('data', chunk => chunks.push(chunk));
+        stream.on('error', reject);
+        stream.on('end', () => resolve(chunks.join()));
+    });
+}
+
 export function isPlatform(platform: 'win' | 'lin'): boolean {
     return platform === 'win' ? /^win/i.test(process.platform) : !/^win/i.test(process.platform);
 }
