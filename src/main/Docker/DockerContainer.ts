@@ -1,8 +1,10 @@
-import { IService } from './interface';
+import { IService } from '../Services/interface';
 import { DockerRunParams } from '../Utils/Docker/DockerRunParams';
 import { DockerCommand } from '../Utils/Docker/DockerCommand';
 import { isPlatform, runCmd } from '../Utils/cmd-utils';
 import * as logger from 'electron-log';
+import { Readable } from 'stream';
+import { extractDockerVersion } from '../Utils/Docker/docker-utils';
 
 /**
  * Interface defining started docker instance.
@@ -11,27 +13,17 @@ export interface Docker {
     running: boolean;
     name: string;
     pid: number;
+    stdout?: Readable;
+    stderr?: Readable;
 }
 
-export class DockerService implements IService {
+export abstract class DockerContainer {
     private docker: Docker | null;
+    private readonly params: DockerRunParams;
 
-    constructor() {
+    protected constructor(params: DockerRunParams) {
         this.docker = null;
-    }
-
-    async start(): Promise<any> {
-        if (await this.checkIfDockerInstalled()) {
-            return;
-        }
-        throw new Error('Docker not installed!');
-    }
-
-    async stop(): Promise<void> {
-        if (!(await this.stopDockerInstance())) {
-            await this.killDockerInstance();
-            this.docker = null;
-        }
+        this.params = params;
     }
 
     /**
@@ -40,10 +32,13 @@ export class DockerService implements IService {
      *
      * @param version - check if this specific version is installed.
      */
-    public async checkIfDockerInstalled(version?: string): Promise<boolean> {
+    public static async isDockerInstalled(version?: string): Promise<boolean> {
         try {
             const cmdResult = await runCmd(DockerCommand.version());
-            const dockerVersion = this.extractDockerVersion(cmdResult.stdout);
+            if (cmdResult.stdout instanceof Readable) {
+                return false;
+            }
+            const dockerVersion = extractDockerVersion(cmdResult.stdout);
             return version ? version === dockerVersion : !!dockerVersion;
         } catch (e) {
             logger.error(e);
@@ -53,35 +48,48 @@ export class DockerService implements IService {
 
     /**
      * Runs docker instance defined by provided argument.
-     * If docker instance already started this method will just return false.
+     * If docker instance already started this method will just reject promise.
      *
      * @param params - instance of @{DockerRunParams}
-     * @return Promise<boolean> - true if instance successfully started, false otherwise
+     * @return Promise<Docker> - details about docker instance started
      */
-    public async runDockerInstance(params: DockerRunParams): Promise<boolean> {
-        if (!this.docker) {
-            // start new docker instance
-            try {
-                const cmdResult = await runCmd(DockerCommand.run(params));
-                // check if error occurred
-                if (cmdResult.stderr) {
-                    logger.error(
-                        `Error on starting ${params.name} docker instance from image ${params.image}`,
-                        cmdResult.stderr
-                    );
-                    return false;
-                }
-                this.docker = { running: true, name: params.name, pid: cmdResult.pid };
-                logger.info(`Docker instance ${this.docker.name} started.`);
-                return true;
-            } catch (e) {
-                logger.error(e);
-                return false;
-            }
+    public async run(): Promise<Docker> {
+        if (!(await DockerContainer.isDockerInstalled())) {
+            throw new Error('Docker not installed.');
         }
-        // Docker instance already running
-        logger.error(`Docker instance ${this.docker.name} already running`);
-        return false;
+        return new Promise(async (resolve, reject) => {
+            if (!this.docker) {
+                try {
+                    // start new docker instance
+                    const cmdResult = await runCmd(DockerCommand.run(this.params));
+                    if (cmdResult.stderr) {
+                        // check if error occurred
+                        logger.error(
+                            `Error on starting ${this.params.name} docker instance from image ${this.params.image}`,
+                            cmdResult.stderr
+                        );
+                        reject(cmdResult.stderr);
+                    }
+                    this.docker = { running: true, name: this.params.name, pid: cmdResult.pid };
+                    // start tracking logs from docker instance
+                    const logResult = await runCmd(DockerCommand.logs(this.params.name, true), true);
+                    if (logResult.stdout instanceof Readable && logResult.stderr instanceof Readable) {
+                        this.docker.stdout = logResult.stdout;
+                        this.docker.stderr = logResult.stderr;
+                    }
+
+                    logger.info(`Docker instance ${this.docker.name} started.`);
+                    resolve(this.docker);
+                } catch (e) {
+                    logger.error(e);
+                    reject(e);
+                }
+            } else {
+                // Docker instance already running
+                logger.error(`Docker instance ${this.docker.name} already running`);
+                reject();
+            }
+        });
     }
 
     /**
@@ -94,6 +102,9 @@ export class DockerService implements IService {
                 // docker instance not stopped programmatically
                 if (this.docker.running) {
                     const cmdResult = await runCmd(DockerCommand.ps(this.docker.name, 'running'));
+                    if (cmdResult.stdout instanceof Readable) {
+                        return false;
+                    }
                     return cmdResult.stdout.split('\n')[1] !== '';
                 }
                 // docker instance stopped programmatically
@@ -135,7 +146,6 @@ export class DockerService implements IService {
      *
      */
     public async restartDockerInstance(): Promise<boolean> {
-        console.log(this.docker);
         if (this.docker && this.docker.name) {
             try {
                 if (await this.isDockerInstanceRunning()) {
@@ -156,11 +166,5 @@ export class DockerService implements IService {
         }
         logger.info('');
         return false;
-    }
-
-    private extractDockerVersion(dockerLog: string): string | null {
-        let regexec: RegExpExecArray | null;
-        regexec = /Docker version (\d+\.\d+\.\d+)/.exec(dockerLog);
-        return regexec ? regexec[1] : null;
     }
 }

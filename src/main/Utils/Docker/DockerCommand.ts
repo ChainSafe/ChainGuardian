@@ -29,4 +29,8 @@ export class DockerCommand {
     public static restart(containerName: string): string {
         return `docker restart ${containerName}`;
     }
+
+    public static logs(containerName: string, follow?: boolean): string {
+        return `docker logs${follow ? ' --follow' : ''} ${containerName}`;
+    }
 }
