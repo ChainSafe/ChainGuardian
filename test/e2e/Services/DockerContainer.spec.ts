@@ -1,7 +1,6 @@
 import { DockerContainer } from '../../../src/main/Docker/DockerContainer';
-import { runCmd } from '../../../src/main/Utils/cmd-utils';
+import { runCmdAsync } from '../../../src/main/Utils/cmd-utils';
 import { DockerCommand } from '../../../src/main/Utils/Docker/DockerCommand';
-import { Readable } from 'stream';
 
 class SimpleDockerContainer extends DockerContainer {
     constructor() {
@@ -15,59 +14,85 @@ class SimpleDockerContainer extends DockerContainer {
 }
 
 describe('Docker container e2e tests', () => {
-    let dockerService: DockerContainer;
+    let dockerContainer: DockerContainer;
 
-    beforeEach(async () => {
-        dockerService = new SimpleDockerContainer();
+    beforeEach(() => {
+        dockerContainer = new SimpleDockerContainer();
     });
 
     // clean up created container
     afterEach(async () => {
-        await dockerService.stopDockerInstance();
-        await runCmd(`docker rm test-image`);
-    }, 20000);
-
-    it('should run docker instance', async () => {
-        if (await DockerContainer.isDockerInstalled()) {
-            const docker = await dockerService.run();
-            expect(docker.running).toBeTruthy();
-            const res = await runCmd(DockerCommand.ps('test-image', 'running'));
-            if (!(res.stdout instanceof Readable)) {
-                expect(res.stdout.split('\n')[1] !== '').toBeTruthy();
-            }
-            const stopInstance = await dockerService.stopDockerInstance();
-            expect(stopInstance).toBeTruthy();
-            expect(await dockerService.isDockerInstanceRunning()).toBeFalsy();
+        const isRunning = await dockerContainer.isRunning();
+        if (isRunning) {
+            await dockerContainer.stop();
         }
+        await runCmdAsync(`docker rm test-image`).catch();
     }, 20000);
 
-    it('should restart docker instance using service', async () => {
+    /**
+     * TEST CASE: run-check
+     * 1) run docker instance
+     * 2) check if instance is running using cmdRun
+     */
+    it('should execute test case: run-check', async () => {
         if (await DockerContainer.isDockerInstalled()) {
-            // start docker instance
-            const docker = await dockerService.run();
-            expect(docker.running).toBeTruthy();
-            expect(await dockerService.isDockerInstanceRunning()).toBeTruthy();
+            await dockerContainer.run();
+            // wait for docker instance to start
+            while (!(await dockerContainer.isRunning())) {}
+
+            const res = await runCmdAsync(DockerCommand.ps('test-image', 'running'));
+            expect(res.stdout.split('\n')[1] !== '').toBeTruthy();
+        }
+    }, 10000);
+
+    /**
+     * TEST CASE run-stop-restart
+     * 1) run docker instance
+     * 2) check if instance is running
+     * 3) stop docker instance
+     * 4) check if instance is stopped
+     * 5) restart docker instance
+     * 6) check if instance is running
+     */
+    it('should execute test case: run-stop-restart', async () => {
+        if (await DockerContainer.isDockerInstalled()) {
+            // run docker instance
+            const docker = await dockerContainer.run();
+            while (!(await dockerContainer.isRunning())) {}
+            // check if instance is running
+            expect(await dockerContainer.isRunning()).toBeTruthy();
             // stop docker instance
-            const stopped = await dockerService.stopDockerInstance();
-            expect(stopped).toBeTruthy();
-            expect(await dockerService.isDockerInstanceRunning()).toBeFalsy();
+            const stopInstance = await dockerContainer.stop();
+            // check if instance is stopped
+            expect(stopInstance).toBeTruthy();
+            expect(await dockerContainer.isRunning()).toBeFalsy();
             // restart docker instance
-            const started = await dockerService.restartDockerInstance();
+            const started = await dockerContainer.restart();
+            // check if instance is running
+            while (!(await dockerContainer.isRunning())) {}
             expect(started).toBeTruthy();
-            expect(await dockerService.isDockerInstanceRunning()).toBeTruthy();
+            expect(await dockerContainer.isRunning()).toBeTruthy();
         }
-    }, 20000);
+    }, 30000);
 
-    it('should see that docker instance is not running', async () => {
+    /**
+     * TEST CASE: run-kill
+     * 1) run docker instance
+     * 2) check if instance is running
+     * 3) kill docker instance
+     * 4) check if instance is stopped
+     */
+    it('should execute test case: run-kill ', async () => {
         if (await DockerContainer.isDockerInstalled()) {
-            // start docker instance
-            const docker = await dockerService.run();
-            expect(docker.running).toBeTruthy();
-            expect(await dockerService.isDockerInstanceRunning()).toBeTruthy();
-            // stop docker instance not using service
-            await runCmd(DockerCommand.stop('test-image'));
-            // test isDockerInstanceRunning method
-            expect(await dockerService.isDockerInstanceRunning()).toBeFalsy();
+            // run docker instance
+            await dockerContainer.run();
+            while (!(await dockerContainer.isRunning())) {}
+            // check if instance is running
+            expect(await dockerContainer.isRunning()).toBeTruthy();
+            // kill docker instance
+            await dockerContainer.kill();
+            // check if instance is stopped
+            expect(await dockerContainer.isRunning()).toBeFalsy();
         }
-    }, 20000);
+    }, 10000);
 });

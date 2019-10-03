@@ -33,4 +33,8 @@ export class DockerCommand {
     public static logs(containerName: string, follow?: boolean): string {
         return `docker logs${follow ? ' --follow' : ''} ${containerName}`;
     }
+
+    public static kill(containerName: string): string {
+        return `docker kill ${containerName}`;
+    }
 }

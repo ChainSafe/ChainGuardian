@@ -3,11 +3,10 @@ import * as cmdUtils from '../../../src/main/Utils/cmd-utils';
 import * as sinon from 'sinon';
 
 describe('Docker container unit tests', () => {
-    const runCmdStub = sinon.stub(cmdUtils, 'runCmd');
+    const runCmdStub = sinon.stub(cmdUtils, 'runCmdAsync');
 
     it('should check if docker installed when docker is installed', async () => {
         runCmdStub.resolves({
-            pid: 1,
             stdout: 'Docker version 12.02.2, build 21a1',
             stderr: ''
         });
@@ -18,7 +17,6 @@ describe('Docker container unit tests', () => {
 
     it('should check if docker installed when docker is not installed', async () => {
         runCmdStub.resolves({
-            pid: 1,
             stdout: 'Docker is not recognized as an internal or external command, operable program or batch file.',
             stderr: ''
         });

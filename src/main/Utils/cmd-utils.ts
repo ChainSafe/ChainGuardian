@@ -1,34 +1,45 @@
 import * as child from 'child_process';
 import { Readable } from 'stream';
 
-export interface CmdRun {
-    pid: number;
-    stdout: string | Readable;
-    stderr: string | Readable;
+export interface CmdRunAsync {
+    stdout: string;
+    stderr: string;
 }
 
-export async function runCmd(command: string, getStreams?: boolean): Promise<CmdRun> {
+export async function runCmdAsync(command: string): Promise<CmdRunAsync> {
     return new Promise((resolve, reject) => {
         const process = child.exec(command);
-        const result: CmdRun = { pid: process.pid, stdout: '', stderr: '' };
+        const result: CmdRunAsync = { stdout: '', stderr: '' };
         if (process.stdout && process.stderr) {
-            if (getStreams) {
-                result.stdout = process.stdout;
-                result.stderr = process.stderr;
-                resolve(result);
-            } else {
-                process.stdout.on('data', data => {
-                    result.stdout += data;
-                });
-                process.stderr.on('data', data => {
-                    result.stderr += data;
-                });
-                process.on('close', code => {
-                    code !== 0 ? reject(result) : resolve(result);
-                });
-            }
+            process.stdout.on('data', data => {
+                result.stdout += data;
+            });
+            process.stderr.on('data', data => {
+                result.stderr += data;
+            });
+            process.on('close', code => {
+                code !== 0 ? reject(result) : resolve(result);
+            });
+        } else {
+            reject();
         }
     });
+}
+
+export interface CmdRun {
+    stdout: Readable;
+    stderr: Readable;
+}
+
+export function runCmd(command: string): CmdRun {
+    const process = child.exec(command);
+    if (process.stdout && process.stderr) {
+        return {
+            stdout: process.stdout,
+            stderr: process.stderr
+        } as CmdRun;
+    }
+    throw new Error(`Executing command ${command} failed.`);
 }
 
 export function streamToString(stream: Readable): Promise<string> {

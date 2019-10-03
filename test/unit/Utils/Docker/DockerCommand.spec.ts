@@ -42,4 +42,9 @@ describe('DockerCommand unit tests', () => {
         expect(DockerCommand.logs('test-container')).toBe('docker logs test-container');
         expect(DockerCommand.logs('test-container', true)).toBe('docker logs --follow test-container');
     });
+
+    // kill command
+    it('should check if restart command generating properly', () => {
+        expect(DockerCommand.kill('test-container')).toBe('docker kill test-container');
+    });
 });
