@@ -59,10 +59,10 @@ export abstract class DockerContainer {
      */
     public async run(getLogs?: boolean): Promise<Docker> {
         return new Promise(async (resolve, reject) => {
-            if (!(await DockerContainer.isDockerInstalled())) {
-                reject('Docker not installed.');
-            }
             if (!this.docker) {
+                if (!(await DockerContainer.isDockerInstalled())) {
+                    reject('Docker not installed.');
+                }
                 try {
                     // start new docker instance
                     const run = runCmd(DockerCommand.run(this.params));
