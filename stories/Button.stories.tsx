@@ -1,6 +1,11 @@
 import * as React from 'react';
 import { storiesOf } from "@storybook/react";
-import { Welcome } from '@storybook/react/demo';
-import { linkTo } from "@storybook/addon-links";
+import { Button } from "../src/renderer/components/Button";
 
-storiesOf("Welcome", module).add("to Storybook", () => <Welcome showApp={linkTo("RoundedButton")} />);
+storiesOf("Button", module)
+    .add("primitive",
+        () => {
+            return (
+                <Button type="primitive">Submit</Button>
+            );
+        });
