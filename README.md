@@ -36,6 +36,11 @@ You can also run do the following to start both in a single process:
 yarn run start-dev
 ```
 
+### UI development
+For building components in isolation you can use [Storybook](https://storybook.js.org/).
+
+Just run `yarn storybook` 
+
 ## Packaging
 We use [Electron builder](https://www.electron.build/) to build and package the application. By default you can run the following to package for your current platform:
 
