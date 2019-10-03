@@ -1,13 +1,13 @@
-import { DockerContainer } from '../../../src/main/Docker/DockerContainer';
-import * as cmdUtils from '../../../src/main/Utils/cmd-utils';
+import { DockerContainer } from '../../../../src/renderer/services/docker/DockerContainer';
+import * as cmdUtils from '../../../../src/renderer/services/utils/cmd-utils';
 import * as sinon from 'sinon';
 
-describe('Docker container unit tests', () => {
+describe('docker container unit tests', () => {
     const runCmdStub = sinon.stub(cmdUtils, 'runCmdAsync');
 
     it('should check if docker installed when docker is installed', async () => {
         runCmdStub.resolves({
-            stdout: 'Docker version 12.02.2, build 21a1',
+            stdout: 'docker version 12.02.2, build 21a1',
             stderr: ''
         });
         expect(await DockerContainer.isDockerInstalled()).toBeTruthy();
@@ -17,7 +17,7 @@ describe('Docker container unit tests', () => {
 
     it('should check if docker installed when docker is not installed', async () => {
         runCmdStub.resolves({
-            stdout: 'Docker is not recognized as an internal or external command, operable program or batch file.',
+            stdout: 'docker is not recognized as an internal or external command, operable program or batch file.',
             stderr: ''
         });
         expect(await DockerContainer.isDockerInstalled('11.02.2')).toBeFalsy();

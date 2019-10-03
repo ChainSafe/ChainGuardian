@@ -1,4 +1,4 @@
-import { DockerRunParams, generateRunCommand } from '../../../../src/main/Utils/Docker/DockerRunParams';
+import { DockerRunParams, generateRunCommand } from '../../../../src/renderer/services/docker/DockerRunParams';
 
 describe('DockerRunParams unit tests', () => {
     it('should generate simple valid params for run command', () => {

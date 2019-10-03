@@ -1,9 +1,9 @@
-import { DockerRunParams } from '../Utils/Docker/DockerRunParams';
-import { DockerCommand } from '../Utils/Docker/DockerCommand';
-import { runCmd, runCmdAsync } from '../Utils/cmd-utils';
+import { DockerRunParams } from './DockerRunParams';
+import { DockerCommand } from './DockerCommand';
+import { runCmd, runCmdAsync } from '../utils/cmd-utils';
 import * as logger from 'electron-log';
 import { Readable } from 'stream';
-import { extractDockerVersion } from '../Utils/Docker/docker-utils';
+import { extractDockerVersion } from '../utils/docker/docker-utils';
 
 /**
  * Interface defining started docker instance.
@@ -55,13 +55,13 @@ export abstract class DockerContainer {
      * If docker instance already started this method will just reject promise.
      *
      * @param getLogs: boolean - if true return value will contain streams with docker instance logs.
-     * @return instance of @{Docker}
+     * @return instance of @{docker}
      */
     public async run(getLogs?: boolean): Promise<Docker> {
         return new Promise(async (resolve, reject) => {
             if (!this.docker) {
                 if (!(await DockerContainer.isDockerInstalled())) {
-                    reject('Docker not installed.');
+                    reject('docker not installed.');
                 }
                 try {
                     // start new docker instance
@@ -82,7 +82,7 @@ export abstract class DockerContainer {
                     reject(e);
                 }
             } else {
-                // Docker instance already running
+                // docker instance already running
                 logger.error(`Docker instance ${this.docker.name} already running`);
                 reject(`Docker instance ${this.docker.name} already running`);
             }
@@ -163,10 +163,10 @@ export abstract class DockerContainer {
         if (this.docker && this.docker.name) {
             try {
                 if (await this.isRunning()) {
-                    // Docker instance running, call restart command
+                    // docker instance running, call restart command
                     runCmd(DockerCommand.restart(this.docker.name));
                 } else {
-                    // Docker instance stopped, call start command
+                    // docker instance stopped, call start command
                     runCmd(DockerCommand.start(this.docker.name));
                 }
                 logger.info(`Docker instance ${this.docker.name} restared.`);

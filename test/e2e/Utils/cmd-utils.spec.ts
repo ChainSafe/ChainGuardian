@@ -5,7 +5,7 @@ import {
     streamToString,
     runCmdAsync,
     CmdRunAsync
-} from '../../../src/main/Utils/cmd-utils';
+} from '../../../src/renderer/services/utils/cmd-utils';
 
 describe('Cmd utils unit tests', () => {
     it('should successfully async call command in console', async () => {

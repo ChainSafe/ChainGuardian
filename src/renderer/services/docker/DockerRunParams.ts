@@ -24,7 +24,7 @@ export interface DockerRunParams {
     cmd?: string;
 }
 
-// docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND] [ARG...]
+// docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND]
 export function generateRunCommand(params: DockerRunParams) {
     const ports = params.publishAllPorts ? ' -P' : params.ports ? `-p=${params.ports}` : '';
     const options = `${`--name ${params.name}`}${params.detached ? ' -d' : ''}${

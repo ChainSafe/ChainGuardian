@@ -1,6 +1,6 @@
-import { DockerContainer } from '../../../src/main/Docker/DockerContainer';
-import { runCmdAsync } from '../../../src/main/Utils/cmd-utils';
-import { DockerCommand } from '../../../src/main/Utils/Docker/DockerCommand';
+import { DockerContainer } from '../../../../src/renderer/services/docker/DockerContainer';
+import { runCmdAsync } from '../../../../src/renderer/services/utils/cmd-utils';
+import { DockerCommand } from '../../../../src/renderer/services/docker/DockerCommand';
 
 class SimpleDockerContainer extends DockerContainer {
     constructor() {
@@ -13,7 +13,7 @@ class SimpleDockerContainer extends DockerContainer {
     }
 }
 
-describe('Docker container e2e tests', () => {
+describe('docker container e2e tests', () => {
     let dockerContainer: DockerContainer;
 
     beforeEach(() => {

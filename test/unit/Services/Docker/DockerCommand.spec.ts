@@ -1,5 +1,5 @@
-import { DockerRunParams } from '../../../../src/main/Utils/Docker/DockerRunParams';
-import { DockerCommand } from '../../../../src/main/Utils/Docker/DockerCommand';
+import { DockerRunParams } from '../../../../src/renderer/services/docker/DockerRunParams';
+import { DockerCommand } from '../../../../src/renderer/services/docker/DockerCommand';
 
 describe('DockerCommand unit tests', () => {
     // run command
