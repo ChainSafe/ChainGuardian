@@ -5,6 +5,7 @@ import { AppContainer } from 'react-hot-loader';
 
 import Application from './components/Application';
 import store from './store';
+import './style/index.scss';
 
 // Create main element
 const mainElement = document.createElement('div');
