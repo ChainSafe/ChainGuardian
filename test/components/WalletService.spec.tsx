@@ -1,7 +1,7 @@
 /* tslint:disable */
-import { WalletService } from '../../src/renderer/services/WalletService';
+import { Eth1WalletService } from '../../src/renderer/services/wallets/eth1/Eth1WalletService';
 
-const walletService = new WalletService();
+const walletService = new Eth1WalletService();
 const fixturePrivateKey = 'efca4cdd31923b50f4214af5d2ae10e7ac45a5019e9431cc195482d707485378';
 const fixturePrivateKeyStr = `0x${fixturePrivateKey}`;
 const fixturePrivateKeyBuffer = Buffer.from(fixturePrivateKey, 'hex');
@@ -159,14 +159,12 @@ describe('.toV3()', () => {
     const uuid = Buffer.from('7e59dc028d42d09db29aa8a0f862cc81', 'hex');
 
     it('should work with PBKDF2', () => {
-        // tslint:disable-next-line:max-line-length
         const w =
             '{"version":3,"id":"7e59dc02-8d42-409d-b29a-a8a0f862cc81","address":"b14ab53e38da1c172f877dbc6d65e4a1b0474c3c","crypto":{"ciphertext":"01ee7f1a3c8d187ea244c92eea9e332ab0bb2b4c902d89bdd71f80dc384da1be","cipherparams":{"iv":"cecacd85e9cb89788b5aab2f93361233"},"cipher":"aes-128-ctr","kdf":"pbkdf2","kdfparams":{"dklen":32,"salt":"dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6","c":262144,"prf":"hmac-sha256"},"mac":"0c02cd0badfebd5e783e0cf41448f84086a96365fc3456716c33641a86ebc7cc"}}';
         expect(fixtureWallet.toV3String('testtest', { kdf: 'pbkdf2', uuid, salt, iv })).toBe(w);
     });
 
     it('should work with Scrypt', () => {
-        // tslint:disable-next-line:max-line-length
         const w =
             '{"version":3,"id":"7e59dc02-8d42-409d-b29a-a8a0f862cc81","address":"b14ab53e38da1c172f877dbc6d65e4a1b0474c3c","crypto":{"ciphertext":"c52682025b1e5d5c06b816791921dbf439afe7a053abb9fac19f38a57499652c","cipherparams":{"iv":"cecacd85e9cb89788b5aab2f93361233"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6","n":262144,"r":8,"p":1},"mac":"27b98c8676dc6619d077453b38db645a4c7c17a3e686ee5adaf53c11ac1b890e"}}';
         expect(fixtureWallet.toV3String('testtest', { kdf: 'scrypt', uuid, salt, iv })).toBe(w);
@@ -214,4 +212,33 @@ describe('.fromV3()', () => {
         expect(wallet.getAddressString()).toEqual('0xa9886ac7489ecbcbd79268a79ef00d940e5fe1f2')
     });
     */
+    it('should work with (broken) mixed-case input files', () => {
+        const w =
+            '{"Crypto":{"cipher":"aes-128-ctr","cipherparams":{"iv":"6087dab2f9fdbbfaddc31a909735c1e6"},"ciphertext":"5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46","kdf":"pbkdf2","kdfparams":{"c":262144,"dklen":32,"prf":"hmac-sha256","salt":"ae3cd4e7013836a3df6bd7241b12db061dbe2c6785853cce422d148a624ce0bd"},"mac":"517ead924a9d0dc3124507e3393d175ce3ff7c1e96529c6c555ce9e51205e9b2"},"id":"3198bc9c-6672-5ab3-d995-4942343ae5b6","version":3}';
+        const wallet = walletService.fromV3(w, 'testpassword', true);
+        expect(wallet.getAddressString()).toEqual('0x008aeeda4d805471df9b2a5b0f38a0c3bcba786b');
+    });
+
+    it("shouldn't work with (broken) mixed-case input files in strict mode", () => {
+        const w =
+            '{"Crypto":{"cipher":"aes-128-ctr","cipherparams":{"iv":"6087dab2f9fdbbfaddc31a909735c1e6"},"ciphertext":"5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46","kdf":"pbkdf2","kdfparams":{"c":262144,"dklen":32,"prf":"hmac-sha256","salt":"ae3cd4e7013836a3df6bd7241b12db061dbe2c6785853cce422d148a624ce0bd"},"mac":"517ead924a9d0dc3124507e3393d175ce3ff7c1e96529c6c555ce9e51205e9b2"},"id":"3198bc9c-6672-5ab3-d995-4942343ae5b6","version":3}';
+        expect(() => walletService.fromV3(w, 'testpassword')).toThrow(
+            new Error("Cannot read property 'kdf' of undefined")
+        );
+    });
+
+    it('should fail for wrong version', () => {
+        const w = '{"version": 2}';
+        expect(() => walletService.fromV3(w, 'testpassword')).toThrow(new Error('Not a V3 wallet'));
+    });
+
+    it('should fail for wrong kdf', () => {
+        const w = '{"crypto":{"kdf":"superkey"},"version":3}';
+        expect(() => walletService.fromV3(w, 'testpassword')).toThrow(new Error('Unsupported key derivation scheme'));
+    });
+
+    it('should fail for wrong prf in pbkdf2', () => {
+        const w = '{"crypto":{"kdf":"pbkdf2","kdfparams":{"prf":"invalid"}},"version":3}';
+        expect(() => walletService.fromV3(w, 'testpassword')).toThrow(new Error('Unsupported parameters to PBKDF2'));
+    });
 });

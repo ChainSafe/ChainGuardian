@@ -44,3 +44,25 @@ export interface IBeaconAPIClient {
     ): Promise<IndexedAttestation>;
     publishSignedAttestation(attestation: IndexedAttestation): Promise<any>;
 }
+
+export interface IWallet {
+    getPrivateKey(): Buffer;
+    getPrivateKeyString(): String;
+    getPublicKey(): Buffer;
+    getPublicKeyString(): String;
+    getAddress(): Buffer;
+    getAddressString(): String;
+    getChecksumAddressString(): String;
+    toV3(password: String, options?: Object): any;
+    toV3String(password: String, options?: Object): String;
+    getV3Filename(timeStamp: Number): String;
+}
+
+export interface IWalletService {
+    generate(): IWallet;
+    fromPrivateKey(privateKey: Buffer): IWallet;
+    fromPublicKey(publicKey: Buffer): IWallet;
+    fromExtendedPrivateKey(xPrivateKey: String): IWallet;
+    fromExtendedPublicKey(xPublicKey: String): IWallet;
+    fromV3(input: String, password: String, nonStrict: bool): IWallet;
+}
