@@ -29,7 +29,7 @@
   "scripts": {
     "build-main": "cross-env NODE_ENV=production webpack --config webpack.main.prod.config.js",
     "build-renderer": "cross-env NODE_ENV=production webpack --config webpack.renderer.prod.config.js",
-    "build": "npm run build-main && npm run build-renderer && build-storybook",
+    "build": "npm run build-main && npm run build-renderer",
     "start-renderer-dev": "webpack-dev-server --config webpack.renderer.dev.config.js",
     "start-main-dev": "webpack --config webpack.main.config.js && electron ./dist/main.js",
     "start-dev": "cross-env START_HOT=1 npm run start-renderer-dev",
@@ -55,7 +55,7 @@
       "prettier --config ./.prettierrc --write",
       "git add"
     ],
-    "{src,test,mocks}/**/*.{js,ts,tsx}": [
+    "{src,test,mocks}/**/(!*.stories.tsx)(*.{js,ts,tsx})": [
       "tslint --project ./tsconfig.json --fix",
       "git add"
     ]

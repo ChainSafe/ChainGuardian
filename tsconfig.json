@@ -61,5 +61,8 @@
     "./src",
     "./test",
     "./mocks"
+  ],
+  "exclude": [
+    "**/*.stories.tsx"
   ]
 }
