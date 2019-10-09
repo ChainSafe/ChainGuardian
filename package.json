@@ -103,6 +103,7 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
+    "@chainsafe/bls": "0.1.6",
     "@chainsafe/eth2.0-types": "0.1.0",
     "@hot-loader/react-dom": "^16.8.6",
     "@types/electron-devtools-installer": "^2.2.0",
