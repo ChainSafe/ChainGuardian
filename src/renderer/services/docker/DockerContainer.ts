@@ -58,35 +58,33 @@ export abstract class DockerContainer {
      * @return instance of @{docker}
      */
     public async run(getLogs?: boolean): Promise<Docker> {
-        return new Promise(async (resolve, reject) => {
-            if (!this.docker) {
-                if (!(await DockerContainer.isDockerInstalled())) {
-                    reject('docker not installed.');
-                }
-                try {
-                    // start new docker instance
-                    const run = runCmd(DockerCommand.run(this.params));
-                    this.docker = { name: this.params.name, stdout: run.stdout, stderr: run.stderr };
-                    if (getLogs) {
-                        // start tracking logs from docker instance
-                        const logResult = runCmd(DockerCommand.logs(this.params.name));
-                        this.docker.logs = {
-                            stdout: logResult.stdout,
-                            stderr: logResult.stderr
-                        };
-                    }
-                    logger.info(`Docker instance ${this.docker.name} started.`);
-                    resolve(this.docker);
-                } catch (e) {
-                    logger.error(e);
-                    reject(e);
-                }
-            } else {
-                // docker instance already running
-                logger.error(`Docker instance ${this.docker.name} already running`);
-                reject(`Docker instance ${this.docker.name} already running`);
+        if (!this.docker) {
+            if (!(await DockerContainer.isDockerInstalled())) {
+                throw new Error('Unable to run instance because docker not installed.');
             }
-        });
+            try {
+                // start new docker instance
+                const run = runCmd(DockerCommand.run(this.params));
+                this.docker = { name: this.params.name, stdout: run.stdout, stderr: run.stderr };
+                if (getLogs) {
+                    // start tracking logs from docker instance
+                    const logResult = runCmd(DockerCommand.logs(this.params.name));
+                    this.docker.logs = {
+                        stdout: logResult.stdout,
+                        stderr: logResult.stderr
+                    };
+                }
+                logger.info(`Docker instance ${this.docker.name} started.`);
+                return this.docker;
+            } catch (e) {
+                logger.error(e);
+                throw new Error(`Unable to run instance because ${e.message}.`);
+            }
+        } else {
+            // docker instance already running
+            logger.error(`Docker instance ${this.docker.name} already running.`);
+            throw new Error(`Docker instance ${this.docker.name} already running.`);
+        }
     }
 
     /**
@@ -100,9 +98,11 @@ export abstract class DockerContainer {
         if (this.docker && this.docker.name) {
             try {
                 const cmdResult = await runCmdAsync(DockerCommand.ps(this.docker.name, 'running'));
-                return cmdResult.stdout.split('\n')[1] !== '';
+                // first line of output is header line, second line is definition of found docker instance
+                const runningInstance = cmdResult.stdout.split('\n')[1];
+                return runningInstance !== '';
             } catch (e) {
-                logger.error(e);
+                logger.error(`Failed to check if docker is running because ${e.message}.`);
             }
         }
         return false;
@@ -125,7 +125,7 @@ export abstract class DockerContainer {
                 }
                 return stopped;
             } catch (e) {
-                logger.error(`Failed to execute stop docker container ${this.docker.name}`, e);
+                logger.error(`Failed to execute stop docker container ${this.docker.name} because ${e.message}.`);
             }
             return false;
         }
@@ -143,7 +143,7 @@ export abstract class DockerContainer {
                 await runCmdAsync(DockerCommand.kill(this.docker.name));
                 logger.info(`Docker instance ${this.docker.name} killed.`);
             } catch (e) {
-                logger.error(`Failed to execute kill docker container ${this.docker.name}`, e);
+                logger.error(`Failed to execute kill docker container ${this.docker.name} because ${e.message}.`);
             }
         }
         return;
@@ -172,7 +172,7 @@ export abstract class DockerContainer {
                 logger.info(`Docker instance ${this.docker.name} restared.`);
                 return true;
             } catch (e) {
-                logger.error(e);
+                logger.error(`Failed to restart docker instance ${this.docker.name} because ${e.message}.`);
             }
         }
         return false;

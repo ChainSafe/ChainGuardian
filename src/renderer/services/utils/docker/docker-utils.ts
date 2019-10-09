@@ -1,5 +1,5 @@
 export function extractDockerVersion(dockerLog: string): string | null {
     let regexec: RegExpExecArray | null;
-    regexec = /Docker version (\d+\.\d+\.\d+)/.exec(dockerLog);
+    regexec = /docker version (\d+\.\d+\.\d+)/.exec(dockerLog.toLowerCase());
     return regexec ? regexec[1] : null;
 }

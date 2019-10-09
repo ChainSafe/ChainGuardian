@@ -47,7 +47,7 @@ export function streamToString(stream: Readable): Promise<string> {
     return new Promise((resolve, reject) => {
         stream.on('data', chunk => chunks.push(chunk));
         stream.on('error', reject);
-        stream.on('end', () => resolve(chunks.join()));
+        stream.on('end', () => resolve(chunks.join('')));
     });
 }
 
