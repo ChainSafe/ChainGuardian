@@ -1,9 +1,12 @@
 import bls from '@chainsafe/bls';
 import { Keypair } from '@chainsafe/bls/lib/keypair';
-import { BLSPubkey, BLSSecretKey } from '@chainsafe/bls/lib/types';
+import { BLSPubkey, BLSSecretKey, BLSSignature } from '@chainsafe/bls/lib/types';
 import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
 import { PublicKey } from '@chainsafe/bls/lib/publicKey';
-import Keystore from './Keystore';
+import Keystore from './eth1/Keystore';
+import { Hash } from '@chainsafe/eth2.0-types';
+
+type Domain = Buffer;
 
 export class WalletService {
     keypair: Keypair;
@@ -28,6 +31,14 @@ export class WalletService {
 
     getKeystore(): Keystore {
         return this.keystore;
+    }
+
+    sign(secretKey: BLSSecretKey, messageHash: Hash, domain: Domain): BLSSignature {
+        return bls.sign(secretKey, messageHash, domain);
+    }
+
+    verify(publicKey: BLSPubkey, messageHash: Hash, signature: BLSSignature, domain: Domain): boolean {
+        return bls.verify(publicKey, messageHash, signature, domain);
     }
 
     static generateKeypair(): WalletService {

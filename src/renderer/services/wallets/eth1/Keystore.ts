@@ -1,5 +1,5 @@
 import { Keypair } from '@chainsafe/bls/lib/keypair';
-import { WalletService } from './WalletService';
+import { WalletService } from '../WalletService';
 import * as crypto from 'crypto';
 const randomBytes = require('randombytes');
 import * as ethUtil from 'ethereumjs-util';

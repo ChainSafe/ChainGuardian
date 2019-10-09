@@ -22,24 +22,24 @@ export class KeystoreHelper {
     }
 
     static validateHexString(paramName: string, str: string, length?: number) {
-        let newSt = str;
-        if (newSt.toLowerCase().startsWith('0x')) {
-            newSt = newSt.slice(2);
+        let newStr = str;
+        if (newStr.toLowerCase().startsWith('0x')) {
+            newStr = newStr.slice(2);
         }
-        if (!newSt && !length) {
-            return newSt;
+        if (!newStr && !length) {
+            return newStr;
         }
         if ((length as number) % 2) {
             throw new Error(`Invalid length argument, must be an even number`);
         }
-        if (typeof length === 'number' && newSt.length !== length) {
+        if (typeof length === 'number' && newStr.length !== length) {
             throw new Error(`Invalid ${paramName}, string must be ${length} hex characters`);
         }
-        if (!/^([0-9a-f]{2})+$/i.test(newSt)) {
+        if (!/^([0-9a-f]{2})+$/i.test(newStr)) {
             const howMany = typeof length === 'number' ? length : 'empty or a non-zero even number of';
             throw new Error(`Invalid ${paramName}, string must be ${howMany} hex characters`);
         }
-        return newSt;
+        return newStr;
     }
 
     static validateBuffer(paramName: string, buff: Buffer, length?: number) {

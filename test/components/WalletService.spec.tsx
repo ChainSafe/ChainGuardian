@@ -1,6 +1,9 @@
 /* tslint:disable */
-import { WalletService } from '../../src/renderer/services/wallets/eth1/WalletService';
+import { WalletService } from '../../src/renderer/services/wallets/WalletService';
 import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
+import Keystore from '../../src/renderer/services/wallets/eth1/Keystore';
+import { sha256 } from 'ethereumjs-util';
+import { G2point } from '@chainsafe/bls/lib/helpers/g2point';
 
 const privateKey = '0e43429c844ccedd4aff7aaa05fe996f41f9464b360ca03a4349387ba49b3e18';
 const privateKeyStr = `0x${privateKey}`;
@@ -44,47 +47,82 @@ describe('saveToJson pbkdf2', () => {
         const uuid = Buffer.from('7e59dc028d42d09db29aa8a0f862cc81', 'hex');
         const keystore = walletServiceInstance.getKeystore();
         const w =
-            '{"address": "0xa12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136", "crypto": {"cipher": "aes-128-ctr", "cipherparams": {"iv": "cecacd85e9cb89788b5aab2f93361233"}, "ciphertext": "a53f0cd23b6ab57b29812d24b265078b799d9e6397e53f004cbde42ae96b5d66", "kdf": "pbkdf2", "kdfparams": {"c": 262144, "dklen": 32, "prf": "hmac-sha256", "salt": "dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6"}, "mac": "ec9ead9390a9ed2bdd9b4a3dfd111109b4df30831fda6dd5cbd38ad1256bc014"}, "id": "7e59dc02-8d42-409d-b29a-a8a0f862cc81", "version": 3}';
-        const result = keystore.saveJSON('pero', { kdf: 'pbkdf2', uuid, salt, iv });
+            '{"version":3,"id":"7e59dc02-8d42-409d-b29a-a8a0f862cc81","address":"0xa12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136","crypto":{"ciphertext":"9b1e670df2f369aa4f77fe18e789a950aba22945201292c6b211f741f678ace0","cipherparams":{"iv":"cecacd85e9cb89788b5aab2f93361233"},"cipher":"aes-128-ctr","kdf":"pbkdf2","kdfparams":{"dklen":32,"salt":"dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6","c":262144,"prf":"hmac-sha256"},"mac":"6b93be8c24465e963f8fdd39c5886c44b3137fc0eaa4a844704aa996031ee66b"}}';
+        const result = keystore.saveJSON('test', { kdf: 'pbkdf2', uuid, salt, iv });
         expect(result).toEqual(JSON.parse(w));
     });
 });
 
-/* NOTE take to long for execute
+/* // NOTE take to long for execute
 describe('saveToJson scrypt', () => {
-    it('should work', () => {
-        const salt = Buffer.from('dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6', 'hex');
-        const iv = Buffer.from('cecacd85e9cb89788b5aab2f93361233', 'hex');
-        const uuid = Buffer.from('7e59dc028d42d09db29aa8a0f862cc81', 'hex');
-        const keystore = walletServiceInstance.getKeystore()
-        const w = '{"version":3,"id":"7e59dc02-8d42-409d-b29a-a8a0f862cc81","address":"0xa12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136","crypto":{"ciphertext":"e7607f0b140d416a41db1d4407765ee9045299460a77960a5431ce1bf4bf62bf","cipherparams":{"iv":"cecacd85e9cb89788b5aab2f93361233"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6","n":262144,"r":8,"p":1},"mac":"e4179c17868fbcc0f13c2e9749035be90e83229baefa4712ce6ba9e7ecc81704"}}'
-        const result = keystore.saveJSON('pero', { kdf: 'scrypt', uuid, salt, iv })
-        expect(result).toEqual(JSON.parse(w))
-    })
+   it('should work', () => {
+       const salt = Buffer.from('dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6', 'hex');
+       const iv = Buffer.from('cecacd85e9cb89788b5aab2f93361233', 'hex');
+       const uuid = Buffer.from('7e59dc028d42d09db29aa8a0f862cc81', 'hex');
+       const keystore = walletServiceInstance.getKeystore()
+       const w = '{"version":3,"id":"7e59dc02-8d42-409d-b29a-a8a0f862cc81","address":"0xa12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136","crypto":{"ciphertext":"724d8b5aeccb4afed3f83e31737dcb288084ad323c9c079d7bc8e67eaa1ab3a4","cipherparams":{"iv":"cecacd85e9cb89788b5aab2f93361233"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6","n":262144,"r":8,"p":1},"mac":"87d609e03ff853d7de2d74fc7a9c56d3749acae80b83519db0de04334d5d14ec"}}'
+       const result = keystore.saveJSON('test', { kdf: 'scrypt', uuid, salt, iv })
+       expect(result).toEqual(JSON.parse(w))
+   })
 })
 */
 
 describe('fromJson pbkdf2', () => {
+    var keystore = walletServiceInstance.getKeystore();
+    var priv = PrivateKey.fromHexString(privateKey);
+    const w =
+        '{"version":3,"id":"7e59dc02-8d42-409d-b29a-a8a0f862cc81","address":"0xa12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136","crypto":{"ciphertext":"9b1e670df2f369aa4f77fe18e789a950aba22945201292c6b211f741f678ace0","cipherparams":{"iv":"cecacd85e9cb89788b5aab2f93361233"},"cipher":"aes-128-ctr","kdf":"pbkdf2","kdfparams":{"dklen":32,"salt":"dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6","c":262144,"prf":"hmac-sha256"},"mac":"6b93be8c24465e963f8fdd39c5886c44b3137fc0eaa4a844704aa996031ee66b"}}';
+
     it('should work', () => {
-        const keystore = walletServiceInstance.getKeystore();
-        const priv = PrivateKey.fromHexString(privateKey);
-        const w =
-            '{"address": "0xa12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136", "crypto": {"cipher": "aes-128-ctr", "cipherparams": {"iv": "cecacd85e9cb89788b5aab2f93361233"}, "ciphertext": "a53f0cd23b6ab57b29812d24b265078b799d9e6397e53f004cbde42ae96b5d66", "kdf": "pbkdf2", "kdfparams": {"c": 262144, "dklen": 32, "prf": "hmac-sha256", "salt": "dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6"}, "mac": "ec9ead9390a9ed2bdd9b4a3dfd111109b4df30831fda6dd5cbd38ad1256bc014"}, "id": "7e59dc02-8d42-409d-b29a-a8a0f862cc81", "version": 3}';
-        const result = keystore.fromJSON(w, 'pero');
+        const result = keystore.fromJSON(w, 'test');
         expect(result).toEqual(priv);
     });
+
+    it('should fail because of wrong password', () => {
+        expect(() => keystore.fromJSON(w, 'wrongpassword')).toThrow();
+    });
 });
-/* NOTE take to long for execute
+/* // NOTE take to long for execute
 describe('fromJson scrypt', () => {
     it('should work', () => {
         const keystore = walletServiceInstance.getKeystore()
         const priv = PrivateKey.fromHexString(privateKey)
-        const w = '{"version":3,"id":"7e59dc02-8d42-409d-b29a-a8a0f862cc81","address":"0xa12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136","crypto":{"ciphertext":"e7607f0b140d416a41db1d4407765ee9045299460a77960a5431ce1bf4bf62bf","cipherparams":{"iv":"cecacd85e9cb89788b5aab2f93361233"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6","n":262144,"r":8,"p":1},"mac":"e4179c17868fbcc0f13c2e9749035be90e83229baefa4712ce6ba9e7ecc81704"}}'
-        const result = keystore.fromJSON(w, 'pero')
+        const w = '{"version":3,"id":"7e59dc02-8d42-409d-b29a-a8a0f862cc81","address":"0xa12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136","crypto":{"ciphertext":"724d8b5aeccb4afed3f83e31737dcb288084ad323c9c079d7bc8e67eaa1ab3a4","cipherparams":{"iv":"cecacd85e9cb89788b5aab2f93361233"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6","n":262144,"r":8,"p":1},"mac":"87d609e03ff853d7de2d74fc7a9c56d3749acae80b83519db0de04334d5d14ec"}}'
+        const result = keystore.fromJSON(w, 'test')
         expect(result).toEqual(priv)
     })
 })
 */
+
+describe('verify', function() {
+    const keypair = walletServiceInstance.getKeypair();
+    const messageHash = Buffer.from(sha256('Test'));
+    const domain = Buffer.alloc(8, 1);
+
+    it('should verify signature', () => {
+        const signature = walletServiceInstance.sign(keypair.privateKey.toBytes(), messageHash, domain);
+        const result = walletServiceInstance.verify(
+            keypair.publicKey.toBytesCompressed(),
+            messageHash,
+            signature,
+            domain
+        );
+        expect(result).toBe(true);
+    });
+
+    it('should fail because wrong messageHash', () => {
+        const signature = walletServiceInstance.sign(keypair.privateKey.toBytes(), messageHash, domain);
+        const result = walletServiceInstance.verify(
+            keypair.publicKey.toBytesCompressed(),
+            Buffer.from(sha256('WrongMessageHash')),
+            signature,
+            domain
+        );
+
+        expect(result).toBe(false);
+    });
+});
+
 /*
 describe('.generate()', () => {
     const wallet = walletService.generate();
@@ -244,7 +282,7 @@ describe('.toV3()', () => {
     });
 
     // NOTE take to long for executing
-    
+
     it('should work without providing option', () => {
         expect(fixtureWallet.toV3('testtest').version).toEqual(3)
     });
@@ -253,7 +291,7 @@ describe('.toV3()', () => {
         expect(() => fixtureWallet.toV3('testtest', {kdf: 'unsupported_kdf'}))
         .toThrow(new Error("Unsupported kdf"))
     });
-    
+
 });
 
 describe('.fromV3()', () => {
@@ -267,7 +305,7 @@ describe('.fromV3()', () => {
 
     // NOTE take to long for executing
 
-    
+
     it('should work with Scrypt', () => {
         var w = '{"address":"2f91eb73a6cd5620d7abb50889f24eea7a6a4feb","crypto":{"cipher":"aes-128-ctr","cipherparams":{"iv":"a2bc4f71e8445d64ceebd1247079fbd8"},"ciphertext":"6b9ab7954c9066fa1e54e04e2c527c7d78a77611d5f84fede1bd61ab13c51e3e","kdf":"scrypt","kdfparams":{"dklen":32,"n":262144,"r":1,"p":8,"salt":"caf551e2b7ec12d93007e528093697a4c68e8a50e663b2a929754a8085d9ede4"},"mac":"506cace9c5c32544d39558025cb3bf23ed94ba2626e5338c82e50726917e1a15"},"id":"1b3cad9b-fa7b-4817-9022-d5e598eb5fe3","version":3}';
         const wallet = walletService.fromV3(w, 'testtest')
@@ -284,7 +322,7 @@ describe('.fromV3()', () => {
         const wallet = walletService.fromV3(w, '');
         expect(wallet.getAddressString()).toEqual('0xa9886ac7489ecbcbd79268a79ef00d940e5fe1f2')
     });
-    
+
     it('should work with (broken) mixed-case input files', () => {
         const w =
             '{"Crypto":{"cipher":"aes-128-ctr","cipherparams":{"iv":"6087dab2f9fdbbfaddc31a909735c1e6"},"ciphertext":"5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46","kdf":"pbkdf2","kdfparams":{"c":262144,"dklen":32,"prf":"hmac-sha256","salt":"ae3cd4e7013836a3df6bd7241b12db061dbe2c6785853cce422d148a624ce0bd"},"mac":"517ead924a9d0dc3124507e3393d175ce3ff7c1e96529c6c555ce9e51205e9b2"},"id":"3198bc9c-6672-5ab3-d995-4942343ae5b6","version":3}';
