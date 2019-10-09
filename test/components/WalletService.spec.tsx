@@ -1,29 +1,15 @@
 /* tslint:disable */
-import { Eth1WalletService } from '../../src/renderer/services/wallets/eth1/Eth1WalletService';
 import { WalletService } from '../../src/renderer/services/wallets/eth1/WalletService';
-
-/*
-const walletService = new Eth1WalletService();
-const fixturePrivateKey = 'efca4cdd31923b50f4214af5d2ae10e7ac45a5019e9431cc195482d707485378';
-const fixturePrivateKeyStr = `0x${fixturePrivateKey}`;
-const fixturePrivateKeyBuffer = Buffer.from(fixturePrivateKey, 'hex');
-
-const fixturePublicKey =
-    '5d4392f450262b276652c1fc037606abac500f3160830ce9df53aa70d95ce7cfb8b06010b2f3691c78c65c21eb4cf3dfdbfc0745d89b664ee10435bb3a0f906c';
-const fixturePublicKeyStr = `0x${fixturePublicKey}`;
-const fixturePublicKeyBuffer = Buffer.from(fixturePublicKey, 'hex');
-
-const fixtureWallet = walletService.fromPrivateKey(fixturePrivateKeyBuffer);
-*/
+import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
 
 const privateKey = '0e43429c844ccedd4aff7aaa05fe996f41f9464b360ca03a4349387ba49b3e18';
 const privateKeyStr = `0x${privateKey}`;
 const privateKeyBuffer = Buffer.from(privateKey, 'hex');
 
-const walletService = new WalletService();
+const walletServiceInstance = WalletService.fromPrivateKeyHexString(privateKey);
 
 describe('.generateKeypair()', () => {
-    const keypair = walletService.generateKeypair();
+    const keypair = walletServiceInstance.getKeypair();
     const priv = keypair.privateKey;
     const pub = keypair.publicKey;
 
@@ -37,12 +23,12 @@ describe('.generateKeypair()', () => {
 });
 
 describe('.generatePublicKey()', () => {
-    const keypair = walletService.generateKeypair();
+    const keypair = walletServiceInstance.getKeypair();
     const priv = keypair.privateKey;
     const pub = keypair.publicKey;
 
     it('should work', function() {
-        const publicKey = walletService.generatePublicKey(priv.toBytes());
+        const publicKey = WalletService.generatePublicKey(priv.toBytes());
         expect(pub.toBytesCompressed()).toEqual(publicKey);
     });
 
@@ -51,32 +37,54 @@ describe('.generatePublicKey()', () => {
     });
 });
 
-describe('keystore', () => {
-    const salt = Buffer.from('dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6', 'hex');
-    const iv = Buffer.from('cecacd85e9cb89788b5aab2f93361233', 'hex');
-    const uuid = Buffer.from('7e59dc028d42d09db29aa8a0f862cc81', 'hex');
-    const keypair = walletService.generateKeypair();
-    const priv = keypair.privateKey;
-    const eth1WalletService = new Eth1WalletService();
-    const walletInstance = eth1WalletService.fromPrivateKey(priv.toBytes());
-
-    it('should work with PBKDF2', () => {
-        /*const w =
-            '{"version":3,"id":"7e59dc02-8d42-409d-b29a-a8a0f862cc81","address":"b14ab53e38da1c172f877dbc6d65e4a1b0474c3c","crypto":{"ciphertext":"01ee7f1a3c8d187ea244c92eea9e332ab0bb2b4c902d89bdd71f80dc384da1be","cipherparams":{"iv":"cecacd85e9cb89788b5aab2f93361233"},"cipher":"aes-128-ctr","kdf":"pbkdf2","kdfparams":{"dklen":32,"salt":"dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6","c":262144,"prf":"hmac-sha256"},"mac":"0c02cd0badfebd5e783e0cf41448f84086a96365fc3456716c33641a86ebc7cc"}}';
-        */
-
-        const v3 = walletInstance.toV3String('testtest', { kdf: 'pbkdf2', uuid, salt, iv });
-        console.log(priv.toHexString());
-        console.log(walletInstance.getPrivateKeyString());
-        console.log(walletInstance.getPublicKeyString());
-        console.log(walletInstance.getAddressString());
-        console.log(keypair.publicKey.toHexString());
-        console.log(v3);
-
-        expect(true).toBe(true);
+describe('saveToJson pbkdf2', () => {
+    it('should work', () => {
+        const salt = Buffer.from('dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6', 'hex');
+        const iv = Buffer.from('cecacd85e9cb89788b5aab2f93361233', 'hex');
+        const uuid = Buffer.from('7e59dc028d42d09db29aa8a0f862cc81', 'hex');
+        const keystore = walletServiceInstance.getKeystore();
+        const w =
+            '{"address": "0xa12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136", "crypto": {"cipher": "aes-128-ctr", "cipherparams": {"iv": "cecacd85e9cb89788b5aab2f93361233"}, "ciphertext": "a53f0cd23b6ab57b29812d24b265078b799d9e6397e53f004cbde42ae96b5d66", "kdf": "pbkdf2", "kdfparams": {"c": 262144, "dklen": 32, "prf": "hmac-sha256", "salt": "dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6"}, "mac": "ec9ead9390a9ed2bdd9b4a3dfd111109b4df30831fda6dd5cbd38ad1256bc014"}, "id": "7e59dc02-8d42-409d-b29a-a8a0f862cc81", "version": 3}';
+        const result = keystore.saveJSON('pero', { kdf: 'pbkdf2', uuid, salt, iv });
+        expect(result).toEqual(JSON.parse(w));
     });
 });
 
+/* NOTE take to long for execute
+describe('saveToJson scrypt', () => {
+    it('should work', () => {
+        const salt = Buffer.from('dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6', 'hex');
+        const iv = Buffer.from('cecacd85e9cb89788b5aab2f93361233', 'hex');
+        const uuid = Buffer.from('7e59dc028d42d09db29aa8a0f862cc81', 'hex');
+        const keystore = walletServiceInstance.getKeystore()
+        const w = '{"version":3,"id":"7e59dc02-8d42-409d-b29a-a8a0f862cc81","address":"0xa12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136","crypto":{"ciphertext":"e7607f0b140d416a41db1d4407765ee9045299460a77960a5431ce1bf4bf62bf","cipherparams":{"iv":"cecacd85e9cb89788b5aab2f93361233"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6","n":262144,"r":8,"p":1},"mac":"e4179c17868fbcc0f13c2e9749035be90e83229baefa4712ce6ba9e7ecc81704"}}'
+        const result = keystore.saveJSON('pero', { kdf: 'scrypt', uuid, salt, iv })
+        expect(result).toEqual(JSON.parse(w))
+    })
+})
+*/
+
+describe('fromJson pbkdf2', () => {
+    it('should work', () => {
+        const keystore = walletServiceInstance.getKeystore();
+        const priv = PrivateKey.fromHexString(privateKey);
+        const w =
+            '{"address": "0xa12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136", "crypto": {"cipher": "aes-128-ctr", "cipherparams": {"iv": "cecacd85e9cb89788b5aab2f93361233"}, "ciphertext": "a53f0cd23b6ab57b29812d24b265078b799d9e6397e53f004cbde42ae96b5d66", "kdf": "pbkdf2", "kdfparams": {"c": 262144, "dklen": 32, "prf": "hmac-sha256", "salt": "dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6"}, "mac": "ec9ead9390a9ed2bdd9b4a3dfd111109b4df30831fda6dd5cbd38ad1256bc014"}, "id": "7e59dc02-8d42-409d-b29a-a8a0f862cc81", "version": 3}';
+        const result = keystore.fromJSON(w, 'pero');
+        expect(result).toEqual(priv);
+    });
+});
+/* NOTE take to long for execute
+describe('fromJson scrypt', () => {
+    it('should work', () => {
+        const keystore = walletServiceInstance.getKeystore()
+        const priv = PrivateKey.fromHexString(privateKey)
+        const w = '{"version":3,"id":"7e59dc02-8d42-409d-b29a-a8a0f862cc81","address":"0xa12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136","crypto":{"ciphertext":"e7607f0b140d416a41db1d4407765ee9045299460a77960a5431ce1bf4bf62bf","cipherparams":{"iv":"cecacd85e9cb89788b5aab2f93361233"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"dc9e4a98886738bd8aae134a1f89aaa5a502c3fbd10e336136d4d5fe47448ad6","n":262144,"r":8,"p":1},"mac":"e4179c17868fbcc0f13c2e9749035be90e83229baefa4712ce6ba9e7ecc81704"}}'
+        const result = keystore.fromJSON(w, 'pero')
+        expect(result).toEqual(priv)
+    })
+})
+*/
 /*
 describe('.generate()', () => {
     const wallet = walletService.generate();
