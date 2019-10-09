@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
     bool,
     SyncingStatus,
@@ -11,7 +12,7 @@ import {
     uint8,
     Shard,
     IndexedAttestation
-} from '@chainsafe/eth2.0-types';
+} from "@chainsafe/eth2.0-types";
 
 export interface Syncing {
     is_syncing: bool;
@@ -35,7 +36,7 @@ export interface IBeaconAPIClient {
     fetchForkInformation(): Promise<ForkInformation>;
     fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty>;
     fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock>;
-    publishSignedBlock(beacon_block: BeaconBlock): Promise<any>;
+    publishSignedBlock(beaconBlock: BeaconBlock): Promise<any>;
     produceAttestation(
         validatorPubkey: BLSPubkey,
         pocBit: uint8,

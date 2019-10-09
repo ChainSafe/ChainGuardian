@@ -8,7 +8,7 @@ import {
     uint8,
     Shard,
     IndexedAttestation
-} from '@chainsafe/eth2.0-types';
+} from "@chainsafe/eth2.0-types";
 import {
     FETCH_NODE_VERSION,
     FETCH_GENESIS_TIME,
@@ -19,10 +19,10 @@ import {
     PUBLISH_SIGNED_BLOCK,
     PRODUCE_ATTESTATION,
     PUBLISH_SIGNED_ATTESTATION
-} from '../constants/apiUrls';
-import { Syncing, ForkInformation, IBeaconAPIClient, IBeaconApiClientOptions } from './interface';
-import { HttpClient } from './httpClient';
-import { EmptyUrlError } from './errors/EmptyUrlError';
+} from "../../constants/apiUrls";
+import {Syncing, ForkInformation, IBeaconAPIClient, IBeaconApiClientOptions} from "./interface";
+import {HttpClient} from "./http/httpClient";
+import {EmptyUrlError} from "./errors/EmptyUrlError";
 
 export class BeaconAPIClient implements IBeaconAPIClient {
     options: IBeaconApiClientOptions;

@@ -1,4 +1,4 @@
-const EMPTY_URL: string = 'URL must not be empty';
+const EMPTY_URL = "URL must not be empty";
 
 export class EmptyUrlError extends Error {
     constructor() {
