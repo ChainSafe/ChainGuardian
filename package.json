@@ -43,7 +43,8 @@
     "test:e2e": "jest '(\\/test\\/e2e/).*'",
     "pack": "yarn run build && electron-builder --dir",
     "dist": "yarn run build && electron-builder",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "storybook": "start-storybook -p 6006"
   },
   "jest": {
     "transform": {
@@ -91,6 +92,10 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
     "@hot-loader/react-dom": "^16.8.6",
+    "@storybook/addon-actions": "^5.2.1",
+    "@storybook/addon-links": "^5.2.1",
+    "@storybook/addons": "^5.2.1",
+    "@storybook/react": "^5.2.1",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/jest": "^24.0.13",
     "@types/prop-types": "^15.7.3",
@@ -99,6 +104,7 @@
     "@types/react-hot-loader": "^4.1.0",
     "@types/react-redux": "^7.0.9",
     "@types/react-test-renderer": "^16.8.1",
+    "@types/storybook__react": "^4.0.2",
     "@types/webdriverio": "^4.8.7",
     "@types/webpack-env": "^1.13.3",
     "@typescript-eslint/eslint-plugin": "^2.3.1",

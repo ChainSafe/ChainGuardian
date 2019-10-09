@@ -65,5 +65,8 @@
     "**/src/**/*.tsx",
     "**/test/**/*.ts",
     "**/test/**/*.tsx"
+  ],
+  "exclude": [
+    "**/*.stories.tsx"
   ]
 }
