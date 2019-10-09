@@ -5,6 +5,7 @@
     font-size: 1.1rem;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
     border-radius: 45px;
+    outline: transparent;
 
     &.btn-primitive {
         background: $neutral-200;
@@ -15,6 +16,7 @@
 
         &:focus {
             background: $neutral-100;
+            box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px $neutral-600;
         }
 
         &:active {
@@ -23,6 +25,89 @@
 
         &:disabled {
             background: $neutral-200;
+            opacity: 0.5;
+        }
+    }
+
+    &.btn-primary {
+        background: $secondary-green-400;
+        color: $secondary-green-700;
+
+        &:hover {
+            background: $secondary-green-300;
+        }
+
+        &:focus {
+            background: $secondary-green-300;
+            box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px $secondary-green-600;
+        }
+
+        &:active {
+            background: $secondary-green-500;
+        }
+
+        &:disabled {
+            background: $secondary-green-400;
+            opacity: 0.5;
+        }
+    }
+
+    &.btn-secondary {
+        background: $primary-blue-400;
+        color: $primary-blue-700;
+
+        &:hover {
+            background: $primary-blue-300;
+        }
+
+        &:focus {
+            background: $primary-blue-300;
+            box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px $primary-blue-600;
+        }
+
+        &:active {
+            background: $primary-blue-500;
+        }
+
+        &:disabled {
+            background: $primary-blue-400;
+            opacity: 0.5;
+        }
+    }
+
+    &.btn-inverted {
+        background: $system-success-100;
+        color: $system-success-700;
+
+        &:hover {
+            background: $system-success-200;
+        }
+
+        &:focus {
+            background: $system-success-200;
+            box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px $system-success-600;
+        }
+
+        &:active {
+            background: $system-success-400;
+        }
+    }
+
+    &.btn-destructive {
+        background: $system-error-600;
+        color: $system-error-100;
+
+        &:hover {
+            background: $system-error-500;
+        }
+
+        &:focus {
+            background: $system-error-500;
+            box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px $system-error-700;
+        }
+
+        &:active {
+            background: $system-error-700;
         }
     }
 }
