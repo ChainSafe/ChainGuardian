@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import axios, {AxiosError, AxiosInstance, AxiosResponse} from "axios";
 
 export class HttpClient {
     private client: AxiosInstance;
