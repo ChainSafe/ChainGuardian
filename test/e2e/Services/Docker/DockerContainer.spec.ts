@@ -12,7 +12,14 @@ class SimpleDockerContainer extends DockerContainer {
     }
 }
 
-describe("docker container e2e tests", () => {
+// run tests if env variable set
+if (process.env["RUN_ALL_TESTS"] !== "yes")
+    describe.skip("skipping docker container e2e tests", tests);
+else
+    describe("docker container e2e tests", tests);
+
+
+function tests(): void {
     let dockerContainer: DockerContainer;
 
     beforeEach(() => {
@@ -21,11 +28,13 @@ describe("docker container e2e tests", () => {
 
     // clean up created container
     afterEach(async () => {
-        const isRunning = await dockerContainer.isRunning();
-        if (isRunning) {
-            await dockerContainer.stop();
+        if (await DockerContainer.isDockerInstalled()) {
+            const isRunning = await dockerContainer.isRunning();
+            if (isRunning) {
+                await dockerContainer.stop();
+            }
+            await runCmdAsync("docker rm test-image").catch();
         }
-        await runCmdAsync("docker rm test-image").catch();
     }, 20000);
 
     /**
@@ -92,4 +101,4 @@ describe("docker container e2e tests", () => {
             expect(await dockerContainer.isRunning()).toBeFalsy();
         }
     }, 10000);
-});
+}

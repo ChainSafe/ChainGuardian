@@ -41,6 +41,8 @@ export abstract class DockerContainer {
     public static async isDockerInstalled(version?: string): Promise<boolean> {
         try {
             const cmdResult = await runCmdAsync(DockerCommand.version());
+            // eslint-disable-next-line no-console
+            console.log(cmdResult);
             const dockerVersion = extractDockerVersion(cmdResult.stdout);
             return version ? version === dockerVersion : !!dockerVersion;
         } catch (e) {
