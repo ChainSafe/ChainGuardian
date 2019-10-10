@@ -12,12 +12,11 @@ class SimpleDockerContainer extends DockerContainer {
     }
 }
 
-// run tests if env variable set
-if (process.env["RUN_ALL_TESTS"] !== "yes")
-    describe.skip("skipping docker container e2e tests", tests);
-else
+// run docker e2e test suit if env variable set
+if (process.env["RUN_DOCKER_TESTS"] === "yes")
     describe("docker container e2e tests", tests);
-
+else
+    describe.skip("skipping docker container e2e tests", tests);
 
 function tests(): void {
     let dockerContainer: DockerContainer;
@@ -60,7 +59,7 @@ function tests(): void {
      * 5) restart docker instance
      * 6) check if instance is running
      */
-    it.skip("should execute test case: run-stop-restart", async () => {
+    it("should execute test case: run-stop-restart", async () => {
         if (await DockerContainer.isDockerInstalled()) {
             // run docker instance
             await dockerContainer.run();
