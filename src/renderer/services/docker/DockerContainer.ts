@@ -1,14 +1,14 @@
-import { DockerRunParams } from './DockerRunParams';
-import { DockerCommand } from './DockerCommand';
-import { runCmd, runCmdAsync } from '../utils/cmd-utils';
-import * as logger from 'electron-log';
-import { Readable } from 'stream';
-import { extractDockerVersion } from '../utils/docker/docker-utils';
+import {IDockerRunParams} from "./IDockerRunParams";
+import {DockerCommand} from "./DockerCommand";
+import {runCmd, runCmdAsync} from "../utils/cmd-utils";
+import * as logger from "electron-log";
+import {Readable} from "stream";
+import {extractDockerVersion} from "../utils/docker/docker-utils";
 
 /**
  * Interface defining started docker instance.
  */
-export interface Docker {
+export interface IDocker {
     name: string;
     stdout?: Readable;
     stderr?: Readable;
@@ -24,10 +24,10 @@ export interface Docker {
  * Instance of @{DockerRunParams} is passed in constructor to define docker image that is going to be used.
  */
 export abstract class DockerContainer {
-    private docker: Docker | null;
-    private readonly params: DockerRunParams;
+    private docker: IDocker | null;
+    private readonly params: IDockerRunParams;
 
-    protected constructor(params: DockerRunParams) {
+    protected constructor(params: IDockerRunParams) {
         this.docker = null;
         this.params = params;
     }
@@ -57,15 +57,15 @@ export abstract class DockerContainer {
      * @param getLogs: boolean - if true return value will contain streams with docker instance logs.
      * @return instance of @{docker}
      */
-    public async run(getLogs?: boolean): Promise<Docker> {
+    public async run(getLogs?: boolean): Promise<IDocker> {
         if (!this.docker) {
             if (!(await DockerContainer.isDockerInstalled())) {
-                throw new Error('Unable to run instance because docker not installed.');
+                throw new Error("Unable to run instance because docker not installed.");
             }
             try {
                 // start new docker instance
                 const run = runCmd(DockerCommand.run(this.params));
-                this.docker = { name: this.params.name, stdout: run.stdout, stderr: run.stderr };
+                this.docker = {name: this.params.name, stdout: run.stdout, stderr: run.stderr};
                 if (getLogs) {
                     // start tracking logs from docker instance
                     const logResult = runCmd(DockerCommand.logs(this.params.name));
@@ -97,10 +97,10 @@ export abstract class DockerContainer {
     public async isRunning(): Promise<boolean> {
         if (this.docker && this.docker.name) {
             try {
-                const cmdResult = await runCmdAsync(DockerCommand.ps(this.docker.name, 'running'));
+                const cmdResult = await runCmdAsync(DockerCommand.ps(this.docker.name, "running"));
                 // first line of output is header line, second line is definition of found docker instance
-                const runningInstance = cmdResult.stdout.split('\n')[1];
-                return runningInstance !== '';
+                const runningInstance = cmdResult.stdout.split("\n")[1];
+                return runningInstance !== "";
             } catch (e) {
                 logger.error(`Failed to check if docker is running because ${e.message}.`);
             }

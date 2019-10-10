@@ -1,21 +1,21 @@
-import { DockerRunParams, generateRunCommand } from './DockerRunParams';
+import {IDockerRunParams, generateRunCommand} from "./IDockerRunParams";
 
 export class DockerCommand {
-    public static run(params: DockerRunParams): string {
+    public static run(params: IDockerRunParams): string {
         return `docker run ${generateRunCommand(params)}`;
     }
 
     public static ps(
         containerName?: string,
-        status?: 'created' | 'restarting' | 'running' | 'removing' | 'paused' | 'exited' | 'dead'
+        status?: "created" | "restarting" | "running" | "removing" | "paused" | "exited" | "dead"
     ): string {
-        const nameFilter = containerName ? ` --no-trunc --filter name=^/${containerName}$` : '';
-        const statusFilter = status ? ` --filter status=${status}` : '';
+        const nameFilter = containerName ? ` --no-trunc --filter name=^/${containerName}$` : "";
+        const statusFilter = status ? ` --filter status=${status}` : "";
         return `docker ps -a${nameFilter}${statusFilter}`;
     }
 
     public static version(): string {
-        return 'docker -v';
+        return "docker -v";
     }
 
     public static stop(containerName: string): string {
@@ -31,7 +31,7 @@ export class DockerCommand {
     }
 
     public static logs(containerName: string, follow?: boolean): string {
-        return `docker logs${follow ? ' --follow' : ''} ${containerName}`;
+        return `docker logs${follow ? " --follow" : ""} ${containerName}`;
     }
 
     public static kill(containerName: string): string {

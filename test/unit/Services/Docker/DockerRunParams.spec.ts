@@ -1,21 +1,21 @@
-import { DockerRunParams, generateRunCommand } from '../../../../src/renderer/services/docker/DockerRunParams';
+import {IDockerRunParams, generateRunCommand} from "../../../../src/renderer/services/docker/IDockerRunParams";
 
-describe('DockerRunParams unit tests', () => {
-    it('should generate simple valid params for run command', () => {
-        const params: DockerRunParams = { image: 'test-image', name: 'test-image-name' };
+describe("DockerRunParams unit tests", () => {
+    it("should generate simple valid params for run command", () => {
+        const params: IDockerRunParams = {image: "test-image", name: "test-image-name"};
         expect(generateRunCommand(params).trim()).toBe(`--name ${params.name} test-image`);
     });
 
-    it('should generate full valid params for run command', () => {
-        const params: DockerRunParams = {
-            name: 'test-image-name',
+    it("should generate full valid params for run command", () => {
+        const params: IDockerRunParams = {
+            name: "test-image-name",
             detached: true,
             privileged: true,
-            ipc: 'none',
-            restart: 'always',
+            ipc: "none",
+            restart: "always",
             publishAllPorts: true,
-            image: 'test-image',
-            cmd: 'ls'
+            image: "test-image",
+            cmd: "ls"
         };
         expect(generateRunCommand(params).trim()).toBe(
             `--name ${params.name} -d --privileged=true --ipc="none" --restart=always -P test-image ls`

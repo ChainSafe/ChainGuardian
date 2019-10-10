@@ -1,19 +1,18 @@
-import { DockerContainer } from '../../../../src/renderer/services/docker/DockerContainer';
-import { runCmdAsync } from '../../../../src/renderer/services/utils/cmd-utils';
-import { DockerCommand } from '../../../../src/renderer/services/docker/DockerCommand';
+import {DockerContainer} from "../../../../src/renderer/services/docker/DockerContainer";
+import {runCmdAsync} from "../../../../src/renderer/services/utils/cmd-utils";
 
 class SimpleDockerContainer extends DockerContainer {
     constructor() {
         super({
-            image: 'alpine',
-            name: 'test-image',
+            image: "alpine",
+            name: "test-image",
             detached: true,
-            cmd: 'tail -f /dev/null'
+            cmd: "tail -f /dev/null"
         });
     }
 }
 
-describe('docker container e2e tests', () => {
+describe("docker container e2e tests", () => {
     let dockerContainer: DockerContainer;
 
     beforeEach(() => {
@@ -26,7 +25,7 @@ describe('docker container e2e tests', () => {
         if (isRunning) {
             await dockerContainer.stop();
         }
-        await runCmdAsync(`docker rm test-image`).catch();
+        await runCmdAsync("docker rm test-image").catch();
     }, 20000);
 
     /**
@@ -34,11 +33,11 @@ describe('docker container e2e tests', () => {
      * 1) run docker instance
      * 2) check if instance is running using cmdRun
      */
-    it('should execute test case: run-check', async done => {
+    it("should execute test case: run-check", async done => {
         if (await DockerContainer.isDockerInstalled()) {
             await dockerContainer.run();
             // wait for docker instance to start
-            while (!(await dockerContainer.isRunning())) {}
+            while (!(await dockerContainer.isRunning())) { /* */ }
             done();
         }
     }, 10000);
@@ -52,11 +51,11 @@ describe('docker container e2e tests', () => {
      * 5) restart docker instance
      * 6) check if instance is running
      */
-    it.skip('should execute test case: run-stop-restart', async () => {
+    it.skip("should execute test case: run-stop-restart", async () => {
         if (await DockerContainer.isDockerInstalled()) {
             // run docker instance
-            const docker = await dockerContainer.run();
-            while (!(await dockerContainer.isRunning())) {}
+            await dockerContainer.run();
+            while (!(await dockerContainer.isRunning())) { /* */ }
             // check if instance is running
             expect(await dockerContainer.isRunning()).toBeTruthy();
             // stop docker instance
@@ -67,7 +66,7 @@ describe('docker container e2e tests', () => {
             // restart docker instance
             const started = await dockerContainer.restart();
             // check if instance is running
-            while (!(await dockerContainer.isRunning())) {}
+            while (!(await dockerContainer.isRunning())) { /* */ }
             expect(started).toBeTruthy();
             expect(await dockerContainer.isRunning()).toBeTruthy();
         }
@@ -80,11 +79,11 @@ describe('docker container e2e tests', () => {
      * 3) kill docker instance
      * 4) check if instance is stopped
      */
-    it('should execute test case: run-kill ', async () => {
+    it("should execute test case: run-kill ", async () => {
         if (await DockerContainer.isDockerInstalled()) {
             // run docker instance
             await dockerContainer.run();
-            while (!(await dockerContainer.isRunning())) {}
+            while (!(await dockerContainer.isRunning())) { /* */ }
             // check if instance is running
             expect(await dockerContainer.isRunning()).toBeTruthy();
             // kill docker instance
