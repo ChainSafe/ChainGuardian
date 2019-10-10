@@ -1,7 +1,8 @@
-import { V3ParamsStrict, PBKDFParams, ScryptKDFParams, V3Params } from './KeystoreInterfaces';
+import { V3ParamsStrict, PBKDFParams, ScryptKDFParams, V3Params } from './Eth1KeystoreInterfaces';
 import * as crypto from 'crypto';
+import { KeystoreParams } from '../WalletInterfaces';
 
-export class KeystoreHelper {
+export class Eth1KeystoreHelper {
     static kdfParamsForPBKDF(opts: V3ParamsStrict): PBKDFParams {
         return {
             dklen: opts.dklen,
@@ -56,7 +57,7 @@ export class KeystoreHelper {
         return buff;
     }
 
-    static mergeToV3ParamsWithDefaults(params?: Partial<V3Params>): V3ParamsStrict {
+    static mergeToV3ParamsWithDefaults(params?: Partial<KeystoreParams>): V3ParamsStrict {
         const v3Defaults: V3ParamsStrict = {
             cipher: 'aes-128-ctr',
             kdf: 'scrypt',
@@ -75,13 +76,13 @@ export class KeystoreHelper {
         }
 
         if (typeof params.salt === 'string') {
-            params.salt = Buffer.from(KeystoreHelper.validateHexString('salt', params.salt), 'hex');
+            params.salt = Buffer.from(Eth1KeystoreHelper.validateHexString('salt', params.salt), 'hex');
         }
         if (typeof params.iv === 'string') {
-            params.iv = Buffer.from(KeystoreHelper.validateHexString('iv', params.iv, 32), 'hex');
+            params.iv = Buffer.from(Eth1KeystoreHelper.validateHexString('iv', params.iv, 32), 'hex');
         }
         if (typeof params.uuid === 'string') {
-            params.uuid = Buffer.from(KeystoreHelper.validateHexString('uuid', params.uuid, 32), 'hex');
+            params.uuid = Buffer.from(Eth1KeystoreHelper.validateHexString('uuid', params.uuid, 32), 'hex');
         }
 
         if (params.salt) {

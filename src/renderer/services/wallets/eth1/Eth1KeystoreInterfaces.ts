@@ -1,8 +1,3 @@
-export interface IKeystoreObject {
-    encryptedPrivateKey: string;
-    publicKey: string;
-}
-
 export interface ScryptKDFParams {
     dklen: number;
     n: number;
