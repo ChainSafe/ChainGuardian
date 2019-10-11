@@ -19,7 +19,7 @@
 
         &:focus {
             background: $neutral-100;
-            box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px $neutral-600;
+            box-shadow: 0 0 0 4px $neutral-700, 0 0 0 8px $neutral-600;
         }
 
         &:active {
@@ -43,7 +43,7 @@
 
         &:focus {
             background: $secondary-green-300;
-            box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px $secondary-green-600;
+            box-shadow: 0 0 0 4px $neutral-700, 0 0 0 8px $secondary-green-600;
         }
 
         &:active {
@@ -67,7 +67,7 @@
 
         &:focus {
             background: $primary-blue-300;
-            box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px $primary-blue-600;
+            box-shadow: 0 0 0 4px $neutral-700, 0 0 0 8px $primary-blue-600;
         }
 
         &:active {
@@ -91,7 +91,7 @@
 
         &:focus {
             background: $system-success-200;
-            box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px $system-success-600;
+            box-shadow: 0 0 0 4px $neutral-700, 0 0 0 8px $system-success-600;
         }
 
         &:active {
@@ -110,7 +110,7 @@
 
         &:focus {
             background: $system-error-500;
-            box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px $system-error-700;
+            box-shadow: 0 0 0 4px $neutral-700, 0 0 0 8px $system-error-700;
         }
 
         &:active {

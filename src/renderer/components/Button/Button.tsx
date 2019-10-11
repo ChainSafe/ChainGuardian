@@ -1,8 +1,6 @@
 import * as React from "react";
 
 export interface IButtonProps {
-    // type: string;
-    // children: any;
     disabled?: boolean;
     onClick?: () => {};
 }
@@ -22,10 +20,25 @@ const BaseButton: React.FunctionComponent<IBaseButtonProps> = ({
     disabled,
     onClick,
     buttonType,
-}) => (<button className={"button " + buttonType} disabled={disabled} onClick={onClick}>{children}</button>);
+}) => (<button 
+    className={`button btn-${buttonType}`} 
+    disabled={disabled} 
+    onClick={onClick}>
+    {children}
+    </button>);
 
 export const ButtonPrimitive: React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = ({children, disabled, onClick}) => {
     return(<BaseButton disabled={disabled} onClick={onClick} buttonType={TYPES.PRIMITIVE}>{children}</BaseButton>);
-    
 };
-
+export const ButtonPrimary: React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = ({children, disabled, onClick}) => {
+    return(<BaseButton disabled={disabled} onClick={onClick} buttonType={TYPES.PRIMARY}>{children}</BaseButton>);
+};
+export const ButtonSecondary: React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = ({children, disabled, onClick}) => {
+    return(<BaseButton disabled={disabled} onClick={onClick} buttonType={TYPES.SECONDARY}>{children}</BaseButton>);
+};
+export const ButtonInverted: React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = ({children, disabled, onClick}) => {
+    return(<BaseButton disabled={disabled} onClick={onClick} buttonType={TYPES.INVERTED}>{children}</BaseButton>);
+};
+export const ButtonDestructive: React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = ({children, disabled, onClick}) => {
+    return(<BaseButton disabled={disabled} onClick={onClick} buttonType={TYPES.DESTRUCTIVE}>{children}</BaseButton>);
+};
