@@ -1,5 +1,70 @@
 @import "../../style/variables";
 
+.back-tab{
+    width: 56px;
+    height: 56px;
+    border-radius: 16px 0 0 16px;
+    background: $neutral-700;
+    outline: transparent;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+    &:hover{
+        background: $neutral-600;
+    }
+    &:active{
+        background: $neutral-800;
+    }
+}
+
+.copy-button{
+    width: 64px;
+    height: 64px;
+    background: $neutral-700;
+    border: none;
+    .copyall{display: none;}
+    .copied{display: none;}
+    &:hover{
+        .copy{display: none;}
+        .copyall{display: block;}
+    }
+    &:active{
+        .copy{display: none;}
+        .copyall{display: none;}
+        .copied{display: block;}
+    }
+}
+
+.add-button{
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: $primary-blue-400;
+    outline: transparent;
+    &:hover{
+        background: $primary-blue-300;
+    }
+    &:active{
+        background: $primary-blue-500;
+    }
+}
+.back-button{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: $neutral-600;
+    outline: transparent;
+    &:hover{
+        background: $neutral-500;
+    }
+    &:active{
+        background: $neutral-800;
+    }
+}
+.icon{
+ margin: auto;
+ display: block;
+}
+
+
 .button {
     width: 168px;
     height: 54px;
@@ -8,6 +73,7 @@
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
     border-radius: 45px;
     outline: transparent;
+    
 
     &.btn-primitive {
         background: $neutral-200;
