@@ -1,6 +1,6 @@
-import { IDatabaseController } from '../controller';
-import { IBeaconConfig } from '@chainsafe/eth2.0-config';
-import { IService } from '../../interfaces';
+import {IDatabaseController} from "../controller";
+import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {IService} from "../../interfaces";
 
 export interface IDatabaseApiOptions {
     config: IBeaconConfig;

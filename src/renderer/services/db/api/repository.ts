@@ -1,10 +1,10 @@
 // tslint:disable-next-line: import-name
-import BN from 'bn.js';
-import { IBeaconConfig } from '@chainsafe/eth2.0-config';
+import BN from "bn.js";
+import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 
-import { IDatabaseController } from '../controller';
-import { Bucket, encodeKey } from '../schema';
-import { CGSerialization } from '../abstract';
+import {IDatabaseController} from "../controller";
+import {Bucket, encodeKey} from "../schema";
+import {ICGSerialization} from "../abstract";
 
 export type Id = Buffer | string | number | BN;
 
@@ -17,12 +17,12 @@ export abstract class Repository<T> {
 
     protected type: any;
 
-    protected serializer: CGSerialization<any>;
+    protected serializer: ICGSerialization<any>;
 
     protected constructor(
         config: IBeaconConfig,
         db: IDatabaseController,
-        serializer: CGSerialization<any>,
+        serializer: ICGSerialization<any>,
         bucket: Bucket,
         type: any
     ) {

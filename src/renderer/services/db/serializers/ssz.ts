@@ -1,7 +1,7 @@
-import { CGSerialization } from '../';
-import { AnySSZType, deserialize, hashTreeRoot, serialize } from '@chainsafe/ssz';
+import {ICGSerialization} from "../";
+import {AnySSZType, deserialize, hashTreeRoot, serialize} from "@chainsafe/ssz";
 
-class SSZSerializer implements CGSerialization<AnySSZType> {
+class SSZSerializer implements ICGSerialization<AnySSZType> {
     serialize(value: any, type: AnySSZType): Buffer {
         return serialize(value, type);
     }

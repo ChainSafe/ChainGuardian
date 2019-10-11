@@ -3,12 +3,12 @@
  * @module db/controller/impl
  */
 
-import { LevelUp } from 'levelup';
-import { IDatabaseController, ISearchOptions } from '../interface';
-import { EventEmitter } from 'events';
+import {LevelUp} from "levelup";
+import {IDatabaseController, ISearchOptions} from "../interface";
+import {EventEmitter} from "events";
 // @ts-ignore
-import level from 'level';
-import { IDatabaseOptions } from '../../options';
+import level from "level";
+import {IDatabaseOptions} from "../../options";
 
 export interface ILevelDBOptions extends IDatabaseOptions {
     db?: LevelUp;
@@ -25,7 +25,7 @@ export class LevelDbController extends EventEmitter implements IDatabaseControll
     public constructor(opts: ILevelDBOptions) {
         super();
         this.opts = opts;
-        this.db = opts.db || level(opts.name || 'chainguardian', { keyEncoding: 'binary', valueEncoding: 'binary' });
+        this.db = opts.db || level(opts.name || "chainguardian", {keyEncoding: "binary", valueEncoding: "binary"});
     }
 
     public async start(): Promise<void> {
@@ -75,13 +75,13 @@ export class LevelDbController extends EventEmitter implements IDatabaseControll
                     gt: opts.gt,
                     lt: opts.lt
                 })
-                .on('data', data => {
+                .on("data", data => {
                     searchData.push(data);
                 })
-                .on('close', () => {
+                .on("close", () => {
                     resolve(searchData);
                 })
-                .on('end', () => {
+                .on("end", () => {
                     resolve(searchData);
                 });
         });
