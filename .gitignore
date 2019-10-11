@@ -1,5 +1,7 @@
+storybook-static
 node_modules/
 dist/
 release/
 .idea
 .__testdb
+.env

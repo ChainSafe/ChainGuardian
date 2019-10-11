@@ -1,0 +1,28 @@
+.button {
+    width: 168px;
+    height: 54px;
+    color: $neutral-800;
+    font-size: 1.1rem;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 45px;
+
+    &.btn-primitive {
+        background: $neutral-200;
+
+        &:hover {
+            background: $neutral-100;
+        }
+
+        &:focus {
+            background: $neutral-100;
+        }
+
+        &:active {
+            background: $neutral-400;
+        }
+
+        &:disabled {
+            background: $neutral-200;
+        }
+    }
+}

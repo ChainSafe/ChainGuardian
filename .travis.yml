@@ -11,7 +11,7 @@ addons:
 matrix:
   include:
     - os: osx
-      osx_image: xcode9.4
+      osx_image: xcode10.3
       language: node_js
       node_js: "12.4.0"
 
@@ -33,16 +33,15 @@ cache:
     - $HOME/.npm/_prebuilds
 
 install:
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      brew install yarn;
-    fi
+  - yarn install --frozen-lockfile
 
 script:
-  - yarn install --frozen-lockfile
-  - yarn run lint
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test; else yarn test; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test:e2e; else yarn test:e2e; fi
+  set -e;
+  yarn run lint;
+  yarn run check-types;
+  export {no_proxy,NO_PROXY}="127.0.0.1,localhost";
+  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test; else yarn test; fi;
+  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test:e2e; else yarn test:e2e; fi;
 
 before_cache:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then rm -rf $HOME/.cache/electron-builder/wine; fi
