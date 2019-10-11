@@ -3,7 +3,7 @@
  * @module db/controller
  */
 
-import { EventEmitter } from 'events';
+import {EventEmitter} from "events";
 
 export interface ISearchOptions {
     gt: any;

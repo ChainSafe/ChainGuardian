@@ -3,7 +3,7 @@ export interface IDatabaseOptions {
 }
 
 const config: IDatabaseOptions = {
-    name: './chainguardian-db'
+    name: "./chainguardian-db"
 };
 
 export default config;
