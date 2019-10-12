@@ -12,6 +12,7 @@ import {
     Shard,
     IndexedAttestation
 } from '@chainsafe/eth2.0-types';
+import { Keypair } from '@chainsafe/bls/lib/keypair';
 
 export interface Syncing {
     is_syncing: bool;
@@ -43,4 +44,20 @@ export interface IBeaconAPIClient {
         shard: Shard
     ): Promise<IndexedAttestation>;
     publishSignedAttestation(attestation: IndexedAttestation): Promise<any>;
+}
+
+export interface ICGKeystoreConstructor {
+    new (file: string): ICGKeystore;
+}
+
+export interface ICGKeystore {
+    decrypt(password: string): Keypair;
+    changePassword(oldPassword: string, newPassword: string): void;
+    destroy(): void;
+}
+
+export interface IEth2HDWallet {
+    // should return mnemonic
+    // static generate(entropy?: bytes): string;
+    // static getKeypair(mnemonic: string, walletIndex?: number = 0): Keypair;
 }
