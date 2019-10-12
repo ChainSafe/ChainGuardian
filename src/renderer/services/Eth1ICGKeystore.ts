@@ -50,9 +50,8 @@ export class Eth1ICGKeystore implements ICGKeystore {
     destroy(): void {
         try {
             fs.unlinkSync(this.file);
-            // file removed
         } catch (err) {
-            console.error(err);
+            throw new Error(`Failed to delete file ${this.file}: ${err}`);
         }
     }
 
