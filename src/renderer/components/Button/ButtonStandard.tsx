@@ -6,7 +6,7 @@ export interface IButtonProps {
     onClick?: () => {};
 }
 export interface IBaseButtonProps extends IButtonProps{
-    buttonType: string;
+    buttonType?: string;
 }
 enum TYPES {
     PRIMITIVE = "primitive",
@@ -34,57 +34,49 @@ const BaseButton: React.FunctionComponent<IBaseButtonProps> = ({
     {children}
 </button>);
 
+function getButton(props: React.PropsWithChildren<IBaseButtonProps>, type:TYPES ) {
+    return(
+        <BaseButton
+        disabled={props.disabled}
+        focused={props.focused}
+        onClick={props.onClick}
+        buttonType={type}
+        >{props.children}
+        </BaseButton>
+    );
+};
+
 export const ButtonPrimitive: 
-React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = ({
-    children, disabled, focused, onClick}) => {
-    return(<BaseButton 
-        disabled={disabled}
-        focused={focused}
-        onClick={onClick}
-        buttonType={TYPES.PRIMITIVE}>
-        {children}</BaseButton>);
+React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = (props) => {
+    return(
+        getButton(props, TYPES.PRIMITIVE)
+    );
 };
 
 export const ButtonPrimary:
-React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = ({
-    children, disabled, focused, onClick}) => {
-    return(<BaseButton
-        disabled={disabled}
-        focused={focused}
-        onClick={onClick}
-        buttonType={TYPES.PRIMARY}>
-        {children}</BaseButton>);
+React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = (props) => {
+    return(
+        getButton(props, TYPES.PRIMARY)
+    );
 };
 
 export const ButtonSecondary:
-React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = ({
-    children, disabled, focused, onClick}) => {
-    return(<BaseButton
-        disabled={disabled}
-        focused={focused}
-        onClick={onClick}
-        buttonType={TYPES.SECONDARY}>
-        {children}</BaseButton>);
+React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = (props) => {
+    return(
+        getButton(props, TYPES.SECONDARY)
+    );
 };
 
 export const ButtonInverted:
-React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = ({
-    children, disabled, focused, onClick}) => {
-    return(<BaseButton
-        disabled={disabled}
-        focused={focused}
-        onClick={onClick}
-        buttonType={TYPES.INVERTED}>
-        {children}</BaseButton>);
+React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = (props) => {
+    return(
+        getButton(props, TYPES.INVERTED)
+    );
 };
 
 export const ButtonDestructive:
-React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = ({
-    children, disabled, focused, onClick}) => {
-    return(<BaseButton
-        disabled={disabled}
-        focused={focused}
-        onClick={onClick}
-        buttonType={TYPES.DESTRUCTIVE}>
-        {children}</BaseButton>);
+React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = (props) => {
+    return(
+        getButton(props, TYPES.DESTRUCTIVE)
+    );
 };
