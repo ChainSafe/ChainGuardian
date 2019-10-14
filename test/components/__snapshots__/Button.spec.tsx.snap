@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ButtonPrimitive renders correctly 1`] = `
+<button
+  className="button btn-primitive"
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonPrimitive renders disabled button 1`] = `
+<button
+  className="button btn-primitive"
+  disabled={true}
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonPrimitive renders focused button 1`] = `
+<button
+  className="button btn-primitive focused"
+>
+  Submit
+</button>
+`;
