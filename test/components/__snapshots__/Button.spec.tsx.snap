@@ -1,5 +1,38 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`AddButton renders correctly 1`] = `
+<button
+  className="add-button"
+>
+  <img
+    className="icon"
+    src="test-file-stub"
+  />
+</button>
+`;
+
+exports[`BackButton renders correctly 1`] = `
+<button
+  className="back-button"
+>
+  <img
+    className="icon"
+    src="test-file-stub"
+  />
+</button>
+`;
+
+exports[`BackTab renders correctly 1`] = `
+<button
+  className="back-tab"
+>
+  <img
+    className="icon"
+    src="test-file-stub"
+  />
+</button>
+`;
+
 exports[`ButtonDestructive renders correctly 1`] = `
 <button
   className="button btn-destructive"
@@ -122,5 +155,24 @@ exports[`ButtonSecondary renders focused button 1`] = `
   className="button btn-secondary focused"
 >
   Submit
+</button>
+`;
+
+exports[`CopyButton renders correctly 1`] = `
+<button
+  className="copy-button"
+>
+  <img
+    className="icon copy"
+    src="test-file-stub"
+  />
+  <img
+    className="icon copyall"
+    src="test-file-stub"
+  />
+  <img
+    className="icon copied"
+    src="test-file-stub"
+  />
 </button>
 `;

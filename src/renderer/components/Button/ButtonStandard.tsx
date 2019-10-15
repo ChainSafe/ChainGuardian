@@ -34,7 +34,7 @@ const BaseButton: React.FunctionComponent<IBaseButtonProps> = ({
     {children}
 </button>);
 
-function getButton(props: React.PropsWithChildren<IBaseButtonProps>, type: TYPES ) {
+function getButton(props: React.PropsWithChildren<IBaseButtonProps>, type: TYPES ): React.ReactElement {
     return(
         <BaseButton
             disabled={props.disabled}

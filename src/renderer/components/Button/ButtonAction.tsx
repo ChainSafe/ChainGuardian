@@ -1,10 +1,9 @@
-import * as React from "react";
-// import { ReactComponent as Arrow } from './Icon/Vectorbacktab-1.svg';
-import * as arrow from "../../assets/img/buttons/Backtab.svg";
-import * as add from "../../assets/img/buttons/Add.svg";
-import * as copyDefault from "../../assets/img/buttons/CopyDefault.svg";
-import * as copyAll from "../../assets/img/buttons/CopyAll.svg";
-import * as copied from "../../assets/img/buttons/Copied.svg";
+import React from "react";
+import arrow from "../../assets/img/buttons/Backtab.svg";
+import add from "../../assets/img/buttons/Add.svg";
+import copyDefault from "../../assets/img/buttons/CopyDefault.svg";
+import copyAll from "../../assets/img/buttons/CopyAll.svg";
+import copied from "../../assets/img/buttons/Copied.svg";
 
 export interface IActionButtonProps {
     onClick?: () => {};
