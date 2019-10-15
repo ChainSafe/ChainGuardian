@@ -1,15 +1,21 @@
 import { Keypair } from '@chainsafe/bls/lib/keypair';
 import { readdirSync, readFileSync } from 'fs';
+import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
+const eth1Wallet = require('ethereumjs-wallet');
 
-class CGAccount {
+export class CGAccount {
   public name: string;
   public directory: string;
   public sendStats: boolean;
 
+  private unlocked: boolean  = false;
+  private validators: Keypair[] = [];
+
 
   constructor(name: string, directory: string, sendStats:boolean = false){
     this.name = name;
-    this.directory = directory;
+    // Add / to the end if not provided
+    this.directory = directory + (directory.endsWith('/') ? '' : '/');
     this.sendStats = sendStats;
   }
 
@@ -19,10 +25,16 @@ class CGAccount {
   getValidatorsAddresses(): string[] {
     // Loop trough files in account directory
     // TODO: Filter only json files
-    const keystoreFiles: string[] = readdirSync(this.directory);
+    let keystoreFiles: string[] = this.getKeystoreFiles();
+    
+     
     let validatorAddresses: string[] = [];
     keystoreFiles.forEach((file) => {
-      const fileContents = readFileSync(file);
+      if(! file.toLowerCase().endsWith('.json')){
+        // Skip any files that are not in json format
+        return; 
+      }
+      const fileContents = readFileSync(this.directory + file);
       const fileJSON = JSON.parse(fileContents.toString());
       if(fileJSON.address){
         validatorAddresses.push(fileJSON.address);
@@ -37,7 +49,10 @@ class CGAccount {
    */
   getValidators(password: string): Keypair[] {
     // TODO: loop trough keystore files and unlock them
-    return [];
+    if(! this.unlocked){
+      throw new Error("Keystore locked.");
+    }
+    return this.validators;
   }
 
   /**
@@ -45,7 +60,29 @@ class CGAccount {
    * @param password decryption password of the keystore
    */
   isCorrectPassword(password: string): boolean {
-    // ? Multiple keystore files?
+    /**
+     * ? As there can be multiple keystore files there can also be
+     * ? different passwords that these keystores use, we need to
+     * ? define how are we going to handle these situations.
+     * * Currently, if any of the keystores matches the provided
+     * * password this method returns true.
+     */
+    
+    let keystoreFiles = this.getKeystoreFiles();
+
+    for(let fileIdx in keystoreFiles){
+      const file = keystoreFiles[fileIdx];
+      const filePath = this.directory + file;
+      const fileContents = readFileSync(filePath);
+      const fileContentsJSON = JSON.parse(fileContents.toString());
+
+      try{
+        eth1Wallet.fromV3(fileContentsJSON, password);
+      } catch(e) {
+        continue;
+      }
+      return true;
+    }
     return false;
   }
 
@@ -55,13 +92,45 @@ class CGAccount {
    * @param password decryption password of the keystore
    */
   unlock(password: string): void {
-    return;
+    let keystoreFiles = this.getKeystoreFiles();
+
+    keystoreFiles.forEach((file) => {
+      const filePath = this.directory + file;
+      const fileContents = readFileSync(filePath);
+      const fileContentsJSON = JSON.parse(fileContents.toString());
+      
+      let unlockedKeystore;
+      try{
+        unlockedKeystore = eth1Wallet.fromV3(fileContentsJSON, password);
+        const privateKey = PrivateKey.fromBytes(unlockedKeystore._privKey);
+        const keypair = new Keypair(privateKey);
+
+        this.validators.push(keypair);
+        this.unlocked = true;
+      } catch(e){
+        // Failed to unlock keystore, probably wrong password
+        // Skip this keystore
+        return;
+      }
+    })
   }
 
   /**
    * delete all unlocked keypairs from object
    */
   lock(): void {
-    return;
+    // Clear validator Keypairs
+    this.validators = [];
+    this.unlocked = false;
+  }
+
+  private getKeystoreFiles(): string[]{
+    let keystores: string[] = [];
+    try{
+      keystores = readdirSync(this.directory);
+    } catch(e) {
+      return [];
+    }
+    return keystores;
   }
 }
