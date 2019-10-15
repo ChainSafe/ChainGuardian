@@ -55,9 +55,3 @@ export interface ICGKeystore {
     changePassword(oldPassword: string, newPassword: string): void;
     destroy(): void;
 }
-
-export interface IEth2HDWallet {
-    // should return mnemonic
-    // static generate(entropy?: bytes): string;
-    // static getKeypair(mnemonic: string, walletIndex?: number = 0): Keypair;
-}
