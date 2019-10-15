@@ -10,18 +10,18 @@ addons:
 
 matrix:
   include:
-    - os: osx
-      osx_image: xcode10.3
-      language: node_js
-      node_js: "12.4.0"
+#    - os: osx
+#      osx_image: xcode10.3
+#      language: node_js
+#      node_js: "12.4.0"
 
     - os: windows
       language: node_js
       node_js: "12.4.0"
 
-    - os: linux
-      language: node_js
-      node_js: "12.4.0"
+#    - os: linux
+#      language: node_js
+#      node_js: "12.4.0"
 
 cache:
   yarn: true
