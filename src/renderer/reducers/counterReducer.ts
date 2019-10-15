@@ -1,16 +1,15 @@
-import { Reducer } from 'redux';
+import {Reducer} from "redux";
+import {CounterAction, DECREMENT, INCREMENT} from "../actions/counterActions";
 
-import { DECREMENT, INCREMENT, CounterAction } from '../actions/counterActions';
-
-export interface CounterState {
+export interface ICounterState {
     readonly value: number;
 }
 
-const defaultState: CounterState = {
+const defaultState: ICounterState = {
     value: 0
 };
 
-export const counterReducer: Reducer<CounterState> = (
+export const counterReducer: Reducer<ICounterState> = (
     state = defaultState,
     action: CounterAction
 ) => {
