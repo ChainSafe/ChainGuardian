@@ -1,0 +1,178 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddButton renders correctly 1`] = `
+<button
+  className="add-button"
+>
+  <img
+    className="icon"
+    src="test-file-stub"
+  />
+</button>
+`;
+
+exports[`BackButton renders correctly 1`] = `
+<button
+  className="back-button"
+>
+  <img
+    className="icon"
+    src="test-file-stub"
+  />
+</button>
+`;
+
+exports[`BackTab renders correctly 1`] = `
+<button
+  className="back-tab"
+>
+  <img
+    className="icon"
+    src="test-file-stub"
+  />
+</button>
+`;
+
+exports[`ButtonDestructive renders correctly 1`] = `
+<button
+  className="button btn-destructive"
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonDestructive renders disabled button 1`] = `
+<button
+  className="button btn-destructive"
+  disabled={true}
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonDestructive renders focused button 1`] = `
+<button
+  className="button btn-destructive focused"
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonInverted renders correctly 1`] = `
+<button
+  className="button btn-inverted"
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonInverted renders disabled button 1`] = `
+<button
+  className="button btn-inverted"
+  disabled={true}
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonInverted renders focused button 1`] = `
+<button
+  className="button btn-inverted focused"
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonPrimary renders correctly 1`] = `
+<button
+  className="button btn-primary"
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonPrimary renders disabled button 1`] = `
+<button
+  className="button btn-primary"
+  disabled={true}
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonPrimary renders focused button 1`] = `
+<button
+  className="button btn-primary focused"
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonPrimitive renders correctly 1`] = `
+<button
+  className="button btn-primitive"
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonPrimitive renders disabled button 1`] = `
+<button
+  className="button btn-primitive"
+  disabled={true}
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonPrimitive renders focused button 1`] = `
+<button
+  className="button btn-primitive focused"
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonSecondary renders correctly 1`] = `
+<button
+  className="button btn-secondary"
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonSecondary renders disabled button 1`] = `
+<button
+  className="button btn-secondary"
+  disabled={true}
+>
+  Submit
+</button>
+`;
+
+exports[`ButtonSecondary renders focused button 1`] = `
+<button
+  className="button btn-secondary focused"
+>
+  Submit
+</button>
+`;
+
+exports[`CopyButton renders correctly 1`] = `
+<button
+  className="copy-button"
+>
+  <img
+    className="icon copy"
+    src="test-file-stub"
+  />
+  <img
+    className="icon copyall"
+    src="test-file-stub"
+  />
+  <img
+    className="icon copied"
+    src="test-file-stub"
+  />
+</button>
+`;
