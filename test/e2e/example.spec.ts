@@ -14,7 +14,19 @@ describe("Main window", () => {
                 startTimeout: 10000,
                 chromeDriverArgs: [
                     "--no-sandbox",
-                    "--disable-dev-shm-usage"
+                    "--disable-dev-shm-usage",
+                    "--headless",
+                    "no-sandbox",
+                    "disable-dev-shm-usage",
+                    "headless"
+                ],
+                webdriverOptions: [
+                    "--no-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--headless",
+                    "no-sandbox",
+                    "disable-dev-shm-usage",
+                    "headless"
                 ]
             });
             await app.start();
