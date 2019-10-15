@@ -1,4 +1,4 @@
-import { ICGKeystore, ICGKeystoreConstructor } from './interface';
+import { ICGKeystore } from './interface';
 import { Keypair } from '@chainsafe/bls/lib/keypair';
 import * as fs from 'fs';
 import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
@@ -93,18 +93,9 @@ export class Eth1ICGKeystore implements ICGKeystore {
         try {
             const keystore = Eth1ICGKeystore.createKeystoreObject(password, keypair);
             fs.writeFileSync(file, JSON.stringify(keystore, null, 2));
-            return Eth1ICGKeystore.createKeystore(Eth1ICGKeystore, file);
+            return new Eth1ICGKeystore(file);
         } catch (err) {
             throw new Error(`Failed to write to ${file}: ${err}`);
         }
-    }
-
-    /**
-     * A constructor method that creates instances of the type that is passed to it
-     * @param ctor interface for the constructor
-     * @param file constructor parameter
-     */
-    static createKeystore(ctor: ICGKeystoreConstructor, file: string): ICGKeystore {
-        return new ctor(file);
     }
 }

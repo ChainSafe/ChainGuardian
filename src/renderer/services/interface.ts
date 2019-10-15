@@ -46,10 +46,6 @@ export interface IBeaconAPIClient {
     publishSignedAttestation(attestation: IndexedAttestation): Promise<any>;
 }
 
-export interface ICGKeystoreConstructor {
-    new (file: string): ICGKeystore;
-}
-
 export interface ICGKeystore {
     decrypt(password: string): Keypair;
     changePassword(oldPassword: string, newPassword: string): void;

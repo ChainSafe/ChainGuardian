@@ -1,7 +1,6 @@
 import * as bip39 from 'bip39';
 import { bytes } from '@chainsafe/eth2.0-types';
 import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
-import { PublicKey } from '@chainsafe/bls/lib/publicKey';
 import { Keypair } from '@chainsafe/bls/lib/keypair';
 const hdkey = require('ethereumjs-wallet/hdkey');
 
@@ -23,8 +22,7 @@ export class Eth2HDWallet {
         const fixturehd = hdkey.fromMasterSeed(bip39.mnemonicToSeedSync(mnemonic));
         const hdnode = fixturehd.deriveChild(walletIndex);
         const privateKey = PrivateKey.fromBytes(hdnode.getWallet().getPrivateKey());
-        const publicKey = PublicKey.fromBytes(PublicKey.fromPrivateKey(privateKey).toBytesCompressed());
 
-        return new Keypair(privateKey, publicKey);
+        return new Keypair(privateKey);
     }
 }
