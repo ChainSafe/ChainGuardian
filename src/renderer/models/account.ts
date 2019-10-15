@@ -3,7 +3,13 @@ import { readdirSync, readFileSync } from 'fs';
 import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
 const eth1Wallet = require('ethereumjs-wallet');
 
-export class CGAccount {
+export interface SSZAccount {
+  name: string;
+  directory: string;
+  sendStats: boolean;
+}
+
+export class CGAccount implements SSZAccount {
   public name: string;
   public directory: string;
   public sendStats: boolean;
