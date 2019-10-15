@@ -16,8 +16,3 @@ function loadStories() {
 }
 
 configure(loadStories, module);
-
-
-export interface Interface {
-    new(aas: string): Interface
-}

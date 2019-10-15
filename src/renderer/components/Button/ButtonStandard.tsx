@@ -34,17 +34,17 @@ const BaseButton: React.FunctionComponent<IBaseButtonProps> = ({
     {children}
 </button>);
 
-function getButton(props: React.PropsWithChildren<IBaseButtonProps>, type:TYPES ) {
+function getButton(props: React.PropsWithChildren<IBaseButtonProps>, type: TYPES ) {
     return(
         <BaseButton
-        disabled={props.disabled}
-        focused={props.focused}
-        onClick={props.onClick}
-        buttonType={type}
+            disabled={props.disabled}
+            focused={props.focused}
+            onClick={props.onClick}
+            buttonType={type}
         >{props.children}
         </BaseButton>
     );
-};
+}
 
 export const ButtonPrimitive: 
 React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = (props) => {
