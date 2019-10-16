@@ -1,4 +1,4 @@
-import { bytes32, bytes48, bytes96, Hash } from '@chainsafe/eth2.0-types';
+import {bytes32, bytes48, bytes96, Hash} from "@chainsafe/eth2.0-types";
 
 export interface IDepositParams {
     publicKey: bytes48;
