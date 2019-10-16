@@ -33,6 +33,7 @@ cache:
 
 install:
   - yarn install --frozen-lockfile
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install googlechrome; fi;
 
 script:
   set -e;
