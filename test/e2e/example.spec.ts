@@ -11,7 +11,15 @@ describe("Main window", () => {
             app = new Application({
                 path: path.join(__dirname, "../../node_modules/.bin/electron"),
                 args: [path.join(__dirname, "..", "..")],
-                startTimeout: 10000
+                startTimeout: 10000,
+                chromeDriverArgs: [
+                    "--no-sandbox",
+                    // "--headless",
+                    // "--disable-extensions",
+                    // "--disable-infobars",
+                    // "--disable-dev-shm-usage",
+                    "--remote-debugging-port=45447"
+                ]
             });
             await app.start();
         } catch (e) {
