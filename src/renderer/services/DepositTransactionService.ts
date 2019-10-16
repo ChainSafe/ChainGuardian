@@ -6,7 +6,7 @@ import {DepositData} from "@chainsafe/eth2.0-types/lib/misc";
 import BN from "bn.js";
 import {signingRoot, SimpleContainerType} from "@chainsafe/ssz";
 import {BLSDomain} from "@chainsafe/bls/lib/types";
-// import abi from "ethereumjs-abi"
+import abi from "ethereumjs-abi";
 
 // data type definition for DepositData
 const depositDataType: SimpleContainerType = {
@@ -21,7 +21,13 @@ const depositDataType: SimpleContainerType = {
 // fixed deposit amount
 const depositAmount: BN = new BN(30000000000);
 
+// fixed BLS domain - deposit - 3
 const depositBLSDomain: BLSDomain = Buffer.from(Uint8Array.from([3]));
+
+// definition of contracts deposit function
+const depositFunctionSignature = "deposit(bytes,bytes,bytes,bytes32)";
+
+const depositContractAdress = "0x9c86825280b1d6c7dB043D4CC86E1549990149f9";
 
 // Deposit ETH 2.0
 
@@ -67,17 +73,25 @@ export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey
     } as IDepositParams;
 }
 
-// Deposit ETH 1.0 TODO
+// Deposit ETH 1.0
 
-// export interface ITx {
-//     to: string;
-//     value: string;
-//     data: string;
-// }
+export interface ITx {
+    to: string;
+    value: string;
+    data: string;
+}
 
-// export function generateEth1DepositTx(depositParams: IDepositParams): ITx {
-//     depositParams.publicKey;
-//     return {
-//
-//     } as ITx;
-// }
+export function generateEth1DepositTx(depositParams: IDepositParams): ITx {
+    const encoded = abi.simpleEncode(
+        depositFunctionSignature,
+        depositParams.publicKey,
+        depositParams.withdrawalCredentials,
+        depositParams.signature,
+        depositParams.root
+    );
+    return {
+        data: encoded.toString(),
+        to: depositContractAdress,
+        value: depositAmount.toString("hex")
+    } as ITx;
+}
