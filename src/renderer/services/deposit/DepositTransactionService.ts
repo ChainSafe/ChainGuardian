@@ -22,7 +22,7 @@ const depositBLSDomain: BLSDomain =
 const depositFunctionSignature = "deposit(bytes,bytes,bytes,bytes32)";
 
 // deposit contract address
-const depositContractAdress = "0x9c86825280b1d6c7dB043D4CC86E1549990149f9";
+const depositContractAddress = "0x9c86825280b1d6c7dB043D4CC86E1549990149f9";
 
 // Deposit ETH 2.0
 
@@ -77,7 +77,7 @@ export function generateEth1DepositTx(depositParams: IDepositParams): ITx {
     );
     return {
         data: depositFunctionEncoded.toString(),
-        to: depositContractAdress,
+        to: depositContractAddress,
         value: Units.convert(depositAmountInEth, "eth", "wei")
     } as ITx;
 }
