@@ -1,10 +1,9 @@
 import { ICGKeystore } from './interface';
 import { Keypair } from '@chainsafe/bls/lib/keypair';
-import * as fs from 'fs';
+import { writeFileSync, unlinkSync, readFileSync } from 'fs';
 import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
-import { PublicKey } from '@chainsafe/bls/lib/publicKey';
+import * as bech32 from 'bech32';
 const eth1WalletProvider = require('ethereumjs-wallet');
-const bech32 = require('bech32');
 
 export class Eth1ICGKeystore implements ICGKeystore {
     keystore: any;
@@ -22,8 +21,7 @@ export class Eth1ICGKeystore implements ICGKeystore {
     decrypt(password: string): Keypair {
         const privateKeyString = eth1WalletProvider.fromV3(this.keystore, password).getPrivateKeyString();
         const priv = PrivateKey.fromHexString(privateKeyString);
-        const pub = PublicKey.fromBytes(PublicKey.fromPrivateKey(priv).toBytesCompressed());
-        return new Keypair(priv, pub);
+        return new Keypair(priv);
     }
 
     /**
@@ -37,7 +35,7 @@ export class Eth1ICGKeystore implements ICGKeystore {
         const keystore = Eth1ICGKeystore.createKeystoreObject(newPassword, keypair);
 
         try {
-            fs.writeFileSync(this.file, JSON.stringify(keystore, null, 2));
+            writeFileSync(this.file, JSON.stringify(keystore, null, 2));
             this.keystore = keystore;
         } catch (err) {
             throw new Error(`Failed to write to ${this.file}: ${err}`);
@@ -49,7 +47,7 @@ export class Eth1ICGKeystore implements ICGKeystore {
      */
     destroy(): void {
         try {
-            fs.unlinkSync(this.file);
+            unlinkSync(this.file);
         } catch (err) {
             throw new Error(`Failed to delete file ${this.file}: ${err}`);
         }
@@ -61,7 +59,7 @@ export class Eth1ICGKeystore implements ICGKeystore {
      */
     readKeystoreFile(file: string) {
         try {
-            const data = fs.readFileSync(file);
+            const data = readFileSync(file);
             return JSON.parse(data.toString());
         } catch (err) {
             throw new Error(`${file} could not be parsed`);
@@ -92,7 +90,7 @@ export class Eth1ICGKeystore implements ICGKeystore {
     static create(file: string, password: string, keypair: Keypair): ICGKeystore {
         try {
             const keystore = Eth1ICGKeystore.createKeystoreObject(password, keypair);
-            fs.writeFileSync(file, JSON.stringify(keystore, null, 2));
+            writeFileSync(file, JSON.stringify(keystore, null, 2));
             return new Eth1ICGKeystore(file);
         } catch (err) {
             throw new Error(`Failed to write to ${file}: ${err}`);
