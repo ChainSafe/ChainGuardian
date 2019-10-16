@@ -1,0 +1,19 @@
+.background{
+    height: 1024px;
+    background: url(../assets/img/background/Background.svg);
+    z-index: 1;
+}
+.illustration{
+    background: url(../assets/img/background/Illustration.svg) no-repeat right;
+    z-index: 2;
+    height: 100%;
+}
+.children{
+    display: flex;
+    place-content: center;
+    z-index: 5;
+}
+// storybook margin
+.sb-show-main {
+    margin: 0;
+}
