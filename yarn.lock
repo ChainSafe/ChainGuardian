@@ -830,7 +830,32 @@
     js-sha256 "^0.9.0"
     secure-random "^1.1.1"
 
-"@chainsafe/eth2.0-types@0.1.0":
+"@chainsafe/eth2.0-config@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-config/-/eth2.0-config-0.1.0.tgz#228eee73cca88ff076a85d0bc69f3e0ac874098e"
+  integrity sha512-T/qh9UgzpltYGq9qvTl7QBQOmolmaUwgPgvrIfIDeR6L/zfeXsvY28WY/sKoKS5ki82/9UIjs9PZa9R1HVbHNA==
+  dependencies:
+    "@chainsafe/eth2.0-params" "0.1.0"
+    "@chainsafe/eth2.0-ssz-types" "0.1.0"
+
+"@chainsafe/eth2.0-params@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-params/-/eth2.0-params-0.1.0.tgz#23bbaf1b43a050bd9e14ff80863c919f48ecdcce"
+  integrity sha512-yhrc6LgYV+N1GqY1dAMyRZ9nwEBEDbJh7Yaj+ItoIwI4/PKGOcn7g2ym9iL93dvjvD+x4BJ4sYKN7a+cbyaV3g==
+  dependencies:
+    "@chainsafe/eth2.0-types" "^0.1.0"
+    "@types/bn.js" "^4.11.4"
+    bn.js "^4.11.8"
+
+"@chainsafe/eth2.0-ssz-types@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-ssz-types/-/eth2.0-ssz-types-0.1.0.tgz#2ad654b0a0969d17c40f041dad1bb848dd5896e9"
+  integrity sha512-/1PH0pspnbrATR164SGCMiR++6JMaPPoosvNdRbo+UmuRNnCAyzvXR9TP5HNrU4eGq7o5x6LgmlwTb8ylzcRmA==
+  dependencies:
+    "@chainsafe/eth2.0-params" "0.1.0"
+    "@chainsafe/ssz" "0.5.1"
+
+"@chainsafe/eth2.0-types@0.1.0", "@chainsafe/eth2.0-types@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-types/-/eth2.0-types-0.1.0.tgz#0864e9e52570fdb40be9f34b6063b29d83ed4923"
   dependencies:
@@ -843,7 +868,7 @@
   resolved "https://registry.yarnpkg.com/@chainsafe/milagro-crypto-js/-/milagro-crypto-js-0.1.3.tgz#0813b5991f53e9573174637ce9ec96576218a09b"
   integrity sha512-K0UrL+73E4Fblk9j+ZZDPXRKvriZExbtSgdel+zSSPqyhUW0OBeep2TJCVYq6RYhLgdSbGbTwiU5Ixku7jcPIg==
 
-"@chainsafe/ssz@^0.5.1":
+"@chainsafe/ssz@0.5.1", "@chainsafe/ssz@^0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@chainsafe/ssz/-/ssz-0.5.1.tgz#5d8fa0d00ee7d91fc5de914a843bd47125213c6a"
   integrity sha512-heJsVhB7hCWubCHqCaYrctv7IuzCQkAWduwJleCSv9K2EXBcEmDeKPg4DQ/b9cQyXQbn2hwEuSDcMcQESwaIfA==
@@ -1102,6 +1127,11 @@
     "@types/istanbul-lib-coverage" "^2.0.0"
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
+
+"@machinomy/types-ethereumjs-units@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@machinomy/types-ethereumjs-units/-/types-ethereumjs-units-0.0.2.tgz#6e508fa16a89893b1d8bf9977e6b4db34da0b6a3"
+  integrity sha1-blCPoWqJiTsdi/mXfmtNs02gtqM=
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -2732,6 +2762,11 @@ big.js@^3.1.3:
 big.js@^5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
+
+bignumber.js@^2.3.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-2.4.0.tgz#838a992da9f9d737e0f4b2db0be62bb09dd0c5e8"
+  integrity sha1-g4qZLan51zfg9LLbC+YrsJ3Qxeg=
 
 bin-build@^3.0.0:
   version "3.0.0"
@@ -4714,6 +4749,13 @@ ethereumjs-abi@^0.6.8:
   dependencies:
     bn.js "^4.11.8"
     ethereumjs-util "^6.0.0"
+
+ethereumjs-units@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/ethereumjs-units/-/ethereumjs-units-0.2.0.tgz#6ea31132aabc2cc7b8a5290e265593a337687fa3"
+  integrity sha1-bqMRMqq8LMe4pSkOJlWTozdof6M=
+  dependencies:
+    bignumber.js "^2.3.0"
 
 ethereumjs-util@^6.0.0:
   version "6.1.0"
