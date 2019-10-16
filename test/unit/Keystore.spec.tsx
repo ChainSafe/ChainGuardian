@@ -1,3 +1,4 @@
+// jest.mock('fs');
 import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
 import { PublicKey } from '@chainsafe/bls/lib/publicKey';
 import { Keypair } from '@chainsafe/bls/lib/keypair';
