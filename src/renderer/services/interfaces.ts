@@ -8,7 +8,6 @@ export interface IService {
 }
 
 export interface ICGKeystore {
-    new (file: string): ICGKeystore;
     decrypt(password: string): Keypair;
     changePassword(oldPassword: string, newPassword: string): void;
     //deletes physical keystore file
@@ -16,9 +15,17 @@ export interface ICGKeystore {
     create(file: string, password: string, keypair: Keypair): ICGKeystore;
 }
 
+export interface ICGKeystoreFactory {
+    new (file: string): ICGKeystore;
+}
+
 export interface IEth2HDWallet {
     // should return mnemonic
     generate(entropy?: bytes): string;
- 
+
     getKeypair(mnemonic: string, walletIndex?: number): Keypair;
- }
+}
+
+export interface ICGType<T> {
+    new (...args: any[]): T;
+}
