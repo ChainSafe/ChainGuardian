@@ -32,8 +32,8 @@ cache:
     - $HOME/.npm/_prebuilds
 
 install:
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install googlechrome --version=76.0.3809.100; fi;
   - yarn install --frozen-lockfile
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install googlechrome; fi;
 
 script:
   set -e;
