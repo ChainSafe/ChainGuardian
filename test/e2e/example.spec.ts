@@ -12,7 +12,7 @@ describe("Main window", () => {
                 path: path.join(__dirname, "../../node_modules/.bin/electron"),
                 args: [path.join(__dirname, "..", "..")],
                 startTimeout: 10000,
-                chromeDriverArgs: ["no-sandbox", "headless", "disable-extensions", "disable-infobars"]
+                chromeDriverArgs: ["--no-sandbox", "--headless", "--disable-extensions", "--disable-infobars"]
             });
             await app.start();
         } catch (e) {
