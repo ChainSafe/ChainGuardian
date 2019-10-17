@@ -29,15 +29,9 @@ cache:
     - $HOME/.npm/_prebuilds
 
 before_install:
-  - |
-      if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-      powershell Start-Process -PassThru -Wait PowerShell -ArgumentList
-      "'-Command Set-MpPreference -DisableArchiveScanning \$true'";
-      powershell Start-Process -PassThru -Wait PowerShell -ArgumentList
-      "'-Command Set-MpPreference -DisableBehaviorMonitoring \$true'";
-      powershell Start-Process -PassThru -Wait PowerShell -ArgumentList
-      "'-Command Set-MpPreference -DisableRealtimeMonitoring \$true'";
-    fi;
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then powershell Start-Process -PassThru -Wait PowerShell -ArgumentList "'-Command Set-MpPreference -DisableBehaviorMonitoring \$true'"; fi;
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then powershell Start-Process -PassThru -Wait PowerShell -ArgumentList "'-Command Set-MpPreference -DisableRealtimeMonitoring \$true'"; fi;
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then powershell Start-Process -PassThru -Wait PowerShell -ArgumentList "'-Command Set-MpPreference -DisableArchiveScanning \$true'"; fi;
 
 install:
   - yarn install --frozen-lockfile --network-timeout 1000000
