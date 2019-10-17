@@ -1,12 +1,12 @@
-import { ICGKeystore } from './interface';
+import { ICGKeystore, V3Keystore } from './interface';
 import { Keypair } from '@chainsafe/bls/lib/keypair';
-import { writeFileSync, unlinkSync, readFileSync } from 'fs';
+import { writeFileSync, unlinkSync, readFileSync, existsSync } from 'fs';
 import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
 import * as bech32 from 'bech32';
 const eth1WalletProvider = require('ethereumjs-wallet');
 
 export class Eth1ICGKeystore implements ICGKeystore {
-    keystore: any;
+    keystore: V3Keystore;
     file: string;
 
     constructor(file: string) {
@@ -57,13 +57,16 @@ export class Eth1ICGKeystore implements ICGKeystore {
      * Helper method to read file from path specified by @param file
      * @param file file path
      */
-    readKeystoreFile(file: string) {
-        try {
-            const data = readFileSync(file);
-            return JSON.parse(data.toString());
-        } catch (err) {
-            throw new Error(`${file} could not be parsed`);
+    readKeystoreFile(file: string): V3Keystore {
+        if (existsSync(file)) {
+            try {
+                const data = readFileSync(file);
+                return JSON.parse(data.toString());
+            } catch (err) {
+                throw new Error(`${file} could not be parsed`);
+            }
         }
+        throw new Error(`Cannot find file ${file}`);
     }
 
     /**
@@ -71,7 +74,7 @@ export class Eth1ICGKeystore implements ICGKeystore {
      * @param password password for encryption
      * @param keypair private and public key
      */
-    static createKeystoreObject(password: string, keypair: Keypair) {
+    static createKeystoreObject(password: string, keypair: Keypair): V3Keystore {
         const keystore = eth1WalletProvider
             .fromPrivateKey(keypair.privateKey.toBytes())
             .toV3(password, { kdf: 'pbkdf2' });
