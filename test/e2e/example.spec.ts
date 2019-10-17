@@ -8,8 +8,13 @@ describe("Main window", () => {
 
     beforeEach(async () => {
         try {
+            const isWin = process.platform === "win32";
+            let electronPath =  path.join(__dirname, "../../node_modules/.bin/electron");
+            if(isWin) {
+                electronPath += ".cmd";
+            }
             app = new Application({
-                path: path.join(__dirname, "../../node_modules/.bin/electron"),
+                path: electronPath,
                 args: [path.join(__dirname, "..", "..")],
                 startTimeout: 10000,
             });
