@@ -28,8 +28,20 @@ cache:
     - $HOME/.cache/electron-builder
     - $HOME/.npm/_prebuilds
 
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]];
+    then
+    # https://travis-ci.community/t/yarn-network-troubles/333/7
+    powershell Start-Process -PassThru -Wait PowerShell -ArgumentList \
+    "'-Command Set-MpPreference -DisableArchiveScanning \$true'";
+    powershell Start-Process -PassThru -Wait PowerShell -ArgumentList \
+    "'-Command Set-MpPreference -DisableBehaviorMonitoring \$true'";
+    powershell Start-Process -PassThru -Wait PowerShell -ArgumentList \
+    "'-Command Set-MpPreference -DisableRealtimeMonitoring \$true'";
+  fi;
+
 install:
-  - yarn install --frozen-lockfile
+  - yarn install --frozen-lockfile --network-timeout 1000000
 
 script:
   set -e;
