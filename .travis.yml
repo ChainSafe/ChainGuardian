@@ -21,12 +21,7 @@ matrix:
       node_js: "12.4.0"
 
 cache:
-  yarn: true
-  directories:
-    - node_modules
-    - $HOME/.cache/electron
-    - $HOME/.cache/electron-builder
-    - $HOME/.npm/_prebuilds
+  yarn: false
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then powershell Start-Process -PassThru -Wait PowerShell -ArgumentList "'-Command Set-MpPreference -DisableBehaviorMonitoring \$true'"; fi;
