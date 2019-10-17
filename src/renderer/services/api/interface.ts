@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
     bool,
     SyncingStatus,
@@ -11,8 +12,7 @@ import {
     uint8,
     Shard,
     IndexedAttestation
-} from '@chainsafe/eth2.0-types';
-import { Keypair } from '@chainsafe/bls/lib/keypair';
+} from "@chainsafe/eth2.0-types";
 
 export interface Syncing {
     is_syncing: bool;
@@ -36,7 +36,7 @@ export interface IBeaconAPIClient {
     fetchForkInformation(): Promise<ForkInformation>;
     fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty>;
     fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock>;
-    publishSignedBlock(beacon_block: BeaconBlock): Promise<any>;
+    publishSignedBlock(beaconBlock: BeaconBlock): Promise<any>;
     produceAttestation(
         validatorPubkey: BLSPubkey,
         pocBit: uint8,
@@ -45,45 +45,3 @@ export interface IBeaconAPIClient {
     ): Promise<IndexedAttestation>;
     publishSignedAttestation(attestation: IndexedAttestation): Promise<any>;
 }
-
-export interface ICGKeystore {
-    decrypt(password: string): Keypair;
-    changePassword(oldPassword: string, newPassword: string): void;
-    destroy(): void;
-}
-
-/********************
- * Keystore interfaces
- * *******************/
-interface PBKDFParamsOut {
-    c: number;
-    dklen: number;
-    prf: string;
-    salt: string;
-}
-interface ScryptKDFParamsOut {
-    dklen: number;
-    n: number;
-    p: number;
-    r: number;
-    salt: string;
-}
-
-type KDFParamsOut = ScryptKDFParamsOut | PBKDFParamsOut;
-
-// https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
-export interface V3Keystore {
-    crypto: {
-        cipher: string;
-        cipherparams: {
-            iv: string;
-        };
-        ciphertext: string;
-        kdf: string;
-        kdfparams: KDFParamsOut;
-        mac: string;
-    };
-    id: string;
-    version: number;
-}
-/************************/

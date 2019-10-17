@@ -1,21 +1,21 @@
-import { Action, ActionCreator } from 'redux';
+import {Action, ActionCreator} from "redux";
 
-export const INCREMENT = 'INCREMENT';
-export const DECREMENT = 'DECREMENT';
+export const INCREMENT = "INCREMENT";
+export const DECREMENT = "DECREMENT";
 
-export interface IncrementAction extends Action {
-    type: 'INCREMENT';
+export interface IIncrementAction extends Action<string> {
+    type: "INCREMENT";
 }
-export interface DecrementAction extends Action {
-    type: 'DECREMENT';
+export interface IDecrementAction extends Action<string> {
+    type: "DECREMENT";
 }
 
-export const increment: ActionCreator<IncrementAction> = () => ({
+export const increment: ActionCreator<IIncrementAction> = () => ({
     type: INCREMENT
-});
+} as IIncrementAction);
 
-export const decrement: ActionCreator<DecrementAction> = () => ({
+export const decrement: ActionCreator<IDecrementAction> = () => ({
     type: DECREMENT
-});
+} as IDecrementAction);
 
-export type CounterAction = IncrementAction | DecrementAction;
+export type CounterAction = IIncrementAction | IDecrementAction;

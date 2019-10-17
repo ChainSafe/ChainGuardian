@@ -1,4 +1,4 @@
-import * as bip39 from 'bip39';
+import { entropyToMnemonic, mnemonicToSeedSync, generateMnemonic} from 'bip39';
 import { bytes } from '@chainsafe/eth2.0-types';
 import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
 import { Keypair } from '@chainsafe/bls/lib/keypair';
@@ -10,7 +10,7 @@ export class Eth2HDWallet {
      * @param entropy entropy to generate mnemonic
      */
     static generate(entropy?: bytes): string {
-        return entropy ? bip39.entropyToMnemonic(entropy) : bip39.generateMnemonic();
+        return entropy ? entropyToMnemonic(entropy) : generateMnemonic();
     }
 
     /**
@@ -19,7 +19,7 @@ export class Eth2HDWallet {
      * @param walletIndex derive a node based on a child index
      */
     static getKeypair(mnemonic: string, walletIndex: number = 0): Keypair {
-        const fixturehd = hdkey.fromMasterSeed(bip39.mnemonicToSeedSync(mnemonic));
+        const fixturehd = hdkey.fromMasterSeed(mnemonicToSeedSync(mnemonic));
         const hdnode = fixturehd.deriveChild(walletIndex);
         const privateKey = PrivateKey.fromBytes(hdnode.getWallet().getPrivateKey());
 

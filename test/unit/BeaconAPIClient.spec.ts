@@ -1,37 +1,37 @@
-import { BeaconAPIClient } from '../../src/renderer/services/BeaconAPIClient';
+/* eslint-disable */
+import {BeaconAPIClient} from "../../src/renderer/services/api/BeaconAPIClient";
 import {
-    BLSPubkey,
-    Epoch,
-    ValidatorDuty,
-    Slot,
     BeaconBlock,
     BeaconBlockBody,
+    BLSPubkey,
     BLSSignature,
     bytes48,
     IndexedAttestation,
-    Shard
-} from '@chainsafe/eth2.0-types';
-import axios from 'axios';
+    Shard,
+    Slot,
+    ValidatorDuty
+} from "@chainsafe/eth2.0-types";
+import axios from "axios";
 import {
-    FETCH_NODE_VERSION,
-    FETCH_GENESIS_TIME,
-    POLL_NODE_SYNCING,
     FETCH_FORK_INFORMATION,
-    FETCH_VALIDATOR_DUTIES,
+    FETCH_GENESIS_TIME,
+    FETCH_NODE_VERSION,
     FETCH_VALIDATOR_BLOCK,
-    PUBLISH_SIGNED_BLOCK,
+    FETCH_VALIDATOR_DUTIES,
+    POLL_NODE_SYNCING,
     PRODUCE_ATTESTATION,
-    PUBLISH_SIGNED_ATTESTATION
-} from '../../src/renderer/constants/apiUrls';
-import axiosMockAdapter from 'axios-mock-adapter';
-import { DEFAULT_HOSTNAME, DEFAULT_PORT } from '../../src/renderer/constants/defaultConstants';
-import { IBeaconApiClientOptions } from '../../src/renderer/services/interface';
+    PUBLISH_SIGNED_ATTESTATION,
+    PUBLISH_SIGNED_BLOCK
+} from "../../src/renderer/constants/apiUrls";
+import axiosMockAdapter from "axios-mock-adapter";
+import {DEFAULT_HOSTNAME, DEFAULT_PORT} from "../../src/renderer/constants/defaultConstants";
+import {IBeaconApiClientOptions} from "../../src/renderer/services/api/interface";
 
 jest.setTimeout(10000);
 
 // This sets the mock adapter on the default instance
 const mock: axiosMockAdapter = new axiosMockAdapter(axios);
-const API_URL: string = `https://${process.env.HOSTNAME || DEFAULT_HOSTNAME}:${process.env.PORT || DEFAULT_PORT}`;
+const API_URL = `https://${process.env.HOSTNAME || DEFAULT_HOSTNAME}:${process.env.PORT || DEFAULT_PORT}`;
 
 /**
  * ***********************************
@@ -70,7 +70,7 @@ const mockValidatorDuty: ValidatorDuty = {
 
 const mockSlot: Slot = 1;
 
-const mockRandaoReveal: string = '1';
+const mockRandaoReveal = "1";
 
 const mockBeaconBlock: BeaconBlock = {
     slot: 1,
@@ -89,7 +89,7 @@ const mockShard: Shard = 1;
  * *******************
  */
 
-mock.onGet(FETCH_NODE_VERSION).reply(200, '1');
+mock.onGet(FETCH_NODE_VERSION).reply(200, "1");
 mock.onGet(FETCH_GENESIS_TIME).reply(200, 2);
 mock.onGet(POLL_NODE_SYNCING).reply(200, mockSyncing);
 mock.onGet(FETCH_FORK_INFORMATION).reply(200, mockForkInformation);
@@ -115,15 +115,15 @@ mock.onPost(PUBLISH_SIGNED_ATTESTATION).reply(200, {});
  * Tests begins
  * *************
  */
-describe('Beacon API client constructor', () => {
-    it('should throw error when empty url is provided', async () => {
+describe("Beacon API client constructor", () => {
+    it("should throw error when empty url is provided", async () => {
         expect(() => {
             new BeaconAPIClient({} as IBeaconApiClientOptions);
         }).toThrow();
     });
 });
 
-describe('Beacon API client methods', () => {
+describe("Beacon API client methods", () => {
     let client: BeaconAPIClient;
 
     beforeEach(() => {
@@ -132,55 +132,55 @@ describe('Beacon API client methods', () => {
         });
     });
 
-    it('should return node version', async () => {
+    it("should return node version", async () => {
         const nodeVersion = await client.fetchNodeVersion();
-        expect(nodeVersion.toString()).toBe('1');
+        expect(nodeVersion.toString()).toBe("1");
     });
 
-    it('should return genesis time', async () => {
+    it("should return genesis time", async () => {
         const genesisTime = await client.fetchGenesisTime();
 
         expect(genesisTime).toBe(2);
     });
 
-    it('should return node syncing status', async () => {
+    it("should return node syncing status", async () => {
         const syncingStatus = await client.fetchNodeSyncing();
 
         expect(syncingStatus).toMatchObject(mockSyncing);
     });
 
-    it('should return fork information', async () => {
+    it("should return fork information", async () => {
         const forkInformation = await client.fetchForkInformation();
 
         expect(forkInformation).toMatchObject(mockForkInformation);
     });
 
-    it('should fetch validator duties', async () => {
+    it("should fetch validator duties", async () => {
         const responseValidatorDuty = await client.fetchValidatorDuties(mockValidatorKeys, mockEpoch);
 
         expect(responseValidatorDuty).toMatchObject(mockValidatorDuty);
-        expect(client.fetchValidatorDuties(mockValidatorKeys, 100)).rejects.toEqual(new Error('404'));
+        expect(client.fetchValidatorDuties(mockValidatorKeys, 100)).rejects.toEqual(new Error("404"));
     });
 
-    it('should fetch validator block', async () => {
+    it("should fetch validator block", async () => {
         const responseBeaconBlock = await client.fetchValidatorBlock(mockSlot, mockRandaoReveal);
 
         expect(responseBeaconBlock).toMatchObject(mockBeaconBlock);
     });
 
-    it('should publish block', async () => {
+    it("should publish block", async () => {
         const response = await client.publishSignedBlock(mockBeaconBlock);
 
         expect(response).toMatchObject({});
     });
 
-    it('should produce attestation', async () => {
+    it("should produce attestation", async () => {
         const response = await client.produceAttestation(mockValidatorKeys[0], mockPocBit, mockSlot, mockShard);
 
         expect(response).toMatchObject({} as IndexedAttestation);
     });
 
-    it('should publish signed attestation', async () => {
+    it("should publish signed attestation", async () => {
         const response = await client.publishSignedAttestation({} as IndexedAttestation);
 
         expect(response).toMatchObject({});

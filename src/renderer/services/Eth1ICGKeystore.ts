@@ -1,8 +1,8 @@
-import { ICGKeystore, V3Keystore } from './interface';
+import { ICGKeystore, V3Keystore } from './interfaces';
 import { Keypair } from '@chainsafe/bls/lib/keypair';
 import { writeFileSync, unlinkSync, readFileSync, existsSync } from 'fs';
 import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
-import * as bech32 from 'bech32';
+import bech32 from 'bech32';
 const eth1WalletProvider = require('ethereumjs-wallet');
 
 export class Eth1ICGKeystore implements ICGKeystore {
