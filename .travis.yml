@@ -29,15 +29,13 @@ cache:
     - $HOME/.npm/_prebuilds
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]];
-    then
-    # https://travis-ci.community/t/yarn-network-troubles/333/7
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then \
     powershell Start-Process -PassThru -Wait PowerShell -ArgumentList \
-    "'-Command Set-MpPreference -DisableArchiveScanning \$true'";
+    "'-Command Set-MpPreference -DisableArchiveScanning \$true'"; \
     powershell Start-Process -PassThru -Wait PowerShell -ArgumentList \
-    "'-Command Set-MpPreference -DisableBehaviorMonitoring \$true'";
+    "'-Command Set-MpPreference -DisableBehaviorMonitoring \$true'"; \
     powershell Start-Process -PassThru -Wait PowerShell -ArgumentList \
-    "'-Command Set-MpPreference -DisableRealtimeMonitoring \$true'";
+    "'-Command Set-MpPreference -DisableRealtimeMonitoring \$true'"; \
   fi;
 
 install:
