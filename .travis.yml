@@ -2,11 +2,9 @@ env:
   global:
     - ELECTRON_CACHE=$HOME/.cache/electron
     - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+    - YARN_GPG=no
 
 sudo: required
-
-addons:
-  chrome: stable
 
 matrix:
   include:
@@ -15,33 +13,32 @@ matrix:
       language: node_js
       node_js: "12.4.0"
 
-# needs fix
-#    - os: windows
-#      language: node_js
-#      node_js: "12.4.0"
+    - os: windows
+      language: node_js
+      node_js: "12.4.0"
 
     - os: linux
       language: node_js
       node_js: "12.4.0"
 
-cache:
-  yarn: true
-  directories:
-    - node_modules
-    - $HOME/.cache/electron
-    - $HOME/.cache/electron-builder
-    - $HOME/.npm/_prebuilds
+cache: false
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then powershell Start-Process -PassThru -Wait PowerShell -ArgumentList "'-Command Set-MpPreference -DisableBehaviorMonitoring \$true'"; fi;
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then powershell Start-Process -PassThru -Wait PowerShell -ArgumentList "'-Command Set-MpPreference -DisableRealtimeMonitoring \$true'"; fi;
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then powershell Start-Process -PassThru -Wait PowerShell -ArgumentList "'-Command Set-MpPreference -DisableArchiveScanning \$true'"; fi;
 
 install:
-  - yarn install --frozen-lockfile
+  - yarn install --frozen-lockfile --network-timeout 1000000
 
 script:
   set -e;
   yarn run lint;
   yarn run check-types;
   export {no_proxy,NO_PROXY}="127.0.0.1,localhost";
+  yarn run build;
   if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test; else yarn test; fi;
-  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test:e2e; else yarn test:e2e; fi;
+  if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then yarn run codecov; fi;
 
 before_cache:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then rm -rf $HOME/.cache/electron-builder/wine; fi
