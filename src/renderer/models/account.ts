@@ -1,8 +1,6 @@
 import { Keypair } from '@chainsafe/bls/lib/keypair';
 import { readdirSync, readFileSync } from 'fs';
-import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
 import { ICGKeystore, ICGType, ICGKeystoreFactory } from '../services/interfaces';
-const eth1Wallet = require('ethereumjs-wallet');
 
 export interface SSZAccount {
     name: string;
