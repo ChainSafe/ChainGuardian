@@ -36,7 +36,7 @@ script:
   yarn run lint;
   yarn run check-types;
   export {no_proxy,NO_PROXY}="127.0.0.1,localhost";
-  yarn run build
+  yarn run build;
   if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then xvfb-run yarn test; else yarn test; fi;
 
 before_cache:
