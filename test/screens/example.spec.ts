@@ -1,17 +1,23 @@
 import path from "path";
 import {Application} from "spectron";
 
-jest.setTimeout(10000);
+jest.setTimeout(15000);
 
 describe("Main window", () => {
     let app: Application;
 
     beforeEach(async () => {
         try {
+            const isWin = process.platform === "win32";
+            let electronPath =  path.join(__dirname, "../../node_modules/.bin/electron");
+            if(isWin) {
+                electronPath += ".cmd";
+            }
             app = new Application({
-                path: path.join(__dirname, "../../node_modules/.bin/electron"),
+                path: electronPath,
                 args: [path.join(__dirname, "..", "..")],
-                startTimeout: 10000,
+                waitTimeout: 15000,
+                startTimeout: 15000,
             });
             await app.start();
         } catch (e) {

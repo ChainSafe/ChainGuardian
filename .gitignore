@@ -5,3 +5,4 @@ release/
 .idea
 .__testdb
 .env
+coverage
