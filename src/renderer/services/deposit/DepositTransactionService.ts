@@ -1,6 +1,6 @@
 import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
 import bls from "@chainsafe/bls";
-import {BLSPubkey as BLSPubKey} from "@chainsafe/eth2.0-types";
+import {BLSPubkey as BLSPubKey, bytes} from "@chainsafe/eth2.0-types";
 import {createHash} from "crypto";
 import {DepositData} from "@chainsafe/eth2.0-types/lib/misc";
 import BN from "bn.js";
@@ -8,21 +8,18 @@ import {signingRoot} from "@chainsafe/ssz";
 import {BLSDomain} from "@chainsafe/bls/lib/types";
 import abi from "ethereumjs-abi";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
-import Units from "ethereumjs-units";
-import {IDepositParams, ITx} from "./DepositTransactionTypes";
+import {IDepositParams, ITx} from "./types";
 
 // fixed deposit amount
-const depositAmountInEth = "32";
+const depositAmountInEth = 32;
 
 // fixed BLS domain -> deposit = 3
 const depositBLSDomain: BLSDomain =
+    // domain_type + fork_version
     Buffer.concat([new BN(3).toArrayLike(Buffer, "le", 4), Buffer.alloc(4)]);
 
 // definition of contracts deposit function
 const depositFunctionSignature = "deposit(bytes,bytes,bytes,bytes32)";
-
-// deposit contract address
-const depositContractAddress = "0x9c86825280b1d6c7dB043D4CC86E1549990149f9";
 
 // Deposit ETH 2.0
 
@@ -46,7 +43,7 @@ export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey
     const depositData: DepositData = {
         pubkey: publicKey,
         withdrawalCredentials: withdrawalCredentials,
-        amount: new BN(Units.convert(depositAmountInEth, "eth", "gwei")),
+        amount: new BN(depositAmountInEth * 1e9),
         signature: Buffer.alloc(0)
     };
     // calculate root
@@ -61,23 +58,36 @@ export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey
     } as IDepositParams;
 }
 
-// Deposit ETH 1.0
 
-/**
- *
- * @param depositParams
- */
-export function generateEth1DepositTx(depositParams: IDepositParams): ITx {
-    const depositFunctionEncoded = abi.simpleEncode(
-        depositFunctionSignature,
-        depositParams.publicKey,
-        depositParams.withdrawalCredentials,
-        depositParams.signature,
-        depositParams.root
-    );
-    return {
-        data: depositFunctionEncoded.toString(),
-        to: depositContractAddress,
-        value: Units.convert(depositAmountInEth, "eth", "wei")
-    } as ITx;
+export class DepositTx implements ITx{
+    data: string | bytes;
+    to: string;
+    value: string;
+
+    constructor(data: string | bytes, to: string, value: string) {
+        this.data = data;
+        this.to = to;
+        this.value = value;
+    }
+
+    static generateDepositTx(depositParams: IDepositParams, depositContractAddress: string): DepositTx {
+        const depositFunctionEncoded = abi.simpleEncode(
+            depositFunctionSignature,
+            depositParams.publicKey,
+            depositParams.withdrawalCredentials,
+            depositParams.signature,
+            depositParams.root
+        );
+
+        return new DepositTx(
+            depositFunctionEncoded.toString(),
+            depositContractAddress,
+            (new BN(10e18)).mul(new BN(depositAmountInEth)).toString()
+        );
+    }
+
+    // TODO
+    // sign(wallet?: any): DepositTx {
+    //     return this;
+    // }
 }
