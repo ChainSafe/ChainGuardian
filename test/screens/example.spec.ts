@@ -1,7 +1,7 @@
 import path from "path";
 import {Application} from "spectron";
 
-jest.setTimeout(10000);
+jest.setTimeout(15000);
 
 describe("Main window", () => {
     let app: Application;
@@ -16,7 +16,8 @@ describe("Main window", () => {
             app = new Application({
                 path: electronPath,
                 args: [path.join(__dirname, "..", "..")],
-                startTimeout: 10000,
+                waitTimeout: 15000,
+                startTimeout: 15000,
             });
             await app.start();
         } catch (e) {

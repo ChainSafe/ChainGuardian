@@ -20,8 +20,7 @@ matrix:
       language: node_js
       node_js: "12.4.0"
 
-cache:
-  yarn: false
+cache: false
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then powershell Start-Process -PassThru -Wait PowerShell -ArgumentList "'-Command Set-MpPreference -DisableBehaviorMonitoring \$true'"; fi;
