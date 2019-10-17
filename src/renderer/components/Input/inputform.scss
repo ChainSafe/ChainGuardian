@@ -2,9 +2,43 @@
     width: 402px;
     height: 28px;
     background: $neutral-600;
+    box-shadow: inset 0px 2px 6px rgba(10, 39, 51, 0.2);
+    border-radius: 4px;
     border: none;
     outline: transparent;
+    font-family: 'Palanquin', sans-serif; 
+    font-size: 500;
     font-size: 18px;
     color: #EBEEEF;
     padding: 16px 56px 16px 16px;
+
+    &.success{
+        background: $neutral-600 url(../assets/img/input/Success.svg) no-repeat;
+        background-position: bottom 18px right 16px;
+        border: 2px solid $system-success-500;
+    }
+    &.error{
+        background: $neutral-600 url(../assets/img/input/Error.svg) no-repeat;
+        background-position: bottom 18px right 16px;
+        border: 2px solid $system-error-500;
+    }
+}
+.label{
+    font-family: 'Palanquin', sans-serif; 
+    font-size: 500;
+    font-size: 18px;
+    color: $neutral-100;
+    margin: 0px 0px 16px 0px;
+    padding: 0px;
+}
+.error-message{
+    color: $system-error-300;
+    font-size: 12px;
+    height: 18px;
+    margin: 0 18px;
+    width: 442px;
+    font-family: 'Lato', sans-serif;
+    &.none{
+        display: none;
+    }
 }
