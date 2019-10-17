@@ -5,9 +5,6 @@ env:
 
 sudo: required
 
-addons:
-  chrome: stable
-
 matrix:
   include:
     - os: osx
