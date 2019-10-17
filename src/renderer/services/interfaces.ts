@@ -1,5 +1,5 @@
-import { Keypair } from '@chainsafe/bls/lib/keypair';
-import { bytes } from '@chainsafe/eth2.0-types';
+import {Keypair} from "@chainsafe/bls/lib/keypair";
+import {bytes} from "@chainsafe/eth2.0-types";
 
 export interface IService {
     start(): Promise<void>;

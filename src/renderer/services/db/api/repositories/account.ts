@@ -1,6 +1,6 @@
-import { Repository, Id } from '../repository';
-import { CGAccount } from '../../../../models/account';
-import { encodeKey } from '../../schema';
+import {Repository, Id} from "../repository";
+import {CGAccount} from "../../../../models/account";
+import {encodeKey} from "../../schema";
 
 export class AccountRepository extends Repository<CGAccount> {
     // Override get method to wrap deserialized data into CGAccount instance
