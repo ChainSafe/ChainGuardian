@@ -12,7 +12,7 @@ storiesOf('Input Form', module).add('Input Form', () => {
     }
     const defaultValue = undefined;
     const label = text("label text", "Input")
-    const value = select("valid", options, defaultValue,);
+    const validValue = select("valid", options, defaultValue,);
     const eMessage = text("error message", "Error message");
-    return  <InputForm valid={value} label={label} errorMessage={eMessage}/>;
+    return  <InputForm valid={validValue} label={label} errorMessage={eMessage}/>;
 }).addDecorator(withKnobs);

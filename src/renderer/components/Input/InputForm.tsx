@@ -5,17 +5,18 @@ export interface IInputFormProps {
     label?: string;
     valid?: boolean;
     errorMessage?: string;
-    input?: string;
+    inputValue?: string;
 }
 
 export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInputFormProps) => {
     const [input, setInput] = useState("");
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setInput(e.currentTarget.value);
+        props.inputValue = input;
     };
 
-    const classNamesValid = (props: boolean | undefined) => {
+    const classNamesValid = (props: boolean | undefined): string => {
         switch(props) {
             case undefined : return("");
             case true : return("success");
@@ -27,6 +28,7 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
         <form>
             <div className="label">{props.label}</div>
             <input 
+                value={props.inputValue}
                 className={`inputform ${classNamesValid(props.valid)}`} 
                 onChange={handleInputChange} />
             <div 
