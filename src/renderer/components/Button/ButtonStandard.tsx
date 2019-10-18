@@ -3,7 +3,7 @@ import * as React from "react";
 export interface IButtonProps {
     focused?: boolean;
     disabled?: boolean;
-    onClick?: () => {};
+    onClick?: () => void;
 }
 export interface IBaseButtonProps extends IButtonProps{
     buttonType?: string;
