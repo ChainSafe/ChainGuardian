@@ -1,27 +1,26 @@
-import {Keypair} from "@chainsafe/bls/lib/keypair";
-import {readdirSync, readFileSync} from "fs";
-import {ICGKeystore, ICGKeystoreFactory} from "../services/interfaces";
+import { Keypair } from '@chainsafe/bls/lib/keypair';
+import { readdirSync, readFileSync } from 'fs';
+import { ICGKeystore, ICGKeystoreFactory } from '../services/interfaces';
 
-export interface ISSZAccount {
+export interface IAccount {
     name: string;
     directory: string;
     sendStats: boolean;
 }
 
-export class CGAccount implements ISSZAccount {
+export class CGAccount implements IAccount {
     public name: string;
     public directory: string;
     public sendStats: boolean;
 
-    private unlocked = false;
     private validators: Keypair[] = [];
     private keystoreTarget: ICGKeystoreFactory;
 
-    constructor(name: string, directory: string, sendStats = false, keystoreTarget: ICGKeystoreFactory) {
+    constructor(account: IAccount, keystoreTarget: ICGKeystoreFactory) {
         this.name = name;
         // Add / to the end if not provided
-        this.directory = directory + (directory.endsWith("/") ? "" : "/");
-        this.sendStats = sendStats;
+        this.directory = account.directory + (account.directory.endsWith('/') ? '' : '/');
+        this.sendStats = account.sendStats;
         this.keystoreTarget = keystoreTarget;
     }
 
@@ -32,14 +31,10 @@ export class CGAccount implements ISSZAccount {
         // Loop trough files in account directory
         const keystoreFiles: string[] = this.getKeystoreFiles();
 
-        const validatorAddresses: string[] = [];
-        keystoreFiles.forEach(file => {
-            const fileContents = readFileSync(this.directory + file);
-            const fileJSON = JSON.parse(fileContents.toString());
-            if (fileJSON.address) {
-                validatorAddresses.push(fileJSON.address);
-            }
-        });
+        const validatorAddresses: string[] = keystoreFiles
+            .map(file => new this.keystoreTarget(file))
+            .map(keystore => keystore.getAddress());
+
         return validatorAddresses;
     }
 
@@ -49,9 +44,8 @@ export class CGAccount implements ISSZAccount {
      */
     // eslint-disable-next-line
     getValidators(password: string): Keypair[] {
-        // TODO: loop trough keystore files and unlock them
-        if (!this.unlocked) {
-            throw new Error("Keystore locked.");
+        if (! this.isUnlocked()) {
+            throw new Error('Keystore locked.');
         }
         return this.validators;
     }
@@ -71,20 +65,23 @@ export class CGAccount implements ISSZAccount {
 
         const keystoreFiles = this.getKeystoreFiles();
 
-        for (const fileIdx in keystoreFiles) {
-            const file = keystoreFiles[fileIdx];
-            const filePath = this.directory + file;
-
-            const keystore: ICGKeystore = new this.keystoreTarget(filePath);
-
-            try {
-                keystore.decrypt(password);
-            } catch (e) {
-                continue;
-            }
-            return true;
+        if(keystoreFiles.length <= 0){
+            return false;
         }
-        return false;
+
+        /**
+         * Check only first file as we assume that all keystores
+         * have the same password.
+         */
+        const keystore = new this.keystoreTarget(keystoreFiles[0]);
+        try{
+            keystore.decrypt(password);
+        } catch(e){
+            // wrong password
+            return false;
+        }
+        // error not detected, password correct
+        return true;
     }
 
     /**
@@ -103,7 +100,6 @@ export class CGAccount implements ISSZAccount {
                 const keypair = keystore.decrypt(password);
 
                 this.validators.push(keypair);
-                this.unlocked = true;
             } catch (e) {
                 // Failed to unlock keystore, probably wrong password
                 // Skip this keystore
@@ -118,16 +114,21 @@ export class CGAccount implements ISSZAccount {
     lock(): void {
         // Clear validator Keypairs
         this.validators = [];
-        this.unlocked = false;
+    }
+
+    private isUnlocked(){
+        return this.validators.length > 0;
     }
 
     private getKeystoreFiles(): string[] {
         let keystores: string[] = [];
         try {
             keystores = readdirSync(this.directory);
-            keystores = keystores.filter(file => {
-                return file.toLowerCase().endsWith(".json");
-            });
+            keystores = keystores
+                .filter(file => {
+                    return file.toLowerCase().endsWith('.json');
+                })
+                .map(file => this.directory + file);
         } catch (e) {
             return [];
         }

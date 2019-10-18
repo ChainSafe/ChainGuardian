@@ -10,6 +10,7 @@ export interface IService {
 export interface ICGKeystore {
     decrypt(password: string): Keypair;
     changePassword(oldPassword: string, newPassword: string): void;
+    getAddress(): string;
     //deletes physical keystore file
     destroy(): void;
     create(file: string, password: string, keypair: Keypair): ICGKeystore;
