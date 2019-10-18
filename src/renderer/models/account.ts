@@ -1,6 +1,7 @@
 import { Keypair } from '@chainsafe/bls/lib/keypair';
 import { readdirSync, readFileSync } from 'fs';
 import { ICGKeystore, ICGKeystoreFactory } from '../services/interfaces';
+import { Eth1ICGKeystoreFactory } from '../services/Eth1ICGKeystore';
 
 export interface IAccount {
     name: string;
@@ -16,7 +17,7 @@ export class CGAccount implements IAccount {
     private validators: Keypair[] = [];
     private keystoreTarget: ICGKeystoreFactory;
 
-    constructor(account: IAccount, keystoreTarget: ICGKeystoreFactory) {
+    constructor(account: IAccount, keystoreTarget: ICGKeystoreFactory = Eth1ICGKeystoreFactory) {
         this.name = name;
         // Add / to the end if not provided
         this.directory = account.directory + (account.directory.endsWith('/') ? '' : '/');
@@ -92,20 +93,22 @@ export class CGAccount implements IAccount {
     unlock(password: string): void {
         const keystoreFiles = this.getKeystoreFiles();
 
-        keystoreFiles.forEach(file => {
-            const filePath = this.directory + file;
-            const keystore = new this.keystoreTarget(filePath);
-
-            try {
-                const keypair = keystore.decrypt(password);
-
-                this.validators.push(keypair);
-            } catch (e) {
-                // Failed to unlock keystore, probably wrong password
-                // Skip this keystore
-                return;
+        const validators: (Keypair | undefined)[] = keystoreFiles
+            .map(file => new this.keystoreTarget(file))
+            .map(keystore => {
+                try{
+                    return keystore.decrypt(password)
+                } catch(e){
+                    return undefined;
+                }
+            });
+        
+        for(let validatorIdx in validators){
+            const validator = validators[validatorIdx];
+            if(validator !== undefined){
+                this.validators.push(validator);
             }
-        });
+        }
     }
 
     /**
