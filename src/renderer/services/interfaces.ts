@@ -1,4 +1,4 @@
-import { Keypair } from "@chainsafe/bls/lib/keypair";
+import {Keypair} from "@chainsafe/bls/lib/keypair";
 
 export interface IService {
     start(): Promise<void>;
@@ -16,13 +16,13 @@ export interface ICGKeystore {
 /********************
  * Keystore interfaces
  * *******************/
-interface PBKDFParamsOut {
+interface IPBKDFParamsOut {
     c: number;
     dklen: number;
     prf: string;
     salt: string;
 }
-interface ScryptKDFParamsOut {
+interface IScryptKDFParamsOut {
     dklen: number;
     n: number;
     p: number;
@@ -30,10 +30,10 @@ interface ScryptKDFParamsOut {
     salt: string;
 }
 
-type KDFParamsOut = ScryptKDFParamsOut | PBKDFParamsOut;
+type KDFParamsOut = IScryptKDFParamsOut | IPBKDFParamsOut;
 
 // https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
-export interface V3Keystore {
+export interface IV3Keystore {
     crypto: {
         cipher: string;
         cipherparams: {
