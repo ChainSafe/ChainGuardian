@@ -8,6 +8,6 @@ storiesOf('Modal', module).add('Modal', () => {
     const backButton = boolean('back button', false);
     
     return  <Modal hasBack={backButton}>
-        <ButtonPrimitive>REGISTER</ButtonPrimitive>
+        <ButtonPrimitive>BUTTON</ButtonPrimitive>
         </Modal>;
 }).addDecorator(withKnobs);
