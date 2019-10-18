@@ -1,7 +1,7 @@
-import { Keypair } from '@chainsafe/bls/lib/keypair';
-import { readdirSync, readFileSync } from 'fs';
-import { ICGKeystore, ICGKeystoreFactory } from '../services/interfaces';
-import { Eth1ICGKeystoreFactory } from '../services/Eth1ICGKeystore';
+import {Keypair} from "@chainsafe/bls/lib/keypair";
+import {readdirSync} from "fs";
+import {ICGKeystoreFactory} from "../services/interfaces";
+import {Eth1ICGKeystoreFactory} from "../services/Eth1ICGKeystore";
 
 export interface IAccount {
     name: string;
@@ -20,7 +20,7 @@ export class CGAccount implements IAccount {
     constructor(account: IAccount, keystoreTarget: ICGKeystoreFactory = Eth1ICGKeystoreFactory) {
         this.name = name;
         // Add / to the end if not provided
-        this.directory = account.directory + (account.directory.endsWith('/') ? '' : '/');
+        this.directory = account.directory + (account.directory.endsWith("/") ? "" : "/");
         this.sendStats = account.sendStats;
         this.keystoreTarget = keystoreTarget;
     }
@@ -36,6 +36,7 @@ export class CGAccount implements IAccount {
             .map(file => new this.keystoreTarget(file))
             .map(keystore => keystore.getAddress());
 
+        console.log(this.getKeystoreFiles());
         return validatorAddresses;
     }
 
@@ -46,7 +47,7 @@ export class CGAccount implements IAccount {
     // eslint-disable-next-line
     getValidators(password: string): Keypair[] {
         if (! this.isUnlocked()) {
-            throw new Error('Keystore locked.');
+            throw new Error("Keystore locked.");
         }
         return this.validators;
     }
@@ -97,13 +98,13 @@ export class CGAccount implements IAccount {
             .map(file => new this.keystoreTarget(file))
             .map(keystore => {
                 try{
-                    return keystore.decrypt(password)
+                    return keystore.decrypt(password);
                 } catch(e){
                     return undefined;
                 }
             });
         
-        for(let validatorIdx in validators){
+        for(const validatorIdx in validators){
             const validator = validators[validatorIdx];
             if(validator !== undefined){
                 this.validators.push(validator);
@@ -119,7 +120,7 @@ export class CGAccount implements IAccount {
         this.validators = [];
     }
 
-    private isUnlocked(){
+    private isUnlocked(): boolean{
         return this.validators.length > 0;
     }
 
@@ -129,10 +130,11 @@ export class CGAccount implements IAccount {
             keystores = readdirSync(this.directory);
             keystores = keystores
                 .filter(file => {
-                    return file.toLowerCase().endsWith('.json');
+                    return file.toLowerCase().endsWith(".json");
                 })
                 .map(file => this.directory + file);
         } catch (e) {
+            console.log(e);
             return [];
         }
         return keystores;

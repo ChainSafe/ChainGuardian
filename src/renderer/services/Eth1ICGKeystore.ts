@@ -9,7 +9,7 @@ export class Eth1ICGKeystore implements ICGKeystore {
     keystore: IV3Keystore;
     file: string;
 
-    private address: string = "";
+    private address = "";
 
     constructor(file: string) {
         this.keystore = this.readKeystoreFile(file);
