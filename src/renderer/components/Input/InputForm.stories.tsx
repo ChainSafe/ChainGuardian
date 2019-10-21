@@ -2,7 +2,6 @@ import * as React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, number, select } from '@storybook/addon-knobs';
 import { InputForm} from './InputForm';
-import { string } from 'prop-types';
 
 storiesOf('Input Form', module).add('Input Form', () => {
     const options = {
