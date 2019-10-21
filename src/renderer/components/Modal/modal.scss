@@ -6,8 +6,10 @@
     border-radius: 0 0 24px 24px;
     display: flex;
     border-top: $neutral-600 solid  8px;
+    align-self: center center;
     // storybook margin to show BackTab button
     // margin-left: 100px;
+
 }
 .modal-children{
     padding: 64px;
