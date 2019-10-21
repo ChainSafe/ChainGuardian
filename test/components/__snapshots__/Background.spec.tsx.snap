@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InputForm renders basic background 1`] = `
+<div
+  className="background"
+>
+  <div
+    className="children"
+  />
+</div>
+`;
+
+exports[`InputForm renders correctly 1`] = `
+<div
+  className="background"
+>
+  <div
+    className="illustration"
+  >
+    <div
+      className="children"
+    />
+  </div>
+</div>
+`;
