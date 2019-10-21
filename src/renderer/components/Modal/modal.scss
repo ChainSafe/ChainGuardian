@@ -6,10 +6,20 @@
     border-radius: 0 0 24px 24px;
     display: flex;
     border-top: $neutral-600 solid  8px;
-    align-self: center center;
+    // align-self: center center;
+    justify-content: flex-start;
 }
 .modal-children{
     padding: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.modal-children h1{
+    align-self: flex-start;
+}
+.modal-children p{
+    align-self: flex-start;
 }
 .backtab-position{
     align-self: center;

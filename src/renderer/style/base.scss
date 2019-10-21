@@ -3,4 +3,32 @@ body {
     font-size: 18px;
     line-height: 28px;
     margin: 0px;
+    overflow: hidden;
+}
+h1{
+    margin: 0px;
+    font-family: "Palanquin Dark", sans-serif; 
+    font-weight: 400;
+    font-size: 40px;
+    color: $neutral-100;
+    line-height: 44px;
+    letter-spacing: 0.01em;
+}
+h5{
+    margin: 24px;
+    font-family: "Palanquin", sans-serif; 
+    font-weight: 400;
+    font-size: 20px;
+    color: $neutral-100;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+}
+p{
+    font-family: "Palanquin", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 28px;
+    color: $neutral-300;
+    margin:8px 8px 24px 0;
 }
