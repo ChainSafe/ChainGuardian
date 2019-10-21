@@ -6,7 +6,7 @@ import copyAll from "../../assets/img/buttons/CopyAll.svg";
 import copied from "../../assets/img/buttons/Copied.svg";
 
 export interface IActionButtonProps {
-    onClick?: () => {};
+    onClick?: () => void;
 }
 
 export const BackTab: React.FunctionComponent<IActionButtonProps> = ({onClick}) => {
