@@ -36,7 +36,6 @@ export class CGAccount implements IAccount {
             .map(file => new this.keystoreTarget(file))
             .map(keystore => keystore.getAddress());
 
-        console.log(this.getKeystoreFiles());
         return validatorAddresses;
     }
 
