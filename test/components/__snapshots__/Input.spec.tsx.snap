@@ -52,3 +52,21 @@ exports[`InputForm renders success 1`] = `
   />
 </form>
 `;
+
+exports[`InputForm renders value 1`] = `
+<form>
+  <div
+    className="label"
+  >
+    Input
+  </div>
+  <input
+    className="inputform "
+    onChange={[Function]}
+    value="textfortest"
+  />
+  <div
+    className="error-message none"
+  />
+</form>
+`;

@@ -2,7 +2,7 @@ import * as React from "react";
 import * as renderer from "react-test-renderer";
 import {Background} from "../../src/renderer/components/Background/Background";
 
-describe("InputForm", () => {
+describe("Background", () => {
     it("renders correctly", () => {
         const tree = renderer
             .create(<Background ></Background >)

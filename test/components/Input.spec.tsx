@@ -21,4 +21,10 @@ describe("InputForm", () => {
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
+    it("renders value", () => {
+        const tree = renderer
+            .create(<InputForm inputValue="textfortest" label="Input" />)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
 });
