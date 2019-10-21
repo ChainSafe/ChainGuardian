@@ -1,13 +1,5 @@
-import { CGAccount } from "../../../src/renderer/models/account";
-import { Keypair } from "@chainsafe/bls/lib/keypair";
 import sinon from "sinon";
-import {
-  Eth1ICGKeystoreFactory,
-  Eth1ICGKeystore
-} from "../../../src/renderer/services/Eth1ICGKeystore";
-
-// Passwords for keystores 1 & 2
-const PRIMARY_KEYSTORE_PASSWORD = "chainGuardianPass";
+import { Keypair } from "@chainsafe/bls/lib/keypair";
 
 // Mock keystore, only address is important
 const mockKeystore = {
@@ -31,14 +23,6 @@ const mockKeystore = {
   }
 };
 
-function createTestAccount(): CGAccount {
-  return new CGAccount({
-    name: "Test Account",
-    directory: "/test_keystores/",
-    sendStats: false
-  });
-}
-
 const mockedReadDirSync = sinon
   .stub()
   .withArgs("/test_keystores/")
@@ -61,6 +45,27 @@ jest.mock("fs", () => ({
   existsSync: mockedExistSync,
   readFileSync: mockedReadFileSync
 }));
+
+import { CGAccount } from "../../../src/renderer/models/account";
+import {
+  Eth1ICGKeystoreFactory,
+  Eth1ICGKeystore
+} from "../../../src/renderer/services/Eth1ICGKeystore";
+
+// Passwords for keystores 1 & 2
+const PRIMARY_KEYSTORE_PASSWORD = "chainGuardianPass";
+
+
+
+function createTestAccount(): CGAccount {
+  return new CGAccount({
+    name: "Test Account",
+    directory: "/test_keystores/",
+    sendStats: false
+  });
+}
+
+
 
 describe("CGAccount tests", () => {
 
