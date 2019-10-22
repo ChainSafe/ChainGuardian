@@ -6,6 +6,7 @@ export interface IInputFormProps {
     valid?: boolean;
     errorMessage?: string;
     inputValue?: string;
+    placeholder?: string;
 }
 
 export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInputFormProps) => {
@@ -28,6 +29,7 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
         <form>
             <div className="label">{props.label}</div>
             <input 
+                placeholder={props.placeholder}
                 value={props.inputValue}
                 className={`inputform ${classNamesValid(props.valid)}`} 
                 onChange={handleInputChange} />

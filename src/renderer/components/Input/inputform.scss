@@ -1,3 +1,6 @@
+.inputform::placeholder{
+    color: $neutral-100;
+}
 .inputform{
     width: 402px;
     height: 28px;
@@ -9,7 +12,7 @@
     font-family: 'Palanquin', sans-serif; 
     font-size: 500;
     font-size: 18px;
-    color: #EBEEEF;
+    color: $neutral-100;
     padding: 16px 56px 16px 16px;
     margin-right: 24px;
 
