@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import { Background } from '../../components/Background/Background'
-import { Modal } from '../../components/Modal/Modal'
-import { Link } from 'react-router-dom'
-import { ButtonPrimary, ButtonSecondary } from '../../components/Button/ButtonStandard'
-import { BackTab } from '../../components/Button/ButtonAction'
+import React, {Component} from "react";
+import {Background} from "../../components/Background/Background";
+import {Modal} from "../../components/Modal/Modal";
+import {Link} from "react-router-dom";
+import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
+import {BackTab} from "../../components/Button/ButtonAction";
 
 export default class OnboardContainer extends Component {
-    render() {
+    render(): any {
         return (
             <Background>
                 <div className="back-tab-wrapper">
@@ -23,6 +23,6 @@ export default class OnboardContainer extends Component {
                     </div>
                 </Modal>
             </Background >
-        )
+        );
     }
 }
