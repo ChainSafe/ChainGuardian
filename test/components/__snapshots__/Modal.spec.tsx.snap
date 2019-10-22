@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InputForm renders back button 1`] = `
+<div
+  className="modal"
+>
+  <div
+    className="backtab-position"
+  >
+    <button
+      className="back-tab"
+    >
+      <img
+        className="icon"
+        src="test-file-stub"
+      />
+    </button>
+  </div>
+  <div
+    className="modal-children"
+  />
+</div>
+`;
+
+exports[`InputForm renders correctly 1`] = `
+<div
+  className="modal"
+>
+  <div
+    className="modal-children"
+  />
+</div>
+`;
