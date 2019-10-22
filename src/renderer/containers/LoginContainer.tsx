@@ -3,7 +3,7 @@ import {Background} from "../components/Background/Background";
 import {Modal} from "../components/Modal/Modal";
 import {InputForm} from "../components/Input/InputForm";
 import {ButtonPrimary, ButtonSecondary} from "../components/Button/ButtonStandard";
-
+import { Link } from 'react-router-dom'
 
 export default class LoginContainer extends React.Component {
     render(): any {
@@ -17,7 +17,9 @@ export default class LoginContainer extends React.Component {
                         <ButtonSecondary>GO</ButtonSecondary>
                     </div>
                     <h5>OR</h5>
-                    <ButtonPrimary>REGISTER</ButtonPrimary>
+                    <Link to="/onboard">
+                        <ButtonPrimary>REGISTER</ButtonPrimary>
+                    </Link>
                 </Modal>
             </Background>
         );
