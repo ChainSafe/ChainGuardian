@@ -48,8 +48,8 @@ jest.mock("fs", () => ({
 
 import {CGAccount} from "../../../src/renderer/models/account";
 import {
-    Eth1ICGKeystoreFactory
-} from "../../../src/renderer/services/Eth1ICGKeystore";
+    Eth1CGKeystoreFactory
+} from "../../../src/renderer/services/Eth1CGKeystore";
 
 // Passwords for keystores 1 & 2
 const PRIMARY_KEYSTORE_PASSWORD = "chainGuardianPass";
@@ -71,10 +71,10 @@ describe("CGAccount tests", () => {
 
         sandbox = sinon.createSandbox();
         sandbox
-            .stub(Eth1ICGKeystoreFactory.prototype, "getAddress")
+            .stub(Eth1CGKeystoreFactory.prototype, "getAddress")
             .returns("0x001");
         sandbox
-            .stub(Eth1ICGKeystoreFactory.prototype, "decrypt")
+            .stub(Eth1CGKeystoreFactory.prototype, "decrypt")
             .callsFake(function(password: string) {
                 if (password === PRIMARY_KEYSTORE_PASSWORD) {
                     return Keypair.generate();
@@ -99,14 +99,14 @@ describe("CGAccount tests", () => {
         const account = createTestAccount();
 
         account.unlock(PRIMARY_KEYSTORE_PASSWORD);
-        const validatorKeypairs = account.getValidators(PRIMARY_KEYSTORE_PASSWORD);
+        const validatorKeypairs = account.getValidators();
 
         expect(validatorKeypairs.length).toEqual(2);
 
         account.lock();
 
         expect(() => {
-            account.getValidators(PRIMARY_KEYSTORE_PASSWORD);
+            account.getValidators();
         }).toThrowError();
     });
 
@@ -114,7 +114,7 @@ describe("CGAccount tests", () => {
         const account = createTestAccount();
 
         expect(() => {
-            account.getValidators(PRIMARY_KEYSTORE_PASSWORD);
+            account.getValidators();
         }).toThrowError();
     });
 
@@ -124,7 +124,7 @@ describe("CGAccount tests", () => {
         account.unlock(PRIMARY_KEYSTORE_PASSWORD);
         account.lock();
         expect(() => {
-            account.getValidators(PRIMARY_KEYSTORE_PASSWORD);
+            account.getValidators();
         }).toThrowError();
     });
 
@@ -134,7 +134,7 @@ describe("CGAccount tests", () => {
         account.unlock("wrongPassword");
 
         expect(() => {
-            account.getValidators("wrongPassword");
+            account.getValidators();
         }).toThrowError();
     });
 

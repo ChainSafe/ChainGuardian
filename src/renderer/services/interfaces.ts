@@ -50,5 +50,6 @@ export interface IV3Keystore {
     };
     id: string;
     version: number;
+    address: string;
 }
 /************************/

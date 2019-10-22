@@ -5,13 +5,11 @@ import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import bech32 from "bech32";
 import eth1WalletProvider from "ethereumjs-wallet";
 
-export class Eth1ICGKeystore implements ICGKeystore {
-    keystore: IV3Keystore;
-    file: string;
+export class Eth1CGKeystore implements ICGKeystore {
+    private keystore: IV3Keystore;
+    private file: string;
 
-    private address = "";
-
-    constructor(file: string) {
+    public constructor(file: string) {
         this.keystore = this.readKeystoreFile(file);
         this.file = file;
     }
@@ -21,7 +19,7 @@ export class Eth1ICGKeystore implements ICGKeystore {
      * @param password password for encryption
      * @param keypair private and public key
      */
-    static createKeystoreObject(password: string, keypair: Keypair): IV3Keystore {
+    public static createKeystoreObject(password: string, keypair: Keypair): IV3Keystore {
         const keystore = eth1WalletProvider
             .fromPrivateKey(keypair.privateKey.toBytes())
             .toV3(password, {kdf: "pbkdf2"});
@@ -38,11 +36,11 @@ export class Eth1ICGKeystore implements ICGKeystore {
      * @param password password for encryption
      * @param keypair private and public key
      */
-    static create(file: string, password: string, keypair: Keypair): ICGKeystore {
+    public static create(file: string, password: string, keypair: Keypair): ICGKeystore {
         try {
-            const keystore = Eth1ICGKeystore.createKeystoreObject(password, keypair);
+            const keystore = Eth1CGKeystore.createKeystoreObject(password, keypair);
             writeFileSync(file, JSON.stringify(keystore, null, 2));
-            return new Eth1ICGKeystore(file);
+            return new Eth1CGKeystore(file);
         } catch (err) {
             throw new Error(`Failed to write to ${file}: ${err}`);
         }
@@ -52,13 +50,11 @@ export class Eth1ICGKeystore implements ICGKeystore {
      * Method used to decrypt encrypted private key from keystore file
      * @param password
      */
-    decrypt(password: string): Keypair {
+    public decrypt(password: string): Keypair {
         const keystore = eth1WalletProvider
             .fromV3(JSON.stringify(this.keystore), password);
         const privateKeyString = keystore.getPrivateKeyString();
         const priv = PrivateKey.fromHexString(privateKeyString);
-        // Collect address from keystore
-        this.address = keystore.getAddressString();
         return new Keypair(priv);
     }
 
@@ -68,9 +64,9 @@ export class Eth1ICGKeystore implements ICGKeystore {
      * @param oldPassword old password to decrypt private key
      * @param newPassword new password to encrypt private key
      */
-    changePassword(oldPassword: string, newPassword: string): void {
+    public changePassword(oldPassword: string, newPassword: string): void {
         const keypair = this.decrypt(oldPassword);
-        const keystore = Eth1ICGKeystore.createKeystoreObject(newPassword, keypair);
+        const keystore = Eth1CGKeystore.createKeystoreObject(newPassword, keypair);
 
         try {
             writeFileSync(this.file, JSON.stringify(keystore, null, 2));
@@ -80,14 +76,14 @@ export class Eth1ICGKeystore implements ICGKeystore {
         }
     }
 
-    getAddress(): string {
-        return this.address;
+    public getAddress(): string {
+        return this.keystore.address;
     }
 
     /**
      * Deletes physical keystore file
      */
-    destroy(): void {
+    public destroy(): void {
         try {
             unlinkSync(this.file);
         } catch (err) {
@@ -99,7 +95,7 @@ export class Eth1ICGKeystore implements ICGKeystore {
      * Helper method to read file from path specified by @param file
      * @param file file path
      */
-    readKeystoreFile(file: string): IV3Keystore {
+    private readKeystoreFile(file: string): IV3Keystore {
         if (existsSync(file)) {
             try {
                 const data = readFileSync(file);
@@ -112,4 +108,4 @@ export class Eth1ICGKeystore implements ICGKeystore {
     }
 }
 
-export const Eth1ICGKeystoreFactory: ICGKeystoreFactory = Eth1ICGKeystore;
+export const Eth1CGKeystoreFactory: ICGKeystoreFactory = Eth1CGKeystore;

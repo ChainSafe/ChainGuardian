@@ -1,7 +1,7 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {readdirSync} from "fs";
 import {ICGKeystoreFactory} from "../services/interfaces";
-import {Eth1ICGKeystoreFactory} from "../services/Eth1ICGKeystore";
+import {Eth1CGKeystoreFactory} from "../services/Eth1CGKeystore";
 
 export interface IAccount {
     name: string;
@@ -17,7 +17,7 @@ export class CGAccount implements IAccount {
     private validators: Keypair[] = [];
     private keystoreTarget: ICGKeystoreFactory;
 
-    constructor(account: IAccount, keystoreTarget: ICGKeystoreFactory = Eth1ICGKeystoreFactory) {
+    public constructor(account: IAccount, keystoreTarget: ICGKeystoreFactory = Eth1CGKeystoreFactory) {
         this.name = name;
         // Add / to the end if not provided
         this.directory = account.directory + (account.directory.endsWith("/") ? "" : "/");
@@ -28,7 +28,7 @@ export class CGAccount implements IAccount {
     /**
      * should return addresses from validator keystores in account directory
      */
-    getValidatorsAddresses(): string[] {
+    public getValidatorsAddresses(): string[] {
         // Loop trough files in account directory
         const keystoreFiles: string[] = this.getKeystoreFiles();
 
@@ -43,8 +43,7 @@ export class CGAccount implements IAccount {
      * returns all validator keypairs or throws if not unlocked
      * @param password decryption password of the keystore
      */
-    // eslint-disable-next-line
-    getValidators(password: string): Keypair[] {
+    public getValidators(): Keypair[] {
         if (! this.isUnlocked()) {
             throw new Error("Keystore locked.");
         }
@@ -55,7 +54,7 @@ export class CGAccount implements IAccount {
      * Check if password is valid
      * @param password decryption password of the keystore
      */
-    isCorrectPassword(password: string): boolean {
+    public isCorrectPassword(password: string): boolean {
         /**
          * ? As there can be multiple keystore files there can also be
          * ? different passwords that these keystores use, we need to
@@ -90,7 +89,7 @@ export class CGAccount implements IAccount {
      * throw exception if wrong password (save unlocked keypairs into private field)
      * @param password decryption password of the keystore
      */
-    unlock(password: string): void {
+    public unlock(password: string): void {
         const keystoreFiles = this.getKeystoreFiles();
 
         const validators: (Keypair | undefined)[] = keystoreFiles
@@ -114,7 +113,7 @@ export class CGAccount implements IAccount {
     /**
      * delete all unlocked keypairs from object
      */
-    lock(): void {
+    public lock(): void {
         // Clear validator Keypairs
         this.validators = [];
     }
