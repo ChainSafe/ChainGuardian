@@ -7,7 +7,7 @@ import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 storiesOf('Button', module).add('Submit Primitive', () => {
     const content = text('button content', 'Submit');
     const value = boolean('focus', false);
-    return  <ButtonPrimitive focused={value} >{content}</ButtonPrimitive>;
+    return  <ButtonPrimitive buttonSize="small" focused={value} >{content}</ButtonPrimitive>;
 }).addDecorator(withKnobs);
 
 storiesOf('Button', module).add('Submit Primary', () => {

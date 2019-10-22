@@ -5,13 +5,13 @@ import {InputForm} from "../components/Input/InputForm";
 import {ButtonPrimary, ButtonSecondary} from "../components/Button/ButtonStandard";
 
 export default class LoginContainer extends React.Component {
-    render() {
+    render(): any {
         return (
             <Background>
                 <Modal>
                     <h1>Welcome!</h1>
                     <p>Please enter your password or set up an account to get started.</p>
-                    <div style={{display: "flex", alignItems: "center"}}>
+                    <div className="input-container">
                         <InputForm />
                         <ButtonSecondary>GO</ButtonSecondary>
                     </div>
