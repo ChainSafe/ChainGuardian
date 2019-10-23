@@ -1,14 +1,15 @@
 import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
 import bls from "@chainsafe/bls";
-import {BLSPubkey as BLSPubKey, bytes} from "@chainsafe/eth2.0-types";
+import {BLSPubkey as BLSPubKey, bytes, DepositData} from "@chainsafe/eth2.0-types";
 import {createHash} from "crypto";
-import {DepositData} from "@chainsafe/eth2.0-types/lib/misc";
 import BN from "bn.js";
 import {signingRoot} from "@chainsafe/ssz";
 import {BLSDomain} from "@chainsafe/bls/lib/types";
 import abi from "ethereumjs-abi";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {IDepositParams, ITx} from "./types";
+import {Wallet} from "ethers";
+import {TransactionRequest} from "ethers/providers";
 
 // fixed deposit amount
 const depositAmountInEth = 32;
@@ -78,16 +79,19 @@ export class DepositTx implements ITx{
             depositParams.signature,
             depositParams.root
         );
-
         return new DepositTx(
-            depositFunctionEncoded.toString(),
+            depositFunctionEncoded,
             depositContractAddress,
-            (new BN(10e18)).mul(new BN(depositAmountInEth)).toString()
+            `0x${(new BN("1000000000000000000").mul(new BN(32))).toString("hex")}`
         );
     }
 
-    // TODO
-    // sign(wallet?: any): DepositTx {
-    //     return this;
-    // }
+    async sign(wallet: Wallet): Promise<string> {
+        const tx: TransactionRequest = {
+            ...this,
+            nonce: await wallet.provider.getTransactionCount(wallet.address),
+            gasLimit: "0x1E8480", // TODO gasLimit ?
+        };
+        return wallet.sign(tx);
+    }
 }
