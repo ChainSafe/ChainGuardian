@@ -30,28 +30,28 @@ describe("Main window", () => {
     });
 
     it("register button click", async () => {
-        const {client, browserWindow} = app;
+        const {client} = app;
 
         await client.waitUntilWindowLoaded();
-        return client.$('button=REGISTER').click().then(async (res) => {
-            let url = await client.getUrl()
-            url = url.split('#')[1]
-            expect(url).toEqual('/onboard')
-        })
+        return client.$("button=REGISTER").click().then(async () => {
+            let url = await client.getUrl();
+            url = url.split("#")[1];
+            expect(url).toEqual("/onboard");
+        });
     });
 
-    it('back button click', async () => {
+    it("back button click", async () => {
         const {client, browserWindow} = app;
-        let urlIndex = await client.getUrl()
-        urlIndex = urlIndex.split('#')[0]
+        let urlIndex = await client.getUrl();
+        urlIndex = urlIndex.split("#")[0];
 
-        return browserWindow.loadURL(urlIndex+'#/onboard').then(async (res) => {
-            return client.$("//button[@class='back-tab']").click().then(async (r) => {
-                let url = await client.getUrl()
-                url = url.split('#')[1]
-                expect(url).toEqual('/login')
-            })
-        })
+        return browserWindow.loadURL(urlIndex+"#/onboard").then(async () => {
+            return client.$("//button[@class='back-tab']").click().then(async () => {
+                let url = await client.getUrl();
+                url = url.split("#")[1];
+                expect(url).toEqual("/login");
+            });
+        });
 
 
     });
