@@ -1,6 +1,6 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {readdirSync} from "fs";
-import {ICGKeystoreFactory} from "../services/interfaces";
+import {ICGKeystoreFactory, ICGKeystore} from "../services/interfaces";
 import {Eth1CGKeystoreFactory} from "../services/Eth1CGKeystore";
 
 export interface IAccount {
@@ -17,66 +17,69 @@ export class CGAccount implements IAccount {
     private validators: Keypair[] = [];
     private keystoreTarget: ICGKeystoreFactory;
 
-    public constructor(account: IAccount, keystoreTarget: ICGKeystoreFactory = Eth1CGKeystoreFactory) {
+    public constructor(
+        account: IAccount,
+        keystoreTarget: ICGKeystoreFactory = Eth1CGKeystoreFactory
+    ) {
         this.name = name;
         // Add / to the end if not provided
-        this.directory = account.directory + (account.directory.endsWith("/") ? "" : "/");
+        this.directory =
+      account.directory + (account.directory.endsWith("/") ? "" : "/");
         this.sendStats = account.sendStats;
         this.keystoreTarget = keystoreTarget;
     }
 
     /**
-     * should return addresses from validator keystores in account directory
-     */
+   * should return addresses from validator keystores in account directory
+   */
     public getValidatorsAddresses(): string[] {
-        // Loop trough files in account directory
-        const keystoreFiles: string[] = this.getKeystoreFiles();
+    // Loop trough files in account directory
+        const keystoreFiles: ICGKeystore[] = this.getKeystoreFiles();
 
         const validatorAddresses: string[] = keystoreFiles
-            .map(file => new this.keystoreTarget(file))
             .map(keystore => keystore.getAddress());
 
         return validatorAddresses;
     }
 
     /**
-     * returns all validator keypairs or throws if not unlocked
-     * @param password decryption password of the keystore
-     */
+   * returns all validator keypairs or throws if not unlocked
+   * @param password decryption password of the keystore
+   */
     public getValidators(): Keypair[] {
-        if (! this.isUnlocked()) {
+        if (!this.isUnlocked()) {
             throw new Error("Keystore locked.");
         }
         return this.validators;
     }
 
     /**
-     * Check if password is valid
-     * @param password decryption password of the keystore
-     */
+   * Check if password is valid
+   * @param password decryption password of the keystore
+   */
     public isCorrectPassword(password: string): boolean {
-        /**
-         * ? As there can be multiple keystore files there can also be
-         * ? different passwords that these keystores use, we need to
-         * ? define how are we going to handle these situations.
-         * * Currently, if any of the keystores matches the provided
-         * * password this method returns true.
-         */
+    /**
+     * ? As there can be multiple keystore files there can also be
+     * ? different passwords that these keystores use, we need to
+     * ? define how are we going to handle these situations.
+     * * Currently, if any of the keystores matches the provided
+     * * password this method returns true.
+     */
 
         const keystoreFiles = this.getKeystoreFiles();
 
-        if(keystoreFiles.length <= 0){
+        if (keystoreFiles.length <= 0) {
             return false;
         }
 
         /**
-         * Check only first file as we assume that all keystores
-         * have the same password.
-         */
-        const keystore = new this.keystoreTarget(keystoreFiles[0]);
-        try{
+     * Check only first file as we assume that all keystores
+     * have the same password.
+     */
+        const keystore = keystoreFiles[0];
+        try {
             keystore.decrypt(password);
-        } catch(e){
+        } catch (e) {
             // wrong password
             return false;
         }
@@ -85,44 +88,42 @@ export class CGAccount implements IAccount {
     }
 
     /**
-     * should try to decrypt keystores using given password,
-     * throw exception if wrong password (save unlocked keypairs into private field)
-     * @param password decryption password of the keystore
-     */
+   * should try to decrypt keystores using given password,
+   * throw exception if wrong password (save unlocked keypairs into private field)
+   * @param password decryption password of the keystore
+   */
     public unlock(password: string): void {
         const keystoreFiles = this.getKeystoreFiles();
 
-        const validators: (Keypair | undefined)[] = keystoreFiles
-            .map(file => new this.keystoreTarget(file))
-            .map(keystore => {
-                try{
-                    return keystore.decrypt(password);
-                } catch(e){
-                    return undefined;
-                }
-            });
-        
-        for(const validatorIdx in validators){
+        const validators: (Keypair | undefined)[] = keystoreFiles.map(keystore => {
+            try {
+                return keystore.decrypt(password);
+            } catch (e) {
+                return undefined;
+            }
+        });
+
+        for (const validatorIdx in validators) {
             const validator = validators[validatorIdx];
-            if(validator !== undefined){
+            if (validator !== undefined) {
                 this.validators.push(validator);
             }
         }
     }
 
     /**
-     * delete all unlocked keypairs from object
-     */
+   * delete all unlocked keypairs from object
+   */
     public lock(): void {
-        // Clear validator Keypairs
+    // Clear validator Keypairs
         this.validators = [];
     }
 
-    private isUnlocked(): boolean{
+    private isUnlocked(): boolean {
         return this.validators.length > 0;
     }
 
-    private getKeystoreFiles(): string[] {
+    private getKeystoreFiles(): ICGKeystore[] {
         let keystores: string[] = [];
         try {
             keystores = readdirSync(this.directory);
@@ -135,6 +136,15 @@ export class CGAccount implements IAccount {
             console.log(e);
             return [];
         }
-        return keystores;
+
+        return keystores
+            .map(file => {
+                try {
+                    return new this.keystoreTarget(file);
+                } catch (e) {
+                    return null;
+                }
+            })
+            .filter((keystore): keystore is ICGKeystore => keystore !== null);
     }
 }
