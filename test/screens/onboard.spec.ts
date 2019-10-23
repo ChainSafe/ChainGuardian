@@ -29,8 +29,31 @@ describe("Main window", () => {
         }
     });
 
-    it("should work", () => {
-        expect(true).toBe(true);
+    it("register button click", async () => {
+        const {client, browserWindow} = app;
+
+        await client.waitUntilWindowLoaded();
+        return client.$('button=REGISTER').click().then(async (res) => {
+            let url = await client.getUrl()
+            url = url.split('#')[1]
+            expect(url).toEqual('/onboard')
+        })
+    });
+
+    it('back button click', async () => {
+        const {client, browserWindow} = app;
+        let urlIndex = await client.getUrl()
+        urlIndex = urlIndex.split('#')[0]
+
+        return browserWindow.loadURL(urlIndex+'#/onboard').then(async (res) => {
+            return client.$("//button[@class='back-tab']").click().then(async (r) => {
+                let url = await client.getUrl()
+                url = url.split('#')[1]
+                expect(url).toEqual('/login')
+            })
+        })
+
+
     });
 
 });
