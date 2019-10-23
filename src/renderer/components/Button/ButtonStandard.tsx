@@ -28,7 +28,7 @@ const BaseButton: React.FunctionComponent<IBaseButtonProps> = ({
     className={`button btn-${buttonType} focused`} 
     disabled={disabled} 
     onClick={onClick}>
-    <div className={`${large ? "div-large" : ""}`}>{children}</div>
+    <div className={`${large ? "div-large" : "" }`}>{children}</div>
 </button> : <button 
     className={`button btn-${buttonType}`} 
     disabled={disabled} 

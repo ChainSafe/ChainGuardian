@@ -1,15 +1,14 @@
 import * as React from "react";
-import {Background} from "../components/Background/Background";
-import {Modal} from "../components/Modal/Modal";
-import {InputForm} from "../components/Input/InputForm";
-import {ButtonPrimary, ButtonSecondary} from "../components/Button/ButtonStandard";
+import {Background} from "../../components/Background/Background";
+import {Modal} from "../../components/Modal/Modal";
+import {InputForm} from "../../components/Input/InputForm";
+import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
 
 interface IState {
     input: string;
 }
 
 export default class LoginContainer extends React.Component {
-
     state: IState = {
         input: ""
     };
@@ -36,5 +35,4 @@ export default class LoginContainer extends React.Component {
             </Background>
         );
     }
-    
 }

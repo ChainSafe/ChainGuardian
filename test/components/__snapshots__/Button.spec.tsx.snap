@@ -37,7 +37,11 @@ exports[`ButtonDestructive renders correctly 1`] = `
 <button
   className="button btn-destructive"
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -46,7 +50,11 @@ exports[`ButtonDestructive renders disabled button 1`] = `
   className="button btn-destructive"
   disabled={true}
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -54,7 +62,23 @@ exports[`ButtonDestructive renders focused button 1`] = `
 <button
   className="button btn-destructive focused"
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
+</button>
+`;
+
+exports[`ButtonDestructive renders large button 1`] = `
+<button
+  className="button btn-primitive"
+>
+  <div
+    className="div-large"
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -62,7 +86,11 @@ exports[`ButtonInverted renders correctly 1`] = `
 <button
   className="button btn-inverted"
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -71,7 +99,11 @@ exports[`ButtonInverted renders disabled button 1`] = `
   className="button btn-inverted"
   disabled={true}
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -79,7 +111,23 @@ exports[`ButtonInverted renders focused button 1`] = `
 <button
   className="button btn-inverted focused"
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
+</button>
+`;
+
+exports[`ButtonInverted renders large button 1`] = `
+<button
+  className="button btn-primitive"
+>
+  <div
+    className="div-large"
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -87,7 +135,11 @@ exports[`ButtonPrimary renders correctly 1`] = `
 <button
   className="button btn-primary"
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -96,7 +148,11 @@ exports[`ButtonPrimary renders disabled button 1`] = `
   className="button btn-primary"
   disabled={true}
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -104,7 +160,23 @@ exports[`ButtonPrimary renders focused button 1`] = `
 <button
   className="button btn-primary focused"
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
+</button>
+`;
+
+exports[`ButtonPrimary renders large button 1`] = `
+<button
+  className="button btn-primitive"
+>
+  <div
+    className="div-large"
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -112,7 +184,11 @@ exports[`ButtonPrimitive renders correctly 1`] = `
 <button
   className="button btn-primitive"
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -121,7 +197,11 @@ exports[`ButtonPrimitive renders disabled button 1`] = `
   className="button btn-primitive"
   disabled={true}
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -129,7 +209,23 @@ exports[`ButtonPrimitive renders focused button 1`] = `
 <button
   className="button btn-primitive focused"
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
+</button>
+`;
+
+exports[`ButtonPrimitive renders large button 1`] = `
+<button
+  className="button btn-primitive"
+>
+  <div
+    className="div-large"
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -137,7 +233,11 @@ exports[`ButtonSecondary renders correctly 1`] = `
 <button
   className="button btn-secondary"
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -146,7 +246,11 @@ exports[`ButtonSecondary renders disabled button 1`] = `
   className="button btn-secondary"
   disabled={true}
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
 </button>
 `;
 
@@ -154,7 +258,23 @@ exports[`ButtonSecondary renders focused button 1`] = `
 <button
   className="button btn-secondary focused"
 >
-  Submit
+  <div
+    className=""
+  >
+    Submit
+  </div>
+</button>
+`;
+
+exports[`ButtonSecondary renders large button 1`] = `
+<button
+  className="button btn-primitive"
+>
+  <div
+    className="div-large"
+  >
+    Submit
+  </div>
 </button>
 `;
 
