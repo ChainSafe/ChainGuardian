@@ -1,9 +1,16 @@
-import BN from "bn.js";
-
-export function functionSignatureFromABI(abi: (string | any)[] | string, functionName: string): string {
-    let functionSignature = "";
+/**
+ * Generate function signature from ABI object.
+ *
+ * If function is not defined in ABI, empty string will be returned.
+ *
+ * @param rawAbi - array of objects or string defining contract ABI.
+ * @param functionName - name of function for which signature is generated.
+ * @return signature of function in format: functionName(arg1_type,arg2_type)
+ */
+export function functionSignatureFromABI(rawAbi: (string | any)[] | string, functionName: string): string {
     let hasFunction = false;
     const inputs: string[] = [];
+    const abi = (typeof rawAbi == "string") ? JSON.parse(rawAbi) : rawAbi;
     for (const field of abi) {
         if (field["type"] === "function") {
             if (field["name"] === functionName) {
@@ -14,21 +21,5 @@ export function functionSignatureFromABI(abi: (string | any)[] | string, functio
             }
         }
     }
-    if (hasFunction) {
-        functionSignature = `${functionName}(${inputs.join(",")})`;
-    }
-    return functionSignature;
-}
-
-export function toHexString(data: string | Buffer | BN): string {
-    const hexString: string = (typeof data === "string") ? data : data.toString("hex");
-    return hexString.startsWith("0x") ? hexString : `0x${hexString}`;
-}
-
-export function toGwei(amountInEth: number): BN {
-    return new BN("1000000000").mul(new BN(amountInEth));
-}
-
-export function toWei(amountInEth: number): BN {
-    return new BN("1000000000000000000").mul(new BN(amountInEth));
+    return hasFunction ? `${functionName}(${inputs.join(",")})` : "";
 }

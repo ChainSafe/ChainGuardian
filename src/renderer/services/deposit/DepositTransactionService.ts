@@ -8,7 +8,8 @@ import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {IDepositParams, ITx} from "./types";
 import Wallet from "ethereumjs-wallet";
 import {Transaction} from "ethereumjs-tx";
-import {functionSignatureFromABI, toGwei, toHexString, toWei} from "./utils";
+import {functionSignatureFromABI} from "./utils";
+import {EthConverter, toHexString} from "../utils/crypto-utils";
 import options from "../../../../src/renderer/services/deposit/options";
 import {depositAmountInEth, depositBLSDomain} from "./constants";
 
@@ -34,7 +35,7 @@ export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey
     const depositData: DepositData = {
         pubkey: publicKey,
         withdrawalCredentials: withdrawalCredentials,
-        amount: toGwei(depositAmountInEth),
+        amount: EthConverter.toGwei(depositAmountInEth),
         signature: Buffer.alloc(0)
     };
     // calculate root
@@ -61,6 +62,11 @@ export class DepositTx implements ITx{
         this.value = value;
     }
 
+    /**
+     *
+     * @param depositParams
+     * @param depositContractAddress
+     */
     static generateDepositTx(depositParams: IDepositParams, depositContractAddress: string): DepositTx {
         const depositFunctionEncoded = abi.simpleEncode(
             functionSignatureFromABI(options.depositContract.abi, "deposit"),
@@ -71,10 +77,14 @@ export class DepositTx implements ITx{
         return new DepositTx(
             depositFunctionEncoded,
             depositContractAddress,
-            toHexString(toWei(depositAmountInEth))
+            toHexString(EthConverter.toWei(depositAmountInEth))
         );
     }
 
+    /**
+     * 
+     * @param wallet
+     */
     sign(wallet: Wallet): string {
         const txData = {
             ...this,
