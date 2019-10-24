@@ -9,6 +9,8 @@ import {
     Shard,
     IndexedAttestation
 } from "@chainsafe/eth2.0-types";
+import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {fromJson} from "@chainsafe/eth2.0-utils";
 import {
     FETCH_NODE_VERSION,
     FETCH_GENESIS_TIME,
@@ -20,28 +22,33 @@ import {
     PRODUCE_ATTESTATION,
     PUBLISH_SIGNED_ATTESTATION
 } from "../../constants/apiUrls";
-import {Syncing, ForkInformation, IBeaconAPIClient, IBeaconApiClientOptions} from "./interface";
+import {Syncing, ForkInformation, IBeaconApiClientOptions} from "./interface";
 import {HttpClient} from "./http/httpClient";
 import {EmptyUrlError} from "./errors/EmptyUrlError";
 
-export class BeaconAPIClient implements IBeaconAPIClient {
+export class BeaconAPIClient {
     options: IBeaconApiClientOptions;
+    config: IBeaconConfig;
     httpClient: HttpClient;
 
-    constructor(options: IBeaconApiClientOptions) {
+    constructor(options: IBeaconApiClientOptions, config: IBeaconConfig) {
         if (!options.urlPrefix) {
             throw new EmptyUrlError();
         }
         this.options = options;
+        this.config = config;
+        this.config.types.Attestation;
         this.httpClient = new HttpClient(options.urlPrefix);
     }
+
 
     async fetchNodeVersion(): Promise<string> {
         return this.httpClient.get<string>(FETCH_NODE_VERSION);
     }
 
     async fetchGenesisTime(): Promise<uint64> {
-        return this.httpClient.get<uint64>(FETCH_GENESIS_TIME);
+        const result = await this.httpClient.get<uint64>(FETCH_GENESIS_TIME);
+        return fromJson(result, this.config.types.uint64);
     }
 
     async fetchNodeSyncing(): Promise<Syncing> {
@@ -57,7 +64,8 @@ export class BeaconAPIClient implements IBeaconAPIClient {
     }
 
     async fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock> {
-        return this.httpClient.get<BeaconBlock>(FETCH_VALIDATOR_BLOCK(slot, randaoReveal));
+        const result = this.httpClient.get<BeaconBlock>(FETCH_VALIDATOR_BLOCK(slot, randaoReveal));
+        return fromJson(result, this.config.types.BeaconBlock);
     }
 
     async publishSignedBlock(beaconBlock: BeaconBlock): Promise<any> {
@@ -70,7 +78,10 @@ export class BeaconAPIClient implements IBeaconAPIClient {
         slot: Slot,
         shard: Shard
     ): Promise<IndexedAttestation> {
-        return this.httpClient.get<IndexedAttestation>(PRODUCE_ATTESTATION(validatorPubkey, pocBit, slot, shard));
+        const result = await this.httpClient.get<IndexedAttestation>(
+            PRODUCE_ATTESTATION(validatorPubkey, pocBit, slot, shard)
+        );
+        return fromJson(result, this.config.types.IndexedAttestation);
     }
 
     async publishSignedAttestation(attestation: IndexedAttestation): Promise<any> {

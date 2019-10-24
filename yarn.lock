@@ -816,15 +816,30 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@chainsafe/bit-utils@^0.1.2", "@chainsafe/bit-utils@^0.1.3":
+"@chainsafe/as-sha256@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@chainsafe/as-sha256/-/as-sha256-0.1.3.tgz#3aca29ea85d7394d644abe8b4ad112c8f31b245c"
+  integrity sha512-fBfBbkArATbgy/lQZQmtg7dETWHGM6JevXEh6yWJyC7bhwjxwjCdGsixKBPAKVhBiic3vCHFDGlKAdx1/Q1+tA==
+  dependencies:
+    assemblyscript "https://github.com/AssemblyScript/assemblyscript.git#5b510571f6ebfc5530d85412005059e4cf961a97"
+
+"@chainsafe/bit-utils@0.1.4", "@chainsafe/bit-utils@^0.1.2", "@chainsafe/bit-utils@^0.1.3":
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@chainsafe/bit-utils/-/bit-utils-0.1.4.tgz#c7fcc20f8ea916b7767b82ce6fad389db675bd4e"
 
-"@chainsafe/bls@0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@chainsafe/bls/-/bls-0.1.6.tgz#d97a69a66999c125d44f5660353c3867d96102ec"
-  integrity sha512-sEXzvowlmRQ383DimdOrGOgnEgsQSy6RJp2egNESC8iMmPn8XlPjOqJDGDx1cyBdaJKM8FMPtQHbMe+UBLfamA==
+"@chainsafe/bit-utils@^0.1.4":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@chainsafe/bit-utils/-/bit-utils-0.1.5.tgz#055b06e1e28544300caa07da9b45c736377d56a2"
+  integrity sha512-lhZaGUYuLyIcxrYRH/CA4U+wuOkC5guvBmn+y1HFifczT7K4U0CPcOFpt9ThBarevhCGvipFMBpCsUzUOcvo/g==
   dependencies:
+    assert "^2.0.0"
+
+"@chainsafe/bls@^0.1.6":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@chainsafe/bls/-/bls-0.1.7.tgz#de3e5a4220f6a5051e09d696d6654b12aa9fa967"
+  integrity sha512-AMd7gHT9Fl1Qv29zLKxlZqHFsyUn/YeKXNvGPhhpbNG8kCh+BnbQtXyxWo/ReiEKM5DzG9sLKDJgDgMqKp7KwA==
+  dependencies:
+    "@chainsafe/eth2.0-types" "^0.1.0"
     "@chainsafe/milagro-crypto-js" "0.1.3"
     assert "^1.4.1"
     js-sha256 "^0.9.0"
@@ -838,7 +853,7 @@
     "@chainsafe/eth2.0-params" "0.1.0"
     "@chainsafe/eth2.0-ssz-types" "0.1.0"
 
-"@chainsafe/eth2.0-params@0.1.0":
+"@chainsafe/eth2.0-params@0.1.0", "@chainsafe/eth2.0-params@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-params/-/eth2.0-params-0.1.0.tgz#23bbaf1b43a050bd9e14ff80863c919f48ecdcce"
   integrity sha512-yhrc6LgYV+N1GqY1dAMyRZ9nwEBEDbJh7Yaj+ItoIwI4/PKGOcn7g2ym9iL93dvjvD+x4BJ4sYKN7a+cbyaV3g==
@@ -855,7 +870,7 @@
     "@chainsafe/eth2.0-params" "0.1.0"
     "@chainsafe/ssz" "0.5.1"
 
-"@chainsafe/eth2.0-types@0.1.0", "@chainsafe/eth2.0-types@^0.1.0":
+"@chainsafe/eth2.0-types@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-types/-/eth2.0-types-0.1.0.tgz#0864e9e52570fdb40be9f34b6063b29d83ed4923"
   integrity sha512-SV8+/cLiFQrZeu9J6r3rzxB4s8ZR/QtVhMzPRtob1J+yeft5NcaDwygjUiIc4TYESr2IU/e7OvuYiEq0y/6dpw==
@@ -864,10 +879,45 @@
     "@types/bn.js" "^4.11.4"
     bn.js "^4.11.8"
 
+"@chainsafe/eth2.0-types@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-types/-/eth2.0-types-0.1.1.tgz#36f55e897e32fcb0f3a5089299335c60326c8115"
+  integrity sha512-cgff35Oa5tys6luN1YlbzNDH+aQDMaBDyGcA5q1FO8XG5l6ozffCb0s+79pIjEYPX8UZ5f87vC95QX7Z/GpI/Q==
+  dependencies:
+    "@chainsafe/bit-utils" "^0.1.4"
+    "@chainsafe/eth2.0-params" "^0.1.0"
+    "@chainsafe/ssz-type-schema" "^0.0.1"
+    "@types/bn.js" "^4.11.4"
+    bn.js "^4.11.8"
+
+"@chainsafe/eth2.0-utils@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-utils/-/eth2.0-utils-0.0.1.tgz#ea9429578e69c6d2e1be2279dbe346e734e0a76b"
+  integrity sha512-UJiPbLuarXrBLnEOQD/gdS2F0NEsTb20UY+Sgplk/8FZ/99xPuGG0vYI5z0kveDkK4e/vhwi6h4mlcRJXtxGOg==
+  dependencies:
+    "@chainsafe/as-sha256" "^0.1.3"
+    "@chainsafe/bit-utils" "0.1.4"
+    "@chainsafe/eth2.0-types" "^0.1.1"
+    "@chainsafe/ssz-type-schema" "^0.0.1"
+    bn.js "^5.0.0"
+    camelcase "^5.3.1"
+    js-yaml "^3.13.1"
+    snake-case "^2.1.0"
+
 "@chainsafe/milagro-crypto-js@0.1.3":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@chainsafe/milagro-crypto-js/-/milagro-crypto-js-0.1.3.tgz#0813b5991f53e9573174637ce9ec96576218a09b"
   integrity sha512-K0UrL+73E4Fblk9j+ZZDPXRKvriZExbtSgdel+zSSPqyhUW0OBeep2TJCVYq6RYhLgdSbGbTwiU5Ixku7jcPIg==
+
+"@chainsafe/ssz-type-schema@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@chainsafe/ssz-type-schema/-/ssz-type-schema-0.0.1.tgz#5b916df8e13dc7110440172e9309d22b44b20d79"
+  integrity sha512-UJh6u4n4UApz5WzZDAX7FX4ilDGzRmjX1wafbkGa5VxZKPaQaKB7e23XIKYKgY3PvoPUQ3uD+Ynw92nPR1xenQ==
+  dependencies:
+    "@chainsafe/bit-utils" "0.1.4"
+    "@types/bn.js" "^4.11.4"
+    assert "^2.0.0"
+    bn.js "^4.11.8"
 
 "@chainsafe/ssz@0.5.1", "@chainsafe/ssz@^0.5.1":
   version "0.5.1"
@@ -1144,6 +1194,11 @@
 "@nodelib/fs.stat@^1.1.2":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
+
+"@protobufjs/utf8@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
+  integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
 "@reach/router@^1.2.1":
   version "1.2.1"
@@ -2584,6 +2639,17 @@ asn1@~0.2.3:
   dependencies:
     safer-buffer "~2.1.0"
 
+"assemblyscript@https://github.com/AssemblyScript/assemblyscript.git#5b510571f6ebfc5530d85412005059e4cf961a97":
+  version "0.7.0"
+  resolved "https://github.com/AssemblyScript/assemblyscript.git#5b510571f6ebfc5530d85412005059e4cf961a97"
+  dependencies:
+    "@protobufjs/utf8" "^1.1.0"
+    binaryen "89.0.0-nightly.20190914"
+    glob "^7.1.4"
+    long "^4.0.0"
+    opencollective-postinstall "^2.0.0"
+    source-map-support "^0.5.13"
+
 assert-plus@1.0.0, assert-plus@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/assert-plus/-/assert-plus-1.0.0.tgz#f12e0f3c5d77b0b1cdd9146942e4e96c1e4dd525"
@@ -2594,6 +2660,16 @@ assert@^1.1.1, assert@^1.4.1:
   dependencies:
     object-assign "^4.1.1"
     util "0.10.3"
+
+assert@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/assert/-/assert-2.0.0.tgz#95fc1c616d48713510680f2eaf2d10dd22e02d32"
+  integrity sha512-se5Cd+js9dXJnu6Ag2JFc00t+HmHOen+8Q+L7O9zI0PqQXr20uk2J0XQqMxZEeo5U50o8Nvmmx7dZrl+Ufr35A==
+  dependencies:
+    es6-object-assign "^1.1.0"
+    is-nan "^1.2.1"
+    object-is "^1.0.1"
+    util "^0.12.0"
 
 assertion-error@^1.1.0:
   version "1.1.0"
@@ -3095,6 +3171,11 @@ bin-wrapper@^4.0.0, bin-wrapper@^4.0.1:
 binary-extensions@^1.0.0:
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.13.1.tgz#598afe54755b2868a5330d2aff9d4ebb53209b65"
+
+binaryen@89.0.0-nightly.20190914:
+  version "89.0.0-nightly.20190914"
+  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-89.0.0-nightly.20190914.tgz#5878787f140123fc564fb94011f4d2d2db2fe95e"
+  integrity sha512-pfGX5IwPguli8IPuPjjcCYriZ2CzoEuk0XE70g6bmibZfieDUoK7miEq0FlPLNixL+n8vvyjRSPK5NtMuCcqNg==
 
 bindings@^1.2.1, bindings@^1.5.0:
   version "1.5.0"
@@ -4451,7 +4532,7 @@ deferred-leveldown@~5.2.0:
     abstract-leveldown "~6.1.0"
     inherits "^2.0.3"
 
-define-properties@^1.1.2, define-properties@^1.1.3:
+define-properties@^1.1.1, define-properties@^1.1.2, define-properties@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/define-properties/-/define-properties-1.1.3.tgz#cf88da6cbee26fe6db7094f61d870cbd84cee9f1"
   dependencies:
@@ -4993,6 +5074,11 @@ es-to-primitive@^1.2.0:
 es5-shim@^4.5.13:
   version "4.5.13"
   resolved "https://registry.yarnpkg.com/es5-shim/-/es5-shim-4.5.13.tgz#5d88062de049f8969f83783f4a4884395f21d28b"
+
+es6-object-assign@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/es6-object-assign/-/es6-object-assign-1.1.0.tgz#c2c3582656247c39ea107cb1e6652b6f9f24523c"
+  integrity sha1-wsNYJlYkfDnqEHyx5mUrb58kUjw=
 
 es6-promise@^4.0.3:
   version "4.2.8"
@@ -6919,6 +7005,11 @@ is-generator-fn@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/is-generator-fn/-/is-generator-fn-2.1.0.tgz#7d140adc389aaf3011a8f2a2a4cfa6faadffb118"
 
+is-generator-function@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/is-generator-function/-/is-generator-function-1.0.7.tgz#d2132e529bb0000a7f80794d4bdf5cd5e5813522"
+  integrity sha512-YZc5EwyO4f2kWCax7oegfuSr9mFz1ZvieNYBEjmukLxgXfBUbxAWGVF7GZf0zidYtoBl3WvC07YK0wT76a+Rtw==
+
 is-gif@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/is-gif/-/is-gif-3.0.0.tgz#c4be60b26a301d695bb833b20d9b5d66c6cf83b1"
@@ -6956,6 +7047,13 @@ is-installed-globally@^0.1.0:
 is-jpg@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/is-jpg/-/is-jpg-2.0.0.tgz#2e1997fa6e9166eaac0242daae443403e4ef1d97"
+
+is-nan@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/is-nan/-/is-nan-1.2.1.tgz#9faf65b6fb6db24b7f5c0628475ea71f988401e2"
+  integrity sha1-n69ltvttskt/XAYoR16nH5iEAeI=
+  dependencies:
+    define-properties "^1.1.1"
 
 is-natural-number@^4.0.1:
   version "4.0.1"
@@ -7941,6 +8039,11 @@ lolex@^4.1.0, lolex@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lolex/-/lolex-4.2.0.tgz#ddbd7f6213ca1ea5826901ab1222b65d714b3cd7"
   integrity sha512-gKO5uExCXvSm6zbF562EvM+rd1kQDnB9AZBbiQVzf1ZmdDpxUSvpnAaVOP83N/31mRK8Ml8/VE8DMvsAZQ+7wg==
+
+long@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/long/-/long-4.0.0.tgz#9a7b71cfb7d361a194ea555241c92f7468d5bf28"
+  integrity sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==
 
 longest@^1.0.0:
   version "1.0.1"
@@ -10719,6 +10822,13 @@ slice-ansi@^2.1.0:
     astral-regex "^1.0.0"
     is-fullwidth-code-point "^2.0.0"
 
+snake-case@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/snake-case/-/snake-case-2.1.0.tgz#41bdb1b73f30ec66a04d4e2cad1b76387d4d6d9f"
+  integrity sha1-Qb2xtz8w7GagTU4srRt2OH1NbZ8=
+  dependencies:
+    no-case "^2.2.0"
+
 snapdragon-node@^2.0.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/snapdragon-node/-/snapdragon-node-2.1.1.tgz#6c175f86ff14bdb0724563e8f3c1b021a286853b"
@@ -11819,6 +11929,17 @@ util@^0.11.0:
   resolved "https://registry.yarnpkg.com/util/-/util-0.11.1.tgz#3236733720ec64bb27f6e26f421aaa2e1b588d61"
   dependencies:
     inherits "2.0.3"
+
+util@^0.12.0:
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/util/-/util-0.12.1.tgz#f908e7b633e7396c764e694dd14e716256ce8ade"
+  integrity sha512-MREAtYOp+GTt9/+kwf00IYoHZyjM8VU4aVrkzUlejyqaIjd2GztVl5V9hGXKlvBKE3gENn/FMfHE5v6hElXGcQ==
+  dependencies:
+    inherits "^2.0.3"
+    is-arguments "^1.0.4"
+    is-generator-function "^1.0.7"
+    object.entries "^1.1.0"
+    safe-buffer "^5.1.2"
 
 utila@^0.4.0, utila@~0.4:
   version "0.4.0"
