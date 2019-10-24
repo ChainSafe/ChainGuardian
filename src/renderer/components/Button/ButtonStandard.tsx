@@ -5,6 +5,7 @@ export interface IButtonProps {
     disabled?: boolean;
     onClick?: () => void;
     large?: boolean;
+    buttonId?: string;
 }
 export interface IBaseButtonProps extends IButtonProps{
     buttonType?: string;
@@ -24,21 +25,19 @@ const BaseButton: React.FunctionComponent<IBaseButtonProps> = ({
     onClick,
     buttonType,
     large,
-}) => (focused ? <button 
-    className={`button btn-${buttonType} focused`} 
+    buttonId,
+}) => (<button
+    id={buttonId}
+    className={`button btn-${buttonType} ${focused ? "focused" : ""}`} 
     disabled={disabled} 
     onClick={onClick}>
-    <div className={`${large ? "div-large" : ""}`}>{children}</div>
-</button> : <button 
-    className={`button btn-${buttonType}`} 
-    disabled={disabled} 
-    onClick={onClick}>
-    <div className={`${large ? "div-large" : ""}`}>{children}</div>
+    <div className={`${large ? "div-large" : "" }`}>{children}</div>
 </button>);
 
 function getButton(props: React.PropsWithChildren<IBaseButtonProps>, type: TYPES ): React.ReactElement {
     return(
         <BaseButton
+            buttonId={props.buttonId}
             disabled={props.disabled}
             focused={props.focused}
             onClick={props.onClick}
