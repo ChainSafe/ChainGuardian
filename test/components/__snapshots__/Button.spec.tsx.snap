@@ -70,6 +70,19 @@ exports[`ButtonDestructive renders focused button 1`] = `
 </button>
 `;
 
+exports[`ButtonDestructive renders id 1`] = `
+<button
+  className="button btn-primitive"
+  id="testid"
+>
+  <div
+    className=""
+  >
+    Submit
+  </div>
+</button>
+`;
+
 exports[`ButtonDestructive renders large button 1`] = `
 <button
   className="button btn-primitive"
@@ -110,6 +123,19 @@ exports[`ButtonInverted renders disabled button 1`] = `
 exports[`ButtonInverted renders focused button 1`] = `
 <button
   className="button btn-inverted focused"
+>
+  <div
+    className=""
+  >
+    Submit
+  </div>
+</button>
+`;
+
+exports[`ButtonInverted renders id 1`] = `
+<button
+  className="button btn-primitive"
+  id="testid"
 >
   <div
     className=""
@@ -168,6 +194,19 @@ exports[`ButtonPrimary renders focused button 1`] = `
 </button>
 `;
 
+exports[`ButtonPrimary renders id 1`] = `
+<button
+  className="button btn-primitive"
+  id="testid"
+>
+  <div
+    className=""
+  >
+    Submit
+  </div>
+</button>
+`;
+
 exports[`ButtonPrimary renders large button 1`] = `
 <button
   className="button btn-primitive"
@@ -217,6 +256,19 @@ exports[`ButtonPrimitive renders focused button 1`] = `
 </button>
 `;
 
+exports[`ButtonPrimitive renders id 1`] = `
+<button
+  className="button btn-primitive"
+  id="testid"
+>
+  <div
+    className=""
+  >
+    Submit
+  </div>
+</button>
+`;
+
 exports[`ButtonPrimitive renders large button 1`] = `
 <button
   className="button btn-primitive"
@@ -257,6 +309,19 @@ exports[`ButtonSecondary renders disabled button 1`] = `
 exports[`ButtonSecondary renders focused button 1`] = `
 <button
   className="button btn-secondary focused"
+>
+  <div
+    className=""
+  >
+    Submit
+  </div>
+</button>
+`;
+
+exports[`ButtonSecondary renders id 1`] = `
+<button
+  className="button btn-primitive"
+  id="testid"
 >
   <div
     className=""

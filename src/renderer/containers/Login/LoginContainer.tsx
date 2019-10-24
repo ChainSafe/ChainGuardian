@@ -24,13 +24,14 @@ export default class LoginContainer extends React.Component {
                     <p>Please enter your password or set up an account to get started.</p>
                     <div className="input-container">
                         <InputForm 
+                            inputId="inputPassword"
                             focused onChange={this.handleChange} 
                             inputValue={this.state.input} 
                             placeholder="Enter password" /> 
-                        <ButtonSecondary>GO</ButtonSecondary>
+                        <ButtonSecondary buttonId="go" >GO</ButtonSecondary>
                     </div>
                     <h5>OR</h5>
-                    <ButtonPrimary>REGISTER</ButtonPrimary>
+                    <ButtonPrimary buttonId="register" >REGISTER</ButtonPrimary>
                 </Modal>
             </Background>
         );

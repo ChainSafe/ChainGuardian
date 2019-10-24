@@ -8,6 +8,7 @@ export interface IInputFormProps {
     placeholder?: string;
     onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
     focused?: boolean;
+    inputId?: string;
 }
 
 export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInputFormProps) => {
@@ -19,24 +20,13 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
             case false : return("error");
         }
     };
-    
-    return( props.focused ?
+
+    return( 
         <form>
             <div className="label">{props.label}</div>
             <input 
-                ref={(input): any  => input && input.focus()}
-                placeholder={props.placeholder}
-                value={props.inputValue}
-                className={`inputform ${classNamesValid(props.valid)}`} 
-                onChange={props.onChange} />
-            <div 
-                className={`error-message ${(classNamesValid(props.valid) !== "error") ? "none" : "" }`}>
-                {props.errorMessage}</div>
-        </form>
-        :
-        <form>
-            <div className="label">{props.label}</div>
-            <input 
+                id={props.inputId}
+                autoFocus={props.focused}
                 placeholder={props.placeholder}
                 value={props.inputValue}
                 className={`inputform ${classNamesValid(props.valid)}`} 

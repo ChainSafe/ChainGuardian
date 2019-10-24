@@ -40,14 +40,24 @@ describe("Main window", () => {
         expect(title).toBe("Webpack App");
     });
 
-    it("GO button loads", async () => {
+    it("buttons load text", async () => {
         const {client} = app;
-
-        //Property 'findElement' does not exist on type 'SpectronClient'.
-        const goButtonSelected = await client.findElement(by.className("btn-secondary"));
-        const goButtonText = await client.getText(goButtonSelected);
+        
+        const goButtonText = await client.getText("#go");
+        const registerButtonText = await client.getText("#register");
+        
         expect(goButtonText).toBe("GO");
+        expect(registerButtonText).toBe("REGISTER");
     }
     );
 
+    it("input field test", async () => {
+        const {client} = app;
+
+        await client.addValue(".inputform", "testinput");
+        const inputValue = await client.getValue(".inputform");
+        
+        expect(inputValue).toBe("testinput");
+    }
+    );
 });

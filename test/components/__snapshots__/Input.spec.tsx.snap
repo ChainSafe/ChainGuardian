@@ -42,7 +42,25 @@ exports[`InputForm renders focused input 1`] = `
     Input
   </div>
   <input
+    autoFocus={true}
     className="inputform "
+  />
+  <div
+    className="error-message none"
+  />
+</form>
+`;
+
+exports[`InputForm renders input id 1`] = `
+<form>
+  <div
+    className="label"
+  >
+    Input
+  </div>
+  <input
+    className="inputform "
+    id="testid"
   />
   <div
     className="error-message none"
