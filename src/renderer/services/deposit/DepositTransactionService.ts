@@ -1,18 +1,17 @@
 import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
-import bls from "@chainsafe/bls";
 import {BLSPubkey as BLSPubKey, bytes, DepositData} from "@chainsafe/eth2.0-types";
 import {createHash} from "crypto";
 import {signingRoot} from "@chainsafe/ssz";
 import abi from "ethereumjs-abi";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
-import {IDepositParams, ITx} from "./types";
+import {ITx} from "./types";
 import Wallet from "ethereumjs-wallet";
 import {Transaction} from "ethereumjs-tx";
 import {functionSignatureFromABI} from "./utils";
 import {EthConverter, toHexString} from "../utils/crypto-utils";
 import options from "../../../../src/renderer/services/deposit/options";
 import {depositAmountInEth, depositBLSDomain} from "./constants";
-import { G2point } from '@chainsafe/bls/lib/helpers/g2point';
+import {G2point} from "@chainsafe/bls/lib/helpers/g2point";
 
 /**
  * Generate deposit params.
@@ -63,10 +62,10 @@ export class DepositTx implements ITx{
      * @param depositParams
      * @param depositContractAddress
      */
-    static generateDepositTx(depositParams: IDepositParams, depositContractAddress: string): DepositTx {
+    static generateDepositTx(depositParams: DepositData, depositContractAddress: string): DepositTx {
         const depositFunctionEncoded = abi.simpleEncode(
             functionSignatureFromABI(options.depositContract.abi, "deposit"),
-            depositParams.publicKey,
+            depositParams.pubkey,
             depositParams.withdrawalCredentials,
             depositParams.signature,
         );
