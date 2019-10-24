@@ -35,7 +35,7 @@ exports[`BackTab renders correctly 1`] = `
 
 exports[`ButtonDestructive renders correctly 1`] = `
 <button
-  className="button btn-destructive"
+  className="button btn-destructive "
 >
   <div
     className=""
@@ -47,7 +47,7 @@ exports[`ButtonDestructive renders correctly 1`] = `
 
 exports[`ButtonDestructive renders disabled button 1`] = `
 <button
-  className="button btn-destructive"
+  className="button btn-destructive "
   disabled={true}
 >
   <div
@@ -72,7 +72,7 @@ exports[`ButtonDestructive renders focused button 1`] = `
 
 exports[`ButtonDestructive renders id 1`] = `
 <button
-  className="button btn-primitive"
+  className="button btn-primitive "
   id="testid"
 >
   <div
@@ -85,7 +85,7 @@ exports[`ButtonDestructive renders id 1`] = `
 
 exports[`ButtonDestructive renders large button 1`] = `
 <button
-  className="button btn-primitive"
+  className="button btn-primitive "
 >
   <div
     className="div-large"
@@ -97,7 +97,7 @@ exports[`ButtonDestructive renders large button 1`] = `
 
 exports[`ButtonInverted renders correctly 1`] = `
 <button
-  className="button btn-inverted"
+  className="button btn-inverted "
 >
   <div
     className=""
@@ -109,7 +109,7 @@ exports[`ButtonInverted renders correctly 1`] = `
 
 exports[`ButtonInverted renders disabled button 1`] = `
 <button
-  className="button btn-inverted"
+  className="button btn-inverted "
   disabled={true}
 >
   <div
@@ -134,7 +134,7 @@ exports[`ButtonInverted renders focused button 1`] = `
 
 exports[`ButtonInverted renders id 1`] = `
 <button
-  className="button btn-primitive"
+  className="button btn-primitive "
   id="testid"
 >
   <div
@@ -147,7 +147,7 @@ exports[`ButtonInverted renders id 1`] = `
 
 exports[`ButtonInverted renders large button 1`] = `
 <button
-  className="button btn-primitive"
+  className="button btn-primitive "
 >
   <div
     className="div-large"
@@ -159,7 +159,7 @@ exports[`ButtonInverted renders large button 1`] = `
 
 exports[`ButtonPrimary renders correctly 1`] = `
 <button
-  className="button btn-primary"
+  className="button btn-primary "
 >
   <div
     className=""
@@ -171,7 +171,7 @@ exports[`ButtonPrimary renders correctly 1`] = `
 
 exports[`ButtonPrimary renders disabled button 1`] = `
 <button
-  className="button btn-primary"
+  className="button btn-primary "
   disabled={true}
 >
   <div
@@ -196,7 +196,7 @@ exports[`ButtonPrimary renders focused button 1`] = `
 
 exports[`ButtonPrimary renders id 1`] = `
 <button
-  className="button btn-primitive"
+  className="button btn-primitive "
   id="testid"
 >
   <div
@@ -209,7 +209,7 @@ exports[`ButtonPrimary renders id 1`] = `
 
 exports[`ButtonPrimary renders large button 1`] = `
 <button
-  className="button btn-primitive"
+  className="button btn-primitive "
 >
   <div
     className="div-large"
@@ -221,7 +221,7 @@ exports[`ButtonPrimary renders large button 1`] = `
 
 exports[`ButtonPrimitive renders correctly 1`] = `
 <button
-  className="button btn-primitive"
+  className="button btn-primitive "
 >
   <div
     className=""
@@ -233,7 +233,7 @@ exports[`ButtonPrimitive renders correctly 1`] = `
 
 exports[`ButtonPrimitive renders disabled button 1`] = `
 <button
-  className="button btn-primitive"
+  className="button btn-primitive "
   disabled={true}
 >
   <div
@@ -258,7 +258,7 @@ exports[`ButtonPrimitive renders focused button 1`] = `
 
 exports[`ButtonPrimitive renders id 1`] = `
 <button
-  className="button btn-primitive"
+  className="button btn-primitive "
   id="testid"
 >
   <div
@@ -271,7 +271,7 @@ exports[`ButtonPrimitive renders id 1`] = `
 
 exports[`ButtonPrimitive renders large button 1`] = `
 <button
-  className="button btn-primitive"
+  className="button btn-primitive "
 >
   <div
     className="div-large"
@@ -283,7 +283,7 @@ exports[`ButtonPrimitive renders large button 1`] = `
 
 exports[`ButtonSecondary renders correctly 1`] = `
 <button
-  className="button btn-secondary"
+  className="button btn-secondary "
 >
   <div
     className=""
@@ -295,7 +295,7 @@ exports[`ButtonSecondary renders correctly 1`] = `
 
 exports[`ButtonSecondary renders disabled button 1`] = `
 <button
-  className="button btn-secondary"
+  className="button btn-secondary "
   disabled={true}
 >
   <div
@@ -320,7 +320,7 @@ exports[`ButtonSecondary renders focused button 1`] = `
 
 exports[`ButtonSecondary renders id 1`] = `
 <button
-  className="button btn-primitive"
+  className="button btn-primitive "
   id="testid"
 >
   <div
@@ -333,7 +333,7 @@ exports[`ButtonSecondary renders id 1`] = `
 
 exports[`ButtonSecondary renders large button 1`] = `
 <button
-  className="button btn-primitive"
+  className="button btn-primitive "
 >
   <div
     className="div-large"
