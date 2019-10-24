@@ -10,7 +10,7 @@ import {Transaction} from "ethereumjs-tx";
 import {functionSignatureFromABI} from "./utils";
 import {EthConverter, toHexString} from "../utils/crypto-utils";
 import options from "../../../../src/renderer/services/deposit/options";
-import {depositAmountInEth, depositBLSDomain} from "./constants";
+import {depositAmountInEth, depositBLSDomain, gasLimitDepositTransaction} from "./constants";
 import {G2point} from "@chainsafe/bls/lib/helpers/g2point";
 
 /**
@@ -83,7 +83,7 @@ export class DepositTx implements ITx{
     sign(wallet: Wallet): string {
         const txData = {
             ...this,
-            gasLimit: "0x1E8480", // TODO gasLimit ?
+            gasLimit: gasLimitDepositTransaction,
         };
         const tx = new Transaction(txData);
         tx.sign(wallet.getPrivateKey());

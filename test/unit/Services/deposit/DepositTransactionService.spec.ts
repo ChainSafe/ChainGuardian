@@ -1,49 +1,52 @@
 import {generateDeposit, DepositTx} from "../../../../src/renderer/services/deposit/DepositTransactionService";
 import {ethers} from "ethers";
-import {deployDepositContract, generateKeyPair} from "./deposit-test-util";
+import {deployDepositContract} from "./deposit-test-util";
 import eth1WalletProvider from "ethereumjs-wallet";
-import {Keypair} from "@chainsafe/bls/lib/keypair";
+import hdkey from "ethereumjs-wallet/hdkey";
+import Wallet from "ethereumjs-wallet";
+import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
+import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
+import {toHexString} from "../../../../src/renderer/services/utils/crypto-utils";
+
 // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
 const ganache = require("ganache-cli");
 
 describe("Deposit transaction service unit tests", () => {
-    let account: Keypair;
-    let deployAccount: Keypair;
+    let wallet: Wallet;
     let provider: ethers.providers.Web3Provider;
-    let depositContract: string;
+    let depositContractAddress: string;
 
     beforeAll(async () => {
-        deployAccount = generateKeyPair(125);
-        account = generateKeyPair(124);
+        // create accounts and deploy deposit contract
+        const deployPrivateKey = hdkey.fromMasterSeed(Buffer.from([0])).getWallet().getPrivateKey();
+        const accountPrivateKey = hdkey.fromMasterSeed(Buffer.from([1])).getWallet().getPrivateKey();
+        wallet = eth1WalletProvider.fromPrivateKey(accountPrivateKey);
         provider = new ethers.providers.Web3Provider(ganache.provider({
             accounts: [{
                 balance: "100000000000000000000",
-                secretKey: account.privateKey.toHexString(),
+                secretKey: toHexString(accountPrivateKey),
             },
             {
                 balance: "100000000000000000000",
-                secretKey: deployAccount.privateKey.toHexString(),
+                secretKey: toHexString(deployPrivateKey),
             }],
         }));
-        depositContract = await deployDepositContract(provider, deployAccount.privateKey.toHexString());
+        depositContractAddress = await deployDepositContract(provider, toHexString(deployPrivateKey));
     });
 
-    it.skip("Generate deposit params successfully", async () => {
-        const res = generateDeposit(generateKeyPair(124), Buffer.alloc(48, 1,"hex"));
-        expect(res).toBeDefined();
-    }, 20000);
-
-    it("Generate deposit transaction successfully", async () => {
-        const depositParams = generateDeposit(account, Buffer.alloc(48, 1,"hex"));
-        const tx = DepositTx.generateDepositTx(depositParams, depositContract);
-        const wallet = eth1WalletProvider.fromPrivateKey(account.privateKey.toBytes());
-        // const wallet = new ethers.Wallet(prKey2.privateKey.toHexString(), provider);
-        const signedTx = await tx.sign(wallet);
-        const rs = await provider.sendTransaction(`0x${signedTx}`);
-        if (rs.hash) {
-            const t = await provider.getTransactionReceipt(rs.hash);
-            expect(t).toBeDefined();
+    it("should send deposit transaction successfully", async () => {
+        const keyPair = new KeyPair(PrivateKey.fromHexString(wallet.getPrivateKeyString()));
+        const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1,"hex"));
+        const depositTx = DepositTx.generateDepositTx(depositData, depositContractAddress);
+        const signedTx = await depositTx.sign(wallet);
+        const transactionResponse = await provider.sendTransaction(toHexString(signedTx));
+        expect(transactionResponse).toBeDefined();
+        expect(transactionResponse.hash).toBeDefined();
+        if (transactionResponse.hash) {
+            const receipt = await provider.getTransactionReceipt(transactionResponse.hash);
+            expect(receipt).toBeDefined();
+            expect(receipt.confirmations).toBeGreaterThan(0);
+            expect(receipt.status).toBe(1);
         }
-        expect(rs).toBeDefined();
-    }, 40000);
+    });
 });
