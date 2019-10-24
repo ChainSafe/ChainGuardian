@@ -13,8 +13,6 @@ import {EthConverter, toHexString} from "../utils/crypto-utils";
 import options from "../../../../src/renderer/services/deposit/options";
 import {depositAmountInEth, depositBLSDomain} from "./constants";
 
-// Deposit ETH 2.0
-
 /**
  * Generate deposit params.
  *
@@ -82,7 +80,7 @@ export class DepositTx implements ITx{
     }
 
     /**
-     * 
+     *
      * @param wallet
      */
     sign(wallet: Wallet): string {

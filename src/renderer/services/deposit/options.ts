@@ -1,5 +1,8 @@
 import {number64} from "@chainsafe/eth2.0-types";
 
+/**
+ * Defines properties of deposit contract.
+ */
 export interface IEth1Options {
     depositContract: {
         deployedAt: number64;
