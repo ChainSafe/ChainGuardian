@@ -4,6 +4,10 @@ exports[`Background renders basic background 1`] = `
 <div
   className="background"
 >
+  <img
+    className="logo"
+    src="test-file-stub"
+  />
   <div
     className="children"
   />
@@ -17,6 +21,10 @@ exports[`Background renders correctly 1`] = `
   <div
     className="illustration"
   >
+    <img
+      className="logo"
+      src="test-file-stub"
+    />
     <div
       className="children"
     />
