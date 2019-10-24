@@ -19,7 +19,15 @@ const createWindow = async () => {
         await installExtensions();
     }
 
-    win = new BrowserWindow({width: 800, height: 600, webPreferences: {nodeIntegration: true}});
+    win = new BrowserWindow({
+        webPreferences: {nodeIntegration: true},
+        backgroundColor: "#052437",
+        show: false
+    });
+    win.maximize();
+    win.once("ready-to-show", () => {
+        if (win !== null) { win.show(); }
+    });
 
     if (process.env.NODE_ENV !== "production") {
         process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "1";
