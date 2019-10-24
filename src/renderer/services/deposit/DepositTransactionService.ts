@@ -12,6 +12,7 @@ import {functionSignatureFromABI} from "./utils";
 import {EthConverter, toHexString} from "../utils/crypto-utils";
 import options from "../../../../src/renderer/services/deposit/options";
 import {depositAmountInEth, depositBLSDomain} from "./constants";
+import { G2point } from '@chainsafe/bls/lib/helpers/g2point';
 
 /**
  * Generate deposit params.
@@ -21,7 +22,7 @@ import {depositAmountInEth, depositBLSDomain} from "./constants";
  *
  * @return instance of ${DepositData}
  */
-export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey): IDepositParams {
+export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey): DepositData {
     // signing public key
     const publicKey = signingKey.publicKey.toBytesCompressed();
     // BLS_WITHDRAWAL_PREFIX + hash(withdrawal_pubkey)[1:]
@@ -39,13 +40,10 @@ export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey
     // calculate root
     const root = signingRoot(depositData, config.types.DepositData);
     // sign calculated root
-    const signature = bls.sign(signingKey.privateKey.toBytes(), root, depositBLSDomain);
-    return {
-        publicKey,
-        withdrawalCredentials,
-        signature,
-        root
-    } as IDepositParams;
+    depositData.signature = signingKey.privateKey.sign(
+        G2point.hashToG2(root, depositBLSDomain)
+    ).toBytesCompressed();
+    return depositData;
 }
 
 
