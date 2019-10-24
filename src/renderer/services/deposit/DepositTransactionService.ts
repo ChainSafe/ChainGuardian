@@ -2,25 +2,15 @@ import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
 import bls from "@chainsafe/bls";
 import {BLSPubkey as BLSPubKey, bytes, DepositData} from "@chainsafe/eth2.0-types";
 import {createHash} from "crypto";
-import BN from "bn.js";
 import {signingRoot} from "@chainsafe/ssz";
-import {BLSDomain} from "@chainsafe/bls/lib/types";
 import abi from "ethereumjs-abi";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {IDepositParams, ITx} from "./types";
-import {Wallet} from "ethers";
-import {TransactionRequest} from "ethers/providers";
-
-// fixed deposit amount
-const depositAmountInEth = 32;
-
-// fixed BLS domain -> deposit = 3
-const depositBLSDomain: BLSDomain =
-    // domain_type + fork_version
-    Buffer.concat([new BN(3).toArrayLike(Buffer, "le", 4), Buffer.alloc(4)]);
-
-// definition of contracts deposit function
-const depositFunctionSignature = "deposit(bytes,bytes,bytes,bytes32)";
+import Wallet from "ethereumjs-wallet";
+import {Transaction} from "ethereumjs-tx";
+import {functionSignatureFromABI, toGwei, toHexString, toWei} from "./utils";
+import options from "../../../../src/renderer/services/deposit/options";
+import {depositAmountInEth, depositBLSDomain} from "./constants";
 
 // Deposit ETH 2.0
 
@@ -44,7 +34,7 @@ export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey
     const depositData: DepositData = {
         pubkey: publicKey,
         withdrawalCredentials: withdrawalCredentials,
-        amount: new BN(depositAmountInEth * 1e9),
+        amount: toGwei(depositAmountInEth),
         signature: Buffer.alloc(0)
     };
     // calculate root
@@ -73,25 +63,25 @@ export class DepositTx implements ITx{
 
     static generateDepositTx(depositParams: IDepositParams, depositContractAddress: string): DepositTx {
         const depositFunctionEncoded = abi.simpleEncode(
-            depositFunctionSignature,
+            functionSignatureFromABI(options.depositContract.abi, "deposit"),
             depositParams.publicKey,
             depositParams.withdrawalCredentials,
             depositParams.signature,
-            depositParams.root
         );
         return new DepositTx(
             depositFunctionEncoded,
             depositContractAddress,
-            `0x${(new BN("1000000000000000000").mul(new BN(32))).toString("hex")}`
+            toHexString(toWei(depositAmountInEth))
         );
     }
 
-    async sign(wallet: Wallet): Promise<string> {
-        const tx: TransactionRequest = {
+    sign(wallet: Wallet): string {
+        const txData = {
             ...this,
-            nonce: await wallet.provider.getTransactionCount(wallet.address),
             gasLimit: "0x1E8480", // TODO gasLimit ?
         };
-        return wallet.sign(tx);
+        const tx = new Transaction(txData);
+        tx.sign(wallet.getPrivateKey());
+        return tx.serialize().toString("hex");
     }
 }
