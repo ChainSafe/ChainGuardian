@@ -1,6 +1,6 @@
 import {generateDeposit, DepositTx} from "../../../../src/renderer/services/deposit/DepositTransactionService";
 import {ethers} from "ethers";
-import {deployDepositContract, generateKeyPair} from "./utils";
+import {deployDepositContract, generateKeyPair} from "./deposit-test-util";
 import eth1WalletProvider from "ethereumjs-wallet";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
