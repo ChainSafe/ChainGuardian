@@ -26,18 +26,12 @@ const BaseButton: React.FunctionComponent<IBaseButtonProps> = ({
     buttonType,
     large,
     buttonId,
-}) => (focused ? <button
+}) => (<button
     id={buttonId}
-    className={`button btn-${buttonType} focused`} 
+    className={`button btn-${buttonType} ${focused ? "focused" : ""}`} 
     disabled={disabled} 
     onClick={onClick}>
     <div className={`${large ? "div-large" : "" }`}>{children}</div>
-</button> : <button 
-    id={buttonId}
-    className={`button btn-${buttonType}`} 
-    disabled={disabled} 
-    onClick={onClick}>
-    <div className={`${large ? "div-large" : ""}`}>{children}</div>
 </button>);
 
 function getButton(props: React.PropsWithChildren<IBaseButtonProps>, type: TYPES ): React.ReactElement {
