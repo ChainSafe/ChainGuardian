@@ -42,7 +42,7 @@ describe("Main window", () => {
 
     it("buttons load text", async () => {
         const {client} = app;
-        
+        await client.waitUntilWindowLoaded();
         const goButtonText = await client.getText("#go");
         const registerButtonText = await client.getText("#register");
         
@@ -53,7 +53,7 @@ describe("Main window", () => {
 
     it("input field test", async () => {
         const {client} = app;
-
+        await client.waitUntilWindowLoaded();
         await client.addValue(".inputform", "testinput");
         const inputValue = await client.getValue(".inputform");
         
