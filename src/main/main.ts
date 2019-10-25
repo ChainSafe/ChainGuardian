@@ -18,15 +18,18 @@ const createWindow = async () => {
     if (process.env.NODE_ENV !== "production") {
         await installExtensions();
     }
-
     win = new BrowserWindow({
         webPreferences: {nodeIntegration: true},
         backgroundColor: "#052437",
-        show: false
+        show: false,
+        icon: path.join(__dirname, '../src/renderer/assets/ico/app_icon.png'), // wont work on macOS
     });
     win.maximize();
     win.once("ready-to-show", () => {
         if (win !== null) { win.show(); }
+    });
+    win.webContents.on("did-finish-load", () => {
+        if (win !== null) { win.setTitle("ChainGuardian"); }
     });
 
     if (process.env.NODE_ENV !== "production") {
