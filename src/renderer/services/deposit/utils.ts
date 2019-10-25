@@ -4,7 +4,6 @@ import {createHash} from "crypto";
 import {signingRoot} from "@chainsafe/ssz";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {DEPOSIT_AMOUNT, DEPOSIT_DOMAIN} from "./constants";
-import {G2point} from "@chainsafe/bls/lib/helpers/g2point";
 import {EthConverter} from "../utils/crypto-utils";
 
 /**

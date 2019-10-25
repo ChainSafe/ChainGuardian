@@ -5,7 +5,7 @@ import Wallet from "ethereumjs-wallet";
 import {Transaction} from "ethereumjs-tx";
 import {functionSignatureFromABI} from "./utils";
 import {EthConverter, toHexString} from "../utils/crypto-utils";
-import options from "../../../../src/renderer/services/deposit/options";
+import DepositContract from "../../../../src/renderer/services/deposit/options";
 import {DEPOSIT_AMOUNT, DEPOSIT_TX_GAS} from "./constants";
 
 export class DepositTx implements ITx{
@@ -26,7 +26,7 @@ export class DepositTx implements ITx{
      */
     static generateDepositTx(depositParams: DepositData, depositContractAddress: string): DepositTx {
         const depositFunctionEncoded = abi.simpleEncode(
-            functionSignatureFromABI(options.depositContract.abi, "deposit"),
+            functionSignatureFromABI(DepositContract.abi, "deposit"),
             depositParams.pubkey,
             depositParams.withdrawalCredentials,
             depositParams.signature,
