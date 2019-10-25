@@ -1,9 +1,12 @@
-import {SimpleContainerType} from "@chainsafe/ssz";
+import {SimpleContainerType, Type} from "@chainsafe/ssz";
 
-export const Account = (): SimpleContainerType => ({
+// @ts-ignore
+export const Account: SimpleContainerType = {
+    // @ts-ignore
+    type: Type.container,
     fields: [
         ["name", "bytes512"],
         ["directory", "bytes512"],
         ["sendStats", "bool"],
     ],
-});
+};

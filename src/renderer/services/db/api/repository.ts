@@ -19,7 +19,7 @@ export abstract class Repository<T> {
 
     protected serializer: ICGSerialization<any>;
 
-    protected constructor(
+    public constructor(
         config: IBeaconConfig,
         db: IDatabaseController,
         serializer: ICGSerialization<any>,
