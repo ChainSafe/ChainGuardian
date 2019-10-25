@@ -102,7 +102,7 @@ const template = [
                 click: async () => {
                     // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
                     const {shell} = require("electron");
-                    await shell.openExternal("https://github.com/NodeFactoryIo/ChainGuardian");
+                    await shell.openExternal("https://github.com/NodeFactoryIo/ChainGuardian/issues");
                 }
             }
         ]
