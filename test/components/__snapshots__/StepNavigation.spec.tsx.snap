@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StepNavigation renders correctly 1`] = `
+<div
+  className="step-container"
+>
+  <div
+    className="step current"
+  >
+    Signing key
+  </div>
+  <div
+    className="step "
+  >
+    Withdrawal key
+  </div>
+  <div
+    className="step "
+  >
+    Password
+  </div>
+  <div
+    className="step "
+  >
+    Configure
+  </div>
+  <div
+    className="step "
+  >
+    Consent
+  </div>
+  ;
+</div>
+`;
