@@ -1134,11 +1134,6 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@machinomy/types-ethereumjs-units@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@machinomy/types-ethereumjs-units/-/types-ethereumjs-units-0.0.2.tgz#6e508fa16a89893b1d8bf9977e6b4db34da0b6a3"
-  integrity sha1-blCPoWqJiTsdi/mXfmtNs02gtqM=
-
 "@machinomy/types-ethereumjs-wallet@^0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@machinomy/types-ethereumjs-wallet/-/types-ethereumjs-wallet-0.0.12.tgz#6512c287d2b7662bb3562a8c755e6b3bc5e13711"

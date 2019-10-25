@@ -64,8 +64,7 @@
     "**/src/**/*.ts",
     "**/src/**/*.tsx",
     "**/test/**/*.ts",
-    "**/test/**/*.tsx",
-    "./node_modules/@machinomy/types-ethereumjs-units/index.d.ts"
+    "**/test/**/*.tsx"
   ],
   "exclude": [
     "**/*.stories.tsx"
