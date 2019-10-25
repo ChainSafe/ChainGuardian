@@ -15,7 +15,7 @@ export const StepNavigation: React.FunctionComponent<IStepNavigationProps> = (pr
                     key={n.stepId}>
                     {n.stepName}
                 </div>;
-            })};
+            })}
         </div>
     );
 };

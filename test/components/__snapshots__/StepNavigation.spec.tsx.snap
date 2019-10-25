@@ -29,6 +29,5 @@ exports[`StepNavigation renders correctly 1`] = `
   >
     Consent
   </div>
-  ;
 </div>
 `;
