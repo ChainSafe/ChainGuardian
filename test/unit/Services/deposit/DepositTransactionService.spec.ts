@@ -1,4 +1,3 @@
-import {generateDeposit, DepositTx} from "../../../../src/renderer/services/deposit/DepositTransactionService";
 import {ethers} from "ethers";
 import {deployDepositContract} from "./deposit-test-util";
 import eth1WalletProvider from "ethereumjs-wallet";
@@ -7,6 +6,7 @@ import Wallet from "ethereumjs-wallet";
 import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {toHexString} from "../../../../src/renderer/services/utils/crypto-utils";
+import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
 const ganache = require("ganache-cli");

@@ -1,50 +1,12 @@
-import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
-import {BLSPubkey as BLSPubKey, bytes, DepositData} from "@chainsafe/eth2.0-types";
-import {createHash} from "crypto";
-import {signingRoot} from "@chainsafe/ssz";
+import {bytes, DepositData} from "@chainsafe/eth2.0-types";
 import abi from "ethereumjs-abi";
-import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {ITx} from "./types";
 import Wallet from "ethereumjs-wallet";
 import {Transaction} from "ethereumjs-tx";
 import {functionSignatureFromABI} from "./utils";
 import {EthConverter, toHexString} from "../utils/crypto-utils";
 import options from "../../../../src/renderer/services/deposit/options";
-import {DEPOSIT_AMOUNT, DEPOSIT_DOMAIN, DEPOSIT_TX_GAS} from "./constants";
-import {G2point} from "@chainsafe/bls/lib/helpers/g2point";
-
-/**
- * Generate deposit params.
- *
- * @param signingKey
- * @param withdrawalPubKey
- *
- * @return instance of ${DepositData}
- */
-export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey): DepositData {
-    // signing public key
-    const publicKey = signingKey.publicKey.toBytesCompressed();
-    // BLS_WITHDRAWAL_PREFIX + hash(withdrawal_pubkey)[1:]
-    const withdrawalCredentials = Buffer.concat([
-        Buffer.alloc(1),
-        createHash("sha256").update(withdrawalPubKey).digest().subarray(1)
-    ]);
-    // define DepositData
-    const depositData: DepositData = {
-        pubkey: publicKey,
-        withdrawalCredentials: withdrawalCredentials,
-        amount: EthConverter.toGwei(DEPOSIT_AMOUNT),
-        signature: Buffer.alloc(0)
-    };
-    // calculate root
-    const root = signingRoot(depositData, config.types.DepositData);
-    // sign calculated root
-    depositData.signature = signingKey.privateKey.sign(
-        G2point.hashToG2(root, DEPOSIT_DOMAIN)
-    ).toBytesCompressed();
-    return depositData;
-}
-
+import {DEPOSIT_AMOUNT, DEPOSIT_TX_GAS} from "./constants";
 
 export class DepositTx implements ITx{
     data: string | bytes;

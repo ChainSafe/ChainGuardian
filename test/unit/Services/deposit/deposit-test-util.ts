@@ -1,13 +1,6 @@
-import {Keypair, Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
-import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
-import BN from "bn.js";
 import {ethers} from "ethers";
 import config from "../../../../src/renderer/services/deposit/options";
 import {SigningKey} from "ethers/utils";
-
-export function generateKeyPair(seed: number): KeyPair {
-    return new Keypair(PrivateKey.fromBytes(new BN(seed).toArrayLike(Buffer, "le", 32)));
-}
 
 export async function deployDepositContract(testProvider: any, prKey: string): Promise<string> {
     const deployKey: SigningKey = new SigningKey(prKey);
