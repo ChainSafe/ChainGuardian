@@ -2,6 +2,7 @@
 import {app, BrowserWindow} from "electron";
 import path from "path";
 import url from "url";
+import { setApplicationMenu } from './menu';
 
 let win: BrowserWindow | null;
 
@@ -55,6 +56,8 @@ const createWindow = async () => {
     win.on("closed", () => {
         win = null;
     });
+
+    setApplicationMenu();
 };
 
 app.on("ready", createWindow);
