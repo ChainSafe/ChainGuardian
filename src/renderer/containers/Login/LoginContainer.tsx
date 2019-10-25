@@ -33,7 +33,7 @@ export default class LoginContainer extends React.Component {
                     </div>
                     <h5>OR</h5>
                     <Link to="/onboard">
-                        <ButtonPrimary>REGISTER</ButtonPrimary>
+                        <ButtonPrimary buttonId="register">REGISTER</ButtonPrimary>
                     </Link>
                 </Modal>
             </Background>
