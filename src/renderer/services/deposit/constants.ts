@@ -2,10 +2,10 @@ import {BLSDomain} from "@chainsafe/bls/lib/types";
 import BN from "bn.js";
 
 // defined amount to deposit
-export const depositAmountInEth = 32;
+export const DEPOSIT_AMOUNT = 32;
 
 // domain_type + fork_version
-export const depositBLSDomain: BLSDomain =
+export const DEPOSIT_DOMAIN: BLSDomain =
     Buffer.concat([new BN(3).toArrayLike(Buffer, "le", 4), Buffer.alloc(4)]);
 
-export const gasLimitDepositTransaction = "0x1E8480";
+export const DEPOSIT_TX_GAS = "0x1E8480";
