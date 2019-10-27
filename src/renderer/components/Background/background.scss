@@ -2,11 +2,15 @@
     height: 1024px;
     background: url(../assets/img/background/Background.svg);
     z-index: 1;
+    height: 100vh;
 }
 .illustration{
-    background: url(../assets/img/background/Illustration.svg) no-repeat right;
+    background: url(../assets/img/background/Illustration.svg) no-repeat right bottom;
     z-index: 2;
     height: 100%;
+}
+.logo{
+    padding: 48px;
 }
 .children{
     display: flex;

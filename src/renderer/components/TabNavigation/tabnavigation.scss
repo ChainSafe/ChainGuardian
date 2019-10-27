@@ -1,0 +1,24 @@
+.tab-container{
+    width: 768px;
+    display: flex;
+    
+    border-bottom: 2px solid $neutral-500;
+}
+.tab{
+    text-align: center;
+    margin-bottom: 2px;
+    transition : border 500ms ease-out;
+    color: $neutral-400;
+    padding: 14px;
+    font-family: 'Palanquin', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 22px;
+    letter-spacing: 0.02em;
+    &.current-tab{
+        margin-bottom: -2px;
+        border-bottom: 4px solid $secondary-green-300;
+        color:$secondary-green-300;
+    }
+}
