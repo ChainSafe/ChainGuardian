@@ -25,15 +25,4 @@ export class AccountRepository extends Repository<CGAccount> {
             return null;
         }
     }
-
-    public async set(id: Id, value: CGAccount): Promise<void> {
-        const parsedAccount = {
-            name: value.name,
-            directory: value.directory,
-            sendStats: value.sendStats
-        };
-
-        //@ts-ignore
-        return super.set(id, parsedAccount);
-    }
 }

@@ -1,8 +1,6 @@
-import {SimpleContainerType, Type} from "@chainsafe/ssz";
+import {Type, AnyContainerType} from "@chainsafe/ssz";
 
-// @ts-ignore
-export const Account: SimpleContainerType = {
-    // @ts-ignore
+export const Account: AnyContainerType = {
     type: Type.container,
     fields: [
         ["name", "bytes512"],
