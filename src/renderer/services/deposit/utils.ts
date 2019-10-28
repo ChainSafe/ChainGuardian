@@ -33,12 +33,12 @@ export function functionSignatureFromABI(rawAbi: (string | any)[] | string, func
 }
 
 /**
- * Generate deposit params.
+ * Generate deposit params as instance of @{DepositData}.
  *
- * @param signingKey
- * @param withdrawalPubKey
+ * @param signingKey - signing @{KeyPair}.
+ * @param withdrawalPubKey - withdrawal public key.
  *
- * @return instance of ${DepositData}
+ * @return instance of ${DepositData} defining deposit transaction.
  */
 export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey): DepositData {
     // signing public key

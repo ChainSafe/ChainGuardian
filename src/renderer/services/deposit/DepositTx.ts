@@ -20,9 +20,10 @@ export class DepositTx implements ITx{
     }
 
     /**
+     * Create instance of @{DepositTx} from arguments.
      *
-     * @param depositParams
-     * @param depositContractAddress
+     * @param depositParams - @{DepositData} object.
+     * @param depositContractAddress - address of deployed deposit contract.
      */
     static generateDepositTx(depositParams: DepositData, depositContractAddress: string): DepositTx {
         const depositFunctionEncoded = abi.simpleEncode(
@@ -39,8 +40,10 @@ export class DepositTx implements ITx{
     }
 
     /**
+     * Sign this transaction using provided wallet.
      *
-     * @param wallet
+     * @param wallet - ethereumjs-wallet instance of wallet.
+     * @return - transaction signature.
      */
     sign(wallet: Wallet): string {
         const txData = {

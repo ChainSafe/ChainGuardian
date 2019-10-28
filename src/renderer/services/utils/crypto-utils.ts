@@ -1,9 +1,9 @@
 import BN from "bn.js";
 
 /**
- * Converts string / Buffer / BN to hex string prefixed with 0x
+ * Converts string / Buffer / BN to hex string prefixed with 0x.
  *
- * @param data - that is converted
+ * @param data - that is converted.
  */
 export function toHexString(data: string | Buffer | BN): string {
     const hexString: string = (typeof data === "string") ? data : data.toString("hex");
@@ -11,7 +11,7 @@ export function toHexString(data: string | Buffer | BN): string {
 }
 
 /**
- * Provides methods to convert amount defined in eth to wei / gwei
+ * Provides methods to convert amount defined in eth to wei / gwei.
  */
 export const EthConverter = {
     toGwei,
