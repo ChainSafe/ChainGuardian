@@ -12,7 +12,7 @@ class JSONSZ implements ICGSerialization<AnySSZType> {
     public serialize(value: any, type: AnySSZType): Buffer {
         let processedValue = value;
         // @ts-ignore
-        if(type.type === Type.container) {
+        if(type.fields !== undefined) {
             // Extract static values from object
             const parsedTypes: string[] = [];
             // @ts-ignore
