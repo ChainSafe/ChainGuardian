@@ -37,7 +37,7 @@ describe("Main window", () => {
         await client.waitUntilWindowLoaded();
         const title = await browserWindow.getTitle();
 
-        expect(title).toBe("ChainGuardian");
+        expect(title).toBe("Webpack App");
     });
 
     it("increments the counter", async () => {
