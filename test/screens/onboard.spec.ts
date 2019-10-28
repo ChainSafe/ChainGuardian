@@ -1,7 +1,7 @@
 import {setApp} from "./setupTest";
 import {Application} from "spectron";
 
-jest.setTimeout(20000);
+jest.setTimeout(15000);
 
 describe("Main window", () => {
     let app: Application;

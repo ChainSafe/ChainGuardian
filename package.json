@@ -42,7 +42,7 @@
     "test:unit": "yarn run jest --coverage \"test/unit\"",
     "test:e2e": "yarn run jest \"test/e2e\"",
     "test:components": "yarn run jest --ci \"test/components\"",
-    "test:screens": "yarn run jest \"test/screens\"",
+    "test:screens": "yarn run jest \"test/screens\" --runInBand",
     "jest": "jest --verbose --colors",
     "pack": "yarn run build && electron-builder --dir",
     "dist": "yarn run build && electron-builder",
