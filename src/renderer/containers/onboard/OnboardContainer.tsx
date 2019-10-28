@@ -15,7 +15,7 @@ const steps = [
 export default class OnboardContainer extends Component<{history: any}, {}> {
 
     handleBack = (): void => {
-        this.props.history.goBack()
+        this.props.history.goBack();
     };
 
     render(): any {

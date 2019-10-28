@@ -4,7 +4,7 @@ import {HashRouter as Router, Switch, Route, Redirect} from "react-router-dom";
 import {ReactElement} from "react";
 import OnboardContainer from "../containers/onboard/OnboardContainer";
 import LoginContainer from "../containers/Login/LoginContainer";
-import { Routes } from "../constants/routes";
+import {Routes} from "../constants/routes";
 
 
 const Application = (): ReactElement => (
