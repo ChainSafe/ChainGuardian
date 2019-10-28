@@ -1,3 +1,6 @@
+.inputform::placeholder{
+    color: $neutral-100;
+}
 .inputform{
     width: 402px;
     height: 28px;
@@ -9,8 +12,9 @@
     font-family: 'Palanquin', sans-serif; 
     font-size: 500;
     font-size: 18px;
-    color: #EBEEEF;
+    color: $neutral-100;
     padding: 16px 56px 16px 16px;
+    margin-right: 24px;
 
     &.success{
         background: $neutral-600 url(../assets/img/input/Success.svg) no-repeat;
@@ -28,7 +32,7 @@
     font-size: 500;
     font-size: 18px;
     color: $neutral-100;
-    margin: 0px 0px 16px 0px;
+    margin: 0px;
     padding: 0px;
 }
 .error-message{

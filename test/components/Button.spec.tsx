@@ -31,6 +31,18 @@ describe("ButtonPrimitive", () => {
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
+    it("renders large button", () => {
+        const tree = renderer
+            .create(<ButtonPrimitive large={true}>Submit</ButtonPrimitive>)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
+    it("renders id", () => {
+        const tree = renderer
+            .create(<ButtonPrimitive buttonId="testid">Submit</ButtonPrimitive>)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
 });
 
 describe("ButtonPrimary", () => {
@@ -49,6 +61,18 @@ describe("ButtonPrimary", () => {
     it("renders focused button", () => {
         const tree = renderer
             .create(<ButtonPrimary focused={true}>Submit</ButtonPrimary>)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
+    it("renders large button", () => {
+        const tree = renderer
+            .create(<ButtonPrimitive large={true}>Submit</ButtonPrimitive>)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
+    it("renders id", () => {
+        const tree = renderer
+            .create(<ButtonPrimitive buttonId="testid">Submit</ButtonPrimitive>)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
@@ -73,6 +97,18 @@ describe("ButtonSecondary", () => {
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
+    it("renders large button", () => {
+        const tree = renderer
+            .create(<ButtonPrimitive large={true}>Submit</ButtonPrimitive>)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
+    it("renders id", () => {
+        const tree = renderer
+            .create(<ButtonPrimitive buttonId="testid">Submit</ButtonPrimitive>)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
 });
 
 describe("ButtonInverted", () => {
@@ -94,6 +130,18 @@ describe("ButtonInverted", () => {
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
+    it("renders large button", () => {
+        const tree = renderer
+            .create(<ButtonPrimitive large={true}>Submit</ButtonPrimitive>)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
+    it("renders id", () => {
+        const tree = renderer
+            .create(<ButtonPrimitive buttonId="testid">Submit</ButtonPrimitive>)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
 });
 
 describe("ButtonDestructive", () => {
@@ -112,6 +160,18 @@ describe("ButtonDestructive", () => {
     it("renders focused button", () => {
         const tree = renderer
             .create(<ButtonDestructive focused={true}>Submit</ButtonDestructive>)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
+    it("renders large button", () => {
+        const tree = renderer
+            .create(<ButtonPrimitive large={true}>Submit</ButtonPrimitive>)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
+    it("renders id", () => {
+        const tree = renderer
+            .create(<ButtonPrimitive buttonId="testid">Submit</ButtonPrimitive>)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });

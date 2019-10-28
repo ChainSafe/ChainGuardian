@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TabNavigation renders correctly 1`] = `
+<div
+  className="tab-container"
+>
+  <div
+    className="tab current-tab"
+  >
+    Validator Stats
+  </div>
+  <div
+    className="tab "
+  >
+    Beacon Node
+  </div>
+  <div
+    className="tab "
+  >
+    Beacon Node
+  </div>
+</div>
+`;

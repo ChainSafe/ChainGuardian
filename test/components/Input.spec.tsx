@@ -27,4 +27,16 @@ describe("InputForm", () => {
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
+    it("renders focused input", () => {
+        const tree = renderer
+            .create(<InputForm focused label="Input" />)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
+    it("renders input id", () => {
+        const tree = renderer
+            .create(<InputForm inputId="testid" label="Input" />)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
 });
