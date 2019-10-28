@@ -4,11 +4,8 @@ import {HashRouter as Router, Switch, Route, Redirect} from "react-router-dom";
 import {ReactElement} from "react";
 import OnboardContainer from "../containers/onboard/OnboardContainer";
 import LoginContainer from "../containers/Login/LoginContainer";
+import { Routes } from "../constants/routes";
 
-enum Routes {
-    LOGIN_ROUTE = '/login',
-    ONBOARD_ROUTE = '/onboard'
-}
 
 const Application = (): ReactElement => (
     <Router>
