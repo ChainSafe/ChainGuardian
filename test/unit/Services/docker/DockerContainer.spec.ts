@@ -7,7 +7,7 @@ describe("docker container isDockerInstalled method unit tests", () => {
 
     it("should successfully check if docker is installed", async () => {
         runCmdStub.resolves({
-            stdout: "Docker version 12.02.2, build 21a1",
+            stdout: "docker version 12.02.2, build 21a1",
             stderr: ""
         });
         expect(await DockerContainer.isDockerInstalled()).toBeTruthy();
@@ -15,7 +15,7 @@ describe("docker container isDockerInstalled method unit tests", () => {
 
     it("should successfully check if specific docker version is installed", async () => {
         runCmdStub.resolves({
-            stdout: "Docker version 12.02.2, build 21a1",
+            stdout: "docker version 12.02.2, build 21a1",
             stderr: ""
         });
         expect(await DockerContainer.isDockerInstalled("12.02.2")).toBeTruthy();

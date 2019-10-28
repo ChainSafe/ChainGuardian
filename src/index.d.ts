@@ -9,6 +9,7 @@ declare module "ethereumjs-wallet" {
         public getPrivateKeyString(): string
         public getAddressString(): string
         public toV3(password: string, options?: Record<string, any>): any
+        public getPublicKeyString(): string
     }
   
     namespace Wallet {}
