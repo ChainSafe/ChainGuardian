@@ -27,7 +27,7 @@ describe("Main window", () => {
         await client.waitUntilWindowLoaded();
         const title = await browserWindow.getTitle();
 
-        expect(title).toBe("Webpack App");
+        expect(title).toBe("ChainGuardian");
     });
 
     it("buttons load text", async () => {
