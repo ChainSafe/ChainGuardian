@@ -1,5 +1,5 @@
 import {ICGSerialization} from "../";
-import {AnySSZType, hashTreeRoot, Type} from "@chainsafe/ssz";
+import {AnySSZType, hashTreeRoot} from "@chainsafe/ssz";
 
 // Pick subset of keys from key values
 function pick(obj: Record<string, any>, keys: string[]): string[] {

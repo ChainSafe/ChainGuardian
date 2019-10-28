@@ -1,4 +1,4 @@
-import {Type, AnyContainerType} from "@chainsafe/ssz";
+import {AnyContainerType} from "@chainsafe/ssz";
 
 export const Account: AnyContainerType = {
     fields: [
