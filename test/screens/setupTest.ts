@@ -1,9 +1,9 @@
 import {Application} from "spectron";
 import path from "path";
 
-const TIMEOUT = 15000
-const MINIMUM_PORT = 4444
-const MAXIMUM_PORT = 5555
+const TIMEOUT = 15000;
+const MINIMUM_PORT = 4444;
+const MAXIMUM_PORT = 5555;
 
 
 export function setApp(): Application{
