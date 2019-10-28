@@ -1,5 +1,5 @@
 import * as electron from "electron";
-import {Menu} from "electron";
+import {Menu, shell} from "electron";
 
 const template = [
     // { role: 'appMenu' }
@@ -89,19 +89,13 @@ const template = [
         submenu: [
             {
                 label: "Github repo",
-                // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-                click: async () => {
-                    // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
-                    const {shell} = require("electron");
+                click: async (): Promise<void> => {
                     await shell.openExternal("https://github.com/NodeFactoryIo/ChainGuardian");
                 }
             },
             {
                 label: "Search Issues",
-                // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-                click: async () => {
-                    // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
-                    const {shell} = require("electron");
+                click: async (): Promise<void> => {
                     await shell.openExternal("https://github.com/NodeFactoryIo/ChainGuardian/issues");
                 }
             }

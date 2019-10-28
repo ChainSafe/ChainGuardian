@@ -15,15 +15,32 @@ const installExtensions = async () => {
     return Promise.all(extensions.map(name => installer.default(installer[name], forceDownload))).catch(console.log);
 };
 
+const iconExtensions = {
+    darwin: ".ics",
+    win32: ".ico",
+    linux: ".png",
+    aix: ".png",
+    android: ".png",
+    freebsd: ".png",
+    openbsd: ".png",
+    sunos: ".png",
+    cygwin: ".png"
+};
+
 const createWindow = async () => {
     if (process.env.NODE_ENV !== "production") {
         await installExtensions();
     }
+
+    const iconPath = path.join(
+        __dirname,
+        `../src/renderer/assets/ico/app_icon${iconExtensions[process.platform]}`
+    );
     win = new BrowserWindow({
         webPreferences: {nodeIntegration: true},
         backgroundColor: "#052437",
         show: false,
-        icon: path.join(__dirname, '../src/renderer/assets/ico/app_icon.png'), // wont work on macOS
+        icon: iconPath, // wont work on macOS
     });
     win.maximize();
     win.once("ready-to-show", () => {
