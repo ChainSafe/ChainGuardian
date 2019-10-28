@@ -40,24 +40,23 @@ describe("Main window", () => {
         expect(title).toBe("Webpack App");
     });
 
-    it("increments the counter", async () => {
-        const {client} = app;
-
-        await client.waitUntilWindowLoaded();
-        await client.click("#increment");
-
-        const counterText = await client.getText("#counter-value");
-
-        expect(counterText).toBe("Current value: 1");
-    });
-
-    it("decrements the counter", async () => {
+    it("buttons load text", async () => {
         const {client} = app;
         await client.waitUntilWindowLoaded();
-        await client.click("#decrement");
+        const goButtonText = await client.getAttribute("#go", "textContent");
+        expect(goButtonText).toBe("GO");
+        const registerButtonText = await client.getAttribute("#register", "textContent");
+        expect(registerButtonText).toBe("REGISTER");
+    }
+    );
 
-        const counterText = await client.getText("#counter-value");
-
-        expect(counterText).toBe("Current value: -1");
-    });
+    it("input field test", async () => {
+        const {client} = app;
+        await client.waitUntilWindowLoaded();
+        await client.addValue(".inputform", "testinput");
+        const inputValue = await client.getValue(".inputform");
+        
+        expect(inputValue).toBe("testinput");
+    }
+    );
 });
