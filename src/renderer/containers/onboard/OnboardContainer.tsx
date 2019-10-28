@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import {Background} from "../../components/Background/Background";
 import {Modal} from "../../components/Modal/Modal";
-import {Redirect} from "react-router-dom";
 import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
 import {StepNavigation} from "../../components/StepNavigation/StepNavigation";
 
@@ -13,29 +12,13 @@ const steps = [
     {stepId: 5, stepName: "Consent"}
 ];
 
-export default class OnboardContainer extends Component<{}, { isRedirectToMain: boolean }> {
-
-    constructor(props: any) {
-        super(props);
-
-        this.state = {
-            isRedirectToMain: false
-        };
-
-        this.handleBack = this.handleBack.bind(this);
-    }
-
+export default class OnboardContainer extends Component<{history: any}, {}> {
 
     handleBack = (): void => {
-        this.setState({isRedirectToMain: true});
+        this.props.history.goBack()
     };
 
     render(): any {
-        const {isRedirectToMain} = this.state;
-
-        if (isRedirectToMain) {
-            return <Redirect to='/' />;
-        }
 
         const topBar = <StepNavigation steps={steps} current={1} />;
 

@@ -5,12 +5,17 @@ import {ReactElement} from "react";
 import OnboardContainer from "../containers/onboard/OnboardContainer";
 import LoginContainer from "../containers/Login/LoginContainer";
 
+enum Routes {
+    LOGIN_ROUTE = '/login',
+    ONBOARD_ROUTE = '/onboard'
+}
+
 const Application = (): ReactElement => (
     <Router>
         <Switch>
-            <Route path="/onboard" component={OnboardContainer} />
-            <Route path="/login" component={LoginContainer}/>
-            <Redirect from="/" to="/login" />
+            <Route path={Routes.ONBOARD_ROUTE} component={OnboardContainer} />
+            <Route path={Routes.LOGIN_ROUTE} component={LoginContainer}/>
+            <Redirect from="/" to={Routes.LOGIN_ROUTE} />
         </Switch>
     </Router>
 
