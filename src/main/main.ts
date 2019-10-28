@@ -40,7 +40,7 @@ const createWindow = async () => {
         webPreferences: {nodeIntegration: true},
         backgroundColor: "#052437",
         show: false,
-        icon: iconPath, // wont work on macOS
+        icon: iconPath,
     });
     win.maximize();
     win.once("ready-to-show", () => {
