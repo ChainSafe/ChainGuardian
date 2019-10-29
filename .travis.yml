@@ -6,12 +6,6 @@ env:
 
 sudo: required
 
-addons:
-  chrome: stable
-
-services:
-  - xvfb
-
 matrix:
   include:
     - os: osx
@@ -26,6 +20,10 @@ matrix:
     - os: linux
       language: node_js
       node_js: "12.4.0"
+      services:
+        - xvfb
+      addons:
+        chrome: stable
 
 cache: false
 
