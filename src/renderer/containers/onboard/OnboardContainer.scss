@@ -1,0 +1,12 @@
+.action-buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    margin: 40px 0;
+
+    .btn-primary{
+        margin-left: 32px;
+    }
+}
+
