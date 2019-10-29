@@ -9,14 +9,14 @@ interface IState {
 }
 
 export default class LoginContainer extends React.Component {
-    state: IState = {
+    public state: IState = {
         input: ""
     };
-    handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
+    public handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
         this.setState({input: e.currentTarget.value});
     };
     
-    render(): any {
+    public render(): any {
         return (
             <Background>
                 <Modal>

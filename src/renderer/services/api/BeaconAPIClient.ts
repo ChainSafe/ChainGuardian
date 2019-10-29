@@ -25,10 +25,10 @@ import {HttpClient} from "./http/httpClient";
 import {EmptyUrlError} from "./errors/EmptyUrlError";
 
 export class BeaconAPIClient implements IBeaconAPIClient {
-    options: IBeaconApiClientOptions;
-    httpClient: HttpClient;
+    private options: IBeaconApiClientOptions;
+    private httpClient: HttpClient;
 
-    constructor(options: IBeaconApiClientOptions) {
+    public constructor(options: IBeaconApiClientOptions) {
         if (!options.urlPrefix) {
             throw new EmptyUrlError();
         }
@@ -36,35 +36,35 @@ export class BeaconAPIClient implements IBeaconAPIClient {
         this.httpClient = new HttpClient(options.urlPrefix);
     }
 
-    async fetchNodeVersion(): Promise<string> {
+    public async fetchNodeVersion(): Promise<string> {
         return this.httpClient.get<string>(FETCH_NODE_VERSION);
     }
 
-    async fetchGenesisTime(): Promise<uint64> {
+    public async fetchGenesisTime(): Promise<uint64> {
         return this.httpClient.get<uint64>(FETCH_GENESIS_TIME);
     }
 
-    async fetchNodeSyncing(): Promise<Syncing> {
+    public async fetchNodeSyncing(): Promise<Syncing> {
         return this.httpClient.get<Syncing>(POLL_NODE_SYNCING);
     }
 
-    async fetchForkInformation(): Promise<ForkInformation> {
+    public async fetchForkInformation(): Promise<ForkInformation> {
         return this.httpClient.get<ForkInformation>(FETCH_FORK_INFORMATION);
     }
 
-    async fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty> {
+    public async fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty> {
         return this.httpClient.get<ValidatorDuty>(FETCH_VALIDATOR_DUTIES(validatorPubkeys, epoch));
     }
 
-    async fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock> {
+    public async fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock> {
         return this.httpClient.get<BeaconBlock>(FETCH_VALIDATOR_BLOCK(slot, randaoReveal));
     }
 
-    async publishSignedBlock(beaconBlock: BeaconBlock): Promise<any> {
+    public async publishSignedBlock(beaconBlock: BeaconBlock): Promise<any> {
         return this.httpClient.post<BeaconBlock, any>(PUBLISH_SIGNED_BLOCK, beaconBlock);
     }
 
-    async produceAttestation(
+    public async produceAttestation(
         validatorPubkey: BLSPubkey,
         pocBit: uint8,
         slot: Slot,
@@ -73,7 +73,7 @@ export class BeaconAPIClient implements IBeaconAPIClient {
         return this.httpClient.get<IndexedAttestation>(PRODUCE_ATTESTATION(validatorPubkey, pocBit, slot, shard));
     }
 
-    async publishSignedAttestation(attestation: IndexedAttestation): Promise<any> {
+    public async publishSignedAttestation(attestation: IndexedAttestation): Promise<any> {
         return this.httpClient.post<IndexedAttestation, any>(PUBLISH_SIGNED_ATTESTATION, attestation);
     }
 }
