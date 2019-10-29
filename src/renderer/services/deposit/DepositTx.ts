@@ -9,11 +9,11 @@ import DepositContract from "../../../../src/renderer/services/deposit/options";
 import {DEPOSIT_AMOUNT, DEPOSIT_TX_GAS} from "./constants";
 
 export class DepositTx implements ITx{
-    data: string | bytes;
-    to: string;
-    value: string;
+    public data: string | bytes;
+    public to: string;
+    public value: string;
 
-    constructor(data: string | bytes, to: string, value: string) {
+    public constructor(data: string | bytes, to: string, value: string) {
         this.data = data;
         this.to = to;
         this.value = value;
@@ -25,7 +25,7 @@ export class DepositTx implements ITx{
      * @param depositParams - @{DepositData} object.
      * @param depositContractAddress - address of deployed deposit contract.
      */
-    static generateDepositTx(depositParams: DepositData, depositContractAddress: string): DepositTx {
+    public static generateDepositTx(depositParams: DepositData, depositContractAddress: string): DepositTx {
         const depositFunctionEncoded = abi.simpleEncode(
             functionSignatureFromABI(DepositContract.abi, "deposit"),
             depositParams.pubkey,
@@ -45,7 +45,7 @@ export class DepositTx implements ITx{
      * @param wallet - ethereumjs-wallet instance of wallet.
      * @return - transaction signature.
      */
-    sign(wallet: Wallet): string {
+    public sign(wallet: Wallet): string {
         const txData = {
             ...this,
             gasLimit: DEPOSIT_TX_GAS,

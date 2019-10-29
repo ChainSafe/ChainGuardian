@@ -2,13 +2,13 @@ import {ICGSerialization} from "../";
 import {AnySSZType, deserialize, hashTreeRoot, serialize} from "@chainsafe/ssz";
 
 class SSZSerializer implements ICGSerialization<AnySSZType> {
-    serialize(value: any, type: AnySSZType): Buffer {
+    public serialize(value: any, type: AnySSZType): Buffer {
         return serialize(value, type);
     }
-    deserialize<R>(value: Buffer, type: AnySSZType): R {
+    public deserialize<R>(value: Buffer, type: AnySSZType): R {
         return deserialize(value, type);
     }
-    hashTreeRoot(value: any, type: AnySSZType): Buffer {
+    public hashTreeRoot(value: any, type: AnySSZType): Buffer {
         return hashTreeRoot(value, type);
     }
 }
