@@ -30,7 +30,7 @@ export default class LoginContainer extends React.Component {
                             inputValue={this.state.input} 
                             placeholder="Enter password"
                             login
-                            /> 
+                        /> 
                         <ButtonSecondary buttonId="go" >GO</ButtonSecondary>
                     </div>
                     <h5>OR</h5>

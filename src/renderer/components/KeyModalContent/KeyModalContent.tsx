@@ -1,19 +1,19 @@
-import React, { useState } from 'react'
-import { InputForm } from '../Input/InputForm'
-import { ButtonPrimary } from '../Button/ButtonStandard'
+import React, {useState, ReactElement} from "react";
+import {InputForm} from "../Input/InputForm";
+import {ButtonPrimary} from "../Button/ButtonStandard";
 
-interface KeyModalProps {
+interface IKeyModalProps {
     title: string,
     description?: string,
     onSubmit: () => void
 }
 
-export default function KeyModalContent(props: KeyModalProps) {
-    const [input, setinput] = useState('')
+export default function KeyModalContent(props: IKeyModalProps): ReactElement {
+    const [input, setinput] = useState("");
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
-        setinput(e.currentTarget.value)
-    }
+        setinput(e.currentTarget.value);
+    };
 
     return (
         <>
@@ -23,7 +23,7 @@ export default function KeyModalContent(props: KeyModalProps) {
                     {props.description}
                 </p>
             }
-            <div className={`key-input-container ${props.description ? '' : 'mt-32'}`}>
+            <div className={`key-input-container ${props.description ? "" : "mt-32"}`}>
                 <InputForm
                     inputId="inputKey"
                     focused
@@ -35,5 +35,5 @@ export default function KeyModalContent(props: KeyModalProps) {
                 </span>
             </div>
         </>
-    )
+    );
 }

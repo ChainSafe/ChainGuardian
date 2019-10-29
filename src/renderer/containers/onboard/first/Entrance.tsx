@@ -1,8 +1,8 @@
-import React from 'react'
+import React, {ReactElement} from "react";
 import {Link} from "react-router-dom";
-import { ButtonSecondary, ButtonPrimary } from '../../../components/Button/ButtonStandard'
+import {ButtonSecondary, ButtonPrimary} from "../../../components/Button/ButtonStandard";
 
-export default function Entrance() {
+export default function Entrance(): ReactElement {
     return (
         <>
             <h1>Enter your signing key</h1>
@@ -14,5 +14,5 @@ export default function Entrance() {
                 <ButtonPrimary buttonId="generate" large>GENERATE</ButtonPrimary>
             </div>
         </>
-    )
+    );
 }

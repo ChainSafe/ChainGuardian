@@ -30,7 +30,7 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
                 autoFocus={props.focused}
                 placeholder={props.placeholder}
                 value={props.inputValue}
-                className={`inputform ${classNamesValid(props.valid)} ${props.login ? 'login': 'normal'}`} 
+                className={`inputform ${classNamesValid(props.valid)} ${props.login ? "login": "normal"}`} 
                 onChange={props.onChange} />
             <div 
                 className={`error-message ${(classNamesValid(props.valid) !== "error") ? "none" : "" }`}>
