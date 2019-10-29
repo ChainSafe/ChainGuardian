@@ -17,8 +17,15 @@ exports[`InputForm renders back button 1`] = `
     </button>
   </div>
   <div
-    className="modal-children"
-  />
+    className="modal-content"
+  >
+    <span
+      className="top-bar"
+    />
+    <div
+      className="modal-children"
+    />
+  </div>
 </div>
 `;
 
@@ -27,7 +34,14 @@ exports[`InputForm renders correctly 1`] = `
   className="modal"
 >
   <div
-    className="modal-children"
-  />
+    className="modal-content"
+  >
+    <span
+      className="top-bar"
+    />
+    <div
+      className="modal-children"
+    />
+  </div>
 </div>
 `;
