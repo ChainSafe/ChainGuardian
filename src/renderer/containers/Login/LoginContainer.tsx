@@ -28,11 +28,13 @@ export default class LoginContainer extends React.Component {
                             inputId="inputPassword"
                             focused onChange={this.handleChange} 
                             inputValue={this.state.input} 
-                            placeholder="Enter password" /> 
+                            placeholder="Enter password"
+                            login
+                            /> 
                         <ButtonSecondary buttonId="go" >GO</ButtonSecondary>
                     </div>
                     <h5>OR</h5>
-                    <Link to="/onboard">
+                    <Link to="/onboard/1/0">
                         <ButtonPrimary buttonId="register">REGISTER</ButtonPrimary>
                     </Link>
                 </Modal>

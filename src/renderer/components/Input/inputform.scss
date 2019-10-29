@@ -2,8 +2,6 @@
     color: $neutral-100;
 }
 .inputform{
-    width: 402px;
-    height: 28px;
     background: $neutral-600;
     box-shadow: inset 0px 2px 6px rgba(10, 39, 51, 0.2);
     border-radius: 4px;
@@ -26,7 +24,18 @@
         background-position: bottom 18px right 16px;
         border: 2px solid $system-error-500;
     }
+
+    &.login {
+        width: 402px;
+        height: 28px;
+    }
+
+    &.normal {
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
+
 .label{
     font-family: 'Palanquin', sans-serif; 
     font-size: 500;
