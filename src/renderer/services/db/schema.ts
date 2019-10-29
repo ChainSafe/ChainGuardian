@@ -6,7 +6,9 @@
 import BN from "bn.js";
 
 // Buckets are separate database namespaces
-export enum Bucket {}
+export enum Bucket {
+    account
+}
 
 export enum Key {}
 

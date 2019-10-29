@@ -2,7 +2,7 @@ import {DockerContainer} from "../../../../src/renderer/services/docker/DockerCo
 import {runCmdAsync} from "../../../../src/renderer/services/utils/cmd-utils";
 
 class SimpleDockerContainer extends DockerContainer {
-    constructor() {
+    public constructor() {
         super({
             image: "alpine",
             name: "test-image",
