@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CopyField renders correctly 1`] = `
+<div
+  className="copy-field"
+>
+  Test text for copy
+  <button
+    className="copy-button"
+  >
+    <img
+      className="icon copy"
+      src="test-file-stub"
+    />
+    <img
+      className="icon copyall"
+      src="test-file-stub"
+    />
+    <img
+      className="icon copied"
+      src="test-file-stub"
+    />
+  </button>
+</div>
+`;
+
+exports[`MnemonicCopyField renders correctly 1`] = `
+<div
+  className="copy-field mnemonic"
+>
+  mnemonic text for copy
+  <button
+    className="copy-button"
+  >
+    <img
+      className="icon copy"
+      src="test-file-stub"
+    />
+    <img
+      className="icon copyall"
+      src="test-file-stub"
+    />
+    <img
+      className="icon copied"
+      src="test-file-stub"
+    />
+  </button>
+</div>
+`;
