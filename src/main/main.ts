@@ -2,6 +2,7 @@
 import {app, BrowserWindow} from "electron";
 import path from "path";
 import url from "url";
+import { setApplicationMenu } from './menu';
 
 let win: BrowserWindow | null;
 
@@ -14,12 +15,40 @@ const installExtensions = async () => {
     return Promise.all(extensions.map(name => installer.default(installer[name], forceDownload))).catch(console.log);
 };
 
+const iconExtensions = {
+    darwin: ".ics",
+    win32: ".ico",
+    linux: ".png",
+    aix: ".png",
+    android: ".png",
+    freebsd: ".png",
+    openbsd: ".png",
+    sunos: ".png",
+    cygwin: ".png"
+};
+
 const createWindow = async () => {
     if (process.env.NODE_ENV !== "production") {
         await installExtensions();
     }
 
-    win = new BrowserWindow({width: 800, height: 600, webPreferences: {nodeIntegration: true}});
+    const iconPath = path.join(
+        __dirname,
+        `../src/renderer/assets/ico/app_icon${iconExtensions[process.platform]}`
+    );
+    win = new BrowserWindow({
+        webPreferences: {nodeIntegration: true},
+        backgroundColor: "#052437",
+        show: false,
+        icon: iconPath,
+    });
+    win.maximize();
+    win.once("ready-to-show", () => {
+        if (win !== null) { win.show(); }
+    });
+    win.webContents.on("did-finish-load", () => {
+        if (win !== null) { win.setTitle("ChainGuardian"); }
+    });
 
     if (process.env.NODE_ENV !== "production") {
         process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "1";
@@ -44,6 +73,8 @@ const createWindow = async () => {
     win.on("closed", () => {
         win = null;
     });
+
+    setApplicationMenu();
 };
 
 app.on("ready", createWindow);
