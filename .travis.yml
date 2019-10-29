@@ -6,6 +6,12 @@ env:
 
 sudo: required
 
+addons:
+  chrome: stable
+
+services:
+  - xvfb
+
 matrix:
   include:
     - os: osx
