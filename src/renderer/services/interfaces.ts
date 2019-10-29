@@ -6,11 +6,15 @@ export interface IService {
     stop(): Promise<void>;
 }
 
-
 export interface ICGKeystore {
     decrypt(password: string): Keypair;
     changePassword(oldPassword: string, newPassword: string): void;
     destroy(): void;
+    getAddress(): string;
+}
+
+export interface ICGKeystoreFactory {
+    new (file: string): ICGKeystore;
 }
 
 /********************
@@ -46,5 +50,6 @@ export interface IV3Keystore {
     };
     id: string;
     version: number;
+    address: string;
 }
 /************************/
