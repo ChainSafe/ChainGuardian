@@ -8,20 +8,20 @@ export interface ICopyFieldProps {
 
 export const CopyField: React.FunctionComponent<ICopyFieldProps> = (
     props: ICopyFieldProps) => {
-        return(
-                <div className="copy-field">
-                {props.value}
-                <CopyButton onClick={props.onCopy}/>
-            </div>
-        );
-    };
+    return(
+        <div className="copy-field">
+            {props.value}
+            <CopyButton onClick={props.onCopy}/>
+        </div>
+    );
+};
 
 export const MnemonicCopyField: React.FunctionComponent<ICopyFieldProps> = (
     props: ICopyFieldProps) => {
-        return(
-            <div className="copy-field mnemonic">
-                {props.value}
-                <CopyButton onClick={props.onCopy}/>
-            </div>
-        );
-    };
+    return(
+        <div className="copy-field mnemonic">
+            {props.value}
+            <CopyButton onClick={props.onCopy}/>
+        </div>
+    );
+};
