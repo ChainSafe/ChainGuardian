@@ -52,7 +52,7 @@ export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey
     const depositData: DepositData = {
         pubkey: publicKey,
         withdrawalCredentials: withdrawalCredentials,
-        amount: EthConverter.toGwei(DEPOSIT_AMOUNT),
+        amount: EthConverter.convertEth(DEPOSIT_AMOUNT, "gwei"),
         signature: Buffer.alloc(0)
     };
     // calculate root

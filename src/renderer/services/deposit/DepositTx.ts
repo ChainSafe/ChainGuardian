@@ -34,7 +34,7 @@ export class DepositTx implements ITx{
         return new DepositTx(
             depositFunctionEncoded,
             depositContractAddress,
-            toHexString(EthConverter.toWei(DEPOSIT_AMOUNT))
+            toHexString(EthConverter.convertEth(DEPOSIT_AMOUNT, "wei"))
         );
     }
 

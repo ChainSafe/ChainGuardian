@@ -15,10 +15,22 @@ describe("crypto utils unit tests", () => {
     });
 
     it("should convert successfully eth to gwei", function() {
-        expect(EthConverter.toGwei(1).toString(10)).toBe("1000000000");
+        expect(EthConverter.convertEth("1", "gwei").toString(10))
+            .toBe("1000000000");
     });
 
     it("should convert successfully eth to wei", function() {
-        expect(EthConverter.toWei(1).toString(10)).toBe("1000000000000000000");
+        expect(EthConverter.convertEth("1", "wei").toString(10))
+            .toBe("1000000000000000000");
+    });
+
+    it("should convert successfully wei to eth", function() {
+        expect(EthConverter.convertWei("1000000000000000000", "eth").toString(10))
+            .toBe("1");
+    });
+
+    it("should convert successfully gwei to wei", function() {
+        expect(EthConverter.convert("1000000000", "gwei", "wei").toString(10))
+            .toBe("1000000000000000000");
     });
 });
