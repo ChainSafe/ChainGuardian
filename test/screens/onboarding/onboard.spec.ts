@@ -34,7 +34,7 @@ describe("Onboarding start screen", () => {
         const {client} = app;
         await client.waitUntilWindowLoaded();
         await client.waitForVisible(".back-tab");
-        await client.$('.back-tab').click();
+        await client.$(".back-tab").click();
         const url = await client.getUrl();
         expect(url.endsWith(Routes.LOGIN_ROUTE)).to.be.true;
     });

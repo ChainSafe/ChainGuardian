@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, ReactElement} from "react";
 import {Background} from "../../components/Background/Background";
 import {Modal} from "../../components/Modal/Modal";
 import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
@@ -14,11 +14,7 @@ const steps = [
 
 export default class OnboardContainer extends Component<{history: any}, {}> {
 
-    handleBack = (): void => {
-        this.props.history.goBack();
-    };
-
-    render(): any {
+    public render(): ReactElement {
 
         const topBar = <StepNavigation steps={steps} current={1} />;
 
@@ -35,4 +31,8 @@ export default class OnboardContainer extends Component<{history: any}, {}> {
             </Background >
         );
     }
+
+    private handleBack = (): void => {
+        this.props.history.goBack();
+    };
 }
