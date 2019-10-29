@@ -8,7 +8,7 @@ export interface IStepNavigationProps {
 export const StepNavigation: React.FunctionComponent<IStepNavigationProps> = (props: IStepNavigationProps) => {
 
     return(
-        <div className="step-container">
+        <div id="step-navigation" className="step-container">
             {props.steps.map(n => {
                 return <div 
                     className={`step ${props.current >= n.stepId ? "current" : ""}`} 

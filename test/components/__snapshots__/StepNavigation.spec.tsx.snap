@@ -3,6 +3,7 @@
 exports[`StepNavigation renders correctly 1`] = `
 <div
   className="step-container"
+  id="step-navigation"
 >
   <div
     className="step current"

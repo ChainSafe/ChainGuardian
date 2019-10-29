@@ -28,8 +28,8 @@ export default class OnboardContainer extends Component<{history: any}, {}> {
                     <h1>Enter your signing key</h1>
                     <p>You’ll need this for signing blocks and attestations on your behalf</p>
                     <div className="action-buttons">
-                        <ButtonSecondary large>IMPORT</ButtonSecondary>
-                        <ButtonPrimary large>GENERATE</ButtonPrimary>
+                        <ButtonSecondary buttonId="import" large>IMPORT</ButtonSecondary>
+                        <ButtonPrimary buttonId="generate" large>GENERATE</ButtonPrimary>
                     </div>
                 </Modal>
             </Background >
