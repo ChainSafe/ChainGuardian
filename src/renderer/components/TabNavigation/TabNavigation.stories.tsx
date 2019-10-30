@@ -24,6 +24,6 @@ storiesOf('Tab Navigation', module).add('Tab Navigation', () => {
     ];
     const array = object("steps", d);
     return <div >
-            <TabNavigation onTab={()=>setSelected(selected)} tabs={array} current={selected}/>
+            <TabNavigation onTab={(tab)=>setSelected(tab)} tabs={array} current={selected}/>
         </div>;
 }).addDecorator(withKnobs);
