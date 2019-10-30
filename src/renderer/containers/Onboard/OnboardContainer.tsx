@@ -1,17 +1,23 @@
 import React, {Component, ReactElement} from "react";
 import {Background} from "../../components/Background/Background";
 import OnBoardModal from "./OnBoardModal";
-import KeyInput from "../../components/KeyModalContent/KeyModalContent";
-import Entrance from "./first/Entrance";
+import Entrance from "./First/Entrance";
+import SigningKeyImport from "./First/SigningKeyImport";
+import PublicKeyImport from "./Second/PublicKeyImport";
 
-const Steper = {
-    "1": {
-        "0": <Entrance />,
-        "a1": <KeyInput title="Enter your signing key" onSubmit={(): any => alert("Submit")}/>
-    }
-};
 
 export default class OnboardContainer extends Component<{ history: any, match: any }, {}> {
+
+    private Steper = {
+        "1": {
+            "0": <Entrance />,
+            "a1": <SigningKeyImport history={this.props.history}/>,
+        },
+        "2": {
+            "b1": <PublicKeyImport history={this.props.history} />
+        }
+    };
+    
     
     public render(): ReactElement {
         const {step} = this.props.match.params;
@@ -20,12 +26,12 @@ export default class OnboardContainer extends Component<{ history: any, match: a
                 <OnBoardModal history={this.props.history} currentStep={parseInt(step)}>
                     {this.renderStep()}
                 </OnBoardModal>
-            </Background >
+            </Background>
         );
     }
 
     private renderStep = (): any => {
         const {step, substep} = this.props.match.params;
-        return (Steper as any)[step][substep];
+        return (this.Steper as any)[step][substep];
     };
 }
