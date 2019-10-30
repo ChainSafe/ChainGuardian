@@ -47,7 +47,7 @@ jest.mock("fs", () => ({
 }));
 
 import {CGAccount} from "../../../src/renderer/models/account";
-import { Eth1KeystoreFactory } from '../../../src/renderer/services/keystore';
+import {Eth1KeystoreFactory} from "../../../src/renderer/services/keystore";
 // Passwords for keystores 1 & 2
 const PRIMARY_KEYSTORE_PASSWORD = "chainGuardianPass";
 

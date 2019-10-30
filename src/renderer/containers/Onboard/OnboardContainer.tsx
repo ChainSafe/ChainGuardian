@@ -3,7 +3,7 @@ import {Background} from "../../components/Background/Background";
 import {Modal} from "../../components/Modal/Modal";
 import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
 import {StepNavigation} from "../../components/StepNavigation/StepNavigation";
-import { RouteComponentProps } from "react-router";
+import {RouteComponentProps} from "react-router";
 
 const steps = [
     {stepId: 1, stepName: "Signing key"},

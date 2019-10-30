@@ -1,4 +1,4 @@
-import { extractDockerVersion } from '../../../../src/renderer/services/docker/utils';
+import {extractDockerVersion} from "../../../../src/renderer/services/docker/utils";
 
 describe("docker utils unit tests", () => {
     it("should successfully extract docker version.", async () => {
