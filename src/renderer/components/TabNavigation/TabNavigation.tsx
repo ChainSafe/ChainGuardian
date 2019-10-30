@@ -11,7 +11,7 @@ export const TabNavigation: React.FunctionComponent<ITabNavigationProps> = (prop
         <div className="tab-container">
             {props.tabs.map(n => {
                 return <div 
-                    onClick={() => props.onTab && props.onTab(n.tabId) }
+                    onClick={(): void => props.onTab && props.onTab(n.tabId) }
                     className={`tab ${props.current === n.tabId ? "current-tab" : ""}`}
                     key={n.tabId}>
                     {n.tabName}
