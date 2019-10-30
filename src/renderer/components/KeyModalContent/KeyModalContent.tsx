@@ -1,7 +1,7 @@
 import React, {useState, ReactElement, useEffect} from "react";
 import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
-import { Eth2HDWallet } from "../../services/Eth2HDWallet";
+import {Eth2HDWallet} from "../../services/Eth2HDWallet";
 
 interface IKeyModalProps {
     title: string,
@@ -11,28 +11,28 @@ interface IKeyModalProps {
 
 export default function KeyModalContent(props: IKeyModalProps): ReactElement {
     const [input, setinput] = useState("");
-    const [valid, setvalid] = useState(false)
-    const [errorMessage, setErrorMessage] = useState("")
+    const [valid, setvalid] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
         setinput(e.currentTarget.value);
     };
 
-    const handleSubmit = () => {
-        const { isValid, message } = Eth2HDWallet.checkValidity(input)
+    const handleSubmit = (): void => {
+        const {isValid, message} = Eth2HDWallet.checkValidity(input);
 
-        setvalid(isValid)
+        setvalid(isValid);
 
         if(isValid){
-            props.onSubmit(input)
+            props.onSubmit(input);
         }else{
-            setErrorMessage(message)
+            setErrorMessage(message);
         }
-    }
+    };
 
     useEffect(() => {
         
-    }, [valid])
+    }, [valid]);
 
     return (
         <>
@@ -48,7 +48,7 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
                     focused
                     onChange={handleChange}
                     inputValue={input}
-                    valid={errorMessage === '' && valid === false ? undefined : valid}
+                    valid={errorMessage === "" && valid === false ? undefined : valid}
                     errorMessage={errorMessage}
                     placeholder="Enter your unique mnemonic signing key" />
                 <span className="submit-button-container">
