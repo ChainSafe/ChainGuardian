@@ -1,0 +1,53 @@
+.info{
+    background-color: $secondary-blue-600;
+}
+.error{
+    background-color: $system-error-700;
+}
+.notification-container{
+    border-radius: 8px;
+    width: 576px;
+    padding: 32px;
+    font-family: 'Palanquin', sans-serif;
+    &.info{
+        border-top: 4px solid $secondary-blue-400;
+    }
+    &.error{
+        border-top: 4px solid $system-error-500;
+    }
+    &.info .notification-content{
+        color: $secondary-blue-200;
+    }
+    &.error .notification-content{
+        color: $system-error-200;
+    }
+    &.info .notification-title{
+        color: $secondary-blue-100;
+    }
+    &.error .notification-title{
+        color: $system-error-100;
+    }
+}
+.notification-title{
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 28px;
+    letter-spacing: 0.01em;
+    display: flex;
+    justify-content: space-between;
+}
+.close-icon{
+    background: url(../assets/img/notification/Close.svg);
+    height: 24px;
+    width: 24px;
+}
+.notification-content{
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 28px;
+}
+.top-edge{
+    background-color: $secondary-blue-400;
+    height: 20px;
+    width: 100%;
+}
