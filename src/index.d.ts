@@ -3,12 +3,13 @@ declare module "*.jpg";
 declare module "ethereumjs-wallet" {
   
     class Wallet {
-        static fromPrivateKey(key: Buffer): Wallet
-        static fromV3(json: string, password: string): Wallet
-        getPrivateKey(): Buffer
-        getPrivateKeyString(): string
-        getAddressString(): string
-        toV3(password: string, options?: Record<string, any>): any
+        public static fromPrivateKey(key: Buffer): Wallet
+        public static fromV3(json: string, password: string): Wallet
+        public getPrivateKey(): Buffer
+        public getPrivateKeyString(): string
+        public getAddressString(): string
+        public toV3(password: string, options?: Record<string, any>): any
+        public getPublicKeyString(): string
     }
   
     namespace Wallet {}
@@ -19,18 +20,18 @@ declare module "ethereumjs-wallet" {
 declare module "ethereumjs-wallet/hdkey" {
   
     class Wallet {
-        static fromPrivateKey(key: Buffer): Wallet
-        static fromV3(json: string, password: string): Wallet
-        getPrivateKey(): Buffer
-        getAddressString(): string
+        public static fromPrivateKey(key: Buffer): Wallet
+        public static fromV3(json: string, password: string): Wallet
+        public getPrivateKey(): Buffer
+        public getAddressString(): string
     }
   
     class EthereumHDKey {
-        privateExtendedKey (): string
-        publicExtendedKey (): string
-        derivePath (path: string): EthereumHDKey
-        deriveChild (index: number): EthereumHDKey
-        getWallet (): Wallet
+        public privateExtendedKey (): string
+        public publicExtendedKey (): string
+        public derivePath (path: string): EthereumHDKey
+        public deriveChild (index: number): EthereumHDKey
+        public getWallet (): Wallet
     }
   
     export function fromMasterSeed(seed: Buffer): EthereumHDKey;

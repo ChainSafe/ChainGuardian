@@ -3,20 +3,21 @@ import {Background} from "../../components/Background/Background";
 import {Modal} from "../../components/Modal/Modal";
 import {InputForm} from "../../components/Input/InputForm";
 import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
+import {Link} from "react-router-dom";
 
 interface IState {
     input: string;
 }
 
 export default class LoginContainer extends React.Component {
-    state: IState = {
+    public state: IState = {
         input: ""
     };
-    handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
+    public handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
         this.setState({input: e.currentTarget.value});
     };
     
-    render(): any {
+    public render(): any {
         return (
             <Background>
                 <Modal>
@@ -31,7 +32,9 @@ export default class LoginContainer extends React.Component {
                         <ButtonSecondary buttonId="go" >GO</ButtonSecondary>
                     </div>
                     <h5>OR</h5>
-                    <ButtonPrimary buttonId="register" >REGISTER</ButtonPrimary>
+                    <Link to="/onboard">
+                        <ButtonPrimary buttonId="register">REGISTER</ButtonPrimary>
+                    </Link>
                 </Modal>
             </Background>
         );

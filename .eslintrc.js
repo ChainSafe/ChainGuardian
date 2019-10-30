@@ -24,6 +24,7 @@ module.exports = {
         "@typescript-eslint/interface-name-prefix": ["error", { "prefixWithI": "always" }],
         "@typescript-eslint/member-delimiter-style": "off",
         "@typescript-eslint/explicit-function-return-type": "error",
+        "@typescript-eslint/explicit-member-accessibility": "error",
         "@typescript-eslint/no-this-alias": "error",
         "@typescript-eslint/type-annotation-spacing": "error",
         "@typescript-eslint/member-ordering": "error",

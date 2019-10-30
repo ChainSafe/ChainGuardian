@@ -2,7 +2,7 @@ import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import fs from "fs";
 import sinon from "sinon";
-import {Eth1ICGKeystore} from "../../src/renderer/services/Eth1ICGKeystore";
+import {Eth1CGKeystore} from "../../src/renderer/services/Eth1CGKeystore";
 import {ICGKeystore} from "../../src/renderer/services/interfaces";
 
 const privateKey = "0e43429c844ccedd4aff7aaa05fe996f41f9464b360ca03a4349387ba49b3e18";
@@ -140,7 +140,7 @@ describe("Eth1ICGKeystore", () => {
                 })
             );
 
-        eth1Keystore = Eth1ICGKeystore.create(keyStoreFilePath, password, keypair);
+        eth1Keystore = Eth1CGKeystore.create(keyStoreFilePath, password, keypair);
         expect(writeStub.calledOnce).toEqual(true);
         expect(readStub.calledOnce).toEqual(true);
     });
