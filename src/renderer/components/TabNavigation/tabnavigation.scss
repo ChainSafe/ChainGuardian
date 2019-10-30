@@ -20,5 +20,12 @@
         margin-bottom: -2px;
         border-bottom: 4px solid $secondary-green-300;
         color:$secondary-green-300;
+        &:hover{
+            color:$secondary-green-300;
+        }
+    }
+    &:hover{
+        color: $neutral-200;
+        cursor: pointer;
     }
 }
