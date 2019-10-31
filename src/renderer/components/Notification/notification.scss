@@ -1,25 +1,49 @@
-.info{
-    background-color: $secondary-blue-600;
-}
-.error{
-    background-color: $system-error-700;
-}
 .notification-container{
+    position: absolute;
     border-radius: 8px;
     width: 576px;
     padding: 32px;
     font-family: 'Palanquin', sans-serif;
+
+
+    &.visible{
+        display: block;
+    }
+    &.none{
+        display: none;
+    }
+
+    //position horizontal-----------------------
+    &.left{
+        left: 32px;
+    }
+    &.right{
+        right: 32px;
+    }
+    &.center-horizontal{
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+    }
+
+    //positon vertical-----------------------
+    &.top{
+        top: 32px;
+    }
+    &.bottom{
+        bottom: 32px;
+    }
+    &.center-vertical{
+        top: calc(50vh - 100px);
+    }
+
+    //level style-----------------------
     &.info{
         border-top: 4px solid $secondary-blue-400;
     }
     &.error{
         border-top: 4px solid $system-error-500;
-    }
-    &.info .notification-content{
-        color: $secondary-blue-200;
-    }
-    &.error .notification-content{
-        color: $system-error-200;
     }
     &.info .notification-title{
         color: $secondary-blue-100;
@@ -27,6 +51,13 @@
     &.error .notification-title{
         color: $system-error-100;
     }
+    &.info .notification-content{
+        color: $secondary-blue-200;
+    }
+    &.error .notification-content{
+        color: $system-error-200;
+    }
+    
 }
 .notification-title{
     font-weight: 500;
@@ -40,14 +71,22 @@
     background: url(../assets/img/notification/Close.svg);
     height: 24px;
     width: 24px;
+    border-radius: 3px;
+    &:hover{
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.9);
+    }
+    &:active{
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+    }
 }
 .notification-content{
     font-weight: 400;
     font-size: 18px;
     line-height: 28px;
 }
-.top-edge{
-    background-color: $secondary-blue-400;
-    height: 20px;
-    width: 100%;
+.info{
+    background-color: $secondary-blue-600;
+}
+.error{
+    background-color: $system-error-700;
 }
