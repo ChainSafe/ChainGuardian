@@ -1,8 +1,7 @@
 import React, {useState, ReactElement, useEffect} from "react";
 import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
-import {Eth2HDWallet} from "../../services/Eth2HDWallet";
-import { checkValidity } from "../../services/utils/input-utils";
+import {checkValidity} from "../../services/utils/input-utils";
 
 interface IKeyModalProps {
     title: string,
@@ -16,21 +15,21 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
     const [errorMessage, setErrorMessage] = useState("");
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
-        const input = e.currentTarget.value
+        const input = e.currentTarget.value;
         setinput(input);
 
         // 
         if(input === ""){
-            setvalid(false)
-            setErrorMessage("")
-            return
+            setvalid(false);
+            setErrorMessage("");
+            return;
         }
 
-        const {isValid, message} = checkValidity(input)
+        const {isValid, message} = checkValidity(input);
         setvalid(isValid);
 
         if(!isValid){
-            setErrorMessage(message)
+            setErrorMessage(message);
         }
     };
 

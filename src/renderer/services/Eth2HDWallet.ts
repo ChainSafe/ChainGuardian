@@ -1,4 +1,4 @@
-import {entropyToMnemonic, mnemonicToSeedSync, generateMnemonic, validateMnemonic} from "bip39";
+import {entropyToMnemonic, mnemonicToSeedSync, generateMnemonic} from "bip39";
 import {bytes} from "@chainsafe/eth2.0-types";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {Keypair} from "@chainsafe/bls/lib/keypair";

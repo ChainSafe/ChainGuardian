@@ -1,10 +1,10 @@
-import React, { Component, ReactElement } from "react";
-import { Background } from "../../components/Background/Background";
+import React, {Component, ReactElement} from "react";
+import {Background} from "../../components/Background/Background";
 import OnBoardModal from "./OnBoardModal";
 import Entrance from "./First/Entrance";
 import SigningKeyImport from "./First/SigningKeyImport";
 import PublicKeyImport from "./Second/PublicKeyImport";
-import { Subroutes } from "../../constants/routes";
+import {Subroutes} from "../../constants/routes";
 
 export default class OnboardContainer extends Component<{ history: any, match: any }, {}> {
 
@@ -20,7 +20,7 @@ export default class OnboardContainer extends Component<{ history: any, match: a
 
 
     public render(): ReactElement {
-        const { step } = this.props.match.params;
+        const {step} = this.props.match.params;
         return (
             <Background>
                 <OnBoardModal history={this.props.history} currentStep={parseInt(step)}>
@@ -31,7 +31,7 @@ export default class OnboardContainer extends Component<{ history: any, match: a
     }
 
     private renderStep = (): any => {
-        const { step, substep } = this.props.match.params;
+        const {step, substep} = this.props.match.params;
         return (this.Steper as any)[step][substep];
     };
 }

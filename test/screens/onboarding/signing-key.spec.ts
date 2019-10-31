@@ -2,6 +2,11 @@ import {setApp} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
 import {Routes, Subroutes} from "../../../src/renderer/constants/routes";
+import {
+    INVALID_MNEMONIC_MESSAGE,
+    KEY_WRONG_LENGTH_MESSAGE,
+    KEY_WRONG_CHARACTERS_MESSAGE
+} from "../../../src/renderer/services/utils/input-utils";
 
 jest.setTimeout(15000);
 
@@ -20,8 +25,8 @@ describe("Onboarding signing key import screen", () => {
             return app.stop();
         }
     });
-    
-    it("has rendered properly", async function() {
+
+    it("has rendered properly", async function () {
         const {client} = app;
         expect(await client.isExisting(".back-tab")).to.be.true;
         expect(await client.isExisting("#inputKey")).to.be.true;
@@ -32,43 +37,43 @@ describe("Onboarding signing key import screen", () => {
         expect(currentStep).to.be.equal("Signing key");
     });
 
-    it('should fail invalid mnemonic', async () => {
+    it("should fail invalid mnemonic", async () => {
         const {client} = app;
         await client.waitUntilWindowLoaded();
         await client.addValue(".inputform", "test mnemonic");
         const errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal("Invalid mnemonic");
+        expect(errorMessage).to.be.equal(INVALID_MNEMONIC_MESSAGE);
     });
 
 
-    it('should fail private key not correct length', async () => {
+    it("should fail private key not correct length", async () => {
         const {client} = app;
         await client.waitUntilWindowLoaded();
         await client.addValue(".inputform", "0xasdfag");
         const errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal("Private key should have 32 bytes");
+        expect(errorMessage).to.be.equal(KEY_WRONG_LENGTH_MESSAGE);
     });
 
-    it('should fail private key contains not alphanumerical characters', async () => {
+    it("should fail private key contains not alphanumerical characters", async () => {
         const {client} = app;
         await client.waitUntilWindowLoaded();
-        await client.addValue(".inputform", "0xasdf*=")
+        await client.addValue(".inputform", "0xasdf*=");
         const errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal("Private key must contain alphanumerical characters only");
+        expect(errorMessage).to.be.equal(KEY_WRONG_CHARACTERS_MESSAGE);
     });
-    
-    it('should work private key correct', async () => {
+
+    it("should work private key correct", async () => {
         const {client} = app;
         await client.waitUntilWindowLoaded();
-        await client.addValue(".inputform", privateKeyStr)
+        await client.addValue(".inputform", privateKeyStr);
         const errorMessage = await client.getText(".error-message");
         expect(errorMessage).to.be.equal("");
     });
 
-    it('should work mnemonic correct', async () => {
+    it("should work mnemonic correct", async () => {
         const {client} = app;
         await client.waitUntilWindowLoaded();
-        await client.addValue(".inputform", mnemonic)
+        await client.addValue(".inputform", mnemonic);
         const errorMessage = await client.getText(".error-message");
         expect(errorMessage).to.be.equal("");
     });
