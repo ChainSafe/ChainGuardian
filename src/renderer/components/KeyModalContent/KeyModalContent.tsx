@@ -2,6 +2,7 @@ import React, {useState, ReactElement, useEffect} from "react";
 import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
 import {Eth2HDWallet} from "../../services/Eth2HDWallet";
+import { checkValidity } from "../../services/utils/input-utils";
 
 interface IKeyModalProps {
     title: string,
@@ -25,7 +26,7 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
             return
         }
 
-        const {isValid, message} = Eth2HDWallet.checkValidity(input);
+        const {isValid, message} = checkValidity(input)
         setvalid(isValid);
 
         if(!isValid){

@@ -6,7 +6,6 @@ import {Routes, Subroutes} from "../../../src/renderer/constants/routes";
 jest.setTimeout(15000);
 
 const mnemonic = "hard caught annual spread green step avocado shine scare warm chronic pond";
-
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 
 describe("Onboarding signing key import screen", () => {
@@ -47,7 +46,7 @@ describe("Onboarding signing key import screen", () => {
         await client.waitUntilWindowLoaded();
         await client.addValue(".inputform", "0xasdfag");
         const errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal("Private key have to be 32 bytes long");
+        expect(errorMessage).to.be.equal("Private key should have 32 bytes");
     });
 
     it('should fail private key contains not alphanumerical characters', async () => {
