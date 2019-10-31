@@ -1,6 +1,6 @@
 import React, {Component, ReactElement} from "react";
 import KeyModalContent from "../../../components/KeyModalContent/KeyModalContent";
-import {Routes} from "../../../constants/routes";
+import {Routes, Subroutes} from "../../../constants/routes";
 
 export default class SigningKeyImport extends Component<{ history: any }, {}> {
     public render(): ReactElement {
@@ -10,7 +10,7 @@ export default class SigningKeyImport extends Component<{ history: any }, {}> {
     }
 
     private handleSubmit= (): void => {
-        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE("2", "b1"));
+        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(Subroutes.WITHDRAWAL, Subroutes.WITHDRAWAL_IMPORT));
     };
 
 }

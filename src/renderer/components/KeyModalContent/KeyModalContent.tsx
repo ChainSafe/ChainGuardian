@@ -15,24 +15,31 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
     const [errorMessage, setErrorMessage] = useState("");
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
-        setinput(e.currentTarget.value);
-    };
+        const input = e.currentTarget.value
+        setinput(input);
 
-    const handleSubmit = (): void => {
+        // 
+        if(input === ""){
+            setvalid(false)
+            setErrorMessage("")
+            return
+        }
+
         const {isValid, message} = Eth2HDWallet.checkValidity(input);
-
         setvalid(isValid);
 
-        if(isValid){
-            props.onSubmit(input);
-        }else{
-            setErrorMessage(message);
+        if(!isValid){
+            setErrorMessage(message)
         }
     };
 
-    useEffect(() => {
-        
-    }, [valid]);
+    const handleSubmit = (): void => {
+        if(valid){
+            props.onSubmit(input);
+        }
+    };
+
+    useEffect(() => {}, [valid]);
 
     return (
         <>

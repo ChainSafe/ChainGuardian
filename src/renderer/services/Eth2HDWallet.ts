@@ -4,11 +4,8 @@ import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {fromPrivateKey} from "ethereumjs-wallet";
 import {fromMasterSeed} from "ethereumjs-wallet/hdkey";
+import { IInputValidity } from "./interfaces";
 
-interface IInputValidity{
-    isValid: boolean
-    message: string
-}
 export class Eth2HDWallet {
     /**
      * If entropy is not provided bip39 uses crypto.randomBytes() as entropy source
@@ -39,15 +36,16 @@ export class Eth2HDWallet {
             }
 
             const privateKeyBuff = Buffer.from(privateKey, "hex");
+            
             if(privateKeyBuff.length !== 32){
                 return this.generateReturnStatement(false, "Private key have to be 32 bytes long");
             }
-
+            
             try{
                 fromPrivateKey(Buffer.from(input.split("0x")[1], "hex"));
                 return this.generateReturnStatement(true, "");
             }catch (err){
-                return this.generateReturnStatement(false, err);
+                return this.generateReturnStatement(false, err.message);
             }
         }else {
             if(validateMnemonic(input)){

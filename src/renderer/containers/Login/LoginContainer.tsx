@@ -4,7 +4,7 @@ import {Modal} from "../../components/Modal/Modal";
 import {InputForm} from "../../components/Input/InputForm";
 import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
 import {Link} from "react-router-dom";
-import {Routes} from "../../constants/routes";
+import {Routes, Subroutes} from "../../constants/routes";
 
 interface IState {
     input: string;
@@ -35,7 +35,7 @@ export default class LoginContainer extends React.Component {
                         <ButtonSecondary buttonId="go" >GO</ButtonSecondary>
                     </div>
                     <h5>OR</h5>
-                    <Link to={Routes.ONBOARD_ROUTE_EVALUATE("1","0")}>
+                    <Link to={Routes.ONBOARD_ROUTE_EVALUATE(Subroutes.SIGNING,Subroutes.SIGNING_ENTRANCE)}>
                         <ButtonPrimary buttonId="register">REGISTER</ButtonPrimary>
                     </Link>
                 </Modal>

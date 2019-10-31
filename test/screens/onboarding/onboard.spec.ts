@@ -1,7 +1,7 @@
 import {setApp} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
-import {Routes} from "../../../src/renderer/constants/routes";
+import {Routes, Subroutes} from "../../../src/renderer/constants/routes";
 
 jest.setTimeout(15000);
 
@@ -9,7 +9,7 @@ describe("Onboarding start screen", () => {
     let app: Application;
 
     beforeEach(async () => {
-        app = await setApp(Routes.ONBOARD_ROUTE);
+        app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(Subroutes.SIGNING, Subroutes.SIGNING_ENTRANCE));
     });
 
     afterEach(() => {

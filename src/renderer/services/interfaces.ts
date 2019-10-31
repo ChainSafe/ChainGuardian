@@ -17,6 +17,12 @@ export interface ICGKeystoreFactory {
     new (file: string): ICGKeystore;
 }
 
+
+export interface IInputValidity{
+    isValid: boolean
+    message: string
+}
+
 /********************
  * Keystore interfaces
  * *******************/
