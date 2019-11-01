@@ -1,21 +1,17 @@
 import React, {Component, ReactElement} from "react";
 import {Background} from "../../components/Background/Background";
 import OnBoardModal from "./OnBoardModal";
-import Entrance from "./First/Entrance";
-import SigningKeyImport from "./First/SigningKeyImport";
-import PublicKeyImport from "./Second/PublicKeyImport";
-import {Subroutes} from "../../constants/routes";
+import SigningKey from "./SigningKey/SigningKey";
+import SigningKeyImport from "./SigningKey/SigningKeyImport";
+import WithdrawalKeyImport from "./WithdrawalKey/WithdrawalKeyImport";
+import {OnBoardingRoutes} from "../../constants/routes";
 
 export default class OnboardContainer extends Component<{ history: any, match: any }, {}> {
 
     private Steper = {
-        [Subroutes.SIGNING]: {
-            [Subroutes.SIGNING_ENTRANCE]: <Entrance />,
-            [Subroutes.SIGNING_IMPORT]: <SigningKeyImport history={this.props.history} />,
-        },
-        [Subroutes.WITHDRAWAL]: {
-            [Subroutes.WITHDRAWAL_IMPORT]: <PublicKeyImport history={this.props.history} />
-        }
+        [OnBoardingRoutes.SIGNING]: <SigningKey />,
+        [OnBoardingRoutes.SIGNING_IMPORT]: <SigningKeyImport history={this.props.history} />,
+        [OnBoardingRoutes.WITHDRAWAL_IMPORT]: <WithdrawalKeyImport history={this.props.history} />
     };
 
 
@@ -23,7 +19,7 @@ export default class OnboardContainer extends Component<{ history: any, match: a
         const {step} = this.props.match.params;
         return (
             <Background>
-                <OnBoardModal history={this.props.history} currentStep={parseInt(step)}>
+                <OnBoardModal history={this.props.history} currentStep={parseInt(step.split("_")[0])}>
                     {this.renderStep()}
                 </OnBoardModal>
             </Background>
@@ -31,7 +27,7 @@ export default class OnboardContainer extends Component<{ history: any, match: a
     }
 
     private renderStep = (): any => {
-        const {step, substep} = this.props.match.params;
-        return (this.Steper as any)[step][substep];
+        const {step} = this.props.match.params;
+        return (this.Steper as any)[step];
     };
 }

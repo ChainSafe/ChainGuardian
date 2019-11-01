@@ -1,12 +1,13 @@
 import React, {useState, ReactElement, useEffect} from "react";
 import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
-import {checkValidity} from "../../services/utils/input-utils";
+import {isValidMnemonicOrPrivateKey} from "../../services/utils/input-utils";
 
 interface IKeyModalProps {
     title: string,
     description?: string,
-    onSubmit: (input: string) => void
+    onSubmit: (input: string) => void,
+    placeholder: string
 }
 
 export default function KeyModalContent(props: IKeyModalProps): ReactElement {
@@ -18,14 +19,13 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
         const input = e.currentTarget.value;
         setinput(input);
 
-        // 
         if(input === ""){
             setvalid(false);
             setErrorMessage("");
             return;
         }
 
-        const {isValid, message} = checkValidity(input);
+        const {isValid, message} = isValidMnemonicOrPrivateKey(input);
         setvalid(isValid);
 
         if(!isValid){
@@ -57,7 +57,7 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
                     inputValue={input}
                     valid={errorMessage === "" && valid === false ? undefined : valid}
                     errorMessage={errorMessage}
-                    placeholder="Enter your unique mnemonic signing key" />
+                    placeholder={props.placeholder} />
                 <span className="submit-button-container">
                     <ButtonPrimary buttonId="submit" onClick={handleSubmit}>Submit</ButtonPrimary>
                 </span>

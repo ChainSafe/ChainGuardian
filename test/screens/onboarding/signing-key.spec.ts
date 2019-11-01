@@ -1,7 +1,7 @@
 import {setApp} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
-import {Routes, Subroutes} from "../../../src/renderer/constants/routes";
+import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 import {
     INVALID_MNEMONIC_MESSAGE,
     KEY_WRONG_LENGTH_MESSAGE,
@@ -17,7 +17,7 @@ describe("Onboarding signing key import screen", () => {
     let app: Application;
 
     beforeEach(async () => {
-        app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(Subroutes.SIGNING, Subroutes.SIGNING_IMPORT));
+        app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT));
     });
 
     afterEach(() => {
@@ -37,44 +37,62 @@ describe("Onboarding signing key import screen", () => {
         expect(currentStep).to.be.equal("Signing key");
     });
 
-    it("should fail invalid mnemonic", async () => {
+    it("should fail invalid inputs", async () => {
         const {client} = app;
         await client.waitUntilWindowLoaded();
-        await client.addValue(".inputform", "test mnemonic");
-        const errorMessage = await client.getText(".error-message");
+
+        // Invalid mnemonic
+        await client.setValue(".inputform", "test mnemonic");
+        let errorMessage = await client.getText(".error-message");
         expect(errorMessage).to.be.equal(INVALID_MNEMONIC_MESSAGE);
-    });
 
-
-    it("should fail private key not correct length", async () => {
-        const {client} = app;
-        await client.waitUntilWindowLoaded();
-        await client.addValue(".inputform", "0xasdfag");
-        const errorMessage = await client.getText(".error-message");
+        // Invalid key length
+        await client.setValue(".inputform", "0xadfa");
+        errorMessage = await client.getText(".error-message");
         expect(errorMessage).to.be.equal(KEY_WRONG_LENGTH_MESSAGE);
-    });
 
-    it("should fail private key contains not alphanumerical characters", async () => {
-        const {client} = app;
-        await client.waitUntilWindowLoaded();
-        await client.addValue(".inputform", "0xasdf*=");
-        const errorMessage = await client.getText(".error-message");
+        // Invalid charactes in key
+        await client.setValue(".inputform", "0xasdf*=");
+        errorMessage = await client.getText(".error-message");
         expect(errorMessage).to.be.equal(KEY_WRONG_CHARACTERS_MESSAGE);
     });
 
-    it("should work private key correct", async () => {
+
+    it("should work valid inputs", async () => {
         const {client} = app;
         await client.waitUntilWindowLoaded();
-        await client.addValue(".inputform", privateKeyStr);
-        const errorMessage = await client.getText(".error-message");
+
+        // Valid key
+        await client.setValue(".inputform", privateKeyStr);
+        let errorMessage = await client.getText(".error-message");
+        expect(errorMessage).to.be.equal("");
+        
+        // Valid mnemonic
+        await client.setValue(".inputform", mnemonic);
+        errorMessage = await client.getText(".error-message");
         expect(errorMessage).to.be.equal("");
     });
 
-    it("should work mnemonic correct", async () => {
+    it("should not submit if error message exists", async () => {
         const {client} = app;
         await client.waitUntilWindowLoaded();
-        await client.addValue(".inputform", mnemonic);
-        const errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal("");
+
+        // User enter invalid mnemonic
+        await client.setValue(".inputform", "test mnemonic");
+
+        const preClickUrl = await client.getUrl();
+        await client.waitForVisible("#submit");
+        await client.$("#submit").click();
+        let postClickUrl = await client.getUrl();
+        expect(preClickUrl).to.be.equal(postClickUrl);
+
+        // Useer enter valid mnemonic
+        await client.setValue(".inputform", mnemonic);
+        await client.$("#submit").click();
+        postClickUrl = await client.getUrl();
+        expect(postClickUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
+            OnBoardingRoutes.WITHDRAWAL_IMPORT
+        ))).to.be.true;
     });
+
 });

@@ -1,6 +1,6 @@
 import {Application} from "spectron";
 import {setApp} from "../setup";
-import {Routes, Subroutes} from "../../../src/renderer/constants/routes";
+import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 
 jest.setTimeout(15000);
 
@@ -33,7 +33,7 @@ describe("Main window", () => {
         await client.waitUntilWindowLoaded();
         await client.$("button=REGISTER").click().pause(500);
         const url = await client.getUrl();
-        expect(url.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(Subroutes.SIGNING, Subroutes.SIGNING_ENTRANCE))).toBeTruthy();
+        expect(url.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING))).toBeTruthy();
     });
 
     it("input field test", async () => {

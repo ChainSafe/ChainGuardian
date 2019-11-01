@@ -8,7 +8,7 @@ exports[`InputForm renders correctly 1`] = `
     Input
   </div>
   <input
-    className="inputform  normal"
+    className="inputform "
   />
   <div
     className="error-message none"
@@ -24,7 +24,7 @@ exports[`InputForm renders error and message 1`] = `
     Input
   </div>
   <input
-    className="inputform error normal"
+    className="inputform error"
   />
   <div
     className="error-message "
@@ -43,7 +43,7 @@ exports[`InputForm renders focused input 1`] = `
   </div>
   <input
     autoFocus={true}
-    className="inputform  normal"
+    className="inputform "
   />
   <div
     className="error-message none"
@@ -59,7 +59,7 @@ exports[`InputForm renders input id 1`] = `
     Input
   </div>
   <input
-    className="inputform  normal"
+    className="inputform "
     id="testid"
   />
   <div
@@ -76,7 +76,7 @@ exports[`InputForm renders success 1`] = `
     Input
   </div>
   <input
-    className="inputform success normal"
+    className="inputform success"
   />
   <div
     className="error-message none"
@@ -92,7 +92,7 @@ exports[`InputForm renders value 1`] = `
     Input
   </div>
   <input
-    className="inputform  normal"
+    className="inputform "
     value="textfortest"
   />
   <div

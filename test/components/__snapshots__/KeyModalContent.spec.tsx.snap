@@ -14,10 +14,10 @@ Array [
       />
       <input
         autoFocus={true}
-        className="inputform  normal"
+        className="inputform "
         id="inputKey"
         onChange={[Function]}
-        placeholder="Enter your unique mnemonic signing key"
+        placeholder="Test placeholder"
         value=""
       />
       <div
@@ -62,10 +62,10 @@ Array [
       />
       <input
         autoFocus={true}
-        className="inputform  normal"
+        className="inputform "
         id="inputKey"
         onChange={[Function]}
-        placeholder="Enter your unique mnemonic signing key"
+        placeholder="Test placeholder"
         value=""
       />
       <div
