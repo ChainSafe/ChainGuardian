@@ -2,7 +2,6 @@ import * as React from "react";
 import logo from "../../assets/img/logo/Logo.svg";
 
 interface IBackgroundProps {
-    children?: any;
     basic?: boolean;
 }
 
