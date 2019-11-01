@@ -7,3 +7,11 @@ export const Account: AnyContainerType = {
         ["sendStats", "bool"],
     ],
 };
+
+
+export const Metrics: AnyContainerType = {
+    fields: [
+        ["date", "bytes256"],
+        ["metric", "uint"]
+    ]
+};
