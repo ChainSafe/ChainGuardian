@@ -10,7 +10,7 @@ import {Metrics} from "../../../models/metrics";
  * 
  * class Example{
  *  
- *  @trackMetrics()
+ *  @trackMetrics(true, Bucket.example)
  *  method(){
  *      console.log("Do the hard work");
  *  }
@@ -45,10 +45,7 @@ export function trackMetrics(persistMetrics = false, bucket: Bucket = Bucket.gen
             });
             // YYYY-MM-DD-methodName-itearation
             const id = `${currentDate.toISOString()}-${String(propertyKey)}-${i++}`;
-            /**
-             * TODO: Implement metrics persistance
-             * Save this "log" data into the DB
-             */
+            // Save the metrics to the DB based on the provided Bucket
             if(persistMetrics === true){
                 switch(bucket){
                     case Bucket.httpMetrics:

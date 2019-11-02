@@ -14,7 +14,6 @@ export class HttpClient {
      * Method that handles GET
      * @param url endpoint url
      */
-    @trackMetrics()
     public async get<T>(url: string): Promise<T> {
         try {
             const result: AxiosResponse<T> = await this.client.get<T>(url);
@@ -29,7 +28,6 @@ export class HttpClient {
      * @param url endpoint url
      * @param data request body
      */
-    @trackMetrics()
     public async post<T, T2>(url: string, data: T): Promise<T2> {
         try {
             const result: AxiosResponse<T2> = await this.client.post(url, data);
