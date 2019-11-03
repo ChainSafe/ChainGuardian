@@ -12,6 +12,7 @@ export const Account: AnyContainerType = {
 export const Metrics: AnyContainerType = {
     fields: [
         ["date", "bytes256"],
-        ["metric", "uint"]
+        ["method", "bytes512"],
+        ["metric", "uint256"]
     ]
 };

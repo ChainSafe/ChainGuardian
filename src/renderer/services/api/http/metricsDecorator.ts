@@ -1,6 +1,7 @@
 import {Bucket, encodeKey} from "../../db/schema";
 import {CGDatabase} from "../../db/api";
 import {Metrics} from "../../../models/metrics";
+import {getDB} from "../../db/api/database";
 
 /**
  * Decorator that allows us to track metrics of any method.
@@ -16,7 +17,7 @@ import {Metrics} from "../../../models/metrics";
  *  }
  * }
  */
-export function trackMetrics(persistMetrics = false, bucket: Bucket = Bucket.generalMetrics): MethodDecorator {
+export function trackMetrics(persistMetrics = true, bucket: Bucket = Bucket.generalMetrics): MethodDecorator {
     return function (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor): any {
         let descriptorCopy = descriptor;
         if (descriptorCopy === undefined) {
@@ -24,13 +25,13 @@ export function trackMetrics(persistMetrics = false, bucket: Bucket = Bucket.gen
             descriptorCopy = Object.getOwnPropertyDescriptor(target, propertyKey);
         }
         const originalMethod = descriptorCopy.value;
-        // TODO: Inject database instance
-        let db: CGDatabase;
 
         // Counter to track the number of times the method was executed
         let i = 0;
         let startTime = 0, endTime = 0;
         descriptorCopy.value = function (...args: any[]): any {
+            // TODO: Inject database instance
+            const db: CGDatabase = getDB();
             // Save the time before the method execution
             startTime = performance.now();
             // Call the original method
@@ -41,6 +42,7 @@ export function trackMetrics(persistMetrics = false, bucket: Bucket = Bucket.gen
             const currentDate = new Date();
             const metrics = new Metrics({
                 metric: endTime - startTime,
+                method: String(propertyKey),
                 date: currentDate.toISOString(),
             });
             // YYYY-MM-DD-methodName-itearation

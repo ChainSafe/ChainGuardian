@@ -1,5 +1,4 @@
 import axios, {AxiosError, AxiosInstance, AxiosResponse} from "axios";
-import {trackMetrics} from "./metricsDecorator";
 
 export class HttpClient {
     private client: AxiosInstance;
