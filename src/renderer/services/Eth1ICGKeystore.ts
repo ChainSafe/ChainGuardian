@@ -3,7 +3,6 @@ import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {writeFileSync, unlinkSync, readFileSync, existsSync} from "fs";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import bech32 from "bech32";
-import eth1WalletProvider from "ethereumjs-wallet";
 
 export class Eth1ICGKeystore implements ICGKeystore {
     keystore: IV3Keystore;
