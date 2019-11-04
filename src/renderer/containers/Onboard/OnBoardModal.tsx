@@ -1,6 +1,7 @@
 import React, {Component, ReactElement} from "react";
 import {Modal} from "../../components/Modal/Modal";
 import {StepNavigation} from "../../components/StepNavigation/StepNavigation";
+import { History } from "history";
 
 const steps = [
     {stepId: 1, stepName: "Signing key"},
@@ -11,7 +12,7 @@ const steps = [
 ];
 
 
-export default class OnBoardModal extends Component<{ history: any, currentStep: number }, {}> {
+export default class OnBoardModal extends Component<{ history: History, currentStep: number }, {}> {
     public render(): ReactElement {
 
         const topBar = <StepNavigation steps={steps} current={this.props.currentStep} />;

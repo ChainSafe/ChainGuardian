@@ -5,8 +5,9 @@ import {
     IMPORT_WITHDRAWAL_KEY_TITLE, 
     IMPORT_WITHDRAWAL_KEY_DESCRIPTION
 } from "../../../constants/strings";
+import { History } from "history";
 
-export default class WithdrawalKeyImport extends Component<{ history: any }, {}> {
+export default class WithdrawalKeyImport extends Component<{ history: History }, {}> {
     public render(): ReactElement {
         return (
             <KeyModalContent

@@ -9,7 +9,7 @@ describe("Onboarding start screen", () => {
     let app: Application;
 
     beforeEach(async () => {
-        app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING, OnBoardingRoutes.SIGNING_ENTRANCE));
+        app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
     });
 
     afterEach(() => {

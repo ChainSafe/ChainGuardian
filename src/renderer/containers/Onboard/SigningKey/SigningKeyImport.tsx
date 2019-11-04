@@ -2,8 +2,9 @@ import React, {Component, ReactElement} from "react";
 import KeyModalContent from "../../../components/KeyModalContent/KeyModalContent";
 import {Routes, OnBoardingRoutes} from "../../../constants/routes";
 import {IMPORT_KEY_PLACEHOLDER, IMPORT_SIGNING_KEY_TITLE} from "../../../constants/strings";
+import { History } from "history";
 
-export default class SigningKeyImport extends Component<{ history: any }, {}> {
+export default class SigningKeyImport extends Component<{ history: History }, {}> {
     public render(): ReactElement {
         return (
             <KeyModalContent 

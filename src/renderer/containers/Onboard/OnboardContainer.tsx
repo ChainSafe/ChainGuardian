@@ -1,12 +1,18 @@
 import React, {Component, ReactElement} from "react";
+import {RouteComponentProps, match} from 'react-router-dom'
 import {Background} from "../../components/Background/Background";
 import OnBoardModal from "./OnBoardModal";
 import SigningKey from "./SigningKey/SigningKey";
 import SigningKeyImport from "./SigningKey/SigningKeyImport";
 import WithdrawalKeyImport from "./WithdrawalKey/WithdrawalKeyImport";
 import {OnBoardingRoutes} from "../../constants/routes";
+import { History } from "history";
 
-export default class OnboardContainer extends Component<{ history: any, match: any }, {}> {
+interface IOnboardStep {
+    step: string
+}
+
+export default class OnboardContainer extends Component<{ history: History, match: match<IOnboardStep> }, {}> {
 
     private Steper = {
         [OnBoardingRoutes.SIGNING]: <SigningKey />,
