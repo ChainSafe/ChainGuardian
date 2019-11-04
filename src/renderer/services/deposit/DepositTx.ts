@@ -2,10 +2,10 @@ import {bytes, DepositData} from "@chainsafe/eth2.0-types";
 import abi from "ethereumjs-abi";
 import {ITx} from "./types";
 import {functionSignatureFromABI} from "./utils";
-import {EthConverter, toHexString} from "../utils/crypto-utils";
 import DepositContract from "../../../../src/renderer/services/deposit/options";
 import {DEPOSIT_AMOUNT, DEPOSIT_TX_GAS} from "./constants";
 import {Wallet} from "ethers/wallet";
+import {utils} from "ethers";
 
 export class DepositTx implements ITx{
     data: string | bytes;
@@ -34,7 +34,7 @@ export class DepositTx implements ITx{
         return new DepositTx(
             depositFunctionEncoded,
             depositContractAddress,
-            toHexString(EthConverter.convertEth(DEPOSIT_AMOUNT, "wei"))
+            utils.parseEther(DEPOSIT_AMOUNT).toHexString()
         );
     }
 
