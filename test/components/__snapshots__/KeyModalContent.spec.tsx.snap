@@ -21,7 +21,7 @@ Array [
         value=""
       />
       <div
-        className="error-message none"
+        className="error-message "
       >
         
       </div>
@@ -31,6 +31,7 @@ Array [
     >
       <button
         className="button btn-primary "
+        disabled={true}
         id="submit"
         onClick={[Function]}
       >
@@ -69,7 +70,7 @@ Array [
         value=""
       />
       <div
-        className="error-message none"
+        className="error-message "
       >
         
       </div>
@@ -79,6 +80,7 @@ Array [
     >
       <button
         className="button btn-primary "
+        disabled={true}
         id="submit"
         onClick={[Function]}
       >

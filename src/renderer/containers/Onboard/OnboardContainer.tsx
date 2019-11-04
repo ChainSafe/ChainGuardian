@@ -1,12 +1,12 @@
 import React, {Component, ReactElement} from "react";
-import {RouteComponentProps, match} from 'react-router-dom'
+import {match} from "react-router-dom";
 import {Background} from "../../components/Background/Background";
 import OnBoardModal from "./OnBoardModal";
 import SigningKey from "./SigningKey/SigningKey";
 import SigningKeyImport from "./SigningKey/SigningKeyImport";
 import WithdrawalKeyImport from "./WithdrawalKey/WithdrawalKeyImport";
 import {OnBoardingRoutes} from "../../constants/routes";
-import { History } from "history";
+import {History} from "history";
 
 interface IOnboardStep {
     step: string

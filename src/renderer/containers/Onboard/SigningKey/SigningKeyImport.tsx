@@ -1,8 +1,8 @@
 import React, {Component, ReactElement} from "react";
 import KeyModalContent from "../../../components/KeyModalContent/KeyModalContent";
 import {Routes, OnBoardingRoutes} from "../../../constants/routes";
-import {IMPORT_KEY_PLACEHOLDER, IMPORT_SIGNING_KEY_TITLE} from "../../../constants/strings";
-import { History } from "history";
+import {IMPORT_SIGNING_KEY_TITLE, IMPORT_SIGNING_KEY_PLACEHOLDER} from "../../../constants/strings";
+import {History} from "history";
 
 export default class SigningKeyImport extends Component<{ history: History }, {}> {
     public render(): ReactElement {
@@ -10,7 +10,7 @@ export default class SigningKeyImport extends Component<{ history: History }, {}
             <KeyModalContent 
                 title={IMPORT_SIGNING_KEY_TITLE}
                 onSubmit={this.handleSubmit}
-                placeholder={IMPORT_KEY_PLACEHOLDER} 
+                placeholder={IMPORT_SIGNING_KEY_PLACEHOLDER} 
             />
         );
     }

@@ -1,4 +1,5 @@
 import * as React from "react";
+import {ReactNode} from "react";
 import {Background} from "../../components/Background/Background";
 import {Modal} from "../../components/Modal/Modal";
 import {InputForm} from "../../components/Input/InputForm";
@@ -18,7 +19,7 @@ export default class LoginContainer extends React.Component {
         this.setState({input: e.currentTarget.value});
     };
     
-    public render(): any {
+    public render(): ReactNode {
         return (
             <Background>
                 <Modal>

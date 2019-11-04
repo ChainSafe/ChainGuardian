@@ -6,16 +6,19 @@ exports[`TabNavigation renders correctly 1`] = `
 >
   <div
     className="tab current-tab"
+    onClick={[Function]}
   >
     Validator Stats
   </div>
   <div
     className="tab "
+    onClick={[Function]}
   >
     Beacon Node
   </div>
   <div
     className="tab "
+    onClick={[Function]}
   >
     Beacon Node
   </div>

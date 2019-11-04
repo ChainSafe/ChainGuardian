@@ -59,7 +59,7 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
                     errorMessage={errorMessage}
                     placeholder={props.placeholder} />
                 <span className="submit-button-container">
-                    <ButtonPrimary buttonId="submit" onClick={handleSubmit}>Submit</ButtonPrimary>
+                    <ButtonPrimary buttonId="submit" disabled={!valid} onClick={handleSubmit}>Submit</ButtonPrimary>
                 </span>
             </div>
         </>

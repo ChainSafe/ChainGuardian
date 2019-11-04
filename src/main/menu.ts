@@ -1,10 +1,9 @@
-import * as electron from "electron";
-import {Menu, shell} from "electron";
+import {MenuItemConstructorOptions, MenuItem, Menu, shell, app}from "electron";
 
 const template = [
     // { role: 'appMenu' }
     ...(process.platform === "darwin" ? [{
-        label: electron.app.getName(),
+        label: app.getName(),
         submenu: [
             {role: "about"},
             {type: "separator"},
@@ -104,7 +103,6 @@ const template = [
 ];
 
 export function setApplicationMenu(): void {
-    // @ts-ignore
-    const menu = Menu.buildFromTemplate(template);
+    const menu = Menu.buildFromTemplate(template as Array<MenuItemConstructorOptions | MenuItem>);
     Menu.setApplicationMenu(menu);
 }

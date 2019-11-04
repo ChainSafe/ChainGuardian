@@ -1,7 +1,7 @@
 import React, {Component, ReactElement} from "react";
 import {Modal} from "../../components/Modal/Modal";
 import {StepNavigation} from "../../components/StepNavigation/StepNavigation";
-import { History } from "history";
+import {History} from "history";
 
 const steps = [
     {stepId: 1, stepName: "Signing key"},

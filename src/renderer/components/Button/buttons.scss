@@ -22,13 +22,18 @@
     height: 64px;
     background: rgba(0, 0, 0, 0);
     border: none;
+    outline: transparent;
     .copyall{display: none;}
     .copied{display: none;}
     &:hover{
+        margin-bottom: 27px;
+        margin-right: 23px;
         .copy{display: none;}
         .copyall{display: block;}
     }
     &:active{
+        margin-bottom: 27px;
+        margin-right: 23px;
         .copy{display: none;}
         .copyall{display: none;}
         .copied{display: block;}
