@@ -1,0 +1,29 @@
+.copy-field{
+    margin-top: 100px;
+    background-color: $neutral-600;
+    width: 608px;
+    min-height: 55px;
+    box-shadow: inset 0px 2px 6px rgba(10, 39, 51, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    color: $neutral-100;
+    padding: 16px;
+    font-family: 'Palanquin', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 44px;
+    text-align: center;
+    letter-spacing: 0.01em;
+    margin: 0px;
+    position: relative;
+    z-index: 1;
+    &.mnemonic{
+        word-spacing: 15px;
+    }
+}
+.copy-button{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+}
