@@ -71,13 +71,6 @@
     background: url(../assets/img/notification/Close.svg);
     height: 24px;
     width: 24px;
-    border-radius: 3px;
-    &:hover{
-        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.9);
-    }
-    &:active{
-        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
-    }
 }
 .notification-content{
     font-weight: 400;

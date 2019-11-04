@@ -2,33 +2,32 @@ import * as React from 'react';
 import {useState} from 'react';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, number, select, button } from '@storybook/addon-knobs';
-import { Notification} from './Notification';
+import { Notification, horizontal, vertical, level} from './Notification';
 
 storiesOf('Notification', module).add('System Notice/Error', () => {
     const [visible, setVisible]=useState(true);
 
     const levelOptions = {
-        info: "info",
-        error: "error",
+        info: level.info,
+        error: level.error,
     }
     const horizontalOptions = {
-        left: "left",
-        right: "right",
-        center: "center-horizontal",
+        left: horizontal.left,
+        right: horizontal.right,
+        center: horizontal.center,
     }
     const verticalOptions = {
-        top: "top",
-        bottom: "bottom",
-        center: "center-vertical",
+        top: vertical.top,
+        bottom: vertical.bottom,
+        center: vertical.center,
     }
-    // const visible = boolean("visible", true);
 
     const handler = () => setVisible(true);
     button("show notification", handler);
 
-    const levelValue = select("level", levelOptions, "info");
-    const horizontalValue = select("horizontalPosition", horizontalOptions, "left");
-    const verticalValue = select("verticalPosition", verticalOptions, "top");
+    const levelValue = select("level", levelOptions, level.info);
+    const horizontalValue = select("horizontalPosition", horizontalOptions, horizontal.left);
+    const verticalValue = select("verticalPosition", verticalOptions, vertical.top);
     const childrenValue = text("text", "Description of notice. Try to use conversational copy to give a friendly notice to your users!")
 
     return <Notification 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as renderer from "react-test-renderer";
-import {Notification} from "../../src/renderer/components/Notification/Notification";
+import {Notification, level, horizontal, vertical} from "../../src/renderer/components/Notification/Notification";
 
 describe("Notification", () => {
     it("renders info top left", () => {
@@ -8,9 +8,9 @@ describe("Notification", () => {
             .create(<Notification 
                 title="Test Title"
                 isVisible={true}
-                level="info"
-                horizontalPosition="left"
-                verticalPosition="top"
+                level={level.info}
+                horizontalPosition={horizontal.left}
+                verticalPosition={vertical.top}
                 onClose={(): void=>{}}>
                 Test text for notification commponent
             </Notification>)
@@ -22,9 +22,9 @@ describe("Notification", () => {
             .create(<Notification 
                 title="Test Title"
                 isVisible={true}
-                level="error"
-                horizontalPosition="right"
-                verticalPosition="bottom"
+                level={level.error}
+                horizontalPosition={horizontal.right}
+                verticalPosition={vertical.bottom}
                 onClose={(): void=>{}}>
                 Test text for notification commponent
             </Notification>)
@@ -36,9 +36,9 @@ describe("Notification", () => {
             .create(<Notification 
                 title="Test Title"
                 isVisible={false}
-                level="info"
-                horizontalPosition="right"
-                verticalPosition="bottom"
+                level={level.info}
+                horizontalPosition={horizontal.right}
+                verticalPosition={vertical.bottom}
                 onClose={(): void=>{}}>
                 Test text for notification commponent
             </Notification>)
@@ -50,9 +50,9 @@ describe("Notification", () => {
             .create(<Notification 
                 title="Test Title"
                 isVisible={true}
-                level="info"
-                horizontalPosition="center-horizontal"
-                verticalPosition="center-vertical"
+                level={level.info}
+                horizontalPosition={horizontal.center}
+                verticalPosition={vertical.center}
                 onClose={(): void=>{}}>
                 Test text for notification commponent
             </Notification>)
