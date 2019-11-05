@@ -1,12 +1,12 @@
-import {ICGKeystore, IV3Keystore, ICGKeystoreFactory} from "./interface";
+import {ICGKeystore, ICGKeystoreFactory, IV3Keystore} from "./interface";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
-import {writeFileSync, unlinkSync, readFileSync, existsSync} from "fs";
+import {existsSync, readFileSync, unlinkSync, writeFileSync} from "fs";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
-import bech32 from "bech32";
+import {ethers} from "ethers";
 
 export class Eth1Keystore implements ICGKeystore {
     private keystore: IV3Keystore;
-    private file: string;
+    private readonly file: string;
 
     public constructor(file: string) {
         this.keystore = this.readKeystoreFile(file);
@@ -18,15 +18,9 @@ export class Eth1Keystore implements ICGKeystore {
      * @param password password for encryption
      * @param keypair private and public key
      */
-    public static createKeystoreObject(password: string, keypair: Keypair): IV3Keystore {
-        const keystore = eth1WalletProvider
-            .fromPrivateKey(keypair.privateKey.toBytes())
-            .toV3(password, {kdf: "pbkdf2"});
-        return {
-            ...keystore,
-            // @ts-ignore - the official V3 keystore spec omits the address key
-            address: bech32.toWords(keypair.publicKey.toBytesCompressed())
-        };
+    public static async createKeystoreObject(password: string, keypair: Keypair): Promise<IV3Keystore> {
+        const w = new ethers.Wallet(keypair.privateKey.toBytes());
+        return JSON.parse(await w.encrypt(password));
     }
 
     /**
@@ -35,9 +29,9 @@ export class Eth1Keystore implements ICGKeystore {
      * @param password password for encryption
      * @param keypair private and public key
      */
-    public static create(file: string, password: string, keypair: Keypair): ICGKeystore {
+    public static async create(file: string, password: string, keypair: Keypair): Promise<ICGKeystore> {
         try {
-            const keystore = Eth1Keystore.createKeystoreObject(password, keypair);
+            const keystore = await Eth1Keystore.createKeystoreObject(password, keypair);
             writeFileSync(file, JSON.stringify(keystore, null, 2));
             return new Eth1Keystore(file);
         } catch (err) {
@@ -49,10 +43,9 @@ export class Eth1Keystore implements ICGKeystore {
      * Method used to decrypt encrypted private key from keystore file
      * @param password
      */
-    public decrypt(password: string): Keypair {
-        const keystore = eth1WalletProvider
-            .fromV3(JSON.stringify(this.keystore), password);
-        const privateKeyString = keystore.getPrivateKeyString();
+    public async decrypt(password: string): Promise<Keypair> {
+        const keystore = await ethers.Wallet.fromEncryptedJson(JSON.stringify(this.keystore), password);
+        const privateKeyString = keystore.privateKey;
         const priv = PrivateKey.fromHexString(privateKeyString);
         return new Keypair(priv);
     }
@@ -63,9 +56,9 @@ export class Eth1Keystore implements ICGKeystore {
      * @param oldPassword old password to decrypt private key
      * @param newPassword new password to encrypt private key
      */
-    public changePassword(oldPassword: string, newPassword: string): void {
-        const keypair = this.decrypt(oldPassword);
-        const keystore = Eth1Keystore.createKeystoreObject(newPassword, keypair);
+    public async changePassword(oldPassword: string, newPassword: string): Promise<void> {
+        const keypair = await this.decrypt(oldPassword);
+        const keystore = await Eth1Keystore.createKeystoreObject(newPassword, keypair);
 
         try {
             writeFileSync(this.file, JSON.stringify(keystore, null, 2));
@@ -98,6 +91,10 @@ export class Eth1Keystore implements ICGKeystore {
         if (existsSync(file)) {
             try {
                 const data = readFileSync(file);
+                const rawKeystoreFile = JSON.parse(data.toString());
+                if (typeof rawKeystoreFile.address !== "string") {
+                    rawKeystoreFile.address = Buffer.from(rawKeystoreFile.address).toString();
+                }
                 return JSON.parse(data.toString());
             } catch (err) {
                 throw new Error(`${file} could not be parsed`);

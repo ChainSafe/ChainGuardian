@@ -1,6 +1,5 @@
 import {ethers, Wallet} from "ethers";
 import {deployDepositContract} from "./deposit-test-util";
-import hdkey from "ethereumjs-wallet/hdkey";
 import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {toHexString} from "../../../../src/renderer/services/utils/crypto-utils";
@@ -16,20 +15,20 @@ describe("Deposit transaction service unit tests", () => {
 
     beforeAll(async () => {
         // create accounts and deploy deposit contract
-        const deployPrivateKey = hdkey.fromMasterSeed(Buffer.from([0])).getWallet().getPrivateKey();
-        const accountPrivateKey = hdkey.fromMasterSeed(Buffer.from([1])).getWallet().getPrivateKey();
+        const deployWallet = ethers.Wallet.createRandom();
+        const accountWallet = ethers.Wallet.createRandom();
         provider = new ethers.providers.Web3Provider(ganache.provider({
             accounts: [{
                 balance: "100000000000000000000",
-                secretKey: toHexString(accountPrivateKey),
+                secretKey: toHexString(accountWallet.privateKey),
             },
             {
                 balance: "100000000000000000000",
-                secretKey: toHexString(deployPrivateKey),
+                secretKey: toHexString(deployWallet.privateKey),
             }],
         }));
-        wallet = new ethers.Wallet(accountPrivateKey, provider);
-        depositContractAddress = await deployDepositContract(provider, toHexString(deployPrivateKey));
+        wallet = accountWallet;
+        depositContractAddress = await deployDepositContract(provider, toHexString(deployWallet.privateKey));
     });
 
     it("should send deposit transaction successfully", async () => {
