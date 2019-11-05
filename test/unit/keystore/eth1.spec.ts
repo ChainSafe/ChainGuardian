@@ -70,7 +70,7 @@ describe("Eth1ICGKeystore", () => {
         await expect(eth1Keystore.decrypt("oldPassword"))
             .rejects
             .toThrow("invalid password");
-    }, 7000);
+    }, 10000);
 
     it("should destroy file", () => {
         const unlinkStub = sandbox
