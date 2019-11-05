@@ -14,7 +14,8 @@ export default class WithdrawalKeyImport extends Component<{ history: History },
                 title={IMPORT_WITHDRAWAL_KEY_TITLE}
                 description={IMPORT_WITHDRAWAL_KEY_DESCRIPTION}
                 placeholder={IMPORT_WITHDRAWAL_KEY_PLACEHOLDER}
-                onSubmit={(): any => alert("Submit")}
+                onSubmit={(): any => console.log("Submit")}
+                signing={false}
             />
         );
     }

@@ -10,7 +10,8 @@ export default class SigningKeyImport extends Component<{ history: History }, {}
             <KeyModalContent 
                 title={IMPORT_SIGNING_KEY_TITLE}
                 onSubmit={this.handleSubmit}
-                placeholder={IMPORT_SIGNING_KEY_PLACEHOLDER} 
+                placeholder={IMPORT_SIGNING_KEY_PLACEHOLDER}
+                signing={true} 
             />
         );
     }

@@ -33,7 +33,7 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
                 onChange={props.onChange} />
             <div 
                 className={`error-message ${classNamesValid(props.valid)}`}>
-                {props.errorMessage}</div>
+                {props.valid === false && props.errorMessage}</div>
         </form>
     );
 };

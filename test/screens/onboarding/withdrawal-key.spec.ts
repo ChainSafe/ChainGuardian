@@ -3,22 +3,22 @@ import {Application} from "spectron";
 import {expect} from "chai";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 import {
-    INVALID_MNEMONIC_MESSAGE,
     KEY_WRONG_CHARACTERS_MESSAGE,
-    PRIVATE_KEY_WRONG_LENGTH_MESSAGE
+    PUBLIC_KEY_WRONG_LENGTH_MESSAGE,
+    KEY_START_WITH_PREFIX,
 } from "../../../src/renderer/services/utils/input-utils";
-import {IMPORT_SIGNING_KEY_PLACEHOLDER} from "../../../src/renderer/constants/strings";
+import {IMPORT_WITHDRAWAL_KEY_PLACEHOLDER} from "../../../src/renderer/constants/strings";
 
 jest.setTimeout(15000);
 
-const mnemonic = "hard caught annual spread green step avocado shine scare warm chronic pond";
-const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
+const publicKeyStr =
+    "0x92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff4990daa18";
 
-describe("Onboarding signing key import screen", () => {
+describe("Onboarding withdrawal key import screen", () => {
     let app: Application;
 
     beforeEach(async () => {
-        app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT));
+        app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL_IMPORT));
     });
 
     afterEach(() => {
@@ -33,24 +33,24 @@ describe("Onboarding signing key import screen", () => {
         expect(await client.isExisting("#inputKey")).to.be.true;
         expect((await client.elements(".step")).value.length).to.be.equal(5);
         const placeholder = await client.getAttribute("#inputKey", "placeholder");
-        expect(placeholder).to.be.equal(IMPORT_SIGNING_KEY_PLACEHOLDER);
-        const currentStep = await client.getAttribute(".step.current", "textContent");
-        expect(currentStep).to.be.equal("Signing key");
+        expect(placeholder).to.be.equal(IMPORT_WITHDRAWAL_KEY_PLACEHOLDER);
+        const currentStep: [] = await client.getAttribute(".step.current", "textContent");
+        expect(currentStep.length).to.be.equal(2);
     });
-
+    
     it("should fail invalid inputs", async () => {
         const {client} = app;
         await client.waitUntilWindowLoaded();
 
-        // Invalid mnemonic
-        await client.setValue(".inputform", "test mnemonic");
+        // Invalid key
+        await client.setValue(".inputform", "test");
         let errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal(INVALID_MNEMONIC_MESSAGE);
+        expect(errorMessage).to.be.equal(KEY_START_WITH_PREFIX);
 
         // Invalid key length
         await client.setValue(".inputform", "0xadfa");
         errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal(PRIVATE_KEY_WRONG_LENGTH_MESSAGE);
+        expect(errorMessage).to.be.equal(PUBLIC_KEY_WRONG_LENGTH_MESSAGE);
 
         // Invalid charactes in key
         await client.setValue(".inputform", "0xasdf*=");
@@ -64,13 +64,8 @@ describe("Onboarding signing key import screen", () => {
         await client.waitUntilWindowLoaded();
 
         // Valid key
-        await client.setValue(".inputform", privateKeyStr);
-        let errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal("");
-        
-        // Valid mnemonic
-        await client.setValue(".inputform", mnemonic);
-        errorMessage = await client.getText(".error-message");
+        await client.setValue(".inputform", publicKeyStr);
+        const errorMessage = await client.getText(".error-message");
         expect(errorMessage).to.be.equal("");
     });
 
@@ -78,22 +73,24 @@ describe("Onboarding signing key import screen", () => {
         const {client} = app;
         await client.waitUntilWindowLoaded();
 
-        // User enter invalid mnemonic
-        await client.setValue(".inputform", "test mnemonic");
+        // User enter invalid key
+        await client.setValue(".inputform", "0xasdfasdf");
 
         const preClickUrl = await client.getUrl();
         await client.waitForVisible("#submit");
         await client.$("#submit").click();
-        let postClickUrl = await client.getUrl();
+        const postClickUrl = await client.getUrl();
         expect(preClickUrl).to.be.equal(postClickUrl);
 
-        // Useer enter valid mnemonic
-        await client.setValue(".inputform", mnemonic);
+        /*
+        // User enter valid key
+        await client.setValue(".inputform", publicKeyStr);
         await client.$("#submit").click();
         postClickUrl = await client.getUrl();
         expect(postClickUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
             OnBoardingRoutes.WITHDRAWAL_IMPORT
         ))).to.be.true;
+        */
     });
 
 });

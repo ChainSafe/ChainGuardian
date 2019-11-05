@@ -1,13 +1,14 @@
 import React, {useState, ReactElement, useEffect} from "react";
 import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
-import {isValidMnemonicOrPrivateKey} from "../../services/utils/input-utils";
+import {isValidMnemonicOrPrivateKey, isValidPublicKey} from "../../services/utils/input-utils";
 
 interface IKeyModalProps {
     title: string,
     description?: string,
     onSubmit: (input: string) => void,
-    placeholder: string
+    placeholder: string,
+    signing: boolean
 }
 
 export default function KeyModalContent(props: IKeyModalProps): ReactElement {
@@ -25,8 +26,10 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
             return;
         }
 
-        const {isValid, message} = isValidMnemonicOrPrivateKey(input);
+        const {isValid, message} = props.signing ? isValidMnemonicOrPrivateKey(input) : isValidPublicKey(input);
         setvalid(isValid);
+
+        console.log(message);
 
         if(!isValid){
             setErrorMessage(message);

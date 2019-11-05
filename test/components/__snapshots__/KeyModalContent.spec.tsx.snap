@@ -22,9 +22,7 @@ Array [
       />
       <div
         className="error-message "
-      >
-        
-      </div>
+      />
     </form>
     <span
       className="submit-button-container"
@@ -71,9 +69,7 @@ Array [
       />
       <div
         className="error-message "
-      >
-        
-      </div>
+      />
     </form>
     <span
       className="submit-button-container"
