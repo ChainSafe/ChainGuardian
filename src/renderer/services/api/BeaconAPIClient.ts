@@ -23,8 +23,6 @@ import {
 import {Syncing, ForkInformation, IBeaconAPIClient, IBeaconApiClientOptions} from "./interface";
 import {HttpClient} from "./http/httpClient";
 import {EmptyUrlError} from "./errors/EmptyUrlError";
-import {trackMetrics} from "./http/metricsDecorator";
-import {Bucket} from "../db/schema";
 
 export class BeaconAPIClient implements IBeaconAPIClient {
     private options: IBeaconApiClientOptions;
@@ -38,12 +36,10 @@ export class BeaconAPIClient implements IBeaconAPIClient {
         this.httpClient = new HttpClient(options.urlPrefix);
     }
 
-    @trackMetrics(true, Bucket.httpMetrics)
     public async fetchNodeVersion(): Promise<string> {
         return this.httpClient.get<string>(FETCH_NODE_VERSION);
     }
 
-    @trackMetrics(true, Bucket.httpMetrics)
     public async fetchGenesisTime(): Promise<uint64> {
         return this.httpClient.get<uint64>(FETCH_GENESIS_TIME);
     }
@@ -52,27 +48,22 @@ export class BeaconAPIClient implements IBeaconAPIClient {
         return this.httpClient.get<Syncing>(POLL_NODE_SYNCING);
     }
 
-    @trackMetrics(true, Bucket.httpMetrics)
     public async fetchForkInformation(): Promise<ForkInformation> {
         return this.httpClient.get<ForkInformation>(FETCH_FORK_INFORMATION);
     }
 
-    @trackMetrics(true, Bucket.httpMetrics)
     public async fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty> {
         return this.httpClient.get<ValidatorDuty>(FETCH_VALIDATOR_DUTIES(validatorPubkeys, epoch));
     }
 
-    @trackMetrics(true, Bucket.httpMetrics)
     public async fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock> {
         return this.httpClient.get<BeaconBlock>(FETCH_VALIDATOR_BLOCK(slot, randaoReveal));
     }
 
-    @trackMetrics(true, Bucket.httpMetrics)
     public async publishSignedBlock(beaconBlock: BeaconBlock): Promise<any> {
         return this.httpClient.post<BeaconBlock, any>(PUBLISH_SIGNED_BLOCK, beaconBlock);
     }
 
-    @trackMetrics(true, Bucket.httpMetrics)
     public async produceAttestation(
         validatorPubkey: BLSPubkey,
         pocBit: uint8,
@@ -82,7 +73,6 @@ export class BeaconAPIClient implements IBeaconAPIClient {
         return this.httpClient.get<IndexedAttestation>(PRODUCE_ATTESTATION(validatorPubkey, pocBit, slot, shard));
     }
 
-    @trackMetrics(true, Bucket.httpMetrics)
     public async publishSignedAttestation(attestation: IndexedAttestation): Promise<any> {
         return this.httpClient.post<IndexedAttestation, any>(PUBLISH_SIGNED_ATTESTATION, attestation);
     }

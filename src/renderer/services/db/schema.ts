@@ -9,6 +9,7 @@ import BN from "bn.js";
 export enum Bucket {
     account,
     httpMetrics,
+    beaconMetrics,
     generalMetrics
 }
 

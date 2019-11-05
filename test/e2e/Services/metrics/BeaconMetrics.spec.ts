@@ -1,5 +1,5 @@
 /* eslint-disable */
-import {BeaconAPIClient} from "../../../../src/renderer/services/api/BeaconAPIClient";
+import {BeaconAPIClientMetrics} from "../../../../src/renderer/services/api/BeaconAPIClientMetrics";
 import axios from "axios";
 import {
     FETCH_GENESIS_TIME,
@@ -45,7 +45,7 @@ mock.onGet(FETCH_GENESIS_TIME).reply(200, 2);
 
 
 describe("Http Metrics", () => {
-    let client: BeaconAPIClient;
+    let client: BeaconAPIClientMetrics;
 
     let database: CGDatabase, controller;
 
@@ -71,21 +71,21 @@ describe("Http Metrics", () => {
         initDB({controller, config});
         database = getDB();
 
-        client = new BeaconAPIClient({
+        client = new BeaconAPIClientMetrics({
             urlPrefix: API_URL
         });
     });
 
     it("should return node version", async () => {
-        await client.fetchNodeVersion();
-        const metricsRecorded = await database.httpMetrics.getAll();
+        const res = await client.fetchNodeVersion();
+        const metricsRecorded = await database.metrics.getAll();
         expect(metricsRecorded.length).toBe(1);
         expect(metricsRecorded[0].method).toBe("fetchNodeVersion");
     });
 
     it("should return genesis time", async () => {
-        await client.fetchGenesisTime();
-        const metricsRecorded = await database.httpMetrics.getAll();
+        const res = await client.fetchGenesisTime();
+        const metricsRecorded = await database.metrics.getAll();
         expect(metricsRecorded.length).toBe(2);
         expect(metricsRecorded[1].method).toBe("fetchGenesisTime");
     });

@@ -6,8 +6,8 @@ import {Metrics as SZMetrics} from "../../../../models/ssz/types";
 import {JSONSerializer} from "../../serializers/json";
 import {Metrics} from "../../../../models/metrics";
 
-export class HttpMetricsRepository extends BulkRepository<Metrics> {
+export class MetricsRepository extends BulkRepository<Metrics> {
     public constructor(config: IBeaconConfig, db: IDatabaseController) {
-        super(config, db, JSONSerializer, Bucket.httpMetrics, SZMetrics);
+        super(config, db, JSONSerializer, Bucket.generalMetrics, SZMetrics);
     }
 }
