@@ -1,40 +1,26 @@
 import * as React from "react";
+import {level, horizontal, vertical} from "./NotificationEnums";
 
 export interface INotificationProps{
     isVisible: boolean;
     level: level;
-    horizontalPosition?: horizontal;
-    verticalPosition?: vertical;
+    horizontalPosition: horizontal;
+    verticalPosition: vertical;
     title?: string;
-    children?: any;
     onClose: () => void;
 }
 
-export enum level {
-    info = "info",
-    error = "error",
-}
-
-export enum horizontal {
-    left = "left",
-    right = "right",
-    center = "center-horizontal",
-}
-
-export enum vertical {
-    top = "top",
-    bottom = "bottom",
-    center = "center-vertical",
-}
 
 export const Notification: React.FunctionComponent<React.PropsWithChildren<INotificationProps>> = (
-    props: INotificationProps) => {
+    props: React.PropsWithChildren<INotificationProps>) => {
     
     function getClasses(props: INotificationProps): string {
-        return `${props.level} 
-        ${props.isVisible ? "visible":"none"} 
-        ${props.horizontalPosition} 
-        ${props.verticalPosition}`;
+        let classes ="";
+        if(props.isVisible){
+            classes+= "visible ";
+        } else {classes+= "none ";}
+        classes+= props.horizontalPosition + " " + props.verticalPosition + " " + props.level; 
+        return classes;
     }
 
     return(
