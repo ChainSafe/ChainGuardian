@@ -51,7 +51,7 @@ export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey
     ]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const amount: BN = new BN(
-        utils.formatUnits(utils.parseEther(DEPOSIT_AMOUNT), "gwei").split(".")[0]
+        parseFloat(utils.formatUnits(utils.parseEther(DEPOSIT_AMOUNT), "gwei"))
     );
     // define DepositData
     const depositData: DepositData = {
