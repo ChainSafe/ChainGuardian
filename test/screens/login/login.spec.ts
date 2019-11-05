@@ -2,7 +2,7 @@ import {Application} from "spectron";
 import {setApp} from "../setup";
 import {Routes} from "../../../src/renderer/constants/routes";
 
-jest.setTimeout(15000);
+jest.setTimeout(30000);
 
 describe("Main window", () => {
     let app: Application;
@@ -31,7 +31,7 @@ describe("Main window", () => {
     it("register button leads to onboarding", async () => {
         const {client} = app;
         await client.waitUntilWindowLoaded();
-        await client.$("button=REGISTER").click().pause(500);
+        await client.$("button=REGISTER").click().pause(200);
         const url = await client.getUrl();
         expect(url.endsWith(Routes.ONBOARD_ROUTE)).toBeTruthy();
     });
