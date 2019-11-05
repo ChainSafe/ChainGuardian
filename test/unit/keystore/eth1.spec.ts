@@ -63,7 +63,7 @@ describe("Eth1ICGKeystore", () => {
         await eth1Keystore.changePassword(password, newPassword);
         const keypair = await eth1Keystore.decrypt(newPassword);
         expect(keypair.privateKey.toHexString()).toEqual(privateKeyStr);
-    });
+    }, 10000);
 
     it("should fail to encrypt private key with old password", async () => {
         await eth1Keystore.changePassword(newPassword, password);
