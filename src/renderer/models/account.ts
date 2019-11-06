@@ -94,17 +94,17 @@ export class CGAccount implements IAccount {
     public async unlock(password: string): Promise<void> {
         const keystoreFiles = this.getKeystoreFiles();
 
-        const validators: (Promise<Keypair> | undefined)[] = keystoreFiles.map(keystore => {
+        const validators: Promise<Keypair | undefined>[] = keystoreFiles.map(async keystore => {
             try {
-                return keystore.decrypt(password);
+                return await keystore.decrypt(password);
             } catch (e) {
                 return undefined;
             }
         });
         for (const validatorIdx in validators) {
-            const validator = validators[validatorIdx];
+            const validator = await validators[validatorIdx];
             if (validator !== undefined) {
-                this.validators.push(await validator);
+                this.validators.push(validator);
             }
         }
     }
