@@ -12,5 +12,7 @@ export async function deployDepositContract(testProvider: any, prKey: string): P
     );
     const contract = await factory.deploy();
     await contract.deployed();
+    const root = await contract.get_deposit_root()
+    console.log(root)
     return contract.address;
 }

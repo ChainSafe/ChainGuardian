@@ -1,14 +1,16 @@
-import {bytes, DepositData} from "@chainsafe/eth2.0-types";
+import { bytes, DepositData } from "@chainsafe/eth2.0-types";
+import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import abi from "ethereumjs-abi";
-import {ITx} from "./types";
+import { ITx } from "./types";
 import Wallet from "ethereumjs-wallet";
-import {Transaction} from "ethereumjs-tx";
-import {functionSignatureFromABI} from "./utils";
-import {EthConverter, toHexString} from "../utils/crypto-utils";
+import { Transaction } from "ethereumjs-tx";
+import { functionSignatureFromABI } from "./utils";
+import { EthConverter, toHexString } from "../utils/crypto-utils";
 import DepositContract from "../../../../src/renderer/services/deposit/options";
-import {DEPOSIT_AMOUNT, DEPOSIT_TX_GAS} from "./constants";
+import { DEPOSIT_AMOUNT, DEPOSIT_TX_GAS } from "./constants";
+import { signingRoot } from "@chainsafe/ssz";
 
-export class DepositTx implements ITx{
+export class DepositTx implements ITx {
     public data: string | bytes;
     public to: string;
     public value: string;
@@ -26,12 +28,16 @@ export class DepositTx implements ITx{
      * @param depositContractAddress - address of deployed deposit contract.
      */
     public static generateDepositTx(depositParams: DepositData, depositContractAddress: string): DepositTx {
+        // calculate root
+        const depositDataRoot = signingRoot(depositParams, config.types.DepositData);
         const depositFunctionEncoded = abi.simpleEncode(
             functionSignatureFromABI(DepositContract.abi, "deposit"),
             depositParams.pubkey,
             depositParams.withdrawalCredentials,
             depositParams.signature,
+            depositDataRoot
         );
+
         return new DepositTx(
             depositFunctionEncoded,
             depositContractAddress,
