@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Verify Mnemonic renders correctly 1`] = `
+<div
+  className="verify-mnemonic-container"
+>
+  <h1>
+    Test question?
+  </h1>
+  <div
+    className="verify-button-container"
+  >
+    <button
+      className="button btn-inverted "
+      onClick={[Function]}
+    >
+      <div
+        className=""
+      >
+        Accept
+      </div>
+    </button>
+    <button
+      className="button btn-inverted "
+      onClick={[Function]}
+    >
+      <div
+        className=""
+      >
+        Call
+      </div>
+    </button>
+    <button
+      className="button btn-inverted "
+      onClick={[Function]}
+    >
+      <div
+        className=""
+      >
+        Iguanas
+      </div>
+    </button>
+  </div>
+</div>
+`;
