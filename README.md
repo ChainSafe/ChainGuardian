@@ -42,6 +42,8 @@ For building components in isolation you can use [Storybook](https://storybook.j
 
 Just run `yarn storybook` 
 
+Design is based on: https://www.figma.com/file/dt1Z45BJkDGOg63IdNYwbR
+
 ## Packaging
 We use [Electron builder](https://www.electron.build/) to build and package the application. By default you can run the following to package for your current platform:
 

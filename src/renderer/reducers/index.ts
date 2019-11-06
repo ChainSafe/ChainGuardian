@@ -1,10 +1,10 @@
 import {combineReducers} from "redux";
-import {ICounterState, counterReducer} from "./counterReducer";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IRootState {
-    counter: ICounterState;
+
 }
 
 export const rootReducer = combineReducers<IRootState | undefined>({
-    counter: counterReducer
+    blank: function(state: IRootState) {return state || {};}
 });
