@@ -1,10 +1,10 @@
 import React, {Component, ReactElement} from "react";
 import {Background} from "../../components/Background/Background";
 import {Modal} from "../../components/Modal/Modal";
-import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
+import {ButtonPrimary} from "../../components/Button/ButtonStandard";
+import {MnemonicCopyField} from "../../components/CopyField/CopyField";
 import {StepNavigation} from "../../components/StepNavigation/StepNavigation";
 import {RouteComponentProps} from "react-router";
-import {Link} from "react-router-dom";
 
 const steps = [
     {stepId: 1, stepName: "Signing key"},
@@ -14,7 +14,7 @@ const steps = [
     {stepId: 5, stepName: "Consent"}
 ];
 
-export default class OnboardContainer extends Component<RouteComponentProps, {}> {
+export default class MnemonicContainer extends Component<RouteComponentProps, {}> {
 
     public render(): ReactElement {
 
@@ -23,16 +23,12 @@ export default class OnboardContainer extends Component<RouteComponentProps, {}>
         return (
             <Background>
                 <Modal hasBack onBack={this.handleBack} topBar={topBar}>
-                    <h1>Enter your signing key</h1>
-                    <p>You’ll need this for signing blocks and attestations on your behalf</p>
-                    <div className="action-buttons">
-                        <ButtonSecondary buttonId="import" large>IMPORT</ButtonSecondary>
-                        <Link to="/mnemonic-signing-key">
-                            <ButtonPrimary buttonId="generate" large>GENERATE</ButtonPrimary>
-                        </Link>
-                    </div>
+                    <h1>Here’s your special signing key mnemonic</h1>
+                    <p>This is yours and yours only! Please store it somewhere safe, like physically writing it down with pen and paper. You should never store your key in a note-taking app like Evernote, including cloud storage apps like Dropbox.</p>
+                    <MnemonicCopyField value="hold solve"></MnemonicCopyField>
+                    <ButtonPrimary buttonId="savedMnemonic">I SAVED THIS MNEMONIC</ButtonPrimary>
                 </Modal>
-            </Background >
+            </Background>
         );
     }
 
