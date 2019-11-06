@@ -30,6 +30,7 @@ export interface IBeaconApiClientOptions {
 }
 
 export interface IBeaconAPIClient {
+    instanceId: string;
     fetchNodeVersion(): Promise<string>;
     fetchGenesisTime(): Promise<uint64>;
     fetchNodeSyncing(): Promise<Syncing>;

@@ -1,8 +1,18 @@
-import { BeaconAPIClient } from './BeaconAPIClient';
-import { measureExecution } from '../metrics/Metrics';
-import { uint64, BLSPubkey, Epoch, ValidatorDuty, Slot, BeaconBlock, IndexedAttestation, Shard, uint8 } from '@chainsafe/eth2.0-types';
-import { IBeaconApiClientOptions, ForkInformation, Syncing } from './interface';
-import { Bucket } from '../db/schema';
+import {BeaconAPIClient} from "./BeaconAPIClient";
+import {measureExecution} from "../metrics/Metrics";
+import {
+    uint64,
+    BLSPubkey,
+    Epoch,
+    ValidatorDuty,
+    Slot,
+    BeaconBlock,
+    IndexedAttestation,
+    Shard,
+    uint8
+} from "@chainsafe/eth2.0-types";
+import {IBeaconApiClientOptions, ForkInformation, Syncing} from "./interface";
+import {Bucket} from "../db/schema";
 
 export class BeaconAPIClientMetrics extends BeaconAPIClient {
 
@@ -11,22 +21,47 @@ export class BeaconAPIClientMetrics extends BeaconAPIClient {
     }
 
     public async fetchNodeVersion(): Promise<string> {
-        return measureExecution(this, super.fetchNodeVersion, "fetchNodeVersion", Bucket.beaconMetrics, null);
+        return measureExecution(this,
+            {
+                function: super.fetchNodeVersion,
+                functionName: "fetchNodeVersion",
+                instanceId: this.instanceId,
+                bucket: Bucket.beaconMetrics
+            },
+            Bucket.beaconMetrics, null);
     }
 
     public async fetchGenesisTime(): Promise<uint64> {
-        return measureExecution(this, super.fetchGenesisTime, "fetchGenesisTime", Bucket.beaconMetrics, null);
+        return measureExecution(this, 
+            {
+                function: super.fetchGenesisTime,
+                functionName: "fetchGenesisTime",
+                instanceId: this.instanceId,
+                bucket: Bucket.beaconMetrics
+            },
+            Bucket.beaconMetrics, null);
     }
 
     public async fetchNodeSyncing(): Promise<Syncing> {
-        return measureExecution(this, super.fetchNodeSyncing, "fetchNodeSyncing", Bucket.beaconMetrics, null);
+        return measureExecution(this,
+            {
+                function: super.fetchNodeSyncing,
+                functionName: "fetchNodeSyncing",
+                instanceId: this.instanceId,
+                bucket: Bucket.beaconMetrics
+            },
+            Bucket.beaconMetrics, null);
     }
 
     public async fetchForkInformation(): Promise<ForkInformation> {
         return measureExecution(
             this,
-            super.fetchForkInformation,
-            "fetchForkInformation",
+            {
+                function: super.fetchForkInformation,
+                functionName: "fetchForkInformation",
+                instanceId: this.instanceId,
+                bucket: Bucket.beaconMetrics
+            },
             Bucket.beaconMetrics,
             null
         );
@@ -35,8 +70,12 @@ export class BeaconAPIClientMetrics extends BeaconAPIClient {
     public async fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty> {
         return measureExecution(
             this,
-            super.fetchValidatorDuties,
-            "fetchValidatorDuties",
+            {
+                function: super.fetchValidatorDuties,
+                functionName: "fetchValidatorDuties",
+                instanceId: this.instanceId,
+                bucket: Bucket.beaconMetrics
+            },
             Bucket.beaconMetrics,
             validatorPubkeys,
             epoch
@@ -44,11 +83,27 @@ export class BeaconAPIClientMetrics extends BeaconAPIClient {
     }
 
     public async fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock> {
-        return measureExecution(this, super.fetchValidatorBlock, "fetchValidatorBlock", Bucket.beaconMetrics, slot, randaoReveal);
+        return measureExecution(this,
+            {
+                function: super.fetchValidatorBlock,
+                functionName: "fetchValidatorBlock",
+                instanceId: this.instanceId,
+                bucket: Bucket.beaconMetrics
+            },
+            slot, randaoReveal);
     }
 
     public async publishSignedBlock(beaconBlock: BeaconBlock): Promise<any> {
-        return measureExecution(this, super.publishSignedBlock, "publishSignedBlock", Bucket.beaconMetrics, beaconBlock);
+        return measureExecution(
+            this,
+            {
+                function: super.publishSignedBlock,
+                functionName: "publishSignedBlock",
+                instanceId: this.instanceId,
+                bucket: Bucket.beaconMetrics
+            },
+            beaconBlock
+        );
     }
 
     public async produceAttestation(
@@ -59,9 +114,12 @@ export class BeaconAPIClientMetrics extends BeaconAPIClient {
     ): Promise<IndexedAttestation> {
         return measureExecution(
             this,
-            super.produceAttestation,
-            "produceAttestation",
-            Bucket.beaconMetrics,
+            {
+                function: super.produceAttestation,
+                functionName: "produceAttestation",
+                instanceId: this.instanceId,
+                bucket: Bucket.beaconMetrics
+            },
             validatorPubkey,
             pocBit,
             slot,
@@ -72,8 +130,12 @@ export class BeaconAPIClientMetrics extends BeaconAPIClient {
     public async publishSignedAttestation(attestation: IndexedAttestation): Promise<any> {
         return measureExecution(
             this,
-            super.publishSignedAttestation,
-            "publishSignedAttestation",
+            {
+                function: super.publishSignedAttestation,
+                functionName: "publishSignedAttestation",
+                instanceId: this.instanceId,
+                bucket: Bucket.beaconMetrics
+            },
             Bucket.beaconMetrics,
             attestation
         );

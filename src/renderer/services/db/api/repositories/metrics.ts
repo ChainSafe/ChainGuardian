@@ -11,3 +11,8 @@ export class MetricsRepository extends BulkRepository<Metrics> {
         super(config, db, JSONSerializer, Bucket.generalMetrics, SZMetrics);
     }
 }
+
+
+export function generateMetricsKey(date: Date, method: string, instanceId: string): string{
+    return `${date.toISOString()}-${method}-${instanceId}`;
+}
