@@ -1,9 +1,9 @@
-import {setApp} from "../setup";
+import {setApp, TIMEOUT} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 
-jest.setTimeout(60000);
+jest.setTimeout(TIMEOUT);
 
 describe("Onboarding start screen", () => {
     let app: Application;

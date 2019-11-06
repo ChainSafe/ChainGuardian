@@ -1,8 +1,8 @@
 import {Application} from "spectron";
-import {setApp} from "../setup";
+import {setApp, TIMEOUT} from "../setup";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 
-jest.setTimeout(60000);
+jest.setTimeout(TIMEOUT);
 
 describe("Main window", () => {
     let app: Application;

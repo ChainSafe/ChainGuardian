@@ -2,7 +2,7 @@ import {Application} from "spectron";
 import path from "path";
 import {Routes} from "../../src/renderer/constants/routes";
 
-const TIMEOUT = 15000;
+export const TIMEOUT = 120000;
 
 export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Application> {
     const isWin = process.platform === "win32";

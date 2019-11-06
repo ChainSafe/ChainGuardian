@@ -1,4 +1,4 @@
-import {setApp} from "../setup";
+import {setApp, TIMEOUT} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
@@ -9,7 +9,7 @@ import {
 } from "../../../src/renderer/services/utils/input-utils";
 import {IMPORT_SIGNING_KEY_PLACEHOLDER} from "../../../src/renderer/constants/strings";
 
-jest.setTimeout(60000);
+jest.setTimeout(TIMEOUT);
 
 const mnemonic = "hard caught annual spread green step avocado shine scare warm chronic pond";
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
