@@ -11,7 +11,7 @@ exports[`Verify Mnemonic renders correctly 1`] = `
     className="verify-button-container"
   >
     <button
-      className="button btn-primitive "
+      className="button btn-inverted "
       onClick={[Function]}
     >
       <div
@@ -21,7 +21,7 @@ exports[`Verify Mnemonic renders correctly 1`] = `
       </div>
     </button>
     <button
-      className="button btn-primitive "
+      className="button btn-inverted "
       onClick={[Function]}
     >
       <div
@@ -31,7 +31,7 @@ exports[`Verify Mnemonic renders correctly 1`] = `
       </div>
     </button>
     <button
-      className="button btn-primitive "
+      className="button btn-inverted "
       onClick={[Function]}
     >
       <div
