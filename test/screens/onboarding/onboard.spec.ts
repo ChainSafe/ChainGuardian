@@ -3,7 +3,7 @@ import {Application} from "spectron";
 import {expect} from "chai";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 
-jest.setTimeout(15000);
+jest.setTimeout(60000);
 
 describe("Onboarding start screen", () => {
     let app: Application;

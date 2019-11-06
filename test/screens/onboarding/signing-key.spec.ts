@@ -9,7 +9,7 @@ import {
 } from "../../../src/renderer/services/utils/input-utils";
 import {IMPORT_SIGNING_KEY_PLACEHOLDER} from "../../../src/renderer/constants/strings";
 
-jest.setTimeout(15000);
+jest.setTimeout(60000);
 
 const mnemonic = "hard caught annual spread green step avocado shine scare warm chronic pond";
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
