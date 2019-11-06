@@ -1,15 +1,15 @@
-export enum level {
+export enum Level {
     INFO = "info",
     ERROR = "error",
 }
 
-export enum horizontal {
+export enum Horizontal {
     LEFT = "left",
     RIGHT = "right",
     CENTER = "center-horizontal",
 }
 
-export enum vertical {
+export enum Vertical {
     TOP = "top",
     BOTTOM = "bottom",
     CENTER = "center-vertical",

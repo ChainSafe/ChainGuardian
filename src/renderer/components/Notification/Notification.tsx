@@ -1,11 +1,11 @@
 import * as React from "react";
-import {level, horizontal, vertical} from "./NotificationEnums";
+import {Level, Horizontal, Vertical} from "./NotificationEnums";
 
 export interface INotificationProps{
     isVisible: boolean;
-    level: level;
-    horizontalPosition: horizontal;
-    verticalPosition: vertical;
+    level: Level;
+    horizontalPosition: Horizontal;
+    verticalPosition: Vertical;
     title?: string;
     onClose: () => void;
 }
