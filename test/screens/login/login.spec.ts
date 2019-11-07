@@ -1,8 +1,8 @@
 import {Application} from "spectron";
-import {setApp} from "../setup";
-import {Routes} from "../../../src/renderer/constants/routes";
+import {setApp, TIMEOUT} from "../setup";
+import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 
-jest.setTimeout(30000);
+jest.setTimeout(TIMEOUT);
 
 describe("Main window", () => {
     let app: Application;
@@ -33,7 +33,7 @@ describe("Main window", () => {
         await client.waitUntilWindowLoaded();
         await client.$("button=REGISTER").click().pause(200);
         const url = await client.getUrl();
-        expect(url.endsWith(Routes.ONBOARD_ROUTE)).toBeTruthy();
+        expect(url.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING))).toBeTruthy();
     });
 
     it("input field test", async () => {
