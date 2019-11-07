@@ -1,5 +1,5 @@
 import {Application} from "spectron";
-import {setApp, TIMEOUT} from "../setup";
+import {setApp, stopApp, TIMEOUT} from "../setup";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 
 jest.setTimeout(TIMEOUT);
@@ -11,10 +11,8 @@ describe("Main window", () => {
         app = await setApp(Routes.LOGIN_ROUTE);
     });
 
-    afterEach(() => {
-        if (app && app.isRunning()) {
-            return app.stop();
-        }
+    afterEach(async () => {
+        await stopApp(app);
     });
 
     it("buttons load text", async () => {

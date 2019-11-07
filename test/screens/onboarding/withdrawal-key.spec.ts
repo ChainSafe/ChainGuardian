@@ -1,11 +1,11 @@
-import {setApp, TIMEOUT} from "../setup";
+import {setApp, stopApp, TIMEOUT} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
-import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
+import {OnBoardingRoutes, Routes} from "../../../src/renderer/constants/routes";
 import {
-    KEY_WRONG_CHARACTERS_MESSAGE,
-    PUBLIC_KEY_WRONG_LENGTH_MESSAGE,
     KEY_START_WITH_PREFIX,
+    KEY_WRONG_CHARACTERS_MESSAGE,
+    PUBLIC_KEY_WRONG_LENGTH_MESSAGE
 } from "../../../src/renderer/services/utils/input-utils";
 import {IMPORT_WITHDRAWAL_KEY_PLACEHOLDER} from "../../../src/renderer/constants/strings";
 
@@ -21,10 +21,8 @@ describe("Onboarding withdrawal key import screen", () => {
         app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL_IMPORT));
     });
 
-    afterEach(() => {
-        if (app && app.isRunning()) {
-            return app.stop();
-        }
+    afterEach(async () => {
+        await stopApp(app);
     });
 
     it("has rendered properly", async function () {
