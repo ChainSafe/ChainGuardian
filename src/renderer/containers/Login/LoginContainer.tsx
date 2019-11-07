@@ -5,6 +5,7 @@ import {Modal} from "../../components/Modal/Modal";
 import {InputForm} from "../../components/Input/InputForm";
 import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
 import {Link} from "react-router-dom";
+import {Routes, OnBoardingRoutes} from "../../constants/routes";
 
 interface IState {
     input: string;
@@ -29,11 +30,12 @@ export default class LoginContainer extends React.Component {
                             inputId="inputPassword"
                             focused onChange={this.handleChange} 
                             inputValue={this.state.input} 
-                            placeholder="Enter password" /> 
+                            placeholder="Enter password"
+                        /> 
                         <ButtonSecondary buttonId="go" >GO</ButtonSecondary>
                     </div>
                     <h5>OR</h5>
-                    <Link to="/onboard">
+                    <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING)}>
                         <ButtonPrimary buttonId="register">REGISTER</ButtonPrimary>
                     </Link>
                 </Modal>

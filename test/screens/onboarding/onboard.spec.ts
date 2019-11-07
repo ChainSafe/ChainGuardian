@@ -1,15 +1,15 @@
-import {setApp} from "../setup";
+import {setApp, TIMEOUT} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
-import {Routes} from "../../../src/renderer/constants/routes";
+import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 
-jest.setTimeout(15000);
+jest.setTimeout(TIMEOUT);
 
 describe("Onboarding start screen", () => {
     let app: Application;
 
     beforeEach(async () => {
-        app = await setApp(Routes.ONBOARD_ROUTE);
+        app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
     });
 
     afterEach(() => {

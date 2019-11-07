@@ -1,0 +1,19 @@
+.key-input-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .inputform {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+.mt-32 {
+    margin-top: 32px;
+}
+
+.submit-button-container {
+    margin-top: 40px;
+    text-align: center;
+}

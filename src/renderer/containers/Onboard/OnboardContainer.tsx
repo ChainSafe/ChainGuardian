@@ -1,39 +1,39 @@
 import React, {Component, ReactElement} from "react";
+import {match} from "react-router-dom";
 import {Background} from "../../components/Background/Background";
-import {Modal} from "../../components/Modal/Modal";
-import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
-import {StepNavigation} from "../../components/StepNavigation/StepNavigation";
-import {RouteComponentProps} from "react-router";
+import OnBoardModal from "./OnBoardModal";
+import SigningKey from "./SigningKey/SigningKey";
+import SigningKeyImport from "./SigningKey/SigningKeyImport";
+import WithdrawalKeyImport from "./WithdrawalKey/WithdrawalKeyImport";
+import {OnBoardingRoutes} from "../../constants/routes";
+import {History} from "history";
 
-const steps = [
-    {stepId: 1, stepName: "Signing key"},
-    {stepId: 2, stepName: "Withdrawal key"},
-    {stepId: 3, stepName: "Password"},
-    {stepId: 4, stepName: "Configure"},
-    {stepId: 5, stepName: "Consent"}
-];
+interface IOnboardStep {
+    step: string
+}
 
-export default class OnboardContainer extends Component<RouteComponentProps, {}> {
+export default class OnboardContainer extends Component<{ history: History, match: match<IOnboardStep> }, {}> {
+
+    private Steper = {
+        [OnBoardingRoutes.SIGNING]: <SigningKey />,
+        [OnBoardingRoutes.SIGNING_IMPORT]: <SigningKeyImport history={this.props.history} />,
+        [OnBoardingRoutes.WITHDRAWAL_IMPORT]: <WithdrawalKeyImport history={this.props.history} />
+    };
+
 
     public render(): ReactElement {
-
-        const topBar = <StepNavigation steps={steps} current={1} />;
-
+        const {step} = this.props.match.params;
         return (
             <Background>
-                <Modal hasBack onBack={this.handleBack} topBar={topBar}>
-                    <h1>Enter your signing key</h1>
-                    <p>You’ll need this for signing blocks and attestations on your behalf</p>
-                    <div className="action-buttons">
-                        <ButtonSecondary buttonId="import" large>IMPORT</ButtonSecondary>
-                        <ButtonPrimary buttonId="generate" large>GENERATE</ButtonPrimary>
-                    </div>
-                </Modal>
-            </Background >
+                <OnBoardModal history={this.props.history} currentStep={parseInt(step.split("_")[0])}>
+                    {this.renderStep()}
+                </OnBoardModal>
+            </Background>
         );
     }
 
-    private handleBack = (): void => {
-        this.props.history.goBack();
+    private renderStep = (): any => {
+        const {step} = this.props.match.params;
+        return (this.Steper as any)[step];
     };
 }

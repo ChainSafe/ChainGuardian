@@ -11,7 +11,7 @@ exports[`InputForm renders correctly 1`] = `
     className="inputform "
   />
   <div
-    className="error-message none"
+    className="error-message "
   />
 </form>
 `;
@@ -27,7 +27,7 @@ exports[`InputForm renders error and message 1`] = `
     className="inputform error"
   />
   <div
-    className="error-message "
+    className="error-message error"
   >
     Error message
   </div>
@@ -46,7 +46,7 @@ exports[`InputForm renders focused input 1`] = `
     className="inputform "
   />
   <div
-    className="error-message none"
+    className="error-message "
   />
 </form>
 `;
@@ -63,7 +63,7 @@ exports[`InputForm renders input id 1`] = `
     id="testid"
   />
   <div
-    className="error-message none"
+    className="error-message "
   />
 </form>
 `;
@@ -79,7 +79,7 @@ exports[`InputForm renders success 1`] = `
     className="inputform success"
   />
   <div
-    className="error-message none"
+    className="error-message success"
   />
 </form>
 `;
@@ -96,7 +96,7 @@ exports[`InputForm renders value 1`] = `
     value="textfortest"
   />
   <div
-    className="error-message none"
+    className="error-message "
   />
 </form>
 `;
