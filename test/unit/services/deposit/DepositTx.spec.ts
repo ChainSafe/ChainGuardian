@@ -33,7 +33,7 @@ describe("Deposit transaction service unit tests", () => {
         }));
         depositContractAddress = await deployDepositContract(provider, toHexString(deployPrivateKey));
     });
-    
+
     it("should send deposit transaction successfully", async () => {
         const keyPair = new KeyPair(PrivateKey.fromHexString(wallet.getPrivateKeyString()));
         const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1,"hex"));

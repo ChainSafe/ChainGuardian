@@ -10,7 +10,7 @@ import DepositContract from "../../../../src/renderer/services/deposit/options";
 import {DEPOSIT_AMOUNT, DEPOSIT_TX_GAS} from "./constants";
 import {hashTreeRoot} from "@chainsafe/ssz";
 
-export class DepositTx implements ITx {
+export class DepositTx implements ITx{
     public data: string | bytes;
     public to: string;
     public value: string;
