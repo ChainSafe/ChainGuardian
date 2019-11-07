@@ -40,7 +40,6 @@ describe("Deposit transaction service unit tests", () => {
         const depositTx = DepositTx.generateDepositTx(depositData, depositContractAddress);
         const signedTx = await depositTx.sign(wallet);
         const transactionResponse = await provider.sendTransaction(toHexString(signedTx));
-        /*
         expect(transactionResponse).toBeDefined();
         expect(transactionResponse.hash).toBeDefined();
         if (transactionResponse.hash) {
@@ -49,6 +48,5 @@ describe("Deposit transaction service unit tests", () => {
             expect(receipt.confirmations).toBeGreaterThan(0);
             expect(receipt.status).toBe(1);
         }
-        */
     });
 });
