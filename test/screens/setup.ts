@@ -20,20 +20,26 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
         env: {NODE_ENV: "test"},
         startTimeout: 30000
     });
-
-    await app.start();
+    try {
+        await app.start();
+    } catch (e) {
+        await app.restart();
+    }
 
     const currentUrl = await app.client.getUrl();
 
     await app.browserWindow.loadURL(currentUrl.split("#")[0] + "#" + url);
-
     return app;
 }
 
 export async function stopApp(app: Application): Promise<void> {
     if (app && app.isRunning()) {
-        await app.stop();
-        app.mainProcess.exit(0);
-        app.rendererProcess.exit(0);
+        try {
+            await app.stop();
+        } catch (e) {
+            console.log(e);
+            app.mainProcess.exit(0);
+            app.rendererProcess.exit(0);
+        }
     }
 }
