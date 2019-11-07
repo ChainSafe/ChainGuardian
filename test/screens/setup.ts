@@ -14,15 +14,34 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
     const app = new Application({
         path: electronPath,
         args: [path.join(__dirname, "..", "..")],
-        waitTimeout: TIMEOUT,
-        startTimeout: TIMEOUT
+        waitTimeout: 15000,
+        quitTimeout: 4000,
+        connectionRetryCount: 3,
+        env: {NODE_ENV: "test"},
+        startTimeout: 30000
     });
-
-    await app.start();
+    try {
+        await app.start();
+    } catch (e) {
+        console.warn(e);
+        await app.start();
+    }
 
     const currentUrl = await app.client.getUrl();
-
     await app.browserWindow.loadURL(currentUrl.split("#")[0] + "#" + url);
 
+    await app.client.waitUntilWindowLoaded();
     return app;
+}
+
+export async function stopApp(app: Application): Promise<void> {
+    if (app && app.isRunning()) {
+        try {
+            await app.stop();
+        } catch (e) {
+            console.log(e);
+            app.mainProcess.exit(0);
+            app.rendererProcess.exit(0);
+        }
+    }
 }
