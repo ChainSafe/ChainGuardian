@@ -2,13 +2,12 @@ import {bytes, DepositData} from "@chainsafe/eth2.0-types";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import abi from "ethereumjs-abi";
 import {ITx} from "./types";
-import Wallet from "ethereumjs-wallet";
-import {Transaction} from "ethereumjs-tx";
 import {functionSignatureFromABI} from "./utils";
-import {EthConverter, toHexString} from "../utils/crypto-utils";
 import DepositContract from "../../../../src/renderer/services/deposit/options";
 import {DEPOSIT_AMOUNT, DEPOSIT_TX_GAS} from "./constants";
 import {hashTreeRoot} from "@chainsafe/ssz";
+import {Wallet} from "ethers/wallet";
+import {utils} from "ethers";
 
 export class DepositTx implements ITx{
     public data: string | bytes;
@@ -41,23 +40,21 @@ export class DepositTx implements ITx{
         return new DepositTx(
             depositFunctionEncoded,
             depositContractAddress,
-            toHexString(EthConverter.toWei(DEPOSIT_AMOUNT))
+            utils.parseEther(DEPOSIT_AMOUNT).toHexString()
         );
     }
 
     /**
      * Sign this transaction using provided wallet.
      *
-     * @param wallet - ethereumjs-wallet instance of wallet.
+     * @param wallet - ethereumjs instance of wallet.
      * @return - transaction signature.
      */
-    public sign(wallet: Wallet): string {
+    public async sign(wallet: Wallet): Promise<string> {
         const txData = {
             ...this,
             gasLimit: DEPOSIT_TX_GAS,
         };
-        const tx = new Transaction(txData);
-        tx.sign(wallet.getPrivateKey());
-        return tx.serialize().toString("hex");
+        return wallet.sign(txData);
     }
 }

@@ -84,18 +84,18 @@ describe("CGAccount tests", () => {
     afterEach(() => {
         sandbox.restore();
     });
-    it("should be able to get validator addresses from keystores", () => {
+    it("should be able to get validator addresses from keystores", async () => {
         const account = createTestAccount();
-        account.unlock(PRIMARY_KEYSTORE_PASSWORD);
+        await account.unlock(PRIMARY_KEYSTORE_PASSWORD);
         const validatorsAddresses = account.getValidatorsAddresses();
         account.lock();
         expect(validatorsAddresses.length).toEqual(2);
     });
 
-    it("should be able to get validator keypairs if the account is unlocked", () => {
+    it("should be able to get validator keypairs if the account is unlocked", async () => {
         const account = createTestAccount();
 
-        account.unlock(PRIMARY_KEYSTORE_PASSWORD);
+        await account.unlock(PRIMARY_KEYSTORE_PASSWORD);
         const validatorKeypairs = account.getValidators();
 
         expect(validatorKeypairs.length).toEqual(2);
@@ -115,20 +115,20 @@ describe("CGAccount tests", () => {
         }).toThrowError();
     });
 
-    it("should be able to lock account", () => {
+    it("should be able to lock account", async () => {
         const account = createTestAccount();
 
-        account.unlock(PRIMARY_KEYSTORE_PASSWORD);
+        await account.unlock(PRIMARY_KEYSTORE_PASSWORD);
         account.lock();
         expect(() => {
             account.getValidators();
         }).toThrowError();
     });
 
-    it("should not be able to unlock with wrong password", () => {
+    it("should not be able to unlock with wrong password", async () => {
         const account = createTestAccount();
 
-        account.unlock("wrongPassword");
+        await account.unlock("wrongPassword");
 
         expect(() => {
             account.getValidators();
