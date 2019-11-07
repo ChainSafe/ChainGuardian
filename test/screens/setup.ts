@@ -27,8 +27,9 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
     }
 
     const currentUrl = await app.client.getUrl();
-
     await app.browserWindow.loadURL(currentUrl.split("#")[0] + "#" + url);
+
+    await app.client.waitUntilWindowLoaded();
     return app;
 }
 

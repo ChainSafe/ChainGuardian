@@ -30,7 +30,6 @@ describe("Onboarding start screen", () => {
 
     it("back button leads to login", async function() {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
         await client.waitForVisible(".back-tab");
         await client.$(".back-tab").click();
         const url = await client.getUrl();

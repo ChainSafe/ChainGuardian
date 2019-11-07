@@ -38,7 +38,6 @@ describe("Onboarding signing key import screen", () => {
 
     it("should fail invalid inputs", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
 
         // Invalid mnemonic
         await client.setValue(".inputform", "test mnemonic");
@@ -59,7 +58,6 @@ describe("Onboarding signing key import screen", () => {
 
     it("should work valid inputs", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
 
         // Valid key
         await client.setValue(".inputform", privateKeyStr);
@@ -74,7 +72,6 @@ describe("Onboarding signing key import screen", () => {
 
     it("should not submit if error message exists", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
 
         // User enter invalid mnemonic
         await client.setValue(".inputform", "test mnemonic");
