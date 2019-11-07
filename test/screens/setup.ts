@@ -23,7 +23,8 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
     try {
         await app.start();
     } catch (e) {
-        await app.restart();
+        console.warn(e);
+        await app.start();
     }
 
     const currentUrl = await app.client.getUrl();
