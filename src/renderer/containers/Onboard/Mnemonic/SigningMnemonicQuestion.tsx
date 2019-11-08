@@ -1,19 +1,26 @@
 import React, {Component, ReactElement} from "react";
 import {VerifyMnemonic} from "../../../components/VerifyMnemonic/VerifyMnemonic";
 import {History} from "history";
+import {getRandomIntArray, getRandomInt} from "../../../services/mnemonic/utils/getRandomInt";
+import store from "../../../store/index";
+
 
 export default class SigningMnemonicQuestion extends Component<{ history: History }, {}> {
-
     public render(): ReactElement {
+        const x = store.getState().mnemonicReducer.mnemonic;
+        const randArray = getRandomIntArray(12);
+        const correctAnswerIndex = randArray[getRandomInt(3)];
+        console.log(x);
+        console.log(x[correctAnswerIndex]);
+
         return (
             <VerifyMnemonic 
-                question="What’s the Nth word in the mnemonic?"
-                answers={["TEST1","TEST2","TEST3"]}
-                correctAnswer="TEST2"
+                question={`What’s the ${correctAnswerIndex+1}th word in the mnemonic?`}
+                answers={[x[randArray[0]],x[randArray[1]],x[randArray[2]]]}
+                correctAnswer={x[correctAnswerIndex]}
                 onCorrectAnswer={(): void=>console.log("correct")}
                 onInvalidAnswer={(): void=>console.log("invalid")}
             ></VerifyMnemonic>
         );
     }
-
 }

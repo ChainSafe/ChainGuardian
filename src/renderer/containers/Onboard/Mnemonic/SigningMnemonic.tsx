@@ -5,16 +5,25 @@ import {MnemonicCopyField} from "../../../components/CopyField/CopyField";
 import {History} from "history";
 import {Routes, OnBoardingRoutes} from "../../../constants/routes";
 import {clipboard} from "electron";
+import store from "../../../store/index";
+import {addMnemonic} from "../../../actions/index";
+import {generate} from "../../../services/wallet/eth2";
 
 interface IState {
     mnemonicValue: string;
 }
-
+// console.log(generate());
 export default class SigningMnemonic extends Component<{ history: History }, {}> {
     public state: IState = {
-        mnemonicValue: "test test"
+        // mnemonicValue: generate()
+        mnemonicValue: "hold solve hurdle seed paper rely fog burden potato portion column festival"
     };
     
+
+    public saveMnemonic = (): void=> {
+        store.dispatch( addMnemonic(this.state.mnemonicValue.split(" ")));
+    };
+
     public render(): ReactElement {
         return (
             <>
@@ -28,7 +37,10 @@ export default class SigningMnemonic extends Component<{ history: History }, {}>
                     onCopy={(): void=>clipboard.writeText(this.state.mnemonicValue)}
                 ></MnemonicCopyField>
                 <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_MNEMONIC_QUESTION)}>
-                    <ButtonPrimary buttonId="savedMnemonic">I SAVED THIS MNEMONIC</ButtonPrimary>
+                    <ButtonPrimary 
+                        onClick={(): void=> this.saveMnemonic()} 
+                        buttonId="savedMnemonic"
+                    >I SAVED THIS MNEMONIC</ButtonPrimary>
                 </Link>
             </>
         );
