@@ -2,9 +2,9 @@ import React, {useState, ReactElement, useEffect} from "react";
 import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
 import * as Joi from "@hapi/joi";
-import {mnemonicValidator} from "../../services/validators/MnemonicValidator";
-import {privateKeyValidator} from "../../services/validators/PrivateKeyValidator";
-import {publicKeyValidator} from "../../services/validators/PublicKeyValidator";
+import {mnemonicSchema} from "../../services/validation/schemas/MnemonicSchema";
+import {privateKeySchema} from "../../services/validation/schemas/PrivateKeySchema";
+import {publicKeySchema} from "../../services/validation/schemas/PublicKeySchema";
 
 
 interface IKeyModalProps {
@@ -30,7 +30,7 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
             return;
         }
 
-        const validator = props.signing ? Joi.alternatives(mnemonicValidator, privateKeyValidator) : publicKeyValidator;
+        const validator = props.signing ? Joi.alternatives(mnemonicSchema, privateKeySchema) : publicKeySchema;
         const isValid = !("error" in validator.validate(input));
         setvalid(isValid);
 
