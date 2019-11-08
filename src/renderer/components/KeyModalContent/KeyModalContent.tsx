@@ -1,7 +1,11 @@
 import React, {useState, ReactElement, useEffect} from "react";
 import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
-import {isValidMnemonicOrPrivateKey, isValidPublicKey} from "../../services/utils/input-utils";
+import * as Joi from "@hapi/joi";
+import {mnemonicValidator} from "../../services/validators/MnemonicValidator";
+import {privateKeyValidator} from "../../services/validators/PrivateKeyValidator";
+import {publicKeyValidator} from "../../services/validators/PublicKeyValidator";
+
 
 interface IKeyModalProps {
     title: string,
@@ -26,13 +30,14 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
             return;
         }
 
-        const {isValid, message} = props.signing ? isValidMnemonicOrPrivateKey(input) : isValidPublicKey(input);
+        const validator = props.signing ? Joi.alternatives(mnemonicValidator, privateKeyValidator) : publicKeyValidator;
+        const isValid = !("error" in validator.validate(input));
         setvalid(isValid);
 
-        console.log(message);
+        // console.log(message);
 
         if(!isValid){
-            setErrorMessage(message);
+            setErrorMessage("");
         }
     };
 
