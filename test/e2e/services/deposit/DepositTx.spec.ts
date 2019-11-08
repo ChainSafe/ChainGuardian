@@ -4,6 +4,9 @@ import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {toHexString} from "../../../../src/renderer/services/utils/crypto-utils";
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
+import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
+
+jest.setTimeout(30000)
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
 const ganache = require("ganache-cli");
@@ -34,7 +37,7 @@ describe("Deposit transaction service unit tests", () => {
     it("should send deposit transaction successfully", async () => {
         const keyPair = new KeyPair(PrivateKey.fromHexString(wallet.privateKey));
         const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1,"hex"));
-        const depositTx = DepositTx.generateDepositTx(depositData, depositContractAddress);
+        const depositTx = DepositTx.generateDepositTx(depositData, depositContractAddress, config);
         const signedTx = await depositTx.sign(wallet);
         const transactionResponse = await provider.sendTransaction(toHexString(signedTx));
         expect(transactionResponse).toBeDefined();
