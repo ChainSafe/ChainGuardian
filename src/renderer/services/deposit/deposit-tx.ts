@@ -4,8 +4,10 @@ import {ITx} from "./types";
 import {functionSignatureFromABI} from "./utils";
 import DepositContract from "../../../../src/renderer/services/deposit/options";
 import {DEPOSIT_AMOUNT, DEPOSIT_TX_GAS} from "./constants";
+import {hashTreeRoot} from "@chainsafe/ssz";
 import {Wallet} from "ethers/wallet";
 import {utils} from "ethers";
+import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 
 export class DepositTx implements ITx{
     public data: string | bytes;
@@ -24,13 +26,20 @@ export class DepositTx implements ITx{
      * @param depositParams - @{DepositData} object.
      * @param depositContractAddress - address of deployed deposit contract.
      */
-    public static generateDepositTx(depositParams: DepositData, depositContractAddress: string): DepositTx {
+    public static generateDepositTx(
+        depositParams: DepositData, 
+        depositContractAddress: string, 
+        config: IBeaconConfig): DepositTx {
+        // calculate root
+        const depositDataRoot = hashTreeRoot(depositParams, config.types.DepositData);
         const depositFunctionEncoded = abi.simpleEncode(
             functionSignatureFromABI(DepositContract.abi, "deposit"),
             depositParams.pubkey,
             depositParams.withdrawalCredentials,
             depositParams.signature,
+            depositDataRoot
         );
+
         return new DepositTx(
             depositFunctionEncoded,
             depositContractAddress,
