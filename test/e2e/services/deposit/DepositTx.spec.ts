@@ -6,7 +6,7 @@ import {toHexString} from "../../../../src/renderer/services/utils/crypto-utils"
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 
-jest.setTimeout(30000)
+jest.setTimeout(30000);
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
 const ganache = require("ganache-cli");
