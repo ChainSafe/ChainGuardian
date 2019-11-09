@@ -72,7 +72,8 @@ describe("Http Metrics", () => {
         database = getDB();
 
         client = new BeaconAPIClientMetrics({
-            urlPrefix: API_URL
+            urlPrefix: API_URL,
+            instanceId: "instance#1"
         });
     });
 

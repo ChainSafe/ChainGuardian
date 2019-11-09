@@ -23,7 +23,6 @@ import {
 import {Syncing, ForkInformation, IBeaconAPIClient, IBeaconApiClientOptions} from "./interface";
 import {HttpClient} from "./http/httpClient";
 import {EmptyUrlError} from "./errors/EmptyUrlError";
-import {v4} from "uuid";
 
 export class BeaconAPIClient implements IBeaconAPIClient {
     public instanceId: string;
@@ -36,7 +35,7 @@ export class BeaconAPIClient implements IBeaconAPIClient {
         }
         this.options = options;
         this.httpClient = new HttpClient(options.urlPrefix);
-        this.instanceId = v4();
+        this.instanceId = options.instanceId;
     }
 
     public async fetchNodeVersion(): Promise<string> {

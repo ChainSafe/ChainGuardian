@@ -27,6 +27,7 @@ export interface ForkInformation {
 export interface IBeaconApiClientOptions {
     // Add more options if needed
     urlPrefix: string;
+    instanceId: string;
 }
 
 export interface IBeaconAPIClient {
