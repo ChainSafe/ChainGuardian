@@ -80,15 +80,21 @@ describe("Http Metrics", () => {
     it("should return node version", async () => {
         const res = await client.fetchNodeVersion();
         const metricsRecorded = await database.metrics.getAll();
+        const methodMetrics = metricsRecorded.filter((metric) => {
+            return metric.method === "fetchNodeVersion"
+        });
         expect(metricsRecorded.length).toBe(1);
-        expect(metricsRecorded[0].method).toBe("fetchNodeVersion");
+        expect(methodMetrics.length).toBe(1);
     });
 
     it("should return genesis time", async () => {
         const res = await client.fetchGenesisTime();
         const metricsRecorded = await database.metrics.getAll();
+        const methodMetrics = metricsRecorded.filter((metric) => {
+            return metric.method === "fetchGenesisTime"
+        });
         expect(metricsRecorded.length).toBe(2);
-        expect(metricsRecorded[1].method).toBe("fetchGenesisTime");
+        expect(methodMetrics.length).toBe(1);
     });
 
 });

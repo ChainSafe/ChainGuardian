@@ -14,5 +14,5 @@ export class MetricsRepository extends BulkRepository<Metrics> {
 
 
 export function generateMetricsKey(date: Date, method: string, instanceId: string): string{
-    return `${date.toISOString()}-${method}-${instanceId}`;
+    return `${instanceId}-${date.toISOString()}-${method}`;
 }
