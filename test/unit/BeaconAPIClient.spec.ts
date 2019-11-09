@@ -128,7 +128,8 @@ describe("Beacon API client methods", () => {
 
     beforeEach(() => {
         client = new BeaconAPIClient({
-            urlPrefix: API_URL
+            urlPrefix: API_URL,
+            instanceId: "instance#1",
         });
     });
 

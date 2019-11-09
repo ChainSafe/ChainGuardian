@@ -8,7 +8,6 @@ import BN from "bn.js";
 // Buckets are separate database namespaces
 export enum Bucket {
     account,
-    httpMetrics,
     beaconMetrics,
     generalMetrics
 }
