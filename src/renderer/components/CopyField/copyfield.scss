@@ -17,9 +17,29 @@
     margin: 0px;
     position: relative;
     z-index: 1;
+    max-height: 250px;
+    overflow: auto;
+    overflow-x: hidden;
     &.mnemonic{
         word-spacing: 15px;
     }
+}
+.copy-field::-webkit-scrollbar-track{
+	border-radius: 4px;
+	background-color: $neutral-400;
+
+}
+.copy-field::-webkit-scrollbar
+{
+	width: 14px;
+	background-color: $neutral-600;
+}
+
+.copy-field::-webkit-scrollbar-thumb
+{
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: $neutral-500;
 }
 .copy-button{
     position: absolute;
