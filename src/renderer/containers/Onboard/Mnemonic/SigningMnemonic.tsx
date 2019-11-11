@@ -25,8 +25,7 @@ class SigningMnemonic extends Component<{ history: History }, {}> {
     //     store.dispatch( addMnemonic(this.state.mnemonicValue.split(" ")));
     // };
 
-    public mapDispatchToProps = (dispatch): void=> {
-        // store.dispatch( addMnemonic(this.state.mnemonicValue.split(" ")));
+    public mapDispatchToProps = (): void=> {
         return addMnemonic(this.state.mnemonicValue.split(" "))
     };
     
@@ -52,5 +51,8 @@ class SigningMnemonic extends Component<{ history: History }, {}> {
         );
     }
 }
-
-export default connect(null,mapDispatchToProps)(SigningMnemonic)
+// const mapDispatchToProps = (): void=> {
+//     // store.dispatch( addMnemonic(this.state.mnemonicValue.split(" ")));
+//     return addMnemonic(this.state.mnemonicValue.split(" "))
+// };
+export default connect(null,SigningMnemonic.mapDispatchToProps)(SigningMnemonic)
