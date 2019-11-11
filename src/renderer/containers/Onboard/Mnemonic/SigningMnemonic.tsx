@@ -7,23 +7,29 @@ import {Routes, OnBoardingRoutes} from "../../../constants/routes";
 import {clipboard} from "electron";
 import store from "../../../store/index";
 import {addMnemonic} from "../../../actions/index";
-import {generate} from "../../../services/wallet/eth2";
+import {Eth2HDWallet} from "../../../services/wallet/eth2";
+import {connect} from "react-redux";
 
 interface IState {
     mnemonicValue: string;
 }
-// console.log(generate());
-export default class SigningMnemonic extends Component<{ history: History }, {}> {
+console.log(Eth2HDWallet.generate());
+
+class SigningMnemonic extends Component<{ history: History }, {}> {
     public state: IState = {
-        // mnemonicValue: generate()
-        mnemonicValue: "hold solve hurdle seed paper rely fog burden potato portion column festival"
+        mnemonicValue: Eth2HDWallet.generate()
     };
     
 
-    public saveMnemonic = (): void=> {
-        store.dispatch( addMnemonic(this.state.mnemonicValue.split(" ")));
-    };
+    // public mapDispatchToProps = (): void=> {
+    //     store.dispatch( addMnemonic(this.state.mnemonicValue.split(" ")));
+    // };
 
+    public mapDispatchToProps = (dispatch): void=> {
+        // store.dispatch( addMnemonic(this.state.mnemonicValue.split(" ")));
+        return addMnemonic(this.state.mnemonicValue.split(" "))
+    };
+    
     public render(): ReactElement {
         return (
             <>
@@ -38,12 +44,13 @@ export default class SigningMnemonic extends Component<{ history: History }, {}>
                 ></MnemonicCopyField>
                 <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_MNEMONIC_QUESTION)}>
                     <ButtonPrimary 
-                        onClick={(): void=> this.saveMnemonic()} 
+                        onClick={(): void=> this.mapDispatchToProps()} 
                         buttonId="savedMnemonic"
                     >I SAVED THIS MNEMONIC</ButtonPrimary>
                 </Link>
             </>
         );
     }
-
 }
+
+export default connect(null,mapDispatchToProps)(SigningMnemonic)

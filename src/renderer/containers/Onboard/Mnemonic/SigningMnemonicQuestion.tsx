@@ -3,9 +3,10 @@ import {VerifyMnemonic} from "../../../components/VerifyMnemonic/VerifyMnemonic"
 import {History} from "history";
 import {getRandomIntArray, getRandomInt} from "../../../services/mnemonic/utils/getRandomInt";
 import store from "../../../store/index";
+import {connect} from "react-redux";
 
 
-export default class SigningMnemonicQuestion extends Component<{ history: History }, {}> {
+class SigningMnemonicQuestion extends Component<{ history: History }, {}> {
     public render(): ReactElement {
         const x = store.getState().mnemonicReducer.mnemonic;
         const randArray = getRandomIntArray(12);
@@ -13,6 +14,7 @@ export default class SigningMnemonicQuestion extends Component<{ history: Histor
         console.log(x);
         console.log(x[correctAnswerIndex]);
 
+        
         return (
             <VerifyMnemonic 
                 question={`What’s the ${correctAnswerIndex+1}th word in the mnemonic?`}
@@ -24,3 +26,4 @@ export default class SigningMnemonicQuestion extends Component<{ history: Histor
         );
     }
 }
+export default connect()(SigningMnemonicQuestion)
