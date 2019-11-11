@@ -41,7 +41,7 @@ export function functionSignatureFromABI(rawAbi: (string | any)[] | string, func
  *
  * @return instance of ${DepositData} defining deposit transaction.
  */
-export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey): DepositData {
+export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey, depositAmount: string): DepositData {
     // signing public key
     const publicKey: Buffer = signingKey.publicKey.toBytesCompressed();
     // BLS_WITHDRAWAL_PREFIX + hash(withdrawal_pubkey)[1:]
@@ -52,7 +52,7 @@ export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const amount: BN = new BN(
         // remove decimal zeroes
-        utils.formatUnits(utils.parseEther(DEPOSIT_AMOUNT), "gwei").split(".")[0]
+        utils.formatUnits(utils.parseEther(depositAmount), "gwei").split(".")[0]
     );
     // define DepositData
     const depositData: DepositData = {
