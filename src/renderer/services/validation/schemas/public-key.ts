@@ -1,5 +1,5 @@
 import {CustomHelpers, ErrorReport} from "@hapi/joi";
-import {keySchema} from "./KeySchema";
+import {KeySchema} from "./index";
 import {isValidKeyLength} from "../util";
 import {PUBLIC_KEY_LENGTH} from "@chainsafe/bls/lib/constants";
 
@@ -12,6 +12,6 @@ function isPublicKeyLength(value: string, helpers: CustomHelpers): string | Erro
 
 export const PUBLIC_KEY_WRONG_LENGTH_MESSAGE = `Public key should have ${PUBLIC_KEY_LENGTH} bytes`;
 
-export const publicKeySchema = keySchema
+export const schema = KeySchema
     .custom(isPublicKeyLength, "Validate public key length")
     .message(PUBLIC_KEY_WRONG_LENGTH_MESSAGE);

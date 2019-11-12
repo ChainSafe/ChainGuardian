@@ -1,5 +1,5 @@
 import {CustomHelpers, ErrorReport} from "@hapi/joi";
-import {keySchema} from "./KeySchema";
+import {KeySchema} from "./index";
 import {isValidKeyLength} from "../util";
 import {SECRET_KEY_LENGTH} from "@chainsafe/bls/lib/constants";
 
@@ -12,6 +12,6 @@ function isPrivateKeyLength(value: string, helpers: CustomHelpers): string | Err
 
 export const PRIVATE_KEY_WRONG_LENGTH_MESSAGE = `Private key should have ${SECRET_KEY_LENGTH} bytes`;
 
-export const privateKeySchema = keySchema
+export const schema = KeySchema
     .custom(isPrivateKeyLength, "Validate private key length")
     .message(PRIVATE_KEY_WRONG_LENGTH_MESSAGE);

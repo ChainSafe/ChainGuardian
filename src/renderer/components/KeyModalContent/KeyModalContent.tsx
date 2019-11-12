@@ -1,8 +1,8 @@
 import React, {useState, ReactElement, useEffect} from "react";
 import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
-import {publicKeySchema} from "../../services/validation/schemas/PublicKeySchema";
 import {getPrivateKeyOrMnemonicSchema} from "../../services/validation/util";
+import {PublicKeySchema} from "../../services/validation/schemas";
 
 
 interface IKeyModalProps {
@@ -28,7 +28,7 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
             return;
         }
 
-        const validator = props.signing ? getPrivateKeyOrMnemonicSchema(input) : publicKeySchema;
+        const validator = props.signing ? getPrivateKeyOrMnemonicSchema(input) : PublicKeySchema;
         const validation = validator.validate(input);
         const isValid = validation.error === undefined;
         if (!isValid) { setErrorMessage(validation.error.message); }

@@ -3,9 +3,11 @@ import {Application} from "spectron";
 import {expect} from "chai";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 import {IMPORT_SIGNING_KEY_PLACEHOLDER} from "../../../src/renderer/constants/strings";
-import {MNEMONIC_INVALID_MESSAGE} from "../../../src/renderer/services/validation/schemas/MnemonicSchema";
-import {KEY_WRONG_CHARACTERS_MESSAGE} from "../../../src/renderer/services/validation/schemas/KeySchema";
-import {PRIVATE_KEY_WRONG_LENGTH_MESSAGE} from "../../../src/renderer/services/validation/schemas/PrivateKeySchema";
+import {
+    KEY_WRONG_CHARACTERS_MESSAGE,
+    MNEMONIC_INVALID_MESSAGE,
+    PRIVATE_KEY_WRONG_LENGTH_MESSAGE
+} from "../../../src/renderer/services/validation/schemas";
 
 jest.setTimeout(TIMEOUT);
 

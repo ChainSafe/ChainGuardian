@@ -1,6 +1,9 @@
 import {getPrivateKeyOrMnemonicSchema, isValidKeyLength} from "../../../../src/renderer/services/validation/util";
-import {MNEMONIC_INVALID_MESSAGE} from "../../../../src/renderer/services/validation/schemas/MnemonicSchema";
-import {PRIVATE_KEY_WRONG_LENGTH_MESSAGE} from "../../../../src/renderer/services/validation/schemas/PrivateKeySchema";
+import {
+    MNEMONIC_INVALID_MESSAGE,
+    PRIVATE_KEY_WRONG_LENGTH_MESSAGE
+} from "../../../../src/renderer/services/validation/schemas";
+
 
 describe("Validation utils unit tests", () => {
     it("should return true for valid private key", async () => {
