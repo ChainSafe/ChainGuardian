@@ -43,32 +43,34 @@ describe("Eth1ICGKeystore", () => {
                 JSON.stringify(await example)
             );
 
-        eth1Keystore = Eth1Keystore.create(keyStoreFilePath, password, keypair);
+        eth1Keystore = await Eth1Keystore.create(keyStoreFilePath, password, keypair);
         expect(writeStub.calledOnce).toEqual(true);
         expect(readStub.calledOnce).toEqual(true);
     });
 
-    it("should decrypt", () => {
-        const keypair = eth1Keystore.decrypt(password);
+    it("should decrypt", async () => {
+        const keypair = await eth1Keystore.decrypt(password);
         expect(keypair.privateKey.toHexString()).toEqual(privateKeyStr);
     });
 
-    it("should fail on decrypt with wrong password", () => {
-        expect(() => eth1Keystore.decrypt("wrongPassword")).toThrow();
+    it("should fail on decrypt with wrong password", async () => {
+        await expect(eth1Keystore.decrypt("wrongPassword"))
+            .rejects
+            .toThrow("invalid password");
     });
 
-    it("should get private key with changed password", () => {
-        eth1Keystore.changePassword(password, newPassword);
-        const keypair = eth1Keystore.decrypt(newPassword);
+    it("should get private key with changed password", async () => {
+        await eth1Keystore.changePassword(password, newPassword);
+        const keypair = await eth1Keystore.decrypt(newPassword);
         expect(keypair.privateKey.toHexString()).toEqual(privateKeyStr);
-    });
+    }, 10000);
 
-    it("should fail to encrypt private key with old password", () => {
-        eth1Keystore.changePassword(newPassword, password);
-        expect(() => eth1Keystore.decrypt("oldPassword")).toThrow(
-            new Error("Key derivation failed - possibly wrong passphrase")
-        );
-    });
+    it("should fail to encrypt private key with old password", async () => {
+        await eth1Keystore.changePassword(newPassword, password);
+        await expect(eth1Keystore.decrypt("oldPassword"))
+            .rejects
+            .toThrow("invalid password");
+    }, 10000);
 
     it("should destroy file", () => {
         const unlinkStub = sandbox

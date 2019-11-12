@@ -1,12 +1,12 @@
-import {ethers} from "ethers";
+import {ethers, Wallet} from "ethers";
 import {deployDepositContract} from "./deposit-test-util";
-import eth1WalletProvider from "ethereumjs-wallet";
-import hdkey from "ethereumjs-wallet/hdkey";
-import Wallet from "ethereumjs-wallet";
 import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {toHexString} from "../../../../src/renderer/services/utils/crypto-utils";
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
+import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
+
+jest.setTimeout(30000);
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
 const ganache = require("ganache-cli");
@@ -18,26 +18,26 @@ describe("Deposit transaction service unit tests", () => {
 
     beforeAll(async () => {
         // create accounts and deploy deposit contract
-        const deployPrivateKey = hdkey.fromMasterSeed(Buffer.from([0])).getWallet().getPrivateKey();
-        const accountPrivateKey = hdkey.fromMasterSeed(Buffer.from([1])).getWallet().getPrivateKey();
-        wallet = eth1WalletProvider.fromPrivateKey(accountPrivateKey);
+        const deployWallet = ethers.Wallet.createRandom();
+        const accountWallet = ethers.Wallet.createRandom();
         provider = new ethers.providers.Web3Provider(ganache.provider({
             accounts: [{
                 balance: "100000000000000000000",
-                secretKey: toHexString(accountPrivateKey),
+                secretKey: toHexString(accountWallet.privateKey),
             },
             {
                 balance: "100000000000000000000",
-                secretKey: toHexString(deployPrivateKey),
+                secretKey: toHexString(deployWallet.privateKey),
             }],
         }));
-        depositContractAddress = await deployDepositContract(provider, toHexString(deployPrivateKey));
+        wallet = accountWallet;
+        depositContractAddress = await deployDepositContract(provider, toHexString(deployWallet.privateKey));
     });
 
     it("should send deposit transaction successfully", async () => {
-        const keyPair = new KeyPair(PrivateKey.fromHexString(wallet.getPrivateKeyString()));
+        const keyPair = new KeyPair(PrivateKey.fromHexString(wallet.privateKey));
         const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1,"hex"));
-        const depositTx = DepositTx.generateDepositTx(depositData, depositContractAddress);
+        const depositTx = DepositTx.generateDepositTx(depositData, depositContractAddress, config);
         const signedTx = await depositTx.sign(wallet);
         const transactionResponse = await provider.sendTransaction(toHexString(signedTx));
         expect(transactionResponse).toBeDefined();

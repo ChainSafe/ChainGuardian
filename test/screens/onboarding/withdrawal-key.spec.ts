@@ -1,4 +1,4 @@
-import {setApp} from "../setup";
+import {setApp, stopApp, TIMEOUT} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
@@ -9,7 +9,7 @@ import {
 } from "../../../src/renderer/services/validation/schemas/KeySchema";
 import {PUBLIC_KEY_WRONG_LENGTH_MESSAGE} from "../../../src/renderer/services/validation/schemas/PublicKeySchema";
 
-jest.setTimeout(15000);
+jest.setTimeout(TIMEOUT);
 
 const publicKeyStr =
     "0x92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff4990daa18";
@@ -21,10 +21,8 @@ describe("Onboarding withdrawal key import screen", () => {
         app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL_IMPORT));
     });
 
-    afterEach(() => {
-        if (app && app.isRunning()) {
-            return app.stop();
-        }
+    afterEach(async () => {
+        await stopApp(app);
     });
 
     it("has rendered properly", async function () {
@@ -40,7 +38,6 @@ describe("Onboarding withdrawal key import screen", () => {
     
     it("should fail invalid inputs", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
 
         // Invalid key
         await client.setValue(".inputform", "test");
@@ -61,7 +58,6 @@ describe("Onboarding withdrawal key import screen", () => {
 
     it("should work valid inputs", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
 
         // Valid key
         await client.setValue(".inputform", publicKeyStr);
@@ -71,7 +67,6 @@ describe("Onboarding withdrawal key import screen", () => {
 
     it("should not submit if error message exists", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
 
         // User enter invalid key
         await client.setValue(".inputform", "0xasdfasdf");

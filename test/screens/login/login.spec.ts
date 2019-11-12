@@ -1,8 +1,8 @@
 import {Application} from "spectron";
-import {setApp} from "../setup";
+import {setApp, stopApp, TIMEOUT} from "../setup";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 
-jest.setTimeout(15000);
+jest.setTimeout(TIMEOUT);
 
 describe("Main window", () => {
     let app: Application;
@@ -11,15 +11,12 @@ describe("Main window", () => {
         app = await setApp(Routes.LOGIN_ROUTE);
     });
 
-    afterEach(() => {
-        if (app && app.isRunning()) {
-            return app.stop();
-        }
+    afterEach(async () => {
+        await stopApp(app);
     });
 
     it("buttons load text", async () => {
         const {client, browserWindow} = app;
-        await client.waitUntilWindowLoaded();
         const title = await browserWindow.getTitle();
         expect(title).toBe("ChainGuardian");
         const goButtonText = await client.getAttribute("#go", "textContent");
@@ -30,15 +27,13 @@ describe("Main window", () => {
 
     it("register button leads to onboarding", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
-        await client.$("button=REGISTER").click().pause(500);
+        await client.$("button=REGISTER").click().pause(200);
         const url = await client.getUrl();
         expect(url.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING))).toBeTruthy();
     });
 
     it("input field test", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
         await client.addValue(".inputform", "testinput");
         const inputValue = await client.getValue(".inputform");
         expect(inputValue).toBe("testinput");

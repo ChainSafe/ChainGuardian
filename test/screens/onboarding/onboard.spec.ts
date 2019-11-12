@@ -1,9 +1,9 @@
-import {setApp} from "../setup";
+import {setApp, stopApp, TIMEOUT} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
-import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
+import {OnBoardingRoutes, Routes} from "../../../src/renderer/constants/routes";
 
-jest.setTimeout(15000);
+jest.setTimeout(TIMEOUT);
 
 describe("Onboarding start screen", () => {
     let app: Application;
@@ -12,10 +12,8 @@ describe("Onboarding start screen", () => {
         app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
     });
 
-    afterEach(() => {
-        if (app && app.isRunning()) {
-            return app.stop();
-        }
+    afterEach(async () => {
+        await stopApp(app);
     });
 
     it("has rendered properly", async function() {
@@ -32,7 +30,6 @@ describe("Onboarding start screen", () => {
 
     it("back button leads to login", async function() {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
         await client.waitForVisible(".back-tab");
         await client.$(".back-tab").click();
         const url = await client.getUrl();

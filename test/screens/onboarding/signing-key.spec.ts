@@ -1,4 +1,4 @@
-import {setApp} from "../setup";
+import {setApp, stopApp, TIMEOUT} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
@@ -7,7 +7,7 @@ import {MNEMONIC_INVALID_MESSAGE} from "../../../src/renderer/services/validatio
 import {KEY_WRONG_CHARACTERS_MESSAGE} from "../../../src/renderer/services/validation/schemas/KeySchema";
 import {PRIVATE_KEY_WRONG_LENGTH_MESSAGE} from "../../../src/renderer/services/validation/schemas/PrivateKeySchema";
 
-jest.setTimeout(15000);
+jest.setTimeout(TIMEOUT);
 
 const mnemonic = "hard caught annual spread green step avocado shine scare warm chronic pond";
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
@@ -19,10 +19,8 @@ describe("Onboarding signing key import screen", () => {
         app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT));
     });
 
-    afterEach(() => {
-        if (app && app.isRunning()) {
-            return app.stop();
-        }
+    afterEach(async () => {
+        await stopApp(app);
     });
 
     it("has rendered properly", async function () {
@@ -38,7 +36,6 @@ describe("Onboarding signing key import screen", () => {
 
     it("should fail invalid inputs", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
 
         // Invalid mnemonic
         await client.setValue(".inputform", "test mnemonic");
@@ -59,7 +56,6 @@ describe("Onboarding signing key import screen", () => {
 
     it("should work valid inputs", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
 
         // Valid key
         await client.setValue(".inputform", privateKeyStr);
@@ -74,7 +70,6 @@ describe("Onboarding signing key import screen", () => {
 
     it("should not submit if error message exists", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
 
         // User enter invalid mnemonic
         await client.setValue(".inputform", "test mnemonic");
