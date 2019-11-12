@@ -2,12 +2,9 @@ import {setApp} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
-import {
-    KEY_WRONG_CHARACTERS_MESSAGE,
-    PUBLIC_KEY_WRONG_LENGTH_MESSAGE,
-    KEY_START_WITH_PREFIX,
-} from "../../../src/renderer/services/utils/input-utils";
 import {IMPORT_WITHDRAWAL_KEY_PLACEHOLDER} from "../../../src/renderer/constants/strings";
+import {KEY_START_WITH_PREFIX_MESSAGE, KEY_WRONG_CHARACTERS_MESSAGE} from "../../../src/renderer/services/validation/schemas/KeySchema";
+import {PUBLIC_KEY_WRONG_LENGTH_MESSAGE} from "../../../src/renderer/services/validation/schemas/PublicKeySchema";
 
 jest.setTimeout(15000);
 
@@ -45,7 +42,7 @@ describe("Onboarding withdrawal key import screen", () => {
         // Invalid key
         await client.setValue(".inputform", "test");
         let errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal(KEY_START_WITH_PREFIX);
+        expect(errorMessage).to.be.equal(KEY_START_WITH_PREFIX_MESSAGE);
 
         // Invalid key length
         await client.setValue(".inputform", "0xadfa");

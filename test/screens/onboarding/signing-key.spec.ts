@@ -2,12 +2,10 @@ import {setApp} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
-import {
-    INVALID_MNEMONIC_MESSAGE,
-    KEY_WRONG_CHARACTERS_MESSAGE,
-    PRIVATE_KEY_WRONG_LENGTH_MESSAGE
-} from "../../../src/renderer/services/utils/input-utils";
 import {IMPORT_SIGNING_KEY_PLACEHOLDER} from "../../../src/renderer/constants/strings";
+import {MNEMONIC_INVALID_MESSAGE} from "../../../src/renderer/services/validation/schemas/MnemonicSchema";
+import {KEY_WRONG_CHARACTERS_MESSAGE} from "../../../src/renderer/services/validation/schemas/KeySchema";
+import {PRIVATE_KEY_WRONG_LENGTH_MESSAGE} from "../../../src/renderer/services/validation/schemas/PrivateKeySchema";
 
 jest.setTimeout(15000);
 
@@ -45,7 +43,7 @@ describe("Onboarding signing key import screen", () => {
         // Invalid mnemonic
         await client.setValue(".inputform", "test mnemonic");
         let errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal(INVALID_MNEMONIC_MESSAGE);
+        expect(errorMessage).to.be.equal(MNEMONIC_INVALID_MESSAGE);
 
         // Invalid key length
         await client.setValue(".inputform", "0xadfa");

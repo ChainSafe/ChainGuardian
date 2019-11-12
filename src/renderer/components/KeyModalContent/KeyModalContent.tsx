@@ -31,13 +31,14 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
         }
 
         const validator = props.signing ? Joi.alternatives(mnemonicSchema, privateKeySchema) : publicKeySchema;
-        const isValid = !("error" in validator.validate(input));
+        const validationResult = validator.validate(input);
+        const isValid = validationResult.error === null || validationResult.error === undefined;
         setvalid(isValid);
 
         // console.log(message);
 
         if(!isValid){
-            setErrorMessage("");
+            setErrorMessage(validationResult.error.message);
         }
     };
 
