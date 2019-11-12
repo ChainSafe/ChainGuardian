@@ -1,1 +1,3 @@
-export const ADD_MNEMONIC = "ADD_MNEMONIC";
+export enum RegisterActionTypes {
+    STORE_SIGNING_KEY_MNEMONIC = "ADD_MNEMONIC"
+}
