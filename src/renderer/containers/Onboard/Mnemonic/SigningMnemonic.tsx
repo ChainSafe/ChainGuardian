@@ -13,7 +13,6 @@ import {connect} from "react-redux";
 interface IState {
     mnemonicValue: string;
 }
-console.log(Eth2HDWallet.generate());
 
 class SigningMnemonic extends Component<{ history: History }, {}> {
     public state: IState = {
@@ -21,13 +20,13 @@ class SigningMnemonic extends Component<{ history: History }, {}> {
     };
     
 
-    // public mapDispatchToProps = (): void=> {
-    //     store.dispatch( addMnemonic(this.state.mnemonicValue.split(" ")));
-    // };
-
     public mapDispatchToProps = (): void=> {
-        return addMnemonic(this.state.mnemonicValue.split(" "))
+        store.dispatch( addMnemonic(this.state.mnemonicValue.split(" ")));
     };
+
+    // public mapDispatchToProps = (): void=> {
+    //     return addMnemonic(this.state.mnemonicValue.split(" "))
+    // };
     
     public render(): ReactElement {
         return (
@@ -41,7 +40,7 @@ class SigningMnemonic extends Component<{ history: History }, {}> {
                     value={this.state.mnemonicValue} 
                     onCopy={(): void=>clipboard.writeText(this.state.mnemonicValue)}
                 ></MnemonicCopyField>
-                <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_MNEMONIC_QUESTION)}>
+                <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_KEY_VALIDATE)}>
                     <ButtonPrimary 
                         onClick={(): void=> this.mapDispatchToProps()} 
                         buttonId="savedMnemonic"
@@ -55,4 +54,5 @@ class SigningMnemonic extends Component<{ history: History }, {}> {
 //     // store.dispatch( addMnemonic(this.state.mnemonicValue.split(" ")));
 //     return addMnemonic(this.state.mnemonicValue.split(" "))
 // };
-export default connect(null,SigningMnemonic.mapDispatchToProps)(SigningMnemonic)
+// export default connect(null,SigningMnemonic.mapDispatchToProps)(SigningMnemonic)
+export default connect()(SigningMnemonic)

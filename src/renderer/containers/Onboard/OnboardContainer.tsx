@@ -20,8 +20,8 @@ export default class OnboardContainer extends Component<{ history: History, matc
         [OnBoardingRoutes.SIGNING]: <SigningKey />,
         [OnBoardingRoutes.SIGNING_IMPORT]: <SigningKeyImport history={this.props.history} />,
         [OnBoardingRoutes.WITHDRAWAL_IMPORT]: <WithdrawalKeyImport history={this.props.history} />,
-        [OnBoardingRoutes.SIGNING_MNEMONIC]: <SigningMnemonic history={this.props.history}/>,
-        [OnBoardingRoutes.SIGNING_MNEMONIC_QUESTION]: <SigningMnemonicQuestion history={this.props.history}/>
+        [OnBoardingRoutes.SIGNING_KEY_GENERATE]: <SigningMnemonic history={this.props.history}/>,
+        [OnBoardingRoutes.SIGNING_KEY_VALIDATE]: <SigningMnemonicQuestion history={this.props.history}/>
     };
 
     public render(): ReactElement {

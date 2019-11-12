@@ -1,7 +1,7 @@
 import React, {Component, ReactElement} from "react";
 import {VerifyMnemonic} from "../../../components/VerifyMnemonic/VerifyMnemonic";
 import {History} from "history";
-import {getRandomIntArray, getRandomInt} from "../../../services/mnemonic/utils/getRandomInt";
+import {getRandomIntArray, getRandomInt} from "../../../services/mnemonic/utils/random";
 import store from "../../../store/index";
 import {connect} from "react-redux";
 
