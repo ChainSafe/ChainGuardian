@@ -3,6 +3,11 @@ import {
     MNEMONIC_NOT_STRING_MESSAGE,
     mnemonicSchema
 } from "../../../../../src/renderer/services/validation/schemas/MnemonicSchema";
+import * as Joi from '@hapi/joi';
+import { privateKeySchema } from '../../../../../src/renderer/services/validation/schemas/PrivateKeySchema';
+import { keySchema } from '../../../../../src/renderer/services/validation/schemas/KeySchema';
+import { publicKeySchema } from '../../../../../src/renderer/services/validation/schemas/PublicKeySchema';
+import validate = WebAssembly.validate;
 
 describe("Joi custom mnemonic schema unit tests.", () => {
     it("should success valid mnemonic", async () => {

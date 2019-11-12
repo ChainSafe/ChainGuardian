@@ -1,4 +1,6 @@
-import {isValidKeyLength} from "../../../../src/renderer/services/validation/util";
+import {getPrivateKeyOrMnemonicSchema, isValidKeyLength} from "../../../../src/renderer/services/validation/util";
+import {MNEMONIC_INVALID_MESSAGE} from "../../../../src/renderer/services/validation/schemas/MnemonicSchema";
+import {PRIVATE_KEY_WRONG_LENGTH_MESSAGE} from "../../../../src/renderer/services/validation/schemas/PrivateKeySchema";
 
 describe("Validation utils unit tests", () => {
     it("should return true for valid private key", async () => {
@@ -31,5 +33,19 @@ describe("Validation utils unit tests", () => {
             "public"
         );
         expect(result).toBeFalsy();
+    });
+
+    it("should return private key schema if input starts with 0x", function() {
+        const input = "0xa32a";
+        const result = getPrivateKeyOrMnemonicSchema(input).validate(input);
+        expect(result.error).toBeDefined();
+        expect(result.error.message).toBe(PRIVATE_KEY_WRONG_LENGTH_MESSAGE);
+    });
+
+    it("should return mnemonic schema if input doesn't start with 0x", function() {
+        const input = "fake mnemonic";
+        const result = getPrivateKeyOrMnemonicSchema(input).validate(input);
+        expect(result.error).toBeDefined();
+        expect(result.error.message).toBe(MNEMONIC_INVALID_MESSAGE);
     });
 });

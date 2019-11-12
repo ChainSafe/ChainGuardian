@@ -1,10 +1,8 @@
 import React, {useState, ReactElement, useEffect} from "react";
 import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
-import * as Joi from "@hapi/joi";
-import {mnemonicSchema} from "../../services/validation/schemas/MnemonicSchema";
-import {privateKeySchema} from "../../services/validation/schemas/PrivateKeySchema";
 import {publicKeySchema} from "../../services/validation/schemas/PublicKeySchema";
+import {getPrivateKeyOrMnemonicSchema} from "../../services/validation/util";
 
 
 interface IKeyModalProps {
@@ -30,16 +28,11 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
             return;
         }
 
-        const validator = props.signing ? Joi.alternatives(mnemonicSchema, privateKeySchema) : publicKeySchema;
-        const validationResult = validator.validate(input);
-        const isValid = validationResult.error === null || validationResult.error === undefined;
+        const validator = props.signing ? getPrivateKeyOrMnemonicSchema(input) : publicKeySchema;
+        const validation = validator.validate(input);
+        const isValid = validation.error === undefined;
+        if (!isValid) { setErrorMessage(validation.error.message); }
         setvalid(isValid);
-
-        // console.log(message);
-
-        if(!isValid){
-            setErrorMessage(validationResult.error.message);
-        }
     };
 
     const handleSubmit = (): void => {

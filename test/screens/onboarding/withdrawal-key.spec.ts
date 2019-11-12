@@ -3,7 +3,10 @@ import {Application} from "spectron";
 import {expect} from "chai";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 import {IMPORT_WITHDRAWAL_KEY_PLACEHOLDER} from "../../../src/renderer/constants/strings";
-import {KEY_START_WITH_PREFIX_MESSAGE, KEY_WRONG_CHARACTERS_MESSAGE} from "../../../src/renderer/services/validation/schemas/KeySchema";
+import {
+    KEY_START_WITH_PREFIX_MESSAGE,
+    KEY_WRONG_CHARACTERS_MESSAGE
+} from "../../../src/renderer/services/validation/schemas/KeySchema";
 import {PUBLIC_KEY_WRONG_LENGTH_MESSAGE} from "../../../src/renderer/services/validation/schemas/PublicKeySchema";
 
 jest.setTimeout(15000);
