@@ -3,7 +3,7 @@ import {BLSPubkey as BLSPubKey, DepositData} from "@chainsafe/eth2.0-types";
 import {createHash} from "crypto";
 import {signingRoot} from "@chainsafe/ssz";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
-import {DEPOSIT_AMOUNT, DEPOSIT_DOMAIN} from "./constants";
+import {DEPOSIT_DOMAIN} from "./constants";
 import {utils} from "ethers";
 import BN from "bn.js";
 

@@ -3,7 +3,7 @@ import abi from "ethereumjs-abi";
 import {ITx} from "./types";
 import {functionSignatureFromABI} from "./utils";
 import DepositContract from "../../../../src/renderer/services/deposit/options";
-import {DEPOSIT_AMOUNT, DEPOSIT_TX_GAS} from "./constants";
+import {DEPOSIT_TX_GAS} from "./constants";
 import {hashTreeRoot} from "@chainsafe/ssz";
 import {Wallet} from "ethers/wallet";
 import {utils} from "ethers";

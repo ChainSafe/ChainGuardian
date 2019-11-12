@@ -5,7 +5,7 @@ import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {toHexString} from "../../../../src/renderer/services/utils/crypto-utils";
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
-import { DEPOSIT_AMOUNT } from "../../../../src/renderer/services/deposit/constants";
+import {DEPOSIT_AMOUNT} from "../../../../src/renderer/services/deposit/constants";
 
 jest.setTimeout(30000);
 
