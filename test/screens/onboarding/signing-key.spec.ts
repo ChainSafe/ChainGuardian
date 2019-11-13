@@ -1,7 +1,7 @@
-import {setApp, TIMEOUT} from "../setup";
+import {setApp, stopApp, TIMEOUT} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
-import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
+import {OnBoardingRoutes, Routes} from "../../../src/renderer/constants/routes";
 import {
     INVALID_MNEMONIC_MESSAGE,
     KEY_WRONG_CHARACTERS_MESSAGE,
@@ -21,10 +21,8 @@ describe("Onboarding signing key import screen", () => {
         app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT));
     });
 
-    afterEach(() => {
-        if (app && app.isRunning()) {
-            return app.stop();
-        }
+    afterEach(async () => {
+        await stopApp(app);
     });
 
     it("has rendered properly", async function () {
@@ -40,7 +38,6 @@ describe("Onboarding signing key import screen", () => {
 
     it("should fail invalid inputs", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
 
         // Invalid mnemonic
         await client.setValue(".inputform", "test mnemonic");
@@ -61,7 +58,6 @@ describe("Onboarding signing key import screen", () => {
 
     it("should work valid inputs", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
 
         // Valid key
         await client.setValue(".inputform", privateKeyStr);
@@ -76,7 +72,6 @@ describe("Onboarding signing key import screen", () => {
 
     it("should not submit if error message exists", async () => {
         const {client} = app;
-        await client.waitUntilWindowLoaded();
 
         // User enter invalid mnemonic
         await client.setValue(".inputform", "test mnemonic");

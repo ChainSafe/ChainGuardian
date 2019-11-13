@@ -21,7 +21,7 @@ Array [
         value=""
       />
       <div
-        className="error-message "
+        className="error-message"
       />
     </form>
     <span
@@ -68,7 +68,7 @@ Array [
         value=""
       />
       <div
-        className="error-message "
+        className="error-message"
       />
     </form>
     <span

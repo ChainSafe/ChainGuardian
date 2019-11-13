@@ -11,15 +11,30 @@
     font-family: 'Palanquin', sans-serif;
     font-weight: 500;
     font-size: 24px;
-    line-height: 44px;
+    line-height: 38px;
     text-align: center;
     letter-spacing: 0.01em;
     margin: 0px;
     position: relative;
     z-index: 1;
+    max-height: 90px;
+    overflow: auto;
+    overflow-x: hidden;
     &.mnemonic{
         word-spacing: 15px;
     }
+}
+.copy-field::-webkit-scrollbar
+{
+	width: 9px;
+	background-color: $neutral-600;
+}
+
+.copy-field::-webkit-scrollbar-thumb
+{
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: $neutral-500;
 }
 .copy-button{
     position: absolute;

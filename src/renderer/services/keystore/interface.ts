@@ -1,8 +1,8 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 
 export interface ICGKeystore {
-    decrypt(password: string): Keypair;
-    changePassword(oldPassword: string, newPassword: string): void;
+    decrypt(password: string): Promise<Keypair>;
+    changePassword(oldPassword: string, newPassword: string): Promise<void>;
     destroy(): void;
     getAddress(): string;
 }

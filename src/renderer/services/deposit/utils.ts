@@ -4,7 +4,8 @@ import {createHash} from "crypto";
 import {signingRoot} from "@chainsafe/ssz";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {DEPOSIT_AMOUNT, DEPOSIT_DOMAIN} from "./constants";
-import {EthConverter} from "../utils/crypto-utils";
+import {utils} from "ethers";
+import BN from "bn.js";
 
 /**
  * Generate function signature from ABI object.
@@ -42,17 +43,22 @@ export function functionSignatureFromABI(rawAbi: (string | any)[] | string, func
  */
 export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey): DepositData {
     // signing public key
-    const publicKey = signingKey.publicKey.toBytesCompressed();
+    const publicKey: Buffer = signingKey.publicKey.toBytesCompressed();
     // BLS_WITHDRAWAL_PREFIX + hash(withdrawal_pubkey)[1:]
-    const withdrawalCredentials = Buffer.concat([
+    const withdrawalCredentials: Buffer = Buffer.concat([
         Buffer.alloc(1),
         createHash("sha256").update(withdrawalPubKey).digest().subarray(1)
     ]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const amount: BN = new BN(
+        // remove decimal zeroes
+        utils.formatUnits(utils.parseEther(DEPOSIT_AMOUNT), "gwei").split(".")[0]
+    );
     // define DepositData
     const depositData: DepositData = {
         pubkey: publicKey,
         withdrawalCredentials: withdrawalCredentials,
-        amount: EthConverter.toGwei(DEPOSIT_AMOUNT),
+        amount: amount,
         signature: Buffer.alloc(0)
     };
     // calculate root

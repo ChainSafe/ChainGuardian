@@ -29,8 +29,6 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
         const {isValid, message} = props.signing ? isValidMnemonicOrPrivateKey(input) : isValidPublicKey(input);
         setvalid(isValid);
 
-        console.log(message);
-
         if(!isValid){
             setErrorMessage(message);
         }
