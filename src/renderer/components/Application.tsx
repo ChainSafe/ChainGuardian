@@ -11,7 +11,7 @@ const Application = (): ReactElement => (
     <Router>
         <Switch>
             <Route path={Routes.ONBOARD_ROUTE} component={OnboardContainer} />
-            <Route path={Routes.LOGIN_ROUTE} component={LoginContainer}/>
+            <Route path={Routes.LOGIN_ROUTE} component={LoginContainer} />
             <Redirect from="/" to={Routes.LOGIN_ROUTE} />
         </Switch>
     </Router>

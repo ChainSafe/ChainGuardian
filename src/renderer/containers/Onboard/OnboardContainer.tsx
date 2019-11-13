@@ -1,25 +1,31 @@
 import React, {Component, ReactElement} from "react";
-import {match} from "react-router-dom";
+import {match, RouteComponentProps} from "react-router-dom";
 import {Background} from "../../components/Background/Background";
 import OnBoardModal from "./OnBoardModal";
 import SigningKey from "./SigningKey/SigningKey";
-import SigningKeyImport from "./SigningKey/SigningKeyImport";
 import WithdrawalKeyImport from "./WithdrawalKey/WithdrawalKeyImport";
 import {OnBoardingRoutes} from "../../constants/routes";
-import {History} from "history";
+import {SigningKeyVerifyContainer} from "./SigningKey/Verify/SigningMnemonicQuestion";
+import {SigningKeyGenerateContainer} from "./SigningKey/Generate/SigningMnemonic";
+import {SigningKeyImport} from "./SigningKey/Import/SigningKeyImport";
 
 interface IOnboardStep {
     step: string
 }
 
-export default class OnboardContainer extends Component<{ history: History, match: match<IOnboardStep> }, {}> {
+interface IProps extends RouteComponentProps {
+    match: match<IOnboardStep>
+}
+
+export default class OnboardContainer extends Component<IProps, {}> {
 
     private Steper = {
         [OnBoardingRoutes.SIGNING]: <SigningKey />,
         [OnBoardingRoutes.SIGNING_IMPORT]: <SigningKeyImport history={this.props.history} />,
-        [OnBoardingRoutes.WITHDRAWAL_IMPORT]: <WithdrawalKeyImport history={this.props.history} />
+        [OnBoardingRoutes.WITHDRAWAL_IMPORT]: <WithdrawalKeyImport history={this.props.history} />,
+        [OnBoardingRoutes.SIGNING_KEY_GENERATE]: <SigningKeyGenerateContainer history={this.props.history}/>,
+        [OnBoardingRoutes.SIGNING_KEY_VALIDATE]: <SigningKeyVerifyContainer history={this.props.history}/>
     };
-
 
     public render(): ReactElement {
         const {step} = this.props.match.params;
