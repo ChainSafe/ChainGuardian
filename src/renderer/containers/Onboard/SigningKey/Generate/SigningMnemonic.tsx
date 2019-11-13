@@ -2,7 +2,7 @@ import React, {Component, ReactElement} from "react";
 import {Link, RouteComponentProps} from "react-router-dom";
 import {ButtonPrimary} from "../../../../components/Button/ButtonStandard";
 import {MnemonicCopyField} from "../../../../components/CopyField/CopyField";
-import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
+import {Routes, OnBoardingRoutes} from "../../../../constants/routes";
 import {clipboard} from "electron";
 import {Eth2HDWallet} from "../../../../services/wallet";
 import {connect} from "react-redux";
@@ -64,7 +64,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
         dispatch
     );
 
-export const SigningKeyGenerateContainer = connect<{}, IInjectedProps, IOwnProps>(
+export const SigningKeyGenerateContainer = connect(
     null,
     mapDispatchToProps
 )(SigningMnemonic);

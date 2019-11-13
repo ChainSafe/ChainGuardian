@@ -16,7 +16,6 @@ class SigningMnemonicQuestion extends Component<IProps &  Pick<IRootState, "regi
         const randArray = getRandomIntArray(12);
         const correctAnswerIndex = randArray[getRandomInt(3)];
 
-        
         return (
             <VerifyMnemonic
                 question={`What’s the ${correctAnswerIndex + 1}th word in the mnemonic?`}
