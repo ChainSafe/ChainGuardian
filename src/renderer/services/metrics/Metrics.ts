@@ -1,7 +1,6 @@
 import {getDB} from "../db/api/database";
-import {encodeKey, Bucket} from "../db/schema";
+import {Bucket} from "../db/schema";
 import {Metrics} from "../../models/metrics";
-import {generateMetricsKey} from "../db/api/repositories/metrics";
 
 export interface IMetricsParams {
     instanceId: string,
@@ -22,12 +21,8 @@ export function measureExecution<T>(instance: any, params: IMetricsParams, ...ar
         method: params.functionName,
         date: currentDate.toISOString(),
     });
-        // YYYY-MM-DD-methodName-instanceId
-    const id = generateMetricsKey(currentDate, params.functionName, params.instanceId);
-    // Save the metrics to the DB based on the provided Bucket
-    db.metrics.set(
-        encodeKey(params.bucket, id),
-        metrics
-    );
+    
+    db.metrics.store(params, metrics);
+
     return res;
 }
