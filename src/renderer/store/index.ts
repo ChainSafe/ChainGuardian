@@ -1,9 +1,10 @@
 import {Store, applyMiddleware, createStore, Middleware} from "redux";
 import {composeWithDevTools} from "redux-devtools-extension";
 import {IRootState, rootReducer} from "../reducers";
+import thunk from "redux-thunk";
 
 const configureStore = (initialState?: IRootState): Store<IRootState | undefined> => {
-    const middlewares: Middleware[] = [],
+    const middlewares: Middleware[] = [thunk],
         enhancer = composeWithDevTools(applyMiddleware(...middlewares));
     return createStore(rootReducer, initialState, enhancer);
 };
