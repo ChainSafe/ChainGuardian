@@ -1,12 +1,14 @@
 import {ethers, Wallet} from "ethers";
 import {deployDepositContract} from "./deposit-test-util";
+import DepositContract from "../../../../src/renderer/services/deposit/options";
 import {Keypair as KeyPair, Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {toHexString} from "../../../../src/renderer/services/utils/crypto-utils";
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
-import {EthersNotifier} from "../../../../src/renderer/services/deposit/ethers";
+import {EthersNotifier, DEPOSIT_EVENT_TIMEOUT_MESSAGE} from "../../../../src/renderer/services/deposit/ethers";
 import BN from "bn.js";
+import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
 
 jest.setTimeout(30000);
 
@@ -21,6 +23,7 @@ describe("Deposit transaction service unit tests", () => {
     let invalidWallet: Wallet;
     let provider: ethers.providers.Web3Provider;
     let depositContractAddress: string;
+    let networkConfig: INetworkConfig;
 
     beforeAll(async () => {
         // create accounts and deploy deposit contract
@@ -44,11 +47,19 @@ describe("Deposit transaction service unit tests", () => {
         wallet = accountWallet;
         invalidWallet = invalidDepositWallet;
         depositContractAddress = await deployDepositContract(provider, toHexString(deployWallet.privateKey));
+        networkConfig = {
+            config,
+            contract: {
+                address: depositContractAddress,
+                bytecode: DepositContract.bytecode,
+                deployedAtBlock: await provider.getBlockNumber()
+            }
+        };
     });
-
+    
     it("should check if user deposited valid amount", async () => {
         const keyPair = new KeyPair(PrivateKey.fromHexString(wallet.privateKey));
-        const ethersNotifier = new EthersNotifier(provider, depositContractAddress, config, keyPair);
+        const ethersNotifier = new EthersNotifier(networkConfig, provider, keyPair);
         const amounts = ["8", "25"]; // sum is greater than 32
         await generateMultilpleTransactions(keyPair, depositContractAddress, wallet, provider, amounts);
         const isValidDepositAmount = await ethersNotifier.checkUserDepositAmount();
@@ -58,7 +69,7 @@ describe("Deposit transaction service unit tests", () => {
 
     it("should fail because user deposit sum is invalid", async () => {
         const keyPair = new KeyPair(PrivateKey.fromHexString(invalidWallet.privateKey));
-        const ethersNotifier = new EthersNotifier(provider, depositContractAddress, config, keyPair);
+        const ethersNotifier = new EthersNotifier(networkConfig, provider, keyPair);
         const amounts = ["1", "12"]; // sum is less than 32
         await generateMultilpleTransactions(keyPair, depositContractAddress, invalidWallet, provider, amounts);
         const isValidDepositAmount = await ethersNotifier.checkUserDepositAmount();
@@ -67,7 +78,7 @@ describe("Deposit transaction service unit tests", () => {
 
     it("should emit event when someone deposit ether to contract", async (done) => {
         const keyPair = new KeyPair(PrivateKey.fromHexString(wallet.privateKey));
-        const ethersNotifier = new EthersNotifier(provider, depositContractAddress, config, keyPair);
+        const ethersNotifier = new EthersNotifier(networkConfig, provider, keyPair);
 
         ethersNotifier.depositEventListener(EVENT_TIMEOUT)
             .then((amountGwei: BN) => {
@@ -78,6 +89,18 @@ describe("Deposit transaction service unit tests", () => {
 
         const amounts = ["15"];
         await generateMultilpleTransactions(keyPair, depositContractAddress, wallet, provider, amounts);
+    });
+
+    it("should throw error because event was not emited", async (done) => {
+        const keyPair = new KeyPair(PrivateKey.fromHexString(wallet.privateKey));
+        const ethersNotifier = new EthersNotifier(networkConfig, provider, keyPair);
+
+        // Reduce timeout for test time
+        ethersNotifier.depositEventListener(3000)
+            .catch(err => {
+                expect(err).toEqual(new Error(DEPOSIT_EVENT_TIMEOUT_MESSAGE));
+                done();
+            });
     });
 });
 
