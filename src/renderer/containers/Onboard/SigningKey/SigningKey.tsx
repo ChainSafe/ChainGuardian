@@ -12,7 +12,9 @@ export default function SigningKey(): ReactElement {
                 <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT)}>
                     <ButtonSecondary buttonId="import" large>IMPORT</ButtonSecondary>
                 </Link>
-                <ButtonPrimary buttonId="generate" large>GENERATE</ButtonPrimary>
+                <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_KEY_GENERATE)}>
+                    <ButtonPrimary buttonId="generate" large>GENERATE</ButtonPrimary>
+                </Link>
             </div>
         </>
     );

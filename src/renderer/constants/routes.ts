@@ -7,5 +7,7 @@ export class Routes {
 export enum OnBoardingRoutes {
     SIGNING = "1_0",
     SIGNING_IMPORT = "1_a1",
-    WITHDRAWAL_IMPORT = "2_b1"
+    WITHDRAWAL_IMPORT = "2_b1",
+    SIGNING_KEY_GENERATE ="1_skg",
+    SIGNING_KEY_VALIDATE ="1_skv"
 }
