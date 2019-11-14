@@ -12,6 +12,6 @@ function isPrivateKeyLength(value: string, helpers: CustomHelpers): string | Err
 
 export const PRIVATE_KEY_WRONG_LENGTH_MESSAGE = `Private key should have ${SECRET_KEY_LENGTH} bytes`;
 
-export const schema = KeySchema
+export const PrivateKeySchema = KeySchema
     .custom(isPrivateKeyLength, "Validate private key length")
     .message(PRIVATE_KEY_WRONG_LENGTH_MESSAGE);

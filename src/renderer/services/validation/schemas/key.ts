@@ -14,7 +14,7 @@ export const KEY_NOT_STRING_MESSAGE="Key must be type of string";
 export const KEY_START_WITH_PREFIX_MESSAGE="Key must have '0x' prefix";
 export const KEY_WRONG_CHARACTERS_MESSAGE = "Private key must contain hex characters only";
 
-export const schema = Joi
+export const KeySchema = Joi
     .string()
     .custom(trimHex, "Validate if prefix 0x and trim")
     .hex()

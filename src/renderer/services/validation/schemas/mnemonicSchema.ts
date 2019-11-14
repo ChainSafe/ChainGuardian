@@ -11,7 +11,7 @@ function isValidMnemonic(value: string, helpers: CustomHelpers): string | ErrorR
 export const MNEMONIC_INVALID_MESSAGE = "Invalid mnemonic";
 export const MNEMONIC_NOT_STRING_MESSAGE="Key must be type of string";
 
-export const schema = Joi
+export const MnemonicSchema = Joi
     .string()
     .custom(isValidMnemonic, "Validate mnemonic")
     .messages({
