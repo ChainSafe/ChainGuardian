@@ -10,32 +10,32 @@ export interface IDropdownProps {
 export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdownProps) => {
     const [visible, setVisible]=useState("none");
 
-    function getSelectedIndex(clickedOption: string):number{
+    function getSelectedIndex(clickedOption: string): number{
         return (props.options.findIndex(option => option === clickedOption));
     }
-    function showHide():void{
+    function showHide(): void{
         visible === "none" ? setVisible("block") : setVisible("none");
     }
-    function hide():void{
+    function hide(): void{
         visible === "block" ? setVisible("none") : null;
     }
     
     return(
-        <div onClick={()=> hide()} className="dropdown-screen">
+        <div onClick={(): void=> hide()} className="dropdown-screen">
             <div className="dropdown-container">
-                <div onClick={()=> showHide()} className="dropdown-selected">
+                <div onClick={(): void=> showHide()} className="dropdown-selected">
                     {props.options[props.current]}
                 </div>
                 <div className="dropdown-items">
-                {props.options.map(option =>{
-                    return <div 
-                        key={option} 
-                        onClick={() => {props.onChange(getSelectedIndex(option));showHide();}} 
-                        className={`dropdown-item 
+                    {props.options.map(option =>{
+                        return <div 
+                            key={option} 
+                            onClick={(): void => {props.onChange(getSelectedIndex(option));showHide();}} 
+                            className={`dropdown-item 
                         ${visible}
                         ${getSelectedIndex(option)===props.current?"selected":""}`} 
-                        >{option}</div>
-                })}
+                        >{option}</div>;
+                    })}
                 </div>
             </div>
         </div>
