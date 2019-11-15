@@ -9,12 +9,13 @@
 @import '../components/TabNavigation/tabnavigation.scss';
 @import '../components/KeyModalContent/KeyModalContent.scss';
 @import '../components/Dropdown/dropdown.scss';
-
-@import '../containers/Onboard/index';
 @import '../components/CopyField/copyfield.scss';
 @import '../components/Notification/notification.scss';
 @import '../components/VerifyMnemonic/VerifyMnemonic.scss';
+@import '../components/Validator/validator.scss';
+@import '../components/Cards/cards.scss';
 
+@import '../containers/Onboard/index';
 @import '../containers/Onboard/OnboardContainer.scss';
 @import '../containers/Login/LoginContainer.scss';
 @import '../containers/Onboard/SigningKey/Generate/Mnemonic.scss';
