@@ -7,7 +7,7 @@ import {
     KEY_WRONG_CHARACTERS_MESSAGE,
     MNEMONIC_INVALID_MESSAGE,
     PRIVATE_KEY_WRONG_LENGTH_MESSAGE
-} from "../../../src/renderer/services/validation/schemas";
+} from "../../../src/renderer/containers/Onboard/SigningKey/Import/validation";
 
 jest.setTimeout(TIMEOUT);
 
