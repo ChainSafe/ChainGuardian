@@ -3,7 +3,7 @@ import {BLSPubkey as BLSPubKey, DepositData} from "@chainsafe/eth2.0-types";
 import {createHash} from "crypto";
 import {signingRoot} from "@chainsafe/ssz";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
-import {DEPOSIT_AMOUNT, DEPOSIT_DOMAIN} from "./constants";
+import {DEPOSIT_DOMAIN} from "./constants";
 import {utils} from "ethers";
 import BN from "bn.js";
 
@@ -41,7 +41,7 @@ export function functionSignatureFromABI(rawAbi: (string | any)[] | string, func
  *
  * @return instance of ${DepositData} defining deposit transaction.
  */
-export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey): DepositData {
+export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey, depositAmount: string): DepositData {
     // signing public key
     const publicKey: Buffer = signingKey.publicKey.toBytesCompressed();
     // BLS_WITHDRAWAL_PREFIX + hash(withdrawal_pubkey)[1:]
@@ -52,7 +52,7 @@ export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const amount: BN = new BN(
         // remove decimal zeroes
-        utils.formatUnits(utils.parseEther(DEPOSIT_AMOUNT), "gwei").split(".")[0]
+        utils.formatUnits(utils.parseEther(depositAmount), "gwei").split(".")[0]
     );
     // define DepositData
     const depositData: DepositData = {

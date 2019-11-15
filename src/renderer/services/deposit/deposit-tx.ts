@@ -3,7 +3,7 @@ import abi from "ethereumjs-abi";
 import {ITx} from "./types";
 import {functionSignatureFromABI} from "./utils";
 import DepositContract from "../../../../src/renderer/services/deposit/options";
-import {DEPOSIT_AMOUNT, DEPOSIT_TX_GAS} from "./constants";
+import {DEPOSIT_TX_GAS} from "./constants";
 import {hashTreeRoot} from "@chainsafe/ssz";
 import {Wallet} from "ethers/wallet";
 import {utils} from "ethers";
@@ -29,7 +29,8 @@ export class DepositTx implements ITx{
     public static generateDepositTx(
         depositParams: DepositData, 
         depositContractAddress: string, 
-        config: IBeaconConfig): DepositTx {
+        config: IBeaconConfig,
+        depositAmount: string): DepositTx {
         // calculate root
         const depositDataRoot = hashTreeRoot(depositParams, config.types.DepositData);
         const depositFunctionEncoded = abi.simpleEncode(
@@ -43,7 +44,7 @@ export class DepositTx implements ITx{
         return new DepositTx(
             depositFunctionEncoded,
             depositContractAddress,
-            utils.parseEther(DEPOSIT_AMOUNT).toHexString()
+            utils.parseEther(depositAmount).toHexString()
         );
     }
 
@@ -53,9 +54,10 @@ export class DepositTx implements ITx{
      * @param wallet - ethereumjs instance of wallet.
      * @return - transaction signature.
      */
-    public async sign(wallet: Wallet): Promise<string> {
+    public async sign(wallet: Wallet, nonce = 0): Promise<string> {
         const txData = {
             ...this,
+            nonce,
             gasLimit: DEPOSIT_TX_GAS,
         };
         return wallet.sign(txData);
