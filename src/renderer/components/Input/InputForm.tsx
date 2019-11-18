@@ -8,6 +8,7 @@ export interface IInputFormProps {
     placeholder?: string;
     onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
     focused?: boolean;
+    readOnly?: boolean;
     inputId?: string;
 }
 
@@ -29,6 +30,7 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
                 autoFocus={props.focused}
                 placeholder={props.placeholder}
                 value={props.inputValue}
+                readOnly={props.readOnly}
                 className={`inputform ${classNamesValid(props.valid)}`} 
                 onChange={props.onChange} />
             <div 

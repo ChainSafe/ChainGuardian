@@ -9,7 +9,8 @@ const steps = [
     {stepId: 2, stepName: "Withdrawal key"},
     {stepId: 3, stepName: "Password"},
     {stepId: 4, stepName: "Configure"},
-    {stepId: 5, stepName: "Consent"}
+    {stepId: 5, stepName: "Deposit"},
+    {stepId: 6, stepName: "Consent"}
 ];
 
 export default class OnboardContainer extends Component<{history: any}, {}> {

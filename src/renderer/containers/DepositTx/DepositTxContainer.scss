@@ -1,0 +1,17 @@
+.deposit-details-container{
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+}
+
+.deposit-action-buttons{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin: 40px 0 0 0;
+
+    .btn-primary{
+        margin-left: 32px;
+    }
+}
