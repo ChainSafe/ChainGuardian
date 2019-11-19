@@ -8,11 +8,13 @@
 @import '../components/StepNavigation/stepnavigation.scss';
 @import '../components/TabNavigation/tabnavigation.scss';
 @import '../components/KeyModalContent/KeyModalContent.scss';
+@import '../components/Dropdown/dropdown.scss';
 
 @import '../containers/Onboard/index';
 @import '../components/CopyField/copyfield.scss';
 @import '../components/Notification/notification.scss';
 @import '../components/VerifyMnemonic/VerifyMnemonic.scss';
+@import '../components/Loading/loading.scss';
 
 @import '../containers/Onboard/OnboardContainer.scss';
 @import '../containers/Login/LoginContainer.scss';

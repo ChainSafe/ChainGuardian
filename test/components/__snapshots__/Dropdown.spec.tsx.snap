@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dropdown renders correctly 1`] = `
+<div
+  className="dropdown-screen"
+  onClick={[Function]}
+>
+  <div
+    className="dropdown-container"
+  >
+    <div
+      className="dropdown-selected"
+      onClick={[Function]}
+    >
+      All networks
+    </div>
+    <div
+      className="dropdown-items"
+    >
+      <div
+        className="dropdown-item 
+                        none
+                        selected"
+        onClick={[Function]}
+      >
+        All networks
+      </div>
+      <div
+        className="dropdown-item 
+                        none
+                        "
+        onClick={[Function]}
+      >
+        Mainnet
+      </div>
+      <div
+        className="dropdown-item 
+                        none
+                        "
+        onClick={[Function]}
+      >
+        Testnet
+      </div>
+      <div
+        className="dropdown-item 
+                        none
+                        "
+        onClick={[Function]}
+      >
+        Networkname #1
+      </div>
+    </div>
+  </div>
+</div>
+`;
