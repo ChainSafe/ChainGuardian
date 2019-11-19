@@ -1,5 +1,5 @@
 import {CustomHelpers, ErrorReport} from "@hapi/joi";
-import {isPrivateKeyLength, isPublicKeyLength} from "../../../../src/renderer/services/validation/key";
+import {privateKeyLength, publicKeyLength} from "../../../../src/renderer/services/validation/key";
 
 const VALID_PUBLIC_KEY =
     "92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff4990daa18";
@@ -11,7 +11,7 @@ const INVALID_KEY =
 describe("Joi custom key validation functions unit tests.", () => {
 
     it("should success valid public key", async () => {
-        const result = isPublicKeyLength(
+        const result = publicKeyLength(
             VALID_PUBLIC_KEY,
             {} as CustomHelpers
         );
@@ -19,7 +19,7 @@ describe("Joi custom key validation functions unit tests.", () => {
     });
 
     it("should fail public key length invalid", async () => {
-        isPublicKeyLength(
+        publicKeyLength(
             INVALID_KEY,
             {
                 error: (code) => {
@@ -31,7 +31,7 @@ describe("Joi custom key validation functions unit tests.", () => {
     });
 
     it("should success valid private key", async () => {
-        const result = isPrivateKeyLength(
+        const result = privateKeyLength(
             VALID_PRIVATE_KEY,
             {} as CustomHelpers
         );
@@ -39,7 +39,7 @@ describe("Joi custom key validation functions unit tests.", () => {
     });
 
     it("should fail private key length invalid", async () => {
-        isPrivateKeyLength(
+        privateKeyLength(
             INVALID_KEY,
             {
                 error: (code) => {

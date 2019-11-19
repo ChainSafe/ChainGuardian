@@ -1,4 +1,4 @@
-import {isValidMnemonic} from "../../../../src/renderer/services/validation/mnemonic";
+import {validMnemonic} from "../../../../src/renderer/services/validation/mnemonic";
 import {CustomHelpers, ErrorReport} from "@hapi/joi";
 
 const VALID_MNEMONIC =
@@ -9,7 +9,7 @@ const INVALID_MNEMONIC =
 describe("Joi custom mnemonic validation function unit tests.", () => {
 
     it("should success valid mnemonic", async () => {
-        const result = isValidMnemonic(
+        const result = validMnemonic(
             VALID_MNEMONIC,
             {} as CustomHelpers
         );
@@ -18,7 +18,7 @@ describe("Joi custom mnemonic validation function unit tests.", () => {
 
 
     it("should fail because mnemonic invalid", async () => {
-        isValidMnemonic(
+        validMnemonic(
             INVALID_MNEMONIC,
             {
                 error: (code) => {

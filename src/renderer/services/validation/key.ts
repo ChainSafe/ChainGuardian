@@ -6,14 +6,14 @@ export const SECRET_KEY_LENGTH = 32;
 /**
  * Custom Joi validation that checks if length of provided key is valid for private key.
  */
-export function isPrivateKeyLength(value: string, helpers: CustomHelpers): string | ErrorReport {
+export function privateKeyLength(value: string, helpers: CustomHelpers): string | ErrorReport {
     return isValidKeyLength(value, "private") ? value : helpers.error("key.invalid");
 }
 
 /**
  * Custom Joi validation that checks if length of provided key is valid for public key.
  */
-export function isPublicKeyLength(value: string, helpers: CustomHelpers): string | ErrorReport {
+export function publicKeyLength(value: string, helpers: CustomHelpers): string | ErrorReport {
     return isValidKeyLength(value, "public") ? value : helpers.error("key.invalid");
 }
 

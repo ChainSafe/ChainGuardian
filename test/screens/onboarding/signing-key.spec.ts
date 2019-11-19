@@ -4,7 +4,7 @@ import {expect} from "chai";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 import {IMPORT_SIGNING_KEY_PLACEHOLDER} from "../../../src/renderer/constants/strings";
 import {
-    KEY_WRONG_CHARACTERS_MESSAGE,
+    PRIVATE_KEY_WRONG_CHARACTERS_MESSAGE,
     MNEMONIC_INVALID_MESSAGE,
     PRIVATE_KEY_WRONG_LENGTH_MESSAGE
 } from "../../../src/renderer/containers/Onboard/SigningKey/Import/validation";
@@ -52,7 +52,7 @@ describe("Onboarding signing key import screen", () => {
         // Invalid charactes in key
         await client.setValue(".inputform", "0xasdf*=");
         errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal(KEY_WRONG_CHARACTERS_MESSAGE);
+        expect(errorMessage).to.be.equal(PRIVATE_KEY_WRONG_CHARACTERS_MESSAGE);
     });
 
 

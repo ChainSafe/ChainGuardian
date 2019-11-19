@@ -4,7 +4,7 @@ import {expect} from "chai";
 import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 import {IMPORT_WITHDRAWAL_KEY_PLACEHOLDER} from "../../../src/renderer/constants/strings";
 import {
-    KEY_START_WITH_PREFIX_MESSAGE, KEY_WRONG_CHARACTERS_MESSAGE,
+    PUBLIC_KEY_START_WITH_PREFIX_MESSAGE, PUBLIC_KEY_WRONG_CHARACTERS_MESSAGE,
     PUBLIC_KEY_WRONG_LENGTH_MESSAGE
 } from "../../../src/renderer/containers/Onboard/WithdrawalKey/validation";
 
@@ -41,7 +41,7 @@ describe("Onboarding withdrawal key import screen", () => {
         // Invalid key
         await client.setValue(".inputform", "test");
         let errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal(KEY_START_WITH_PREFIX_MESSAGE);
+        expect(errorMessage).to.be.equal(PUBLIC_KEY_START_WITH_PREFIX_MESSAGE);
 
         // Invalid key length
         await client.setValue(".inputform", "0xadfa");
@@ -51,7 +51,7 @@ describe("Onboarding withdrawal key import screen", () => {
         // Invalid charactes in key
         await client.setValue(".inputform", "0xasdf*=");
         errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal(KEY_WRONG_CHARACTERS_MESSAGE);
+        expect(errorMessage).to.be.equal(PUBLIC_KEY_WRONG_CHARACTERS_MESSAGE);
     });
 
 
