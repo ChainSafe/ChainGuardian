@@ -1,14 +1,17 @@
 import React, {useState, ReactElement, useEffect} from "react";
 import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
-import {isValidMnemonicOrPrivateKey, isValidPublicKey} from "../../services/utils/input-utils";
+import * as Joi from "@hapi/joi";
+import {trimHex} from "../../services/validation/trim-hex";
+import {ValidationResult} from "@hapi/joi";
+
 
 interface IKeyModalProps {
     title: string,
     description?: string,
     onSubmit: (input: string) => void,
     placeholder: string,
-    signing: boolean
+    validate?: (input: string) => ValidationResult
 }
 
 export default function KeyModalContent(props: IKeyModalProps): ReactElement {
@@ -26,11 +29,13 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
             return;
         }
 
-        const {isValid, message} = props.signing ? isValidMnemonicOrPrivateKey(input) : isValidPublicKey(input);
+        // default fallback validation => hex string
+        const validationResult = (props.validate) ?
+            props.validate(input) : Joi.string().custom(trimHex).hex().validate(input);
+        const isValid = (!validationResult.error);
         setvalid(isValid);
-
-        if(!isValid){
-            setErrorMessage(message);
+        if (!isValid) {
+            setErrorMessage(validationResult.error.message);
         }
     };
 

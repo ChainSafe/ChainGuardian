@@ -9,7 +9,6 @@ describe("KeyModalContent", () => {
                 title="Test" 
                 onSubmit={(): void => { }}
                 placeholder="Test placeholder"
-                signing={true}
             ></KeyModalContent>)
             .toJSON();
         expect(tree).toMatchSnapshot();
@@ -22,7 +21,6 @@ describe("KeyModalContent", () => {
                     onSubmit={(): void => { }}
                     description="Test description"
                     placeholder="Test placeholder"
-                    signing={false}
                 />
             )
             .toJSON();

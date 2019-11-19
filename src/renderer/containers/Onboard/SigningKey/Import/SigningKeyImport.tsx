@@ -3,6 +3,9 @@ import KeyModalContent from "../../../../components/KeyModalContent/KeyModalCont
 import {Routes, OnBoardingRoutes} from "../../../../constants/routes";
 import {IMPORT_SIGNING_KEY_TITLE, IMPORT_SIGNING_KEY_PLACEHOLDER} from "../../../../constants/strings";
 import {History} from "history";
+import {mnemonicSchema, privateKeySchema} from "./validation";
+import {ValidationResult} from "@hapi/joi";
+
 
 export class SigningKeyImport extends Component<{ history: History }, {}> {
     public render(): ReactElement {
@@ -11,7 +14,10 @@ export class SigningKeyImport extends Component<{ history: History }, {}> {
                 title={IMPORT_SIGNING_KEY_TITLE}
                 onSubmit={this.handleSubmit}
                 placeholder={IMPORT_SIGNING_KEY_PLACEHOLDER}
-                signing={true} 
+                validate={(input: string): ValidationResult => {
+                    const schema = input.startsWith("0x") ? privateKeySchema : mnemonicSchema;
+                    return schema.validate(input);
+                }}
             />
         );
     }
