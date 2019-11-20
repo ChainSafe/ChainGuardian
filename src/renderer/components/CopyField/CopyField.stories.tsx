@@ -10,7 +10,7 @@ storiesOf('CopyField', module).add('CopyField', () => {
 }).addDecorator(withKnobs);
 
 storiesOf('CopyField', module).add('MnemonicCopyField', () => {
-    const textValue = text("mnemonic value", "hold solve hurdle seed paper rely fog burden potato portion column brisk trap festival multiply");
+    const textValue = text("mnemonic value", "hold solve hurdle seed paper rely fog burden potato portion column brisk");
 
     return <MnemonicCopyField value={textValue} />
 }).addDecorator(withKnobs);

@@ -8,7 +8,14 @@ module.exports = {
     },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "project": "./tsconfig.json"
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "settings": {
+      "react": {
+          "version": "detect",
+      }
     },
     "plugins": [
         "@typescript-eslint"

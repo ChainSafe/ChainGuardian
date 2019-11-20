@@ -1,4 +1,4 @@
-import {Eth2HDWallet} from "../../src/renderer/services/Eth2HDWallet";
+import {Eth2HDWallet} from "../../src/renderer/services/wallet";
 const entropy = Buffer.from("69248c25e98665aac3fe2fc05ee4a1d3", "hex");
 const expectedMnemonic = "hard caught annual spread green step avocado shine scare warm chronic pond";
 

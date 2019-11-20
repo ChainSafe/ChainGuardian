@@ -1,7 +1,6 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {readdirSync} from "fs";
-import {ICGKeystoreFactory, ICGKeystore} from "../services/interfaces";
-import {Eth1CGKeystoreFactory} from "../services/Eth1CGKeystore";
+import {ICGKeystore, ICGKeystoreFactory, Eth1KeystoreFactory} from "../services/keystore";
 
 export interface IAccount {
     name: string;
@@ -19,7 +18,7 @@ export class CGAccount implements IAccount {
 
     public constructor(
         account: IAccount,
-        keystoreTarget: ICGKeystoreFactory = Eth1CGKeystoreFactory
+        keystoreTarget: ICGKeystoreFactory = Eth1KeystoreFactory
     ) {
         this.name = name;
         // Add / to the end if not provided
@@ -92,19 +91,18 @@ export class CGAccount implements IAccount {
    * throw exception if wrong password (save unlocked keypairs into private field)
    * @param password decryption password of the keystore
    */
-    public unlock(password: string): void {
+    public async unlock(password: string): Promise<void> {
         const keystoreFiles = this.getKeystoreFiles();
 
-        const validators: (Keypair | undefined)[] = keystoreFiles.map(keystore => {
+        const validators: Promise<Keypair | undefined>[] = keystoreFiles.map(async keystore => {
             try {
-                return keystore.decrypt(password);
+                return await keystore.decrypt(password);
             } catch (e) {
                 return undefined;
             }
         });
-
         for (const validatorIdx in validators) {
-            const validator = validators[validatorIdx];
+            const validator = await validators[validatorIdx];
             if (validator !== undefined) {
                 this.validators.push(validator);
             }

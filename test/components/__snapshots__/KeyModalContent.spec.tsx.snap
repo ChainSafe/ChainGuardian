@@ -1,0 +1,92 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`KeyModalContent renders correctly 1`] = `
+Array [
+  <h1>
+    Test
+  </h1>,
+  <div
+    className="key-input-container mt-32"
+  >
+    <form>
+      <div
+        className="label"
+      />
+      <input
+        autoFocus={true}
+        className="inputform "
+        id="inputKey"
+        onChange={[Function]}
+        placeholder="Test placeholder"
+        value=""
+      />
+      <div
+        className="error-message"
+      />
+    </form>
+    <span
+      className="submit-button-container"
+    >
+      <button
+        className="button btn-primary "
+        disabled={true}
+        id="submit"
+        onClick={[Function]}
+      >
+        <div
+          className=""
+        >
+          Submit
+        </div>
+      </button>
+    </span>
+  </div>,
+]
+`;
+
+exports[`KeyModalContent renders description 1`] = `
+Array [
+  <h1>
+    Test
+  </h1>,
+  <p>
+    Test description
+  </p>,
+  <div
+    className="key-input-container "
+  >
+    <form>
+      <div
+        className="label"
+      />
+      <input
+        autoFocus={true}
+        className="inputform "
+        id="inputKey"
+        onChange={[Function]}
+        placeholder="Test placeholder"
+        value=""
+      />
+      <div
+        className="error-message"
+      />
+    </form>
+    <span
+      className="submit-button-container"
+    >
+      <button
+        className="button btn-primary "
+        disabled={true}
+        id="submit"
+        onClick={[Function]}
+      >
+        <div
+          className=""
+        >
+          Submit
+        </div>
+      </button>
+    </span>
+  </div>,
+]
+`;
