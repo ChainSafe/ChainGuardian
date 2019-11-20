@@ -1,13 +1,13 @@
 import {setApp, stopApp, TIMEOUT} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
-import {OnBoardingRoutes, Routes} from "../../../src/renderer/constants/routes";
-import {
-    INVALID_MNEMONIC_MESSAGE,
-    KEY_WRONG_CHARACTERS_MESSAGE,
-    PRIVATE_KEY_WRONG_LENGTH_MESSAGE
-} from "../../../src/renderer/services/utils/input-utils";
+import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
 import {IMPORT_SIGNING_KEY_PLACEHOLDER} from "../../../src/renderer/constants/strings";
+import {
+    PRIVATE_KEY_WRONG_CHARACTERS_MESSAGE,
+    MNEMONIC_INVALID_MESSAGE,
+    PRIVATE_KEY_WRONG_LENGTH_MESSAGE
+} from "../../../src/renderer/containers/Onboard/SigningKey/Import/validation";
 
 jest.setTimeout(TIMEOUT);
 
@@ -42,7 +42,7 @@ describe("Onboarding signing key import screen", () => {
         // Invalid mnemonic
         await client.setValue(".inputform", "test mnemonic");
         let errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal(INVALID_MNEMONIC_MESSAGE);
+        expect(errorMessage).to.be.equal(MNEMONIC_INVALID_MESSAGE);
 
         // Invalid key length
         await client.setValue(".inputform", "0xadfa");
@@ -52,7 +52,7 @@ describe("Onboarding signing key import screen", () => {
         // Invalid charactes in key
         await client.setValue(".inputform", "0xasdf*=");
         errorMessage = await client.getText(".error-message");
-        expect(errorMessage).to.be.equal(KEY_WRONG_CHARACTERS_MESSAGE);
+        expect(errorMessage).to.be.equal(PRIVATE_KEY_WRONG_CHARACTERS_MESSAGE);
     });
 
 

@@ -7,6 +7,8 @@ import {
 } from "../../../constants/strings";
 import {History} from "history";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
+import {publicKeySchema} from "./validation";
+import {ValidationResult} from "@hapi/joi";
 
 export default class WithdrawalKeyImport extends Component<{ history: History }, {}> {
     public render(): ReactElement {
@@ -16,7 +18,9 @@ export default class WithdrawalKeyImport extends Component<{ history: History },
                 description={IMPORT_WITHDRAWAL_KEY_DESCRIPTION}
                 placeholder={IMPORT_WITHDRAWAL_KEY_PLACEHOLDER}
                 onSubmit={this.handleSubmit}
-                signing={false}
+                validate={(input: string): ValidationResult => {
+                    return publicKeySchema.validate(input);
+                }}
             />
         );
     }
