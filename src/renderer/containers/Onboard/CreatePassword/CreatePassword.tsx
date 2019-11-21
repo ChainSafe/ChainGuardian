@@ -17,6 +17,7 @@ export default class CreatePassword extends Component<{ history: History }, {}> 
     };
 
     public handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
+
         this.setState({input: e.currentTarget.value});
     };
 

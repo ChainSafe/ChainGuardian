@@ -1,9 +1,7 @@
 import * as Joi from "@hapi/joi";
 
 // pluralize
-const p = (word: string, num: number): string => num === 1
-    ? word
-    : `${word}s`;
+const p = (word: string, num: number): string => num === 1 ? word : `${word}s`;
 
 const defaultOptions = {
     min: 8,
@@ -25,7 +23,7 @@ export interface IPasswordStrengthOptions {
     numeric: number
 }
 
-module.exports = (options: IPasswordStrengthOptions = defaultOptions): any => {
+export default (options: IPasswordStrengthOptions = defaultOptions): any => {
     const extendWithClosure = Joi.extend({
         type: "passwordComplexity",
         base: Joi.string(),
@@ -117,6 +115,5 @@ module.exports = (options: IPasswordStrengthOptions = defaultOptions): any => {
             };
         },
     });
-
     return extendWithClosure.passwordComplexity();
 };
