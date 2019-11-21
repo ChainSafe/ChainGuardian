@@ -12,7 +12,8 @@
     font-size: 18px;
     color: $neutral-100;
     padding: 16px 16px 16px 16px;
-    margin-right: 24px;
+    //margin-right: 24px;
+    box-sizing: border-box; // Take padding into account
 
     &.success{
         background: $neutral-600 url(../assets/img/input/Success.svg) no-repeat;
