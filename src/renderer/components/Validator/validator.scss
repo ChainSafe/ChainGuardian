@@ -27,11 +27,11 @@
     border-radius: 16px;
     .add-button{
         position: fixed;
-        margin-top: -10px;
+        margin-top: -40px;
         margin-left: 640px;
         // z-index: 99999;
         // float: right;
-        // margin-top: -30px;
+        // margin-top: -40px;
     }
 }
 .node-grid-container{
@@ -39,6 +39,11 @@
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 24px;
     grid-row-gap: 24px;
+}
+.node-card-container{
+    &.none{
+        display: none;
+    }
 }
 .show{
     font-family: "Palanquin Dark", sans-serif;
@@ -50,6 +55,7 @@
     margin-left: 480px;
     width: 144px;
     margin-top: 15px;
+    cursor: pointer;
     &.more{
         background: url(../assets/img/validator/show_more.svg) no-repeat;
         background-position: top 10px right 10px;
@@ -57,6 +63,9 @@
     &.less{
         background: url(../assets/img/validator/show_less.svg) no-repeat;
         background-position: top 10px right 10px;
+    }
+    &.none{
+        display: none;
     }
 }
 .validator-buttons{

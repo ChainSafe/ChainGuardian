@@ -4,22 +4,30 @@ import { withKnobs, text, boolean, number, select, object, array } from '@storyb
 import { Validator } from "./Validator";
 
 storiesOf('Validator', module).add('Validator Component', () => {
-    
-
-    const x = [
-        {
-            id: "ime",
-            url: "nekiurl",
-            respTime: 22
-        },{
-            id: "ime2",
-            url: "nekiurl2",
+    const stats = {
+        roi: 10,
+        balance: 0.1206,
+        uptime: 92.1
+    }    
+    let node = [];
+    const index = number("number of nodes",2);
+    for (let i = 0; i < index; i++) {
+        node.push({
+            id: "BeaconNode",
+            url: "rocketsonic.hr",
             respTime: 21
-        }
-    ]
-    // const textArrayValue = array("text",["Return (ETH)","+10%","ROI"]);
-    // const mainValue = text("value","+10%");
+        })
+    }
+
+    const statsValue = object("stats",stats);
+    const title = text("name","Validator 001");
     return <div >
-            <Validator beaconNodes={x}/>
+            <Validator
+            name={title}
+            onBeaconNodeClick={()=>console.log("")} 
+            onDetailsClick={()=>console.log("")} 
+            onRemoveClick={()=>console.log("")} 
+            stats={statsValue} 
+            beaconNodes={node}/>
         </div>;
 }).addDecorator(withKnobs);
