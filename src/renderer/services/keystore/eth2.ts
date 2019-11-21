@@ -81,9 +81,9 @@ export class Eth2Keystore implements ICGKeystore {
         if (existsSync(file)) {
             try {
                 const data = readFileSync(file);
-                return Keystore.fromJson(JSON.stringify(data));
+                return Keystore.fromJson(data.toString());
             } catch (err) {
-                throw new Error(`${file} could not be parsed`);
+                throw new Error(`${file} could not be parsed: ${err}`);
             }
         }
         throw new Error(`Cannot find file ${file}`);
