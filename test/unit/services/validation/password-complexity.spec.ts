@@ -1,4 +1,4 @@
-import passwordComplexity from "../../../../src/renderer/services/validation/password-strength";
+import passwordComplexity from "../../../../src/renderer/services/validation/password-complexity";
 import {ValidationResult} from "@hapi/joi";
 
 describe("JoiPasswordComplexity", () => {

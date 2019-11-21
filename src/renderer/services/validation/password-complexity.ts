@@ -3,7 +3,7 @@ import * as Joi from "@hapi/joi";
 // pluralize
 const p = (word: string, num: number): string => num === 1 ? word : `${word}s`;
 
-const defaultOptions = {
+const defaultOptions: IPasswordComplexityOptions = {
     min: 8,
     max: 26,
     lowerCase: 1,
@@ -13,7 +13,7 @@ const defaultOptions = {
     requirementCount: 4,
 };
 
-export interface IPasswordStrengthOptions {
+export interface IPasswordComplexityOptions {
     symbol: number
     min: number
     max: number
@@ -23,7 +23,7 @@ export interface IPasswordStrengthOptions {
     numeric: number
 }
 
-export default (options: IPasswordStrengthOptions = defaultOptions): any => {
+export default (options: IPasswordComplexityOptions = defaultOptions): any => {
     const extendWithClosure = Joi.extend({
         type: "passwordComplexity",
         base: Joi.string(),
