@@ -3,16 +3,16 @@ import {Keypair} from "@chainsafe/bls/lib/keypair";
 import fs from "fs";
 import sinon from "sinon";
 import {Eth2Keystore, ICGKeystore} from "../../../src/renderer/services/keystore";
-import {Keystore} from "@nodefactory/bls-keystore";
+import example from "./example.eth2.json";
 
 const privateKey = "0e43429c844ccedd4aff7aaa05fe996f41f9464b360ca03a4349387ba49b3e18";
 const privateKeyStr = `0x${privateKey}`;
 
-const keyStoreFilePath = `${getV3Filename()}.json`;
+const keyStoreFilePath = `${getV4Filename()}.json`;
 const password = "test";
 const newPassword = "newTest";
 
-function getV3Filename(timestamp?: number): string {
+function getV4Filename(timestamp?: number): string {
     const ts = timestamp ? new Date(timestamp) : new Date();
     return ["UTC--", ts.toJSON().replace(/:/g, "-"), "--", "uuid"].join("");
 }
@@ -40,13 +40,9 @@ describe("Eth1ICGKeystore", () => {
             .stub(fs, "readFileSync")
             .withArgs(keyStoreFilePath)
             .returns(
-                Keystore.encrypt(keypair.privateKey.toBytes(), password).toJSON()
+                await JSON.stringify(example)
             );
-        /*
-        const a = Keystore.encrypt(keypair.privateKey.toBytes(), password)
-        const key = a.decrypt(password)
-        expect(key).toEqual(keypair.privateKey.toBytes())
-       */
+
         eth2Keystore = await Eth2Keystore.create(keyStoreFilePath, password, keypair);
         eth2Keystore.decrypt(password);
         expect(writeStub.calledOnce).toEqual(true);
@@ -55,28 +51,28 @@ describe("Eth1ICGKeystore", () => {
     });
 
 
-    // it("should decrypt", async () => {
-    //     const keypair = await eth2Keystore.decrypt(password);
-    //     expect(keypair.privateKey.toHexString()).toEqual(privateKeyStr);
-    // });
-    /*
+    it("should decrypt", async () => {
+        const keypair = await eth2Keystore.decrypt(password);
+        expect(keypair.privateKey.toHexString()).toEqual(privateKeyStr);
+    });
+    
     it("should fail on decrypt with wrong password", async () => {
-        await expect(eth1Keystore.decrypt("wrongPassword"))
+        await expect(eth2Keystore.decrypt("wrongPassword"))
             .rejects
-            .toThrow("invalid password");
+            .toThrow("Invalid password");
     });
 
     it("should get private key with changed password", async () => {
-        await eth1Keystore.changePassword(password, newPassword);
-        const keypair = await eth1Keystore.decrypt(newPassword);
+        await eth2Keystore.changePassword(password, newPassword);
+        const keypair = await eth2Keystore.decrypt(newPassword);
         expect(keypair.privateKey.toHexString()).toEqual(privateKeyStr);
     }, 10000);
 
     it("should fail to encrypt private key with old password", async () => {
-        await eth1Keystore.changePassword(newPassword, password);
-        await expect(eth1Keystore.decrypt("oldPassword"))
+        await eth2Keystore.changePassword(newPassword, password);
+        await expect(eth2Keystore.decrypt("oldPassword"))
             .rejects
-            .toThrow("invalid password");
+            .toThrow("Invalid password");
     }, 10000);
 
     it("should destroy file", () => {
@@ -84,8 +80,7 @@ describe("Eth1ICGKeystore", () => {
             .stub(fs, "unlinkSync")
             .withArgs(keyStoreFilePath)
             .returns();
-        eth1Keystore.destroy();
+        eth2Keystore.destroy();
         expect(unlinkStub.calledOnce).toEqual(true);
     });
-    */
 });

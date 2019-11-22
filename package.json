@@ -40,7 +40,7 @@
     "check-types": "tsc --noEmit",
     "test": "yarn run test:unit && yarn run test:components && yarn run test:e2e && yarn run test:screens",
     "test:unit": "ELECTRON=1 yarn run jest --coverage \"test/unit\"",
-    "test:e2e": "yarn run jest \"test/e2e\"",
+    "test:e2e": "ELECTRON=1 yarn run jest \"test/e2e\"",
     "test:components": "yarn run jest --ci \"test/components\"",
     "test:screens": "yarn run jest \"test/screens\" --runInBand",
     "jest": "jest --verbose --colors",

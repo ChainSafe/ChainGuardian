@@ -1,12 +1,12 @@
-import {ICGKeystore} from "./interface";
+import {ICGKeystore, ICGKeystoreFactory} from "./interface";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {existsSync, readFileSync, unlinkSync, writeFileSync} from "fs";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {Keystore, IKeystore} from "@nodefactory/bls-keystore";
 
+const KEY_PATH = "m/12381/60/0/0";
 export class Eth2Keystore implements ICGKeystore {
     private keystore: IKeystore;
-
     private readonly file: string;
 
     public constructor(file: string) {
@@ -23,7 +23,7 @@ export class Eth2Keystore implements ICGKeystore {
      */
     public static async create(file: string, password: string, keypair: Keypair): Promise<ICGKeystore> {
         try {
-            const keystore = Keystore.encrypt(keypair.privateKey.toBytes(), password, "m/12381/60/0/0");
+            const keystore = Keystore.encrypt(keypair.privateKey.toBytes(), password, KEY_PATH);
             writeFileSync(file, keystore.toJSON());
             return new Eth2Keystore(file);
         } catch (err) {
@@ -59,7 +59,7 @@ export class Eth2Keystore implements ICGKeystore {
     }
 
     public getAddress(): string {
-        return "mock address";
+        return this.keystore.pubkey.toString();
     }
 
     /**
@@ -90,3 +90,4 @@ export class Eth2Keystore implements ICGKeystore {
     }
 }
 
+export const EthKeystoreFactory: ICGKeystoreFactory = Eth2Keystore;
