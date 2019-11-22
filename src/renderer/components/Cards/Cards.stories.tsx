@@ -19,6 +19,6 @@ storiesOf('Validator', module).add('Node Card', () => {
     const numberValue = number("number value", 250);
     // const mainValue = text("value","+10%");
     return <div >
-            <NodeCard value={numberValue} textArray={textArrayValue}/>
+            <NodeCard onClick={()=>{console.log("")}} value={numberValue} textArray={textArrayValue}/>
         </div>;
 }).addDecorator(withKnobs);

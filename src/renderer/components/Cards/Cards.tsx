@@ -1,8 +1,9 @@
 import * as React from "react";
+import BN = require("bn.js");
 
 export interface ICardProps {
     textArray: Array<string>;
-    value: number;
+    value: BN | number;
     
 }
 export interface INodeCardProps extends ICardProps{

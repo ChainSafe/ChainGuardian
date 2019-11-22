@@ -1,0 +1,321 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Validator renders correctly, 2 nodes 1`] = `
+<div
+  className="validator-container"
+>
+  <div
+    className="validator-stats"
+  >
+    <h2>
+      Test title
+    </h2>
+    <div
+      className="validator-stats-container"
+    >
+      <div
+        className="validator-card-container"
+      >
+        <h5>
+          Return (ETH)
+        </h5>
+        <h1
+          className="plus"
+        >
+          +
+          10
+          %
+        </h1>
+        <h5
+          className="plus"
+        >
+          ROI
+        </h5>
+      </div>
+      <div
+        className="validator-card-container"
+      >
+        <h5>
+          Balance
+        </h5>
+        <h1>
+          .1206
+        </h1>
+        <h5>
+          ETH
+        </h5>
+      </div>
+      <div
+        className="validator-card-container"
+      >
+        <h5>
+          Uptime
+        </h5>
+        <h1>
+          92.1
+        </h1>
+        <h5>
+          DAYS
+        </h5>
+      </div>
+    </div>
+  </div>
+  <div
+    className="validator-nodes"
+  >
+    <div
+      className="node-container"
+    >
+      <div
+        className="node-grid-container"
+      >
+        <div
+          className="node-card-container"
+          onClick={[Function]}
+        >
+          <h2>
+            BeaconNode1
+          </h2>
+          <span
+            className="node-text"
+          >
+            rocketsonic1.hr
+          </span>
+          <h2>
+            21
+            ms
+          </h2>
+          <span
+            className="node-text time"
+          >
+            Average Response Time
+          </span>
+        </div>
+        <div
+          className="node-card-container"
+          onClick={[Function]}
+        >
+          <h2>
+            BeaconNode2
+          </h2>
+          <span
+            className="node-text"
+          >
+            rocketsonic2.hr
+          </span>
+          <h2>
+            22
+            ms
+          </h2>
+          <span
+            className="node-text time"
+          >
+            Average Response Time
+          </span>
+        </div>
+      </div>
+      <button
+        className="add-button"
+        onClick={[Function]}
+      >
+        <img
+          className="icon"
+          src="test-file-stub"
+        />
+      </button>
+      <div
+        className="show 
+                            none
+                            more"
+        onClick={[Function]}
+      >
+        Show More
+      </div>
+    </div>
+    <div
+      className="validator-buttons"
+    >
+      <button
+        className="button btn-destructive "
+        onClick={[Function]}
+      >
+        <div
+          className=""
+        >
+          REMOVE
+        </div>
+      </button>
+      <button
+        className="button btn-primary "
+        onClick={[Function]}
+      >
+        <div
+          className=""
+        >
+          DETAILS
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Validator renders correctly, 4 nodes 1`] = `
+<div
+  className="validator-container"
+>
+  <div
+    className="validator-stats"
+  >
+    <h2>
+      Test title
+    </h2>
+    <div
+      className="validator-stats-container"
+    >
+      <div
+        className="validator-card-container"
+      >
+        <h5>
+          Return (ETH)
+        </h5>
+        <h1
+          className="plus"
+        >
+          +
+          10
+          %
+        </h1>
+        <h5
+          className="plus"
+        >
+          ROI
+        </h5>
+      </div>
+      <div
+        className="validator-card-container"
+      >
+        <h5>
+          Balance
+        </h5>
+        <h1>
+          .1206
+        </h1>
+        <h5>
+          ETH
+        </h5>
+      </div>
+      <div
+        className="validator-card-container"
+      >
+        <h5>
+          Uptime
+        </h5>
+        <h1>
+          92.1
+        </h1>
+        <h5>
+          DAYS
+        </h5>
+      </div>
+    </div>
+  </div>
+  <div
+    className="validator-nodes"
+  >
+    <div
+      className="node-container"
+    >
+      <div
+        className="node-grid-container"
+      >
+        <div
+          className="node-card-container"
+          onClick={[Function]}
+        >
+          <h2>
+            BeaconNode1
+          </h2>
+          <span
+            className="node-text"
+          >
+            rocketsonic1.hr
+          </span>
+          <h2>
+            21
+            ms
+          </h2>
+          <span
+            className="node-text time"
+          >
+            Average Response Time
+          </span>
+        </div>
+        <div
+          className="node-card-container"
+          onClick={[Function]}
+        >
+          <h2>
+            BeaconNode2
+          </h2>
+          <span
+            className="node-text"
+          >
+            rocketsonic2.hr
+          </span>
+          <h2>
+            22
+            ms
+          </h2>
+          <span
+            className="node-text time"
+          >
+            Average Response Time
+          </span>
+        </div>
+      </div>
+      <button
+        className="add-button"
+        onClick={[Function]}
+      >
+        <img
+          className="icon"
+          src="test-file-stub"
+        />
+      </button>
+      <div
+        className="show 
+                            
+                            more"
+        onClick={[Function]}
+      >
+        Show More
+      </div>
+    </div>
+    <div
+      className="validator-buttons"
+    >
+      <button
+        className="button btn-destructive "
+        onClick={[Function]}
+      >
+        <div
+          className=""
+        >
+          REMOVE
+        </div>
+      </button>
+      <button
+        className="button btn-primary "
+        onClick={[Function]}
+      >
+        <div
+          className=""
+        >
+          DETAILS
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;

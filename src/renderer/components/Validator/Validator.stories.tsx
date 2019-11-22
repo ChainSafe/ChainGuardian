@@ -27,6 +27,7 @@ storiesOf('Validator', module).add('Validator Component', () => {
             onBeaconNodeClick={()=>console.log("")} 
             onDetailsClick={()=>console.log("")} 
             onRemoveClick={()=>console.log("")} 
+            onAddNodeClick={()=>console.log("")}
             stats={statsValue} 
             beaconNodes={node}/>
         </div>;

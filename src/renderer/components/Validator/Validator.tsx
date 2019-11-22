@@ -3,12 +3,13 @@ import {ButtonPrimary, ButtonDestructive} from "../Button/ButtonStandard";
 import {AddButton} from "../Button/ButtonAction";
 import {ValidatorCard, NodeCard} from "../Cards/Cards";
 import {useState} from "react";
+import BN = require("bn.js");
 
 export interface IValidatorProps {
     name: string,
     stats: {
         roi: number,
-        balance: number,
+        balance: BN,
         uptime: number
     };
     beaconNodes: {
