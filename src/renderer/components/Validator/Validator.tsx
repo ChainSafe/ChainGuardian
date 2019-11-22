@@ -9,7 +9,7 @@ export interface IValidatorProps {
     name: string,
     stats: {
         roi: number,
-        balance: BN,
+        balance: BN | number,
         uptime: number
     };
     beaconNodes: {
