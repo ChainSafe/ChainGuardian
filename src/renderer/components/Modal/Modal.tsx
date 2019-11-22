@@ -13,7 +13,7 @@ export const Modal: React.FunctionComponent<React.PropsWithChildren<IModalProps>
         <div className="modal">
             {props.hasBack && <div className="backtab-position">
                 <BackTab onClick={props.onBack} />
-                </div>}
+            </div>}
             <div className="modal-content">
                 {props.topBar ? props.topBar : <DefaultTopBar />}
                 <div className="modal-children">
