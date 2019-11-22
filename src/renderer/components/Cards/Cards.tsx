@@ -1,5 +1,5 @@
 import * as React from "react";
-import BN = require("bn.js");
+import BN from "bn.js";
 
 export interface ICardProps {
     textArray: Array<string>;

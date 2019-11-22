@@ -3,7 +3,7 @@ import {ButtonPrimary, ButtonDestructive} from "../Button/ButtonStandard";
 import {AddButton} from "../Button/ButtonAction";
 import {ValidatorCard, NodeCard} from "../Cards/Cards";
 import {useState} from "react";
-import BN = require("bn.js");
+import BN from "bn.js";
 
 export interface IValidatorProps {
     name: string,
