@@ -1198,10 +1198,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nodefactory/bls-keystore@^1.0.0-beta6":
-  version "1.0.0-beta6"
-  resolved "https://registry.yarnpkg.com/@nodefactory/bls-keystore/-/bls-keystore-1.0.0-beta6.tgz#a03d5c33f08f18ed2ade55b72ea6a185a4d8660b"
-  integrity sha512-+dc8Fv27ZVraXS/Lo0SCidXSs0PUDc0QycbnqheRN49b6rwlPQBXNkndAfJtFKlTBMpg/K0dB3CuncJo1RyELw==
+"@nodefactory/bls-keystore@^1.0.0-beta7":
+  version "1.0.0-beta7"
+  resolved "https://registry.yarnpkg.com/@nodefactory/bls-keystore/-/bls-keystore-1.0.0-beta7.tgz#aaa7c0c1f927563f4b005547659792225278e890"
+  integrity sha512-P9luXKHNM+a0GcqIbW7UYzlSBENhBZonlU6gWIiThjNl9CKOfITJCfab+Bl1IDkwbFwR9Atp+mgz73IXQY4k4w==
   dependencies:
     "@chainsafe/bls" "^0.1.7"
     bcrypto "^4.2.8"
@@ -3189,16 +3189,6 @@ bcrypto@^4.2.8:
   version "4.2.8"
   resolved "https://registry.yarnpkg.com/bcrypto/-/bcrypto-4.2.8.tgz#b51858d37a06e064bc1b0742633b394bd16298fc"
   integrity sha512-qdmKQR5ykyWwyJepW7JOvveuRKTmFmJUG6Vjn0hGMcEk+4+nj7UVV1K9/JMd59Y+bA+BMb8nY5mrMXnakwH8Uw==
-  dependencies:
-    bsert "~0.0.10"
-    bufio "~1.0.6"
-    loady "~0.0.1"
-    nan "^2.13.2"
-
-bcrypto@^4.2.9:
-  version "4.2.9"
-  resolved "https://registry.yarnpkg.com/bcrypto/-/bcrypto-4.2.9.tgz#d57794196c1c230d20bb12319387f733452a6a53"
-  integrity sha512-upd5xGkB3REZwOOM2wGgUrc29HFQcm+mbXYLN8fKI2GcnWiCXmDU7f0wzr/ye2o1t0smhX3ddSzAqXIYEXehIw==
   dependencies:
     bsert "~0.0.10"
     bufio "~1.0.6"
