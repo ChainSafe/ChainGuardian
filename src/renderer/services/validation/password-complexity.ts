@@ -1,9 +1,10 @@
 import * as Joi from "@hapi/joi";
+import {StringSchema} from "@hapi/joi";
 
 // pluralize
 const p = (word: string, num: number): string => num === 1 ? word : `${word}s`;
 
-const defaultOptions: IPasswordComplexityOptions = {
+export const defaultOptions: IPasswordComplexityOptions = {
     min: 8,
     max: 26,
     lowerCase: 1,
@@ -23,37 +24,37 @@ export interface IPasswordComplexityOptions {
     numeric: number
 }
 
-export default (options: IPasswordComplexityOptions = defaultOptions): any => {
+export default (options: IPasswordComplexityOptions = defaultOptions): StringSchema => {
     const extendWithClosure = Joi.extend({
         type: "passwordComplexity",
         base: Joi.string(),
         messages: {
-            "passwordComplexity.tooShort":
-                `"{{#label}}" should be at least ${
+            "passwordComplexity.length.tooShort":
+                `have at least ${
                     options.min
-                } ${p("character", options.min)} long`,
-            "passwordComplexity.tooLong":
-                `"{{#label}}" should not be longer than ${
+                } ${p("character", options.min)}`,
+            "passwordComplexity.length.tooLong":
+                `not be longer than ${
                     options.max
                 } ${p("character", options.max)}`,
             "passwordComplexity.lowercase":
-                `"{{#label}}" should contain at least ${
+                `${
                     options.lowerCase
                 } lowercased ${p("letter", options.lowerCase)}`,
             "passwordComplexity.uppercase":
-                `"{{#label}}" should contain at least ${
+                `${
                     options.upperCase
                 } uppercased ${p("letter", options.upperCase)}`,
             "passwordComplexity.numeric":
-                `"{{#label}}" should contain at least ${
+                `${
                     options.numeric
                 } ${p("number", options.numeric)}`,
             "passwordComplexity.symbol":
-                `"{{#label}}" should contain at least ${
+                `${
                     options.symbol
                 } ${p("symbol", options.symbol)}`,
             "passwordComplexity.requirementCount":
-                `"{{#label}}" must meet at least ${
+                `must meet at least ${
                     options.requirementCount
                 } of the complexity requirements`
         },
@@ -86,8 +87,8 @@ export default (options: IPasswordComplexityOptions = defaultOptions): any => {
 
                 const requirementErrors = [];
 
-                if (!meetsMin) errors.push(helpers.error("passwordComplexity.tooShort", {value}));
-                if (!meetsMax) errors.push(helpers.error("passwordComplexity.tooLong", {value}));
+                if (!meetsMin) errors.push(helpers.error("passwordComplexity.length.tooShort", {value}));
+                if (!meetsMax) errors.push(helpers.error("passwordComplexity.length.tooLong", {value}));
                 if (!meetsLowercase) {
                     requirementErrors.push(helpers.error("passwordComplexity.lowercase", {value}));
                 }

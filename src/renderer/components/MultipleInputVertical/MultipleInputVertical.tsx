@@ -27,7 +27,11 @@ export const MultipleInputVertical: React.FunctionComponent<IMultipleFormProps> 
                         value={p.inputValue}
                         className={`inputform inputform-vertical ${classNamesValid(p.valid)}`}
                         onChange={p.onChange}
+                        type={"password"}
                     />
+                    <div
+                        className={"error-message error-message-wide"}>
+                        {p.valid === false && p.errorMessage}</div>
                 </div>;
             })}
         </form>
