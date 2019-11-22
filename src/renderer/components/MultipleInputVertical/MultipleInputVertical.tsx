@@ -30,7 +30,7 @@ export const MultipleInputVertical: React.FunctionComponent<IMultipleFormProps> 
                         type={"password"}
                     />
                     <div
-                        className={"error-message error-message-wide"}>
+                        className={"error-message error-message-wide"} id={`${p.inputId}-error`}>
                         {p.valid === false && p.errorMessage}</div>
                 </div>;
             })}

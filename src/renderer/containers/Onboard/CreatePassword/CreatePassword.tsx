@@ -15,7 +15,7 @@ interface IState {
     confirmed?: boolean;
 }
 
-const separator = " and ";
+const SEPARATOR = "and";
 
 export default class CreatePassword extends Component<{ history: History }, {}> {
     public state: IState = {
@@ -40,8 +40,8 @@ export default class CreatePassword extends Component<{ history: History }, {}> 
                 partition(validation.error.details,arg => arg.type.includes("length"));
             this.setState({validationMessage:
                     "Password must " +
-                    `${baseError.length > 0 ? `${baseError[0].message} ${separator} ` : ""}`+
-                    `contain at least ${complexityErrors.map(v => v.message).join(` ${separator} `)}`
+                    `${baseError.length > 0 ? `${baseError[0].message} ${SEPARATOR} ` : ""}`+
+                    `contain at least ${complexityErrors.map(v => v.message).join(` ${SEPARATOR} `)}`
             });
         }
         if (this.state.confirmed !== undefined) {

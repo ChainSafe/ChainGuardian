@@ -2,7 +2,6 @@ import {setApp, stopApp, TIMEOUT} from "../setup";
 import {Application} from "spectron";
 import {expect} from "chai";
 import {OnBoardingRoutes, Routes} from "../../../src/renderer/constants/routes";
-import {IMPORT_SIGNING_KEY_PLACEHOLDER} from "../../../src/renderer/constants/strings";
 
 jest.setTimeout(TIMEOUT);
 
@@ -31,59 +30,65 @@ describe("Onboarding password setup screen", () => {
         expect(currentStep.length).to.be.equal(3);
     });
 
-    // it("should fail invalid inputs", async () => {
-    //     const {client} = app;
-    //
-    //     // Invalid mnemonic
-    //     await client.setValue(".inputform", "test mnemonic");
-    //     let errorMessage = await client.getText(".error-message");
-    //     expect(errorMessage).to.be.equal(INVALID_MNEMONIC_MESSAGE);
-    //
-    //     // Invalid key length
-    //     await client.setValue(".inputform", "0xadfa");
-    //     errorMessage = await client.getText(".error-message");
-    //     expect(errorMessage).to.be.equal(PRIVATE_KEY_WRONG_LENGTH_MESSAGE);
-    //
-    //     // Invalid charactes in key
-    //     await client.setValue(".inputform", "0xasdf*=");
-    //     errorMessage = await client.getText(".error-message");
-    //     expect(errorMessage).to.be.equal(KEY_WRONG_CHARACTERS_MESSAGE);
-    // });
-    //
-    //
-    // it("should work valid inputs", async () => {
-    //     const {client} = app;
-    //
-    //     // Valid key
-    //     await client.setValue(".inputform", privateKeyStr);
-    //     let errorMessage = await client.getText(".error-message");
-    //     expect(errorMessage).to.be.equal("");
-    //
-    //     // Valid mnemonic
-    //     await client.setValue(".inputform", mnemonic);
-    //     errorMessage = await client.getText(".error-message");
-    //     expect(errorMessage).to.be.equal("");
-    // });
-    //
-    // it("should not submit if error message exists", async () => {
-    //     const {client} = app;
-    //
-    //     // User enter invalid mnemonic
-    //     await client.setValue(".inputform", "test mnemonic");
-    //
-    //     const preClickUrl = await client.getUrl();
-    //     await client.waitForVisible("#submit");
-    //     await client.$("#submit").click();
-    //     let postClickUrl = await client.getUrl();
-    //     expect(preClickUrl).to.be.equal(postClickUrl);
-    //
-    //     // Useer enter valid mnemonic
-    //     await client.setValue(".inputform", mnemonic);
-    //     await client.$("#submit").click();
-    //     postClickUrl = await client.getUrl();
-    //     expect(postClickUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
-    //         OnBoardingRoutes.WITHDRAWAL_IMPORT
-    //     ))).to.be.true;
-    // });
+    it("should fail invalid inputs", async () => {
+        const {client} = app;
+
+        // password too short and invalid
+        await client.setValue("#inputPassword", "pass");
+        let errorMessage = await client.getText("#inputPassword-error");
+        expect(errorMessage).to.be.equal(
+            // eslint-disable-next-line max-len
+            "Password must have at least 8 characters and contain at least 1 uppercased letter and 1 number and 1 symbol"
+        );
+
+        // next button disabled
+        expect(await client.getAttribute("#next", "disabled")).to.be.eq("true");
+
+        // password invalid
+        await client.setValue("#inputPassword", "password");
+        errorMessage = await client.getText("#inputPassword-error");
+        expect(errorMessage).to.be.equal(
+            // eslint-disable-next-line max-len
+            "Password must contain at least 1 uppercased letter and 1 number and 1 symbol"
+        );
+
+        // next button disabled
+        expect(await client.getAttribute("#next", "disabled")).to.be.eq("true");
+
+        // confirm password doesn't match
+        await client.setValue("#confirmPassword", "pass");
+        errorMessage = await client.getText("#confirmPassword-error");
+        expect(errorMessage).to.be.equal(
+            // eslint-disable-next-line max-len
+            "That password doesn't match. Try again?"
+        );
+
+        // next button disabled
+        expect(await client.getAttribute("#next", "disabled")).to.be.eq("true");
+    });
+
+
+    it("should work valid inputs", async () => {
+        const {client} = app;
+
+        // next button disabled
+        expect(await client.getAttribute("#next", "disabled")).to.be.eq("true");
+
+        // valid password
+        await client.setValue("#inputPassword", "Passw0rd!");
+        let errorMessage = await client.getText("#inputPassword-error");
+        expect(errorMessage).to.be.equal("");
+
+        // next button disabled
+        expect(await client.getAttribute("#next", "disabled")).to.be.eq("true");
+
+        // valid confirmation password
+        await client.setValue("#confirmPassword", "Passw0rd!");
+        errorMessage = await client.getText("#confirmPassword-error");
+        expect(errorMessage).to.be.equal("");
+
+        // next button enabled
+        expect(await client.getAttribute("#next", "disabled")).to.be.eq(null);
+    });
 
 });
