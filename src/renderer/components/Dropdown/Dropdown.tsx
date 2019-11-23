@@ -23,7 +23,7 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdo
     
     return(
         <div>
-            {props.label && <div className="label">{props.label}</div>}
+            {props.label && <h3>{props.label}</h3>}
             <div onClick={(): void=> hide()} className="dropdown-screen">
                 <div className="dropdown-container">
                     <div onClick={(): void=> showHide()} className="dropdown-selected">

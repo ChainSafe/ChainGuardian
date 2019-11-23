@@ -18,10 +18,10 @@ export const CopyField: React.FunctionComponent<ICopyFieldProps> = (
 
     return(
         <>
-            <div className="label">{props.label}</div>
+            <h3 className="copy-field-label">{props.label}</h3>
             <div className="copy-field">
-                <div className="copy-field-body">{props.value}</div>
                 <CopyButton onClick={copyToClipboard}/>
+                <div className="copy-field-body">{props.value}</div>
             </div>
         </>
     );
