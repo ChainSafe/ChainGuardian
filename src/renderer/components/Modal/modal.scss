@@ -1,3 +1,14 @@
+.modal-container{
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .modal{
     background: $neutral-700 no-repeat;
     background-position: top;
@@ -5,10 +16,7 @@
     box-shadow: 0px 2px 56px rgba(0, 0, 0, 0.3);
     border-radius: 0 0 24px 24px;
     display: flex;
-    //border-top: $neutral-600 solid  8px;
-    // align-self: center center;
     justify-content: flex-start;
-
     .modal-content{
         display: flex;
         flex-direction: column;
@@ -31,7 +39,6 @@
     align-self: center;
     margin-left: -56px;
 }
-
 .top-bar{
     height: 8px;
     width: 100%;
