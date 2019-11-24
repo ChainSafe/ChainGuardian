@@ -7,7 +7,7 @@ import {generateDeposit, DepositTx} from "../../../services/deposit";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {config as mainnetBeaconConfig} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {config as minimalBeaconConfig} from "@chainsafe/eth2.0-config/lib/presets/minimal";
-import { IBeaconConfig } from "@chainsafe/eth2.0-config";
+import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 
 const depositContracts = [
     {networkName: "Mainnet", address: "0x00000000000001", beaconConfig: mainnetBeaconConfig},
@@ -48,7 +48,10 @@ export default class DepositTxContainer extends Component<{ history: History }, 
     public onNetworkChange = (selected: number): void => {
         const newSelectedContractAddress = depositContracts[selected].address;
         // Generate transaction data
-        const depositTxData = generateDepositTxData(newSelectedContractAddress, depositContracts[selected].beaconConfig);
+        const depositTxData = generateDepositTxData(
+            newSelectedContractAddress,
+            depositContracts[selected].beaconConfig
+        );
 
         this.setState({
             selectedNetworkIdx: selected,
