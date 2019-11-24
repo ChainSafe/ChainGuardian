@@ -1,6 +1,6 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {readdirSync} from "fs";
-import {ICGKeystore, ICGKeystoreFactory, EthKeystoreFactory} from "../services/keystore";
+import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/keystore";
 
 export interface IAccount {
     name: string;
@@ -18,7 +18,7 @@ export class CGAccount implements IAccount {
 
     public constructor(
         account: IAccount,
-        keystoreTarget: ICGKeystoreFactory = EthKeystoreFactory
+        keystoreTarget: ICGKeystoreFactory = V4KeystoreFactory
     ) {
         this.name = name;
         // Add / to the end if not provided

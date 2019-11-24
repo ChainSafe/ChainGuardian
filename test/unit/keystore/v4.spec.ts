@@ -2,8 +2,8 @@ import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import fs from "fs";
 import sinon from "sinon";
-import {Eth2Keystore, ICGKeystore} from "../../../src/renderer/services/keystore";
-import example from "./example.eth2.json";
+import {ICGKeystore, V4Keystore} from "../../../src/renderer/services/keystore";
+import example from "./example.v4.json";
 
 const privateKey = "0e43429c844ccedd4aff7aaa05fe996f41f9464b360ca03a4349387ba49b3e18";
 const privateKeyStr = `0x${privateKey}`;
@@ -17,13 +17,33 @@ function getV4Filename(timestamp?: number): string {
     return ["UTC--", ts.toJSON().replace(/:/g, "-"), "--", "uuid"].join("");
 }
 
-describe("Eth1ICGKeystore", () => {
-    let eth2Keystore: ICGKeystore;
+describe("V4Keystore", () => {
+    let v4Keystore: ICGKeystore;
     let sandbox: sinon.SinonSandbox;
+    let writeStub: sinon.SinonStub;
+    let readStub: sinon.SinonStub;
+    let unlinkStub: sinon.SinonStub;
 
-    beforeAll(() => {
+    beforeAll(async () => {
         sandbox = sinon.createSandbox();
         sandbox.stub(fs, "existsSync").withArgs(keyStoreFilePath).returns(true);
+        writeStub = sandbox.stub(fs, "writeFileSync");
+        readStub = sandbox
+            .stub(fs, "readFileSync")
+            .withArgs(keyStoreFilePath)
+            .returns(
+                await JSON.stringify(example)
+            );
+        unlinkStub = sandbox
+            .stub(fs, "unlinkSync")
+            .withArgs(keyStoreFilePath)
+            .returns();
+    });
+
+    beforeEach(async () => {
+        const priv = PrivateKey.fromHexString(privateKey);
+        const keypair = new Keypair(priv);
+        v4Keystore = await V4Keystore.create(keyStoreFilePath, password, keypair);
     });
 
     afterAll(() => {
@@ -32,55 +52,37 @@ describe("Eth1ICGKeystore", () => {
 
 
     it("should create keystore", async () => {
-        const priv = PrivateKey.fromHexString(privateKey);
-        const keypair = new Keypair(priv);
-
-        const writeStub = sandbox.stub(fs, "writeFileSync");
-        const readStub = sandbox
-            .stub(fs, "readFileSync")
-            .withArgs(keyStoreFilePath)
-            .returns(
-                await JSON.stringify(example)
-            );
-
-        eth2Keystore = await Eth2Keystore.create(keyStoreFilePath, password, keypair);
-        eth2Keystore.decrypt(password);
         expect(writeStub.calledOnce).toEqual(true);
         expect(readStub.calledOnce).toEqual(true);
-
     });
 
 
     it("should decrypt", async () => {
-        const keypair = await eth2Keystore.decrypt(password);
+        const keypair = await v4Keystore.decrypt(password);
         expect(keypair.privateKey.toHexString()).toEqual(privateKeyStr);
     });
-    
+
     it("should fail on decrypt with wrong password", async () => {
-        await expect(eth2Keystore.decrypt("wrongPassword"))
+        await expect(v4Keystore.decrypt("wrongPassword"))
             .rejects
             .toThrow("Invalid password");
     });
 
     it("should get private key with changed password", async () => {
-        await eth2Keystore.changePassword(password, newPassword);
-        const keypair = await eth2Keystore.decrypt(newPassword);
+        await v4Keystore.changePassword(password, newPassword);
+        const keypair = await v4Keystore.decrypt(newPassword);
         expect(keypair.privateKey.toHexString()).toEqual(privateKeyStr);
     }, 10000);
 
     it("should fail to encrypt private key with old password", async () => {
-        await eth2Keystore.changePassword(newPassword, password);
-        await expect(eth2Keystore.decrypt("oldPassword"))
+        await v4Keystore.changePassword(password, newPassword);
+        await expect(v4Keystore.decrypt(password))
             .rejects
             .toThrow("Invalid password");
     }, 10000);
 
     it("should destroy file", () => {
-        const unlinkStub = sandbox
-            .stub(fs, "unlinkSync")
-            .withArgs(keyStoreFilePath)
-            .returns();
-        eth2Keystore.destroy();
+        v4Keystore.destroy();
         expect(unlinkStub.calledOnce).toEqual(true);
     });
 });

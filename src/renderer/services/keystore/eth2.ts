@@ -3,9 +3,11 @@ import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {existsSync, readFileSync, unlinkSync, writeFileSync} from "fs";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {Keystore, IKeystore} from "@nodefactory/bls-keystore";
+import bech32 from "bech32";
 
 const KEY_PATH = "m/12381/60/0/0";
-export class Eth2Keystore implements ICGKeystore {
+const ETH2_ADDRESS_PREFIX="eth2";
+export class V4Keystore implements ICGKeystore {
     private keystore: IKeystore;
     private readonly file: string;
 
@@ -25,7 +27,7 @@ export class Eth2Keystore implements ICGKeystore {
         try {
             const keystore = Keystore.encrypt(keypair.privateKey.toBytes(), password, KEY_PATH);
             writeFileSync(file, keystore.toJSON());
-            return new Eth2Keystore(file);
+            return new V4Keystore(file);
         } catch (err) {
             throw new Error(`Failed to write to ${file}: ${err}`);
         }
@@ -59,6 +61,11 @@ export class Eth2Keystore implements ICGKeystore {
     }
 
     public getAddress(): string {
+        const words = bech32.toWords(Buffer.from(this.keystore.pubkey, "utf-8"));
+        return bech32.encode(ETH2_ADDRESS_PREFIX, words);
+    }
+
+    public getPublicKey(): string {
         return this.keystore.pubkey.toString();
     }
 
@@ -90,4 +97,4 @@ export class Eth2Keystore implements ICGKeystore {
     }
 }
 
-export const EthKeystoreFactory: ICGKeystoreFactory = Eth2Keystore;
+export const V4KeystoreFactory: ICGKeystoreFactory = V4Keystore;

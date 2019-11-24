@@ -29,7 +29,7 @@ jest.mock("fs", () => ({
 }));
 
 import {CGAccount} from "../../../src/renderer/models/account";
-import {EthKeystoreFactory} from "../../../src/renderer/services/keystore";
+import {V4KeystoreFactory} from "../../../src/renderer/services/keystore";
 // Passwords for keystores 1 & 2
 const PRIMARY_KEYSTORE_PASSWORD = "chainGuardianPass";
 
@@ -50,10 +50,10 @@ describe("CGAccount tests", () => {
 
         sandbox = sinon.createSandbox();
         sandbox
-            .stub(EthKeystoreFactory.prototype, "getAddress")
+            .stub(V4KeystoreFactory.prototype, "getAddress")
             .returns("0x001");
         sandbox
-            .stub(EthKeystoreFactory.prototype, "decrypt")
+            .stub(V4KeystoreFactory.prototype, "decrypt")
             .callsFake(function(password: string) {
                 if (password === PRIMARY_KEYSTORE_PASSWORD) {
                     return Keypair.generate();
