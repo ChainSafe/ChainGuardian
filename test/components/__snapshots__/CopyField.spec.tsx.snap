@@ -1,27 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CopyField renders correctly 1`] = `
-<div
-  className="copy-field"
->
-  Test text for copy
-  <button
-    className="copy-button"
+Array [
+  <h3
+    className="copy-field-label"
+  />,
+  <div
+    className="copy-field"
   >
-    <img
-      className="icon copy"
-      src="test-file-stub"
-    />
-    <img
-      className="icon copyall"
-      src="test-file-stub"
-    />
-    <img
-      className="icon copied"
-      src="test-file-stub"
-    />
-  </button>
-</div>
+    <button
+      className="copy-button"
+      onClick={[Function]}
+    >
+      <img
+        className="icon copy"
+        src="test-file-stub"
+      />
+      <img
+        className="icon copyall"
+        src="test-file-stub"
+      />
+      <img
+        className="icon copied"
+        src="test-file-stub"
+      />
+    </button>
+    <div
+      className="copy-field-body"
+    >
+      Test text for copy
+    </div>
+  </div>,
+]
 `;
 
 exports[`MnemonicCopyField renders correctly 1`] = `
