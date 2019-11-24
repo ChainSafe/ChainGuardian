@@ -1,6 +1,6 @@
 import * as React from "react";
 import {CopyButton} from "../Button/ButtonAction";
-import { clipboard } from "electron";
+import {clipboard} from "electron";
 
 export interface ICopyFieldProps {
     value: string;
@@ -11,7 +11,7 @@ export interface ICopyFieldProps {
 export const CopyField: React.FunctionComponent<ICopyFieldProps> = (
     props: ICopyFieldProps) => {
     
-    let copyToClipboard = () => {clipboard.writeText(props.value)};
+    let copyToClipboard = (): void => {clipboard.writeText(props.value);};
     if(props.onCopy){
         copyToClipboard = props.onCopy;
     }

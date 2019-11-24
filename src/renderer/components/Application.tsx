@@ -4,7 +4,6 @@ import {HashRouter as Router, Switch, Route, Redirect} from "react-router-dom";
 import {ReactElement} from "react";
 import OnboardContainer from "../containers/Onboard/OnboardContainer";
 import LoginContainer from "../containers/Login/LoginContainer";
-import DepositTxContainer from "../containers/Onboard/DepositTx/DepositTxContainer";
 import {Routes} from "../constants/routes";
 
 
