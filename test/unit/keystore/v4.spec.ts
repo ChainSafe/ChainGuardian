@@ -20,16 +20,13 @@ function getV4Filename(timestamp?: number): string {
 describe("V4Keystore", () => {
     let v4Keystore: ICGKeystore;
     let sandbox: sinon.SinonSandbox;
-    let writeStub: sinon.SinonStub;
-    let readStub: sinon.SinonStub;
     let unlinkStub: sinon.SinonStub;
 
     beforeAll(async () => {
         sandbox = sinon.createSandbox();
         sandbox.stub(fs, "existsSync").withArgs(keyStoreFilePath).returns(true);
-        writeStub = sandbox.stub(fs, "writeFileSync");
-        readStub = sandbox
-            .stub(fs, "readFileSync")
+        sandbox.stub(fs, "writeFileSync");
+        sandbox.stub(fs, "readFileSync")
             .withArgs(keyStoreFilePath)
             .returns(
                 await JSON.stringify(example)
@@ -52,15 +49,17 @@ describe("V4Keystore", () => {
     });
 
 
-    it("should create keystore", async () => {
-        expect(writeStub.calledOnce).toEqual(true);
-        expect(readStub.calledOnce).toEqual(true);
-    });
-
-
     it("should decrypt", async () => {
         const keypair = await v4Keystore.decrypt(password);
         expect(keypair.privateKey.toHexString()).toEqual(privateKeyStr);
+    });
+
+
+    it("should get address", async () => {
+        const address = await v4Keystore.getAddress();
+        expect(address).toEqual(
+            "eth215ykgv2ju99dkvkvf4jg9yvtk046jmuq0htfnx79g873vft8al7sy6thglx4fhf2qd6jlxhpgykcnvr0gdrz"
+        );
     });
 
     it("should fail on decrypt with wrong password", async () => {

@@ -61,12 +61,12 @@ export class V4Keystore implements ICGKeystore {
     }
 
     public getAddress(): string {
-        const words = bech32.toWords(Buffer.from(this.keystore.pubkey, "utf-8"));
+        const words = bech32.toWords(Buffer.from(this.getPublicKey(), "hex"));
         return bech32.encode(ETH2_ADDRESS_PREFIX, words);
     }
 
     public getPublicKey(): string {
-        return this.keystore.pubkey.toString();
+        return this.keystore.pubkey;
     }
 
     /**
