@@ -10,7 +10,7 @@ describe("Cards", () => {
                 value={20} 
                 title="Return (ETH)"
                 type="ROI"
-                />)
+            />)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
@@ -20,7 +20,7 @@ describe("Cards", () => {
                 value={0.1405} 
                 title="Balance"
                 type="ETH"
-                />)
+            />)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
@@ -30,7 +30,7 @@ describe("Cards", () => {
                 value={45.3} 
                 title="Uptime"
                 type="DAYS"
-                />)
+            />)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
@@ -41,7 +41,7 @@ describe("Cards", () => {
                 value={21} 
                 title="BeaconNode"
                 url="rocketsonic.hr"
-                />)
+            />)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
