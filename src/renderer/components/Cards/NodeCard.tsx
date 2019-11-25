@@ -1,5 +1,4 @@
 import * as React from "react";
-import {IValidatorCardProps} from "./ValidatorCard";
 
 export interface INodeCardProps {
     title: string;

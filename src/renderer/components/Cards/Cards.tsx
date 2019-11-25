@@ -4,7 +4,6 @@ import BN from "bn.js";
 export interface ICardProps {
     textArray: Array<string>;
     value: BN | number;
-    
 }
 export interface INodeCardProps extends ICardProps{
     onClick: () => void;

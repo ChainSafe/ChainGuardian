@@ -24,7 +24,7 @@ export const ValidatorCard: React.FunctionComponent<IValidatorCardProps> = (
             <div className="validator-card-container">
                 <h5>{props.title}</h5>
                 <h1>{
-                    props.type==="ETH" ? 
+                    (props.type==="ETH" && props.value<1) ? 
                         props.value.toString().slice(1)
                         :
                         props.value

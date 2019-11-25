@@ -19,7 +19,6 @@ storiesOf('Validator', module).add('Validator Component', () => {
             respTime: 21
         })
     }
-
     const statsValue = object("stats",stats);
     const title = text("name","Validator 001");
     return <div >
@@ -35,8 +34,6 @@ storiesOf('Validator', module).add('Validator Component', () => {
 }).addDecorator(withKnobs);
 
 storiesOf('Validator', module).add('Validator simple', () => {
-    
-
     const depositValue = number("deposit", 0.3403);
     const title = text("name","Validator 001");
     const statusValue = text("status","Not working");

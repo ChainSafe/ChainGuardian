@@ -1,7 +1,6 @@
 import * as React from "react";
 import {ButtonPrimary, ButtonDestructive} from "../Button/ButtonStandard";
 import {AddButton} from "../Button/ButtonAction";
-// import {ValidatorCard, NodeCard} from "../Cards/Cards";
 import {ValidatorCard} from "../Cards/ValidatorCard";
 import {NodeCard} from "../Cards/NodeCard";
 import {useState} from "react";
