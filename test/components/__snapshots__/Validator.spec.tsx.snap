@@ -319,3 +319,72 @@ exports[`Validator renders correctly, 4 nodes 1`] = `
   </div>
 </div>
 `;
+
+exports[`Validator renders correctly, Validator simple 1`] = `
+<div
+  className="validator-container"
+>
+  <div
+    className="validator-stats"
+  >
+    <h2>
+      Validator 002
+    </h2>
+    <div
+      className="validator-stats-container"
+    >
+      <div
+        className="validator-card-container"
+      >
+        <h5>
+          Deposit
+        </h5>
+        <h1>
+          20.345
+        </h1>
+        <h5>
+          ETH
+        </h5>
+      </div>
+    </div>
+    <h5
+      className="public-key"
+    >
+      PUBLIC KEY: 
+      6ffa3d24c9c26877d4a8bfa87455f44666ce93b7e13a3f84
+    </h5>
+  </div>
+  <div
+    className="validator-nodes-simple"
+  >
+    <h2>
+      Status: 
+      Not working
+    </h2>
+    <div
+      className="validator-buttons-simple"
+    >
+      <button
+        className="button btn-destructive "
+        onClick={[Function]}
+      >
+        <div
+          className=""
+        >
+          REMOVE
+        </div>
+      </button>
+      <button
+        className="button btn-secondary "
+        onClick={[Function]}
+      >
+        <div
+          className=""
+        >
+          EXPORT
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;

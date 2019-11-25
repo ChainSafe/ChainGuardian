@@ -8,7 +8,9 @@
     justify-content: space-between;
 }
 .validator-stats{
+   
 }
+
 .validator-stats-container{
     padding: 24px 0 0 8px;
     display: flex;
@@ -19,6 +21,7 @@
 .validator-nodes{
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 .node-container{
     padding: 24px;
@@ -29,9 +32,6 @@
         position: fixed;
         margin-top: -40px;
         margin-left: 640px;
-        // z-index: 99999;
-        // float: right;
-        // margin-top: -40px;
     }
 }
 .node-grid-container{

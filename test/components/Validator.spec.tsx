@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as renderer from "react-test-renderer";
 import {Validator} from "../../src/renderer/components/Validator/Validator";
+import {ValidatorSimple} from "../../src/renderer/components/Validator/ValidatorSimple";
 
 describe("Validator", () => {
     it("renders correctly, 2 nodes", () => {
@@ -65,4 +66,19 @@ describe("Validator", () => {
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
+    it("renders correctly, Validator simple", () => {
+        const tree = renderer
+            .create(<ValidatorSimple
+                name={"Validator 002"}
+                status={"Not working"}
+                publicKey={"6ffa3d24c9c26877d4a8bfa87455f44666ce93b7e13a3f84"}
+                deposit={20.345}
+                onExportClick={(): void=>console.log("")} 
+                onRemoveClick={(): void=>console.log("")} 
+            />)
+            .toJSON();
+        expect(tree).toMatchSnapshot();
+    });
 });
+
+
