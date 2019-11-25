@@ -1,13 +1,16 @@
 import * as React from "react";
 import * as renderer from "react-test-renderer";
-import {ValidatorCard, NodeCard} from "../../src/renderer/components/Cards/Cards";
+import {ValidatorCard} from "../../src/renderer/components/Cards/ValidatorCard";
+import {NodeCard} from "../../src/renderer/components/Cards/NodeCard";
 
 describe("Cards", () => {
     it("renders correctly, ValidatorCard, ROI", () => {
         const tree = renderer
             .create(<ValidatorCard 
                 value={20} 
-                textArray={["Return (ETH)","ROI"]}/>)
+                title="Return (ETH)"
+                type="ROI"
+                />)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
@@ -15,7 +18,9 @@ describe("Cards", () => {
         const tree = renderer
             .create(<ValidatorCard 
                 value={0.1405} 
-                textArray={["Balance","ETH"]}/>)
+                title="Balance"
+                type="ETH"
+                />)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
@@ -23,7 +28,9 @@ describe("Cards", () => {
         const tree = renderer
             .create(<ValidatorCard 
                 value={45.3} 
-                textArray={["Uptime","DAYS"]}/>)
+                title="Uptime"
+                type="DAYS"
+                />)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
@@ -32,7 +39,9 @@ describe("Cards", () => {
             .create(<NodeCard 
                 onClick={(): void=>{console.log("");}} 
                 value={21} 
-                textArray={["BeaconNode","rocketsonic.hr"]}/>)
+                title="BeaconNode"
+                url="rocketsonic.hr"
+                />)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
