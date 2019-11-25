@@ -1,22 +1,26 @@
 import * as React from "react";
 import {ButtonPrimary, ButtonDestructive} from "../Button/ButtonStandard";
 import {AddButton} from "../Button/ButtonAction";
-import {ValidatorCard, NodeCard} from "../Cards/Cards";
+// import {ValidatorCard, NodeCard} from "../Cards/Cards";
+import {ValidatorCard} from "../Cards/ValidatorCard";
+import {NodeCard} from "../Cards/NodeCard";
 import {useState} from "react";
 import BN from "bn.js";
 
+export interface IStatsType{
+    roi: number;
+    balance: BN | number;
+    uptime: number;
+}
+export interface IBeaconNode{
+    id: string;
+    url: string;
+    respTime: number;
+}
 export interface IValidatorProps {
-    name: string,
-    stats: {
-        roi: number,
-        balance: BN | number,
-        uptime: number
-    };
-    beaconNodes: {
-        id: string,
-        url: string,
-        respTime: number
-    }[];
+    name: string;
+    stats: IStatsType;
+    beaconNodes: IBeaconNode[];
     onBeaconNodeClick: () => void;
     onRemoveClick: () => void;
     onDetailsClick: () => void;
@@ -41,9 +45,9 @@ export const Validator: React.FunctionComponent<IValidatorProps> = (
             <div className="validator-stats">
                 <h2>{props.name}</h2>
                 <div className="validator-stats-container" >
-                    <ValidatorCard value={props.stats.roi} textArray={["Return (ETH)","ROI"]} />
-                    <ValidatorCard value={props.stats.balance} textArray={["Balance","ETH"]} />
-                    <ValidatorCard value={props.stats.uptime} textArray={["Uptime","DAYS"]} />
+                    <ValidatorCard value={props.stats.roi} title="Return (ETH)" type="ROI"/>
+                    <ValidatorCard value={props.stats.balance} title="Balance" type="ETH"/>
+                    <ValidatorCard value={props.stats.uptime} title="Uptime" type="DAYS"/>
                 </div>
             </div>
             <div className="validator-nodes">
@@ -56,7 +60,8 @@ export const Validator: React.FunctionComponent<IValidatorProps> = (
                                         onClick={(): void=>{props.onBeaconNodeClick;}}
                                         key={node.id} 
                                         value={node.respTime} 
-                                        textArray={[node.id,node.url]}/>;
+                                        title={node.id}
+                                        url={node.url}/>;
                                 })
                                 :
                                 props.beaconNodes.filter((e)=>{
@@ -67,8 +72,9 @@ export const Validator: React.FunctionComponent<IValidatorProps> = (
                                     return <NodeCard 
                                         onClick={(): void=>{props.onBeaconNodeClick;}}
                                         key={node.id} 
-                                        value={node.respTime} 
-                                        textArray={[node.id,node.url]}/>;
+                                        value={node.respTime}
+                                        title={node.id}
+                                        url={node.url}/>;
                                 })
                         }
                     </div>
