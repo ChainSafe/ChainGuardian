@@ -3,6 +3,9 @@ import {app, BrowserWindow} from "electron";
 import path from "path";
 import url from "url";
 import { setApplicationMenu } from './menu';
+import { CGDatabase } from '../renderer/services/db/api';
+import { LevelDbController } from '../renderer/services/db/controller';
+import { config } from '@chainsafe/eth2.0-config/lib/presets/minimal';
 
 let win: BrowserWindow | null;
 
@@ -47,7 +50,10 @@ const createWindow = async () => {
         if (win !== null) { win.show(); }
     });
     win.webContents.on("did-finish-load", () => {
-        if (win !== null) { win.setTitle("ChainGuardian"); }
+        if (win !== null) {
+            win.setTitle("ChainGuardian");
+            new CGDatabase({config, controller: new LevelDbController({name: "test-level.db"})});
+        }
     });
 
     if (process.env.NODE_ENV !== "production") {

@@ -32,9 +32,9 @@
     "build": "yarn run build-main && yarn run build-renderer",
     "start-renderer-dev": "webpack-dev-server --config webpack.renderer.dev.config.js",
     "start-main-dev": "webpack --config webpack.main.config.js && electron ./dist/main.js",
-    "start-dev": "cross-env START_HOT=1 yarn run start-renderer-dev",
+    "start-dev": "cross-env START_HOT=1,ELECTRON=1,NODE_BACKEND=node yarn run start-renderer-dev",
     "prestart": "yarn run build",
-    "start": "electron .",
+    "start": "cross-env ELECTRON=1,NODE_BACKEND=node electron --disable-gpu .",
     "lint": "eslint --color --ext .ts --ext .tsx src/ test/",
     "lint:fix": "yarn run lint --fix",
     "check-types": "tsc --noEmit",
@@ -69,6 +69,7 @@
   },
   "build": {
     "productName": "ProductName",
+    "buildDependenciesFromSource": true,
     "appId": "org.your.productname",
     "mac": {
       "category": "your.app.category.type"
@@ -146,7 +147,6 @@
     "html-webpack-plugin": "^3.2.0",
     "image-webpack-loader": "^4.6.0",
     "jest": "^24.8.0",
-    "leveldown": "^5.4.0",
     "node-sass": "^4.12.0",
     "react-hot-loader": "^4.8.8",
     "react-test-renderer": "^16.8.6",
@@ -178,8 +178,8 @@
     "electron-log": "^3.0.8",
     "ethereumjs-abi": "^0.6.8",
     "ethers": "^4.0.38",
-    "level": "^5.0.1",
-    "levelup": "^4.2.0",
+    "level": "6.0.0",
+    "levelup": "4.3.2",
     "node-cmd": "^3.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
