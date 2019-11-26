@@ -2,10 +2,11 @@ import * as React from "react";
 import {Component, ReactElement} from "react";
 import {IInputFormProps} from "../../../components/Input/InputForm";
 import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
-import {History} from "history";
 import {MultipleInputVertical} from "../../../components/MultipleInputVertical/MultipleInputVertical";
 import passwordComplexity from "../../../services/validation/password-complexity";
 import {partition} from "../../../services/utils/utils";
+import {RouteComponentProps} from "react-router";
+
 
 interface IState {
     input: string;
@@ -17,7 +18,7 @@ interface IState {
 
 const SEPARATOR = "and";
 
-export default class CreatePassword extends Component<{ history: History }, {}> {
+export class CreatePasswordContainer extends Component<Pick<RouteComponentProps, "history">> {
     public state: IState = {
         input: "",
         confirmInput: "",

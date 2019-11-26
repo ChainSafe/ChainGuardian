@@ -19,4 +19,4 @@ storiesOf('Multiple Input Form Vertical', module).add('Multiple Input Form Verti
         }
     ];
     return <MultipleInputVertical inputs={inputs}/>
-}).addDecorator(withKnobs)
+}).addDecorator(withKnobs);
