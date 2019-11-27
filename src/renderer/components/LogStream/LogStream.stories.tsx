@@ -21,10 +21,11 @@ storiesOf('Log Stream', module).add('Log Stream', () => {
 
             controller.enqueue(string);
 
-            // console.log("generirani: "+string);
+            console.log("generirani: "+string);
           }, 2000);
         } 
       });
+      // testStream.releaseLock();
     return  <LogStream
     stream={testStream}
     />;

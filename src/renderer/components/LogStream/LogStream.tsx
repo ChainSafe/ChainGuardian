@@ -1,5 +1,7 @@
 import * as React from "react";
-import {useState} from "react";
+import {useState, useEffect} from "react";
+import { resolve } from "q";
+import { render } from "react-dom";
 
 export interface ILogStreamProps {
     // path: string;
@@ -9,24 +11,47 @@ export interface ILogStreamProps {
 
 export const LogStream: React.FunctionComponent<ILogStreamProps> = (props: ILogStreamProps) => {
     const [logStream, getLogStream] = useState([]);
-    //---getReader---not working
-    const reader = props.stream.getReader();
-    reader.read().then(function processText({ done, value }){
-        if (done) {
-            console.log("Stream done");
+    const [status, setStatus] = useState(false);
+    
+    let n: number = 0;
+    const renderData = ():any=>{
+        do {
+            if (logStream[n]){
+                // console.log(logStream[n]
+                return(<p>{logStream[n]}</p>);
+            } else {return (<p>null</p>)}
+            n++;
+        } while (!status);
+    }
 
-        }
-        
-        getLogStream(logStream.push(value));
-        return reader.read().then(processText);
-    });
+    useEffect(()=>{
+        console.log("load component test");
+        const reader = props.stream.getReader();
+        // reader.releaseLock();
+        reader.read().then(function processText({value, done}){
+            if (done) {
+                console.log("Stream done");
+                setStatus(done)
+            }
+
+            getLogStream(logStream.push(value));
+            console.log(logStream);
+            // console.log(logStream[0]);
+            // console.log(logStream[1]);
+            // console.log(logStream[2]);
+
+            return reader.read().then(processText);
+        });
+    },[renderData()]);
+
+    
 
     return(
         <React.Fragment>
-            {logStream.map((data: any) =>{
+            {/* {logStream.map((data: any) =>{
                 <div>{data}</div>
-            })}
-        </React.Fragment>
-        
+            })} */}
+            {renderData()}
+        </React.Fragment> 
     )
 }
