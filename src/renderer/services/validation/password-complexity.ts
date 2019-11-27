@@ -29,11 +29,11 @@ export default (options: IPasswordComplexityOptions = defaultOptions): StringSch
         type: "passwordComplexity",
         base: Joi.string(),
         messages: {
-            "passwordComplexity.length.tooShort":
+            "string.length.tooShort":
                 `have at least ${
                     options.min
                 } ${p("character", options.min)}`,
-            "passwordComplexity.length.tooLong":
+            "string.length.tooLong":
                 `not be longer than ${
                     options.max
                 } ${p("character", options.max)}`,
@@ -87,8 +87,8 @@ export default (options: IPasswordComplexityOptions = defaultOptions): StringSch
 
                 const requirementErrors = [];
 
-                if (!meetsMin) errors.push(helpers.error("passwordComplexity.length.tooShort", {value}));
-                if (!meetsMax) errors.push(helpers.error("passwordComplexity.length.tooLong", {value}));
+                if (!meetsMin) errors.push(helpers.error("string.length.tooShort", {value}));
+                if (!meetsMax) errors.push(helpers.error("string.length.tooLong", {value}));
                 if (!meetsLowercase) {
                     requirementErrors.push(helpers.error("passwordComplexity.lowercase", {value}));
                 }

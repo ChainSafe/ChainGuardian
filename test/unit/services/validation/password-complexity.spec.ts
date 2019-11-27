@@ -5,7 +5,7 @@ describe("JoiPasswordComplexity", () => {
     it("should reject a password that is too short", () => {
         const password = "123";
         const result: ValidationResult = passwordComplexity().required().validate(password);
-        const errors = result.error.details.filter((e) => e.type === "passwordComplexity.length.tooShort");
+        const errors = result.error.details.filter((e) => e.type === "string.length.tooShort");
         expect(errors.length).toBe(1);
         expect(errors[0].message).toBe("have at least 8 characters");
     });
@@ -13,7 +13,7 @@ describe("JoiPasswordComplexity", () => {
         const password = "123456791234567912345679123";
 
         const result: ValidationResult = passwordComplexity().required().validate(password);
-        const errors = result.error.details.filter((e) => e.type === "passwordComplexity.length.tooLong");
+        const errors = result.error.details.filter((e) => e.type === "string.length.tooLong");
 
         expect(errors.length).toBe(1);
         expect(errors[0].message).toBe("not be longer than 26 characters");
