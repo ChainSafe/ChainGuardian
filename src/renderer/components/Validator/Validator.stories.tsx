@@ -8,7 +8,7 @@ storiesOf('Validator', module).add('Validator Component', () => {
     const stats = {
         roi: 10,
         balance: 0.1206,
-        uptime: 92.1
+        uptime: 92
     }    
     let node = [];
     const index = number("number of nodes",2);
@@ -20,7 +20,7 @@ storiesOf('Validator', module).add('Validator Component', () => {
         })
     }
     const statsValue = object("stats",stats);
-    const title = text("name","Validator 001");
+    const title = text("name","001");
     return <div >
             <Validator
             name={title}
@@ -35,7 +35,7 @@ storiesOf('Validator', module).add('Validator Component', () => {
 
 storiesOf('Validator', module).add('Validator simple', () => {
     const depositValue = number("deposit", 0.3403);
-    const title = text("name","Validator 001");
+    const title = text("name","001");
     const statusValue = text("status","Not working");
     const publicKeyValue = text("public key","6ffa3d24c9c26877d4a8bfa87455f44666ce93b7e13a3f84");
     return <div >

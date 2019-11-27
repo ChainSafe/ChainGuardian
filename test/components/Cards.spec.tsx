@@ -1,12 +1,12 @@
 import * as React from "react";
 import * as renderer from "react-test-renderer";
-import {ValidatorCard} from "../../src/renderer/components/Cards/ValidatorCard";
+import {ValidatorStat} from "../../src/renderer/components/Cards/ValidatorStat";
 import {NodeCard} from "../../src/renderer/components/Cards/NodeCard";
 
 describe("Cards", () => {
-    it("renders correctly, ValidatorCard, ROI", () => {
+    it("renders correctly, ValidatorStat, ROI", () => {
         const tree = renderer
-            .create(<ValidatorCard 
+            .create(<ValidatorStat 
                 value={20} 
                 title="Return (ETH)"
                 type="ROI"
@@ -14,9 +14,9 @@ describe("Cards", () => {
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
-    it("renders correctly, ValidatorCard, ETH", () => {
+    it("renders correctly, ValidatorStat, ETH", () => {
         const tree = renderer
-            .create(<ValidatorCard 
+            .create(<ValidatorStat 
                 value={0.1405} 
                 title="Balance"
                 type="ETH"
@@ -24,9 +24,9 @@ describe("Cards", () => {
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
-    it("renders correctly, ValidatorCard, days", () => {
+    it("renders correctly, ValidatorStat, days", () => {
         const tree = renderer
-            .create(<ValidatorCard 
+            .create(<ValidatorStat 
                 value={45.3} 
                 title="Uptime"
                 type="DAYS"

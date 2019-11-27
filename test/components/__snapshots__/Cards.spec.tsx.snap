@@ -25,7 +25,7 @@ exports[`Cards renders correctly, NodeCard 1`] = `
 </div>
 `;
 
-exports[`Cards renders correctly, ValidatorCard, ETH 1`] = `
+exports[`Cards renders correctly, ValidatorStat, ETH 1`] = `
 <div
   className="validator-card-container"
 >
@@ -41,7 +41,7 @@ exports[`Cards renders correctly, ValidatorCard, ETH 1`] = `
 </div>
 `;
 
-exports[`Cards renders correctly, ValidatorCard, ROI 1`] = `
+exports[`Cards renders correctly, ValidatorStat, ROI 1`] = `
 <div
   className="validator-card-container"
 >
@@ -63,7 +63,7 @@ exports[`Cards renders correctly, ValidatorCard, ROI 1`] = `
 </div>
 `;
 
-exports[`Cards renders correctly, ValidatorCard, days 1`] = `
+exports[`Cards renders correctly, ValidatorStat, days 1`] = `
 <div
   className="validator-card-container"
 >

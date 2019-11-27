@@ -1,7 +1,7 @@
 import * as React from "react";
 import {ButtonPrimary, ButtonDestructive} from "../Button/ButtonStandard";
 import {AddButton} from "../Button/ButtonAction";
-import {ValidatorCard} from "../Cards/ValidatorCard";
+import {ValidatorStat} from "../Cards/ValidatorStat";
 import {NodeCard} from "../Cards/NodeCard";
 import {useState} from "react";
 import BN from "bn.js";
@@ -29,24 +29,35 @@ export interface IValidatorProps {
 export const Validator: React.FunctionComponent<IValidatorProps> = (
     props: IValidatorProps) => {
     const [nodeStatus, setNodeStatus] = useState(false);
-
+    
     let numOfNodes = 0;
     for (let i = 0; i < props.beaconNodes.length; i++) {
         if (props.beaconNodes[i].id) numOfNodes++;
     }
 
-    const getShowMore = (): void=>{
+    const getShowMore = (): void => {
         !nodeStatus ? setNodeStatus(true) : setNodeStatus(false);
+    };
+
+    const renderBeaconNodeCard = (x: IBeaconNode): React.ReactElement => {
+        return(
+            <NodeCard 
+                onClick={(): void=>{props.onBeaconNodeClick;}}
+                key={x.id} 
+                value={x.respTime} 
+                title={x.id}
+                url={x.url}/>
+        );
     };
 
     return(
         <div className="validator-container">
             <div className="validator-stats">
-                <h2>{props.name}</h2>
+                <h2>Validator {props.name}</h2>
                 <div className="validator-stats-container" >
-                    <ValidatorCard value={props.stats.roi} title="Return (ETH)" type="ROI"/>
-                    <ValidatorCard value={props.stats.balance} title="Balance" type="ETH"/>
-                    <ValidatorCard value={props.stats.uptime} title="Uptime" type="DAYS"/>
+                    <ValidatorStat value={props.stats.roi} title="Return (ETH)" type="ROI"/>
+                    <ValidatorStat value={props.stats.balance} title="Balance" type="ETH"/>
+                    <ValidatorStat value={props.stats.uptime} title="Uptime" type="Uptime"/>
                 </div>
             </div>
             <div className="validator-nodes">
@@ -55,12 +66,7 @@ export const Validator: React.FunctionComponent<IValidatorProps> = (
                         {
                             nodeStatus ?
                                 props.beaconNodes.map(node => {
-                                    return <NodeCard 
-                                        onClick={(): void=>{props.onBeaconNodeClick;}}
-                                        key={node.id} 
-                                        value={node.respTime} 
-                                        title={node.id}
-                                        url={node.url}/>;
+                                    return renderBeaconNodeCard(node);
                                 })
                                 :
                                 props.beaconNodes.filter((e)=>{
@@ -68,12 +74,7 @@ export const Validator: React.FunctionComponent<IValidatorProps> = (
                                         return e; 
                                     }
                                 }).map(node => {
-                                    return <NodeCard 
-                                        onClick={(): void=>{props.onBeaconNodeClick;}}
-                                        key={node.id} 
-                                        value={node.respTime}
-                                        title={node.id}
-                                        url={node.url}/>;
+                                    return renderBeaconNodeCard(node);
                                 })
                         }
                     </div>

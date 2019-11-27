@@ -1,6 +1,6 @@
 import * as React from "react";
 import {ButtonSecondary, ButtonDestructive} from "../Button/ButtonStandard";
-import {ValidatorCard} from "../Cards/ValidatorCard";
+import {ValidatorStat} from "../Cards/ValidatorStat";
 
 export interface IValidatorSimpleProps {
     name: string,
@@ -19,7 +19,7 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
             <div className="validator-stats">
                 <h2>{props.name}</h2>
                 <div className="validator-stats-container" >
-                    <ValidatorCard title="Deposit" type="ETH" value={props.deposit}/>
+                    <ValidatorStat title="Deposit" type="ETH" value={props.deposit}/>
                 </div>
                 <h5 className="public-key">PUBLIC KEY: {props.publicKey}</h5>
             </div>

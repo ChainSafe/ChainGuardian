@@ -8,6 +8,7 @@ exports[`Validator renders correctly, 2 nodes 1`] = `
     className="validator-stats"
   >
     <h2>
+      Validator 
       Test title
     </h2>
     <div
@@ -168,6 +169,7 @@ exports[`Validator renders correctly, 4 nodes 1`] = `
     className="validator-stats"
   >
     <h2>
+      Validator 
       Test title
     </h2>
     <div
