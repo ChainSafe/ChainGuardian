@@ -4,8 +4,6 @@ import { resolve } from "q";
 import { render } from "react-dom";
 
 export interface ILogStreamProps {
-    // path: string;
-    // hostname: string;
     stream: any;
 }
 
@@ -13,17 +11,6 @@ export const LogStream: React.FunctionComponent<ILogStreamProps> = (props: ILogS
     const [logStream, getLogStream] = useState([]);
     const [status, setStatus] = useState(false);
     
-    let n: number = 0;
-    const renderData = ():any=>{
-        do {
-            if (logStream[n]){
-                // console.log(logStream[n]
-                return(<p>{logStream[n]}</p>);
-            } else {return (<p>null</p>)}
-            n++;
-        } while (!status);
-    }
-
     useEffect(()=>{
         console.log("load component test");
         const reader = props.stream.getReader();
@@ -42,9 +29,18 @@ export const LogStream: React.FunctionComponent<ILogStreamProps> = (props: ILogS
 
             return reader.read().then(processText);
         });
-    },[renderData()]);
+    },[]);
 
-    
+    let n: number = 0;
+    const renderData = ():any=>{
+        do {
+            if (logStream[n]){
+                // console.log(logStream[n]
+                return(<p>{logStream[n]}</p>);
+            } else {return (<p>null</p>)}
+            n++;
+        } while (!status);
+    }
 
     return(
         <React.Fragment>
