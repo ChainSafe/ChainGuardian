@@ -34,7 +34,7 @@ export default class LoginContainer extends React.Component {
                         /> 
                         <ButtonSecondary buttonId="go" >GO</ButtonSecondary>
                     </div>
-                    <h5>OR</h5>
+                    <h5 className="input-or">OR</h5>
                     <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING)}>
                         <ButtonPrimary buttonId="register">REGISTER</ButtonPrimary>
                     </Link>
