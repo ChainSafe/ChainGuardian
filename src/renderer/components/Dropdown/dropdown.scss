@@ -35,6 +35,13 @@ z-index: 100;
     background-color: $neutral-600;
     cursor: pointer;
 }
+
+.dropdown-items-container{
+    position: relative;
+    width: 0;
+    height: 0;
+}
+
 .dropdown-items{
     position: absolute;
     z-index: 100;
@@ -43,7 +50,7 @@ z-index: 100;
     background-color: fade-out($neutral-700, 0.01);
     width: 332px;
     border-radius: 8px;
-    transform: translateY(50px);
+    transform: translateY(-15px);
     // position: absolute;
 }
 .dropdown-item{

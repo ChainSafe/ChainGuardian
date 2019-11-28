@@ -1,6 +1,5 @@
 import React, {Component, ReactElement} from "react";
 import {ButtonPrimary, ButtonSecondary} from "../../../components/Button/ButtonStandard";
-import {History} from "history";
 import {CopyField} from "../../../components/CopyField/CopyField";
 import {Dropdown} from "../../../components/Dropdown/Dropdown";
 import {generateDeposit, DepositTx} from "../../../services/deposit";
@@ -8,6 +7,8 @@ import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {config as mainnetBeaconConfig} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {config as minimalBeaconConfig} from "@chainsafe/eth2.0-config/lib/presets/minimal";
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {RouteComponentProps} from "react-router";
+import {copyToClipboard} from "../../../services/utils/clipboard-utils";
 
 const depositContracts = [
     {networkName: "Mainnet", address: "0x00000000000001", beaconConfig: mainnetBeaconConfig},
@@ -37,7 +38,7 @@ const generateDepositTxData = (depositContractAddress: string, config: IBeaconCo
     return "0x" + depositTx.data;
 };
     
-export default class DepositTxContainer extends Component<{ history: History }, {}> {
+export default class DepositTxContainer extends Component<Pick<RouteComponentProps, "history">> {
     
     public state = {
         selectedNetworkIdx: 0,
@@ -62,6 +63,7 @@ export default class DepositTxContainer extends Component<{ history: History }, 
 
     public render(): ReactElement {
         const networkOptions = depositContracts.map((contract) => {return contract.networkName;});
+        const selectedContract = depositContracts[this.state.selectedNetworkIdx];
         return (
             <>
                 <h1>Deposit transaction</h1>
@@ -71,14 +73,15 @@ export default class DepositTxContainer extends Component<{ history: History }, 
                         label="Network" 
                         current={this.state.selectedNetworkIdx} 
                         onChange={this.onNetworkChange} 
-                        options={networkOptions}
-                    />
+                        options={networkOptions} />
                     <CopyField
                         label="Deposit contract"
-                        value={depositContracts[this.state.selectedNetworkIdx].address} />
+                        value={selectedContract.address}
+                        onCopy={(): void => copyToClipboard(selectedContract.address)} />
                     <CopyField
                         label="Transaction data"
-                        value={this.state.transactionData} />
+                        value={this.state.transactionData}
+                        onCopy={(): void => copyToClipboard(this.state.transactionData)} />
                 </div>
                 <div className="deposit-action-buttons">
                     <ButtonSecondary buttonId="skip">SKIP</ButtonSecondary>

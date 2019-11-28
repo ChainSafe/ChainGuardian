@@ -29,16 +29,18 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdo
                     <div onClick={(): void=> showHide()} className="dropdown-selected">
                         <div>{props.options[props.current]}</div>
                     </div>
-                    <div className="dropdown-items">
-                        {props.options.map(option =>{
-                            return <div 
-                                key={option} 
-                                onClick={(): void => {props.onChange(getSelectedIndex(option));showHide();}} 
-                                className={`dropdown-item 
-                            ${visible}
-                            ${getSelectedIndex(option)===props.current?"selected":""}`} 
-                            >{option}</div>;
-                        })}
+                    <div className="dropdown-items-container">
+                        <div className="dropdown-items">
+                            {props.options.map(option =>{
+                                return <div 
+                                    key={option} 
+                                    onClick={(): void => {props.onChange(getSelectedIndex(option));showHide();}} 
+                                    className={`dropdown-item 
+                                ${visible}
+                                ${getSelectedIndex(option)===props.current?"selected":""}`} 
+                                >{option}</div>;
+                            })}
+                        </div>
                     </div>
                 </div>
             </div>
