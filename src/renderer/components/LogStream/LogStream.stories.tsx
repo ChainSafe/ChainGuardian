@@ -4,7 +4,7 @@ import { withKnobs, text, boolean, number, select } from '@storybook/addon-knobs
 import {LogStream} from './LogStream';
 
 storiesOf('Log Stream', module).add('Log Stream', () => {
-
+    const time=number("speed, seconds", 2);
     function randomChars() {
         let string = "";
         let choices = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
@@ -21,11 +21,10 @@ storiesOf('Log Stream', module).add('Log Stream', () => {
 
             controller.enqueue(string);
 
-            console.log("generirani: "+string);
-          }, 2000);
+          }, time*1000);
         } 
       });
-      // testStream.releaseLock();
+
     return  <LogStream
     stream={testStream}
     />;
