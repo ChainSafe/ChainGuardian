@@ -14,8 +14,17 @@ h1{
     line-height: 44px;
     letter-spacing: 0.01em;
 }
+h2{
+    margin: 0px;
+    font-family: "Palanquin Dark", sans-serif;
+    font-weight: 400;
+    font-size: 32px;
+    color: $neutral-100;
+    line-height: 40px;
+    letter-spacing: 0.02em;
+}
 h5{
-    margin: 24px;
+    margin: 0px;
     font-family: "Palanquin", sans-serif; 
     font-weight: 400;
     font-size: 20px;
