@@ -15,9 +15,6 @@ export default function SigningKey(): ReactElement {
                 <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_KEY_GENERATE)}>
                     <ButtonPrimary buttonId="generate" large>GENERATE</ButtonPrimary>
                 </Link>
-                <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX)}>
-                    <ButtonPrimary buttonId="generate" large>DEPOSIT</ButtonPrimary>
-                </Link>
             </div>
         </>
     );

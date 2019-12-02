@@ -349,14 +349,8 @@ exports[`CopyButton renders correctly 1`] = `
 >
   <img
     className="icon copy"
-    src="test-file-stub"
-  />
-  <img
-    className="icon copyall"
-    src="test-file-stub"
-  />
-  <img
-    className="icon copied"
+    data-place="top"
+    data-tip="Copy all"
     src="test-file-stub"
   />
 </button>

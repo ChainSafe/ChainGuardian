@@ -18,39 +18,43 @@ exports[`Dropdown renders correctly 1`] = `
         </div>
       </div>
       <div
-        className="dropdown-items"
+        className="dropdown-items-container"
       >
         <div
-          className="dropdown-item 
-                            none
-                            selected"
-          onClick={[Function]}
+          className="dropdown-items"
         >
-          All networks
-        </div>
-        <div
-          className="dropdown-item 
-                            none
-                            "
-          onClick={[Function]}
-        >
-          Mainnet
-        </div>
-        <div
-          className="dropdown-item 
-                            none
-                            "
-          onClick={[Function]}
-        >
-          Testnet
-        </div>
-        <div
-          className="dropdown-item 
-                            none
-                            "
-          onClick={[Function]}
-        >
-          Networkname #1
+          <div
+            className="dropdown-item 
+                                none
+                                selected"
+            onClick={[Function]}
+          >
+            All networks
+          </div>
+          <div
+            className="dropdown-item 
+                                none
+                                "
+            onClick={[Function]}
+          >
+            Mainnet
+          </div>
+          <div
+            className="dropdown-item 
+                                none
+                                "
+            onClick={[Function]}
+          >
+            Testnet
+          </div>
+          <div
+            className="dropdown-item 
+                                none
+                                "
+            onClick={[Function]}
+          >
+            Networkname #1
+          </div>
         </div>
       </div>
     </div>

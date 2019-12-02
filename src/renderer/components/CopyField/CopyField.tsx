@@ -12,10 +12,11 @@ export const CopyField: React.FunctionComponent<ICopyFieldProps> = (
     
     return(
         <>
+            {/* <ReactTooltip id='copy-button-tooltip' effect="solid"/> */}
             <h3 className="copy-field-label">{props.label}</h3>
             <div className="copy-field">
-                <CopyButton onClick={props.onCopy}/>
                 <div className="copy-field-body" style={{textAlign: props.textAlign}}>{props.value}</div>
+                <CopyButton onClick={props.onCopy}/>
             </div>
         </>
     );
