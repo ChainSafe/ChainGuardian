@@ -2,28 +2,25 @@ import * as React from "react";
 import {useState, useEffect} from "react";
 
 export interface ILogStreamProps {
-    stream: any;
+    stream: ReadableStream;
 }
 
 export const LogStream: React.FunctionComponent<ILogStreamProps> = (props: ILogStreamProps) => {
-    const [logStream, setLogStream] = useState([]);
+    const [logs, setLogs] = useState<string[]>([]);
     
     useEffect(()=>{
         const reader = props.stream.getReader();
-        reader.read().then(function processText(data: any){
-            if (data.done) {
-                console.log("Stream done");
-            }
-            setLogStream(logStream.concat(data.value));
+        reader.read().then(({value}: {value: string})=>{
+            setLogs(logs.concat([value]));
             reader.releaseLock();
         });
-    },[logStream]);
+    },[logs]);
 
     return(
         <React.Fragment>
-            {logStream.map((data: any) =>{
+            {logs.map((logEntry: string) =>{
                 return(
-                    <div key={data} className="log-data">{data}</div>
+                    <div key={logEntry} className="log-data">{logEntry}</div>
                 );
             })}
         </React.Fragment> 
