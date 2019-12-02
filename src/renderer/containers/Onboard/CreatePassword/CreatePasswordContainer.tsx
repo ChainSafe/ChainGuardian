@@ -7,9 +7,10 @@ import {partition} from "../../../services/utils/utils";
 import {RouteComponentProps} from "react-router";
 import {passwordFormSchema} from "./validation";
 
-interface IState {
+export interface IState {
     password: string;
     confirm: string;
+    errorMessages: string[];
 }
 
 export class CreatePasswordContainer extends Component<Pick<RouteComponentProps, "history">> {
@@ -17,6 +18,7 @@ export class CreatePasswordContainer extends Component<Pick<RouteComponentProps,
     public state: IState = {
         password: "",
         confirm: "",
+        errorMessages: []
     };
 
     private validationInfo = new ValidationInfo();
@@ -57,6 +59,7 @@ export class CreatePasswordContainer extends Component<Pick<RouteComponentProps,
         // create local state used for validation
         const localState = this.state;
         localState[selector] = e.currentTarget.value;
+        // const validation = passwordFormSchema.validate(localState);
         this.validationInfo.validate(localState);
         // change state and start render process
         this.setState({[selector]: e.currentTarget.value});
