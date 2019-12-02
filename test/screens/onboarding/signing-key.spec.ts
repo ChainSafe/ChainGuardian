@@ -6,8 +6,8 @@ import {IMPORT_SIGNING_KEY_PLACEHOLDER} from "../../../src/renderer/constants/st
 import {
     PRIVATE_KEY_WRONG_CHARACTERS_MESSAGE,
     MNEMONIC_INVALID_MESSAGE,
-    PRIVATE_KEY_WRONG_LENGTH_MESSAGE
-} from "../../../src/renderer/containers/Onboard/SigningKey/Import/validation";
+    PRIVATE_KEY_WRONG_LENGTH_MESSAGE, privateKeySchema, mnemonicSchema
+} from '../../../src/renderer/containers/Onboard/SigningKey/Import/validation';
 
 jest.setTimeout(TIMEOUT);
 

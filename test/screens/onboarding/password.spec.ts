@@ -30,7 +30,7 @@ describe("Onboarding password setup screen", () => {
         expect(currentStep.length).to.be.equal(3);
     });
 
-    it("should fail invalid inputs", async () => {
+    it.skip("should fail invalid inputs", async () => {
         const {client} = app;
 
         // password too short and invalid
@@ -68,7 +68,7 @@ describe("Onboarding password setup screen", () => {
     });
 
 
-    it("should work valid inputs", async () => {
+    it.skip("should work valid inputs", async () => {
         const {client} = app;
 
         // next button disabled
