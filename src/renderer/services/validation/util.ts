@@ -14,9 +14,7 @@ export function joiValidationToErrorMessages(joiError: ValidationError): IValida
                 } else {
                     errors[path] = [detail.message];
                 }
-
             });
-
         });
     }
     return errors;
@@ -42,9 +40,4 @@ export function joiValidationToErrorDetailsMessages(joiError: ValidationError): 
         });
     }
     return errors;
-}
-
-export function joinArrayOxfStyle(array: string[], separator: string, lastSeparator: string): string {
-    if (array.length === 1) return array[0];
-    else return `${array.slice(0, -1).join(`${separator} `)} ${lastSeparator} ${array.slice(-1)}`;
 }

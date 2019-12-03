@@ -5,7 +5,8 @@ import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
 import {MultipleInputVertical} from "../../../components/MultipleInputVertical/MultipleInputVertical";
 import {RouteComponentProps} from "react-router";
 import {passwordFormSchema} from "./validation";
-import {joinArrayOxfStyle, joiValidationToErrorDetailsMessages} from "../../../services/validation/util";
+import {joiValidationToErrorDetailsMessages} from "../../../services/validation/util";
+import {joinArrayOxfStyle} from "../../../services/utils/utils";
 
 export interface IState {
     password: string;

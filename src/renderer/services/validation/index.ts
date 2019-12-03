@@ -8,7 +8,7 @@ import {cryptoExtension} from "./rules/crypto";
  * Validation of public/private keys and mnemonic.
  *
  * Joi.crypto()
- *      .key(type: string)      // stripes 0x prefix anf validates "public" or "private" type of key
+ *      .key(type: string)      // strips 0x prefix anf validates "public" or "private" type of key
  *      .mnemonic()             // validates mnemonic
  *
  * Error codes:
