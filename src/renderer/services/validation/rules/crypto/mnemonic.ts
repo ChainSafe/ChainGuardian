@@ -8,7 +8,7 @@ const joiMnemonicKey: ExtensionRule & ThisType<SchemaInternals> = {
     method(): any {
         return this.$_addRule("mnemonic");
     },
-    validate(value: string, helpers: CustomHelpers, args: Record<string, any>): any {
+    validate(value: string, helpers: CustomHelpers): any {
         if(validateMnemonic(value)) {
             return value;
         }

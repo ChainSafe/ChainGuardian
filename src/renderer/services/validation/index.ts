@@ -44,13 +44,13 @@ import {cryptoExtension} from "./rules/crypto";
  *      max()
  *          - string.max
  *      numOfUpper()
- *          - password.upper
+ *          - complexity.upper
  *      numOfLower()
- *          - password.lower
+ *          - complexity.lower
  *      numOfSigns()
- *          - password.signs
+ *          - complexity.signs
  *      numOfNums()
- *          - password.numbers
+ *          - complexity.numbers
  */
 export const Joi = joi.extend(
     passwordExtension,

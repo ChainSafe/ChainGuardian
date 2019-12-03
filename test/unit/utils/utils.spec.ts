@@ -1,7 +1,4 @@
 import {partition} from "../../../src/renderer/services/utils/utils";
-import {passwordFormSchema} from "../../../src/renderer/containers/Onboard/CreatePassword/validation";
-import {IState} from "../../../src/renderer/containers/Onboard/CreatePassword/CreatePasswordContainer";
-import {joiValidationToErrorMessages} from "../../../src/renderer/services/validation/util";
 
 describe("utils unit tests", () => {
     it("should successfully split array based on condition.", async () => {

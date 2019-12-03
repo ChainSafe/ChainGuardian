@@ -1,6 +1,6 @@
 import {CustomHelpers, ExtensionRule, SchemaInternals} from "@hapi/joi";
 
-export const ERR_CODE_NUM_OF_LOWER = "password.lower";
+export const ERR_CODE_NUM_OF_LOWER = "complexity.lower";
 
 const joiNumberOfLowerCase: ExtensionRule & ThisType<SchemaInternals> = {
     alias: "numOfLower",

@@ -1,6 +1,6 @@
 import {CustomHelpers, ExtensionRule, SchemaInternals} from "@hapi/joi";
 
-export const ERR_CODE_NUM_OF_SIGNS = "password.signs";
+export const ERR_CODE_NUM_OF_SIGNS = "complexity.signs";
 
 const joiNumberOfSigns: ExtensionRule & ThisType<SchemaInternals> = {
     alias: "numOfSigns",

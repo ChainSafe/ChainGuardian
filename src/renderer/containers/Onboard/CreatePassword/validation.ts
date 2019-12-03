@@ -11,11 +11,17 @@ export const passwordFormSchema = Joi.object().keys({
         .numOfSigns(1)
         .required()
         .messages({
-
+            "string.min": "Password must be at least 6 characters long",
+            "string.max": "Password must be at most 12 characters long",
+            "complexity.upper": "1 uppercase",
+            "complexity.lower": "1 lowercase",
+            "complexity.numbers": "1 numeric",
+            "complexity.signs": "1 special"
         }),
     confirm: Joi.string()
         .valid(Joi.ref("password"))
         .messages({
-            "any.only": "Passwords are not equal"
+            "any.only": "That password doesn't match. Try again?"
         }),
+    errorMessages: Joi.any()
 }).with("password", "confirm") as ObjectSchema;

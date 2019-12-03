@@ -30,7 +30,7 @@ describe("Onboarding password setup screen", () => {
         expect(currentStep.length).to.be.equal(3);
     });
 
-    it.skip("should fail invalid inputs", async () => {
+    it("should fail invalid inputs", async () => {
         const {client} = app;
 
         // password too short and invalid
@@ -38,7 +38,7 @@ describe("Onboarding password setup screen", () => {
         let errorMessage = await client.getText("#inputPassword-error");
         expect(errorMessage).to.be.equal(
             // eslint-disable-next-line max-len
-            "Password must have at least 8 characters and contain at least 1 uppercased letter and 1 number and 1 symbol"
+            "Password must be at least 6 characters long"
         );
 
         // next button disabled
@@ -49,7 +49,7 @@ describe("Onboarding password setup screen", () => {
         errorMessage = await client.getText("#inputPassword-error");
         expect(errorMessage).to.be.equal(
             // eslint-disable-next-line max-len
-            "Password must contain at least 1 uppercased letter and 1 number and 1 symbol"
+            "Password must contain: 1 uppercase, 1 numeric and 1 special character"
         );
 
         // next button disabled
@@ -68,7 +68,7 @@ describe("Onboarding password setup screen", () => {
     });
 
 
-    it.skip("should work valid inputs", async () => {
+    it("should work valid inputs", async () => {
         const {client} = app;
 
         // next button disabled

@@ -1,6 +1,6 @@
 import {CustomHelpers, ExtensionRule, SchemaInternals} from "@hapi/joi";
 
-export const ERR_CODE_NUM_OF_UPPER = "password.upper";
+export const ERR_CODE_NUM_OF_UPPER = "complexity.upper";
 
 const joiNumberOfUpperCase: ExtensionRule & ThisType<SchemaInternals> = {
     alias: "numOfUpper",
