@@ -1,7 +1,17 @@
-// .recharts-cartesian-axis-ticks{
-//     font-display: "Fira Code", sans-serif;
-// }
+.recharts-label {
+    font-family: "Fira Code", sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    fill: $secondary-green-100;
+}
 
+.recharts-cartesian-axis-tick {    
+    font-family: "Fira Code", sans-serif;
+    font-size: 11px;
+    line-height: 18px;
+    letter-spacing: 0.04em;
+    color: $neutral-400;
+}
 .balance-graph{
     background-color: $neutral-600;
     width: 624px;
