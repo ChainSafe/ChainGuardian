@@ -830,6 +830,17 @@
     js-sha256 "^0.9.0"
     secure-random "^1.1.1"
 
+"@chainsafe/bls@^0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@chainsafe/bls/-/bls-0.1.7.tgz#de3e5a4220f6a5051e09d696d6654b12aa9fa967"
+  integrity sha512-AMd7gHT9Fl1Qv29zLKxlZqHFsyUn/YeKXNvGPhhpbNG8kCh+BnbQtXyxWo/ReiEKM5DzG9sLKDJgDgMqKp7KwA==
+  dependencies:
+    "@chainsafe/eth2.0-types" "^0.1.0"
+    "@chainsafe/milagro-crypto-js" "0.1.3"
+    assert "^1.4.1"
+    js-sha256 "^0.9.0"
+    secure-random "^1.1.1"
+
 "@chainsafe/eth2.0-config@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-config/-/eth2.0-config-0.1.0.tgz#228eee73cca88ff076a85d0bc69f3e0ac874098e"
@@ -1186,6 +1197,17 @@
   dependencies:
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
+
+"@nodefactory/bls-keystore@^1.0.0-beta7":
+  version "1.0.0-beta7"
+  resolved "https://registry.yarnpkg.com/@nodefactory/bls-keystore/-/bls-keystore-1.0.0-beta7.tgz#aaa7c0c1f927563f4b005547659792225278e890"
+  integrity sha512-P9luXKHNM+a0GcqIbW7UYzlSBENhBZonlU6gWIiThjNl9CKOfITJCfab+Bl1IDkwbFwR9Atp+mgz73IXQY4k4w==
+  dependencies:
+    "@chainsafe/bls" "^0.1.7"
+    bcrypto "^4.2.8"
+    buffer "^5.4.3"
+    deepmerge "^4.2.2"
+    uuid "^3.3.3"
 
 "@nodelib/fs.stat@^1.1.2":
   version "1.1.3"
@@ -3163,6 +3185,16 @@ bcrypto@^4.1.0:
     loady "~0.0.1"
     nan "^2.13.2"
 
+bcrypto@^4.2.8:
+  version "4.2.8"
+  resolved "https://registry.yarnpkg.com/bcrypto/-/bcrypto-4.2.8.tgz#b51858d37a06e064bc1b0742633b394bd16298fc"
+  integrity sha512-qdmKQR5ykyWwyJepW7JOvveuRKTmFmJUG6Vjn0hGMcEk+4+nj7UVV1K9/JMd59Y+bA+BMb8nY5mrMXnakwH8Uw==
+  dependencies:
+    bsert "~0.0.10"
+    bufio "~1.0.6"
+    loady "~0.0.1"
+    nan "^2.13.2"
+
 bech32@1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/bech32/-/bech32-1.1.3.tgz#bd47a8986bbb3eec34a56a097a84b8d3e9a2dfcd"
@@ -3500,9 +3532,10 @@ buffer@^4.3.0:
     ieee754 "^1.1.4"
     isarray "^1.0.0"
 
-buffer@^5.1.0, buffer@^5.2.1:
+buffer@^5.1.0, buffer@^5.2.1, buffer@^5.4.3:
   version "5.4.3"
   resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.4.3.tgz#3fbc9c69eb713d323e3fc1a895eee0710c072115"
+  integrity sha512-zvj65TkFeIt3i6aj5bIvJDzjjQQGs4o/sNoezg1F1kYap9Nu2jcUdpwzRSJTHMMzG0H7bZkn4rNQpImhuxWX2A==
   dependencies:
     base64-js "^1.0.2"
     ieee754 "^1.1.4"
@@ -4582,6 +4615,11 @@ deepmerge@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.0.0.tgz#3e3110ca29205f120d7cb064960a39c3d2087c09"
   integrity sha512-YZ1rOP5+kHor4hMAH+HRQnBQHg+wvS1un1hAOuIcxcBy0hzcUf6Jg2a1w65kpoOUnurOfZbERwjI1TfZxNjcww==
+
+deepmerge@^4.2.2:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.2.2.tgz#44d2ea3679b8f4d4ffba33f03d865fc1e7bf4955"
+  integrity sha512-FJ3UgI4gIl+PHZm53knsuSFpE+nESMr7M4v9QcgB7S63Kj/6WqMiFQJpBBYz1Pt+66bZpP3Q7Lye0Oo9MPKEdg==
 
 deepmerge@~2.0.1:
   version "2.0.1"

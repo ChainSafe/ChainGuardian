@@ -5,6 +5,7 @@ export interface ICGKeystore {
     changePassword(oldPassword: string, newPassword: string): Promise<void>;
     destroy(): void;
     getAddress(): string;
+    getPublicKey(): string;
 }
 
 export interface ICGKeystoreFactory {
