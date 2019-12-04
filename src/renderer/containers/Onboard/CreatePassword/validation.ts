@@ -3,13 +3,13 @@ import {Joi} from "../../../services/validation";
 
 export const passwordFormSchema = Joi.object().keys({
     password: Joi.password()
+        .required()
         .min(6)
         .max(12)
         .numOfLower(1)
         .numOfUpper(1)
         .numOfNumbers(1)
         .numOfSigns(1)
-        .required()
         .messages({
             "string.empty": "Password must be at least 6 characters long",
             "string.min": "Password must be at least 6 characters long",
