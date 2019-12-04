@@ -1,6 +1,7 @@
 import * as React from "react";
+import {useState, useEffect} from "react";
 import { 
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+    LineChart, Line, XAxis, Tooltip,
 } from "recharts";
 
 export enum IntervalEnum {
@@ -10,41 +11,118 @@ export enum IntervalEnum {
     MONTH = "month",
     YEAR = "year",
 }
-
 enum Days {
     SUN = 0,MON,TUE,WED,THU,FRI,SAT,
+}
+enum Months {
+    JAN = 0,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC
 }
 
 export interface IBalanceGraphProps {
     defaultInterval?: IntervalEnum;
-    onOptionClick: () => void;
     getData: () => Promise<number[]>;
 }
 
 export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props: IBalanceGraphProps) => {
-    const dataValueArray = props.getData();
-    
-    let data: Array<object> = [];
+    const [data, setData] = useState<Array<object>>([]);
+    const [interval, setInterval] = useState<IntervalEnum>(IntervalEnum.WEEK);
 
-    for (let i = 0; i < dataValueArray.length; i++) {
-        data.push({
-            name: Days[i],
-            value: dataValueArray[i]
-        })
-    }
-    const date = new Date;
+    const formatDate = (date: string): string=>{
+        const month = date.slice(4,7).toUpperCase();
+        const day = date.slice(8,10);
+        return month + " " + day;
+    };
+
+    const setXAxis = (array: Promise<number[]>, time: IntervalEnum): void=>{
+        const dataArray: Array<object> = [];
+        const dateToday = new Date();
+        
+        switch (time) {
+            case IntervalEnum.HOUR: {
+                const minute = dateToday.getMinutes();
+                for (let i = 5; i >=0; i--) {
+                    dataArray.push({
+                        name: ((minute-10*i)<0 ? 60+(minute-10*i) : (minute-10*i)) + "'",
+                        value: array[i]
+                    });
+                }
+                break;
+            }
+            case IntervalEnum.DAY: {
+                const hour = dateToday.getHours();
+                for (let i = 9; i >=0; i--) {
+                    dataArray.push({
+                        name: (hour-i)<1 ? 24+hour-i : hour-i + "h",
+                        value: array[i]
+                    });
+                }
+                break;
+            }
+            case IntervalEnum.WEEK: {
+                const day = dateToday.getDay();
+                for (let i = 6; i >=0; i--) {
+                    dataArray.push({
+                        name: (day-i)<0 ? Days[7+day-i] : Days[day-i],
+                        value: array[i]
+                    });
+                }
+                break;
+            }
+            case IntervalEnum.MONTH: {
+                for (let i = 29; i >=0; i--) {
+                    const yesterday = new Date(new Date().setDate(new Date().getDate()-i-30));
+                    dataArray.push({
+                        name: formatDate(yesterday.toString()),
+                        value: array[i]
+                    });
+                }
+                break;
+            }
+            case IntervalEnum.YEAR: {
+                const month = dateToday.getMonth();
+                for (let i = 11; i >=0; i--) {
+                    dataArray.push({
+                        name: (month-i)<0 ? Months[12+month-i] : Months[month-i],
+                        value: array[i]
+                    });
+                }
+                break;
+            }
+        }
+        setData(dataArray);
+    };
+
+    useEffect(()=>{
+        const dataValueArray = props.getData();
+        switch (interval) {
+            case IntervalEnum.HOUR: setXAxis(dataValueArray, IntervalEnum.HOUR);
+                break;
+            case IntervalEnum.DAY: setXAxis(dataValueArray, IntervalEnum.DAY);
+                break;
+            case IntervalEnum.WEEK: setXAxis(dataValueArray, IntervalEnum.WEEK);
+                break;
+            case IntervalEnum.MONTH: setXAxis(dataValueArray, IntervalEnum.MONTH);
+                break;
+            case IntervalEnum.YEAR: setXAxis(dataValueArray, IntervalEnum.YEAR);
+                break;
+        }
+    },[interval]);
+
     return(
         <div className="balance-graph">
-            {console.log(date.getDate())}
             <div className="graph-header">
                 <div className="graph-title">Validator Balance</div>
                 <div className="graph-options">
-                    <div onClick={(): void=>{props.onOptionClick();}} className="graph-option">1H</div>
-                    <div className="graph-option">1D</div>
-                    <div className="graph-option">1W</div>
-                    <div className="graph-option">1M</div>
-                    <div className="graph-option">1Y</div>
-                    <div className="graph-option">ALL</div>
+                    <div onClick={(): void=>{setInterval(IntervalEnum.HOUR);}} 
+                        className="graph-option">1H</div>
+                    <div onClick={(): void=>{setInterval(IntervalEnum.DAY);}} 
+                        className="graph-option">1D</div>
+                    <div onClick={(): void=>{setInterval(IntervalEnum.WEEK);}} 
+                        className="graph-option">1W</div>
+                    <div onClick={(): void=>{setInterval(IntervalEnum.MONTH);}} 
+                        className="graph-option">1M</div>
+                    <div onClick={(): void=>{setInterval(IntervalEnum.YEAR);}} 
+                        className="graph-option">1Y</div>
                 </div>
             </div>
             <LineChart
@@ -58,16 +136,15 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
                     interval="preserveStartEnd"
                     tickLine={false}
                 />
-                {/* <Tooltip /> */}
+                <Tooltip />
                 <Line 
-                    animationDuration={1000}
                     type="step" 
                     dataKey="value" 
                     stroke="#76DF9A" 
                     dot={false}
-                    label={{dy: -15}}
-                    />
+                    // label={{dy: -15}}
+                />
             </LineChart>
         </div>
     );
-}
+};
