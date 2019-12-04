@@ -11,12 +11,13 @@ export const passwordFormSchema = Joi.object().keys({
         .numOfSigns(1)
         .required()
         .messages({
+            "string.empty": "Password must be at least 6 characters long",
             "string.min": "Password must be at least 6 characters long",
             "string.max": "Password must be at most 12 characters long",
-            "complexity.upper": "1 uppercase",
-            "complexity.lower": "1 lowercase",
-            "complexity.numbers": "1 numeric",
-            "complexity.signs": "1 special"
+            "complexity.upper": "Password must contain: 1 uppercase, 1 lowercase, 1 numeric and 1 special character",
+            "complexity.lower": "Password must contain: 1 uppercase, 1 lowercase, 1 numeric and 1 special character",
+            "complexity.numbers": "Password must contain: 1 uppercase, 1 lowercase, 1 numeric and 1 special character",
+            "complexity.signs": "Password must contain: 1 uppercase, 1 lowercase, 1 numeric and 1 special character"
         }),
     confirm: Joi.string()
         .valid(Joi.ref("password"))

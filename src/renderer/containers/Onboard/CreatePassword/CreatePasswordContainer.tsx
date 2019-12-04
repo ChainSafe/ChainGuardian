@@ -5,8 +5,7 @@ import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
 import {MultipleInputVertical} from "../../../components/MultipleInputVertical/MultipleInputVertical";
 import {RouteComponentProps} from "react-router";
 import {passwordFormSchema} from "./validation";
-import {joiValidationToErrorDetailsMessages} from "../../../services/validation/util";
-import {joinArrayOxfStyle} from "../../../services/utils/utils";
+import {joiValidationToErrorMessages} from "../../../services/validation/util";
 
 export interface IState {
     password: string;
@@ -28,17 +27,18 @@ export class CreatePasswordContainer extends Component<Pick<RouteComponentProps,
     public render(): ReactElement {
         const inputs: Array<IInputFormProps> = [
             {
-                inputId:"inputPassword",
+                inputId:"password",
                 onChange: this.handleChange,
                 placeholder: "Enter password",
                 valid: this.isValid(this.state.errorMessages.password),
                 errorMessage: this.state.errorMessages.password
             },
             {
-                inputId:"confirmPassword",
+                inputId:"confirm",
                 onChange: this.handleChange,
                 placeholder: "Confirm password",
-                valid: this.isValid(this.state.errorMessages.confirm),
+                valid: this.isValid(this.state.errorMessages.confirm) &&
+                    this.isValid(this.state.errorMessages.password),
                 errorMessage: this.state.errorMessages.confirm
             }
         ];
@@ -64,37 +64,15 @@ export class CreatePasswordContainer extends Component<Pick<RouteComponentProps,
     }
 
     private handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
-        const selector = (e.currentTarget.id === "inputPassword") ? "password" : "confirm";
-        const localState = this.state;
-        localState[selector] = e.currentTarget.value;
-        this.setState({[selector]: e.currentTarget.value});
-        // validate state
-        const validation = passwordFormSchema.validate(localState, {abortEarly: false});
-        // generate error messages
-        const m: {password?: string, confirm?: string} = {password: "", confirm: ""};
+        const localState = this.state as any;
+        localState[e.currentTarget.id] = e.currentTarget.value;
+        this.setState({[e.currentTarget.id]: e.currentTarget.value});
+        const validation = passwordFormSchema.validate(localState);
+        const m = {password: "", confirm: ""};
         if (validation.error) {
-            const errors = joiValidationToErrorDetailsMessages(validation.error);
-            // confirmation errors
-            if (localState.confirm === "") {
-                m.confirm = undefined;  // empty input
-            } else if (errors.confirm) {
-                m.confirm = errors.confirm.any.join();
-            }
-            // password errors
-            if (localState.password === "") {
-                m.password = undefined; // empty input
-            } else if (errors.password) {
-                // base length errors
-                if (errors.password.string) {
-                    m.password = errors.password.string.join();
-                }
-                // complexity errors, if no base errors
-                if (errors.password.complexity && m.password === "") {
-                    const complexityErrors =
-                        joinArrayOxfStyle(errors.password.complexity, ",", "and");
-                    m.password = `Password must contain: ${complexityErrors} character`;
-                }
-            }
+            const errors = joiValidationToErrorMessages(validation.error);
+            if (errors.password) m.password = errors.password.join(".");
+            if (errors.confirm) m.confirm = errors.confirm.join(".");
         }
         this.setState({errorMessages: m});
     };
