@@ -1,0 +1,15 @@
+.public-key{
+    padding: 32px 0 0 10px;
+}
+.validator-nodes-simple{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.validator-buttons-simple{
+        display: flex;
+        justify-content: flex-end;
+        .button:nth-child(1){
+            margin-right: 27px;
+        }
+    }
