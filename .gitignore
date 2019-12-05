@@ -8,3 +8,4 @@ release/
 coverage
 *.log
 package-lock.json
+test-level.db
