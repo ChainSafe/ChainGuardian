@@ -1,13 +1,12 @@
 /* eslint-disable */
-import {app, BrowserWindow} from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 import url from "url";
 import { setApplicationMenu } from './menu';
-import { CGDatabase } from '../renderer/services/db/api';
-import { LevelDbController } from '../renderer/services/db/controller';
-import { config } from '@chainsafe/eth2.0-config/lib/presets/minimal';
+import { DatabaseHandler } from "./database";
 
 let win: BrowserWindow | null;
+let databaseHandler: DatabaseHandler;
 
 const installExtensions = async () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
@@ -30,6 +29,8 @@ const iconExtensions = {
     cygwin: ".png"
 };
 
+export const SAVE_TO_DATABASE_REQUEST = 'save-to-database-request'
+
 const createWindow = async () => {
     if (process.env.NODE_ENV !== "production") {
         await installExtensions();
@@ -40,7 +41,7 @@ const createWindow = async () => {
         `../src/renderer/assets/ico/app_icon${iconExtensions[process.platform]}`
     );
     win = new BrowserWindow({
-        webPreferences: {nodeIntegration: true},
+        webPreferences: { nodeIntegration: true },
         backgroundColor: "#052437",
         show: false,
         icon: iconPath,
@@ -49,10 +50,11 @@ const createWindow = async () => {
     win.once("ready-to-show", () => {
         if (win !== null) { win.show(); }
     });
-    win.webContents.on("did-finish-load", () => {
+    win.webContents.on("did-finish-load", async () => {
         if (win !== null) {
             win.setTitle("ChainGuardian");
-            new CGDatabase({config, controller: new LevelDbController({name: "test-level.db"})});
+            databaseHandler = new DatabaseHandler()
+            await databaseHandler.start()
         }
     });
 
@@ -79,7 +81,13 @@ const createWindow = async () => {
     win.on("closed", () => {
         win = null;
     });
-
+    
+    ipcMain.on(SAVE_TO_DATABASE_REQUEST, (event, arg) => {
+        console.log(arg) // prints "ping"
+        //databaseHandler.saveToDatabase("id", arg)
+        event.returnValue = 'pong'
+    })
+    
     setApplicationMenu();
 };
 

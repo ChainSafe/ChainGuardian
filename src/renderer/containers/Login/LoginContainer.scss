@@ -1,10 +1,15 @@
 .input-container{
+    width: 100%;
+    
     display: flex;
     align-items: center;
     .inputform {
         width: 402px;
-        height: 28px;
+        //height: 28px;
     }
+}
+.input-or{
+    margin: 24px;
 }
 .input-container .button.btn-secondary{
     align-self: flex-start;
