@@ -45,4 +45,7 @@
     letter-spacing: 0.04em;
     color: $neutral-400;
     padding-left: 16px;
+    &.selected{
+        color: $neutral-100;
+    }
 }

@@ -36,7 +36,6 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
     const setXAxis = (array: Promise<number[]>, time: IntervalEnum): void=>{
         const dataArray: Array<object> = [];
         const dateToday = new Date();
-        
         switch (time) {
             case IntervalEnum.HOUR: {
                 const minute = dateToday.getMinutes();
@@ -108,21 +107,31 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
         }
     },[interval]);
 
+    const handleOptionClick = (IntervalValue: IntervalEnum): void=>{
+        setInterval(IntervalValue);
+        props.getData();
+    };
+
     return(
         <div className="balance-graph">
             <div className="graph-header">
                 <div className="graph-title">Validator Balance</div>
                 <div className="graph-options">
-                    <div onClick={(): void=>{setInterval(IntervalEnum.HOUR);}} 
-                        className="graph-option">1H</div>
-                    <div onClick={(): void=>{setInterval(IntervalEnum.DAY);}} 
-                        className="graph-option">1D</div>
-                    <div onClick={(): void=>{setInterval(IntervalEnum.WEEK);}} 
-                        className="graph-option">1W</div>
-                    <div onClick={(): void=>{setInterval(IntervalEnum.MONTH);}} 
-                        className="graph-option">1M</div>
-                    <div onClick={(): void=>{setInterval(IntervalEnum.YEAR);}} 
-                        className="graph-option">1Y</div>
+                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.HOUR);}} 
+                        className={`graph-option ${(interval===IntervalEnum.HOUR ? "selected" : "")}`}
+                    >1H</div>
+                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.DAY);}} 
+                        className={`graph-option ${(interval===IntervalEnum.DAY ? "selected" : "")}`}
+                    >1D</div>
+                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.WEEK);}} 
+                        className={`graph-option ${(interval===IntervalEnum.WEEK ? "selected" : "")}`}
+                    >1W</div>
+                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.MONTH);}} 
+                        className={`graph-option ${(interval===IntervalEnum.MONTH ? "selected" : "")}`}
+                    >1M</div>
+                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.YEAR);}} 
+                        className={`graph-option ${(interval===IntervalEnum.YEAR ? "selected" : "")}`}
+                    >1Y</div>
                 </div>
             </div>
             <LineChart
@@ -142,7 +151,6 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
                     dataKey="value" 
                     stroke="#76DF9A" 
                     dot={false}
-                    // label={{dy: -15}}
                 />
             </LineChart>
         </div>
