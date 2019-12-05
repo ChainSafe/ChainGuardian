@@ -71,6 +71,7 @@
   "build": {
     "productName": "ProductName",
     "buildDependenciesFromSource": true,
+    "npmRebuild": true,
     "appId": "org.your.productname",
     "mac": {
       "category": "your.app.category.type"

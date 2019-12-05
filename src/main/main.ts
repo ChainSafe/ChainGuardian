@@ -54,7 +54,7 @@ const createWindow = async () => {
         if (win !== null) {
             win.setTitle("ChainGuardian");
             databaseHandler = new DatabaseHandler()
-            await databaseHandler.start()
+            //await databaseHandler.start()
         }
     });
 
@@ -81,6 +81,8 @@ const createWindow = async () => {
     win.on("closed", () => {
         win = null;
     });
+
+    console.log("Created")
     
     ipcMain.on(SAVE_TO_DATABASE_REQUEST, (event, arg) => {
         console.log(arg) // prints "ping"
