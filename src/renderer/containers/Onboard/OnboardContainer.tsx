@@ -3,7 +3,7 @@ import {match, RouteComponentProps} from "react-router-dom";
 import {Background} from "../../components/Background/Background";
 import OnBoardModal from "./OnBoardModal";
 import SigningKey from "./SigningKey/SigningKey";
-import WithdrawalKeyImport from "./WithdrawalKey/WithdrawalKeyImport";
+import {WithdrawalKeyImportContainer} from "./WithdrawalKey/WithdrawalKeyImport";
 import {OnBoardingRoutes} from "../../constants/routes";
 import {SigningKeyVerifyContainer} from "./SigningKey/Verify/SigningMnemonicQuestion";
 import {SigningKeyGenerateContainer} from "./SigningKey/Generate/SigningMnemonic";
@@ -24,7 +24,7 @@ export default class OnboardContainer extends Component<IProps, {}> {
     private Steper = {
         [OnBoardingRoutes.SIGNING]: <SigningKey />,
         [OnBoardingRoutes.SIGNING_IMPORT]: <SigningKeyImportContainer history={this.props.history} />,
-        [OnBoardingRoutes.WITHDRAWAL_IMPORT]: <WithdrawalKeyImport history={this.props.history} />,
+        [OnBoardingRoutes.WITHDRAWAL_IMPORT]: <WithdrawalKeyImportContainer history={this.props.history} />,
         [OnBoardingRoutes.SIGNING_KEY_GENERATE]: <SigningKeyGenerateContainer history={this.props.history}/>,
         [OnBoardingRoutes.SIGNING_KEY_VALIDATE]: <SigningKeyVerifyContainer history={this.props.history}/>,
         [OnBoardingRoutes.PASSWORD]: <CreatePasswordContainer history={this.props.history}/>,

@@ -4,6 +4,8 @@ import path from "path";
 import url from "url";
 import { setApplicationMenu } from './menu';
 import { DatabaseHandler } from "./database";
+import { SAVE_TO_DATABASE_REQUEST, GET_FROM_DATABASE_REQUEST } from "../renderer/constants/keystore";
+import { IIpcDatabaseEntry } from "../renderer/services/interfaces";
 
 let win: BrowserWindow | null;
 let databaseHandler: DatabaseHandler;
@@ -29,8 +31,6 @@ const iconExtensions = {
     cygwin: ".png"
 };
 
-export const SAVE_TO_DATABASE_REQUEST = 'save-to-database-request'
-
 const createWindow = async () => {
     if (process.env.NODE_ENV !== "production") {
         await installExtensions();
@@ -46,7 +46,7 @@ const createWindow = async () => {
         show: false,
         icon: iconPath,
     });
-    //win.maximize();
+    win.maximize();
     win.once("ready-to-show", () => {
         if (win !== null) { win.show(); }
     });
@@ -54,7 +54,7 @@ const createWindow = async () => {
         if (win !== null) {
             win.setTitle("ChainGuardian");
             databaseHandler = new DatabaseHandler()
-            //await databaseHandler.start()
+            await databaseHandler.start()
         }
     });
 
@@ -78,14 +78,19 @@ const createWindow = async () => {
         });
     }
 
-    win.on("closed", () => {
+    win.on("closed", async () => {
+        await databaseHandler.stop()
         win = null;
     });
     
-    ipcMain.on('a', (event, arg) => {
-        console.log(arg) // prints "ping"
-        //databaseHandler.saveToDatabase("id", arg)
-        event.returnValue = 'pong'
+    ipcMain.on(SAVE_TO_DATABASE_REQUEST, (event, arg: IIpcDatabaseEntry) => {
+        databaseHandler.saveToDatabase(arg.id, arg.account)
+        event.returnValue = true
+    })
+
+    ipcMain.on(GET_FROM_DATABASE_REQUEST, async (event, id: string) => {
+        const account = await databaseHandler.getFromDatabase(id)
+        event.returnValue = account
     })
     
     setApplicationMenu();

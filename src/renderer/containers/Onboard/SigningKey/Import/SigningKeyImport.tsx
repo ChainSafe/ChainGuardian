@@ -5,7 +5,7 @@ import {Routes, OnBoardingRoutes} from "../../../../constants/routes";
 import {IMPORT_SIGNING_KEY_TITLE, IMPORT_SIGNING_KEY_PLACEHOLDER} from "../../../../constants/strings";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
-import {storeSigningKeyAction, afterPasswordAction} from "../../../../actions";
+import {storeSigningKeyAction} from "../../../../actions";
 import {mnemonicSchema, privateKeySchema} from "./validation";
 import {ValidationResult} from "@hapi/joi";
 import {Eth2HDWallet} from "../../../../services/wallet";
@@ -23,7 +23,6 @@ interface IOwnProps extends Pick<RouteComponentProps, "history"> {
  */
 interface IInjectedProps {
     storeSigningKey: typeof storeSigningKeyAction;
-    afterPassword: typeof afterPasswordAction;
 }
 
 class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
@@ -44,7 +43,6 @@ class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
     private handleSubmit= (input: string): void => {
         const signingKey = input.startsWith("0x") ? input : Eth2HDWallet.getKeypair(input).privateKey.toHexString();
         this.props.storeSigningKey(signingKey);
-        this.props.afterPassword("test");
         this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL_IMPORT));
     };
 
@@ -54,7 +52,6 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
             storeSigningKey: storeSigningKeyAction,
-            afterPassword: afterPasswordAction,
         },
         dispatch
     );
