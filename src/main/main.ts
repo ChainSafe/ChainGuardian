@@ -46,7 +46,7 @@ const createWindow = async () => {
         show: false,
         icon: iconPath,
     });
-    win.maximize();
+    //win.maximize();
     win.once("ready-to-show", () => {
         if (win !== null) { win.show(); }
     });
@@ -81,10 +81,8 @@ const createWindow = async () => {
     win.on("closed", () => {
         win = null;
     });
-
-    console.log("Created")
     
-    ipcMain.on(SAVE_TO_DATABASE_REQUEST, (event, arg) => {
+    ipcMain.on('a', (event, arg) => {
         console.log(arg) // prints "ping"
         //databaseHandler.saveToDatabase("id", arg)
         event.returnValue = 'pong'

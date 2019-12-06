@@ -78,7 +78,7 @@ export const afterPasswordAction = (password: string) => {
         */
         // TODO save account to db
 
-        saveToDatabase("ping")
+        console.log(saveToDatabase("ping"))
         //console.log(saveToDatabase("pong"))
 
         // 3. Delete keys from redux
