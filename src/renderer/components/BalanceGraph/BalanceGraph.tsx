@@ -1,4 +1,6 @@
 import * as React from "react";
+import {normalizeHour,normalizeDay,normalizeWeek,
+    normalizeMonth,normalizeYear} from "../../services/balance_graph/normalizeDataPoints";
 import {useState, useEffect} from "react";
 import { 
     LineChart, Line, XAxis, Tooltip,
@@ -11,105 +13,133 @@ export enum IntervalEnum {
     MONTH = "month",
     YEAR = "year",
 }
-enum Days {
-    SUN = 0,MON,TUE,WED,THU,FRI,SAT,
-}
-enum Months {
-    JAN = 0,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC
-}
 
 export interface IBalanceGraphProps {
     defaultInterval?: IntervalEnum;
-    getData: () => Promise<number[]>;
+    getData: (interval: IntervalEnum) => Promise<number[]>;
+    //HOUR-last 60 minutes - 60 values
+    //DAY-last 24 hours - 24 values
+    //WEEK-last 7 days - 7 values
+    //MONTH-last 12 days - 12 values
+    //YEAR-last 12 months- 12 values
 }
 
 export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props: IBalanceGraphProps) => {
     const [data, setData] = useState<Array<object>>([]);
     const [interval, setInterval] = useState<IntervalEnum>(IntervalEnum.WEEK);
+    const [refreshInterval, setRefreshInterval] = useState<number>(0);
 
-    const formatDate = (date: string): string=>{
-        const month = date.slice(4,7).toUpperCase();
-        const day = date.slice(8,10);
-        return month + " " + day;
-    };
-
-    const setXAxis = (array: Promise<number[]>, time: IntervalEnum): void=>{
-        const dataArray: Array<object> = [];
-        const dateToday = new Date();
-        switch (time) {
-            case IntervalEnum.HOUR: {
-                const minute = dateToday.getMinutes();
-                for (let i = 5; i >=0; i--) {
-                    dataArray.push({
-                        name: ((minute-10*i)<0 ? 60+(minute-10*i) : (minute-10*i)) + "'",
-                        value: array[i]
-                    });
-                }
+    const setXAxis = (array: number[], interval: IntervalEnum): void=>{
+        let dataArray: Array<object> = [];
+        switch (interval) {
+            case IntervalEnum.HOUR: dataArray=normalizeHour(dataArray,array);
                 break;
-            }
-            case IntervalEnum.DAY: {
-                const hour = dateToday.getHours();
-                for (let i = 9; i >=0; i--) {
-                    dataArray.push({
-                        name: (hour-i)<1 ? 24+hour-i : hour-i + "h",
-                        value: array[i]
-                    });
-                }
+            case IntervalEnum.DAY: dataArray=normalizeDay(dataArray,array);
                 break;
-            }
-            case IntervalEnum.WEEK: {
-                const day = dateToday.getDay();
-                for (let i = 6; i >=0; i--) {
-                    dataArray.push({
-                        name: (day-i)<0 ? Days[7+day-i] : Days[day-i],
-                        value: array[i]
-                    });
-                }
+            case IntervalEnum.WEEK: dataArray=normalizeWeek(dataArray,array);
                 break;
-            }
-            case IntervalEnum.MONTH: {
-                for (let i = 29; i >=0; i--) {
-                    const yesterday = new Date(new Date().setDate(new Date().getDate()-i-30));
-                    dataArray.push({
-                        name: formatDate(yesterday.toString()),
-                        value: array[i]
-                    });
-                }
+            case IntervalEnum.MONTH: dataArray=normalizeMonth(dataArray,array);
                 break;
-            }
-            case IntervalEnum.YEAR: {
-                const month = dateToday.getMonth();
-                for (let i = 11; i >=0; i--) {
-                    dataArray.push({
-                        name: (month-i)<0 ? Months[12+month-i] : Months[month-i],
-                        value: array[i]
-                    });
-                }
+            case IntervalEnum.YEAR: dataArray=normalizeYear(dataArray,array);
                 break;
-            }
         }
         setData(dataArray);
     };
 
-    useEffect(()=>{
-        const dataValueArray = props.getData();
-        switch (interval) {
-            case IntervalEnum.HOUR: setXAxis(dataValueArray, IntervalEnum.HOUR);
-                break;
-            case IntervalEnum.DAY: setXAxis(dataValueArray, IntervalEnum.DAY);
-                break;
-            case IntervalEnum.WEEK: setXAxis(dataValueArray, IntervalEnum.WEEK);
-                break;
-            case IntervalEnum.MONTH: setXAxis(dataValueArray, IntervalEnum.MONTH);
-                break;
-            case IntervalEnum.YEAR: setXAxis(dataValueArray, IntervalEnum.YEAR);
-                break;
-        }
-    },[interval]);
-
     const handleOptionClick = (IntervalValue: IntervalEnum): void=>{
         setInterval(IntervalValue);
-        props.getData();
+        props.getData(interval);
+    };
+
+    const renderGraphIntervalOption = (IntervalValue: IntervalEnum): string => {
+        let selector = "";
+        interval===IntervalValue ? selector="selected" : null;
+        return `graph-option ${selector}`;
+    };
+    // let refreshInterval: number = 0;
+    useEffect(()=>{
+    
+        clearInterval(refreshInterval);
+        console.log("ON MOUNT: " + refreshInterval);
+
+        const timeNow = new Date();
+        console.log(timeNow);
+        switch (interval) {
+            case IntervalEnum.HOUR: {
+                const seconds = timeNow.getSeconds();
+                console.log("seconds now: " + seconds);
+            
+                const intervalHandler = (): void =>{
+                    awaitData();
+                    const localRefreshInterval = window.setInterval(awaitData, 60000);
+                    setRefreshInterval(localRefreshInterval);
+                };
+
+                window.setTimeout(intervalHandler,(60-seconds)*1000);
+
+                console.log("Case HOUR, refreshInterval on case: " + refreshInterval);
+            }
+                break;
+            case IntervalEnum.DAY: {
+                const msUntil = (60-(timeNow.getSeconds()))*1000;
+                const minUntil = ((60-(timeNow.getMinutes()-1))*1000*60)+msUntil;
+
+                const intervalHandler = (): void =>{
+                    awaitData();
+                    const localRefreshInterval = window.setInterval(awaitData, 3600000);
+                    setRefreshInterval(localRefreshInterval);
+                };
+
+                window.setTimeout(intervalHandler,minUntil);
+
+                console.log("Case DAY, refreshInterval on case: " + refreshInterval);
+            }
+                break;
+            case (IntervalEnum.WEEK || IntervalEnum.MONTH): {
+                const msUntil = (60-(timeNow.getSeconds()))*1000;
+                const minUntil = ((60-(timeNow.getMinutes()-1))*1000*60)+msUntil;
+                const hourUntil = ((24-(timeNow.getHours()-1))*1000*60*60)+minUntil;
+
+                const intervalHandler = (): void =>{
+                    awaitData();
+                    const localRefreshInterval = window.setInterval(awaitData, 86400000);
+                    setRefreshInterval(localRefreshInterval);
+                };
+
+                window.setTimeout(intervalHandler,hourUntil);
+
+                console.log("Case WEEK, refreshInterval on case: " + refreshInterval);
+            }
+                break;
+            case IntervalEnum.YEAR: {
+                const msUntil = (60-(timeNow.getSeconds()))*1000;
+                const minUntil = ((60-(timeNow.getMinutes()-1))*1000*60)+msUntil;
+                const hourUntil = ((24-(timeNow.getHours()-1))*1000*60*60)+minUntil;
+
+                const intervalHandler = (): void =>{
+                    if (timeNow.getDate()===1){
+                        awaitData();
+                    }
+                    const localRefreshInterval = window.setInterval(awaitData, 86400000);
+                    setRefreshInterval(localRefreshInterval);
+                };
+
+                window.setTimeout(intervalHandler, hourUntil);
+
+                console.log("Case YEAR, refreshInterval on case: " + refreshInterval);
+            }
+                break;
+        }
+        awaitData();
+    },[interval]);
+
+    const awaitData = async (): Promise<void>=>{
+        props.getData(interval).then((dataValueArray)=>{
+            setXAxis(dataValueArray, interval);
+            
+        });
+        console.log("Data loaded for: " + interval);
+        console.log("refreshInterval on data load: " + refreshInterval);
     };
 
     return(
@@ -118,40 +148,29 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
                 <div className="graph-title">Validator Balance</div>
                 <div className="graph-options">
                     <div onClick={(): void=>{handleOptionClick(IntervalEnum.HOUR);}} 
-                        className={`graph-option ${(interval===IntervalEnum.HOUR ? "selected" : "")}`}
+                        className={renderGraphIntervalOption(IntervalEnum.HOUR)}
                     >1H</div>
                     <div onClick={(): void=>{handleOptionClick(IntervalEnum.DAY);}} 
-                        className={`graph-option ${(interval===IntervalEnum.DAY ? "selected" : "")}`}
+                        className={renderGraphIntervalOption(IntervalEnum.DAY)}
                     >1D</div>
                     <div onClick={(): void=>{handleOptionClick(IntervalEnum.WEEK);}} 
-                        className={`graph-option ${(interval===IntervalEnum.WEEK ? "selected" : "")}`}
+                        className={renderGraphIntervalOption(IntervalEnum.WEEK)}
                     >1W</div>
                     <div onClick={(): void=>{handleOptionClick(IntervalEnum.MONTH);}} 
-                        className={`graph-option ${(interval===IntervalEnum.MONTH ? "selected" : "")}`}
+                        className={renderGraphIntervalOption(IntervalEnum.MONTH)}
                     >1M</div>
                     <div onClick={(): void=>{handleOptionClick(IntervalEnum.YEAR);}} 
-                        className={`graph-option ${(interval===IntervalEnum.YEAR ? "selected" : "")}`}
+                        className={renderGraphIntervalOption(IntervalEnum.YEAR)}
                     >1Y</div>
                 </div>
             </div>
             <LineChart
-                width={624}
-                height={199}
-                data={data}
+                width={624} height={199} data={data}
                 margin={{top: 5, bottom: 0, left: 30, right: 30,}}>
-                <XAxis 
-                    dataKey="name" 
-                    stroke="#9ba7af" 
-                    interval="preserveStartEnd"
-                    tickLine={false}
-                />
-                <Tooltip />
-                <Line 
-                    type="step" 
-                    dataKey="value" 
-                    stroke="#76DF9A" 
-                    dot={false}
-                />
+                <XAxis dataKey="name" stroke="#9ba7af" 
+                    interval="preserveStartEnd" tickLine={false}/>
+                <Tooltip isAnimationActive={false}/>
+                <Line type="step" dataKey="value" stroke="#76DF9A" dot={false}/>
             </LineChart>
         </div>
     );

@@ -4,7 +4,9 @@
     letter-spacing: 0.04em;
     fill: $secondary-green-100;
 }
-
+.recharts-tooltip-wrapper{
+    font-family: "Fira Code", sans-serif;
+}
 .recharts-cartesian-axis-tick {    
     font-family: "Fira Code", sans-serif;
     font-size: 11px;
