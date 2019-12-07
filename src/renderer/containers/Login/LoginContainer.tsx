@@ -6,7 +6,6 @@ import {InputForm} from "../../components/Input/InputForm";
 import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
 import {Link} from "react-router-dom";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
-import { ipcRenderer } from "electron";
 
 interface IState {
     input: string;

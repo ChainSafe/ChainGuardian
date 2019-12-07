@@ -4,7 +4,7 @@ import {existsSync, readFileSync, unlinkSync, writeFileSync,mkdirSync, statSync}
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {Keystore, IKeystore} from "@nodefactory/bls-keystore";
 import bech32 from "bech32";
-import { KEYSTORE_DEFAULT_DIRECTORY } from "../../constants/keystore";
+import {KEYSTORE_DEFAULT_DIRECTORY} from "../../constants/keystore";
 
 const KEY_PATH = "m/12381/60/0/0";
 const ETH2_ADDRESS_PREFIX="eth2";
@@ -27,7 +27,7 @@ export class V4Keystore implements ICGKeystore {
     public static async create(file: string, password: string, keypair: Keypair): Promise<ICGKeystore> {
         try {
             const keystore = Keystore.encrypt(keypair.privateKey.toBytes(), password, KEY_PATH);
-            ensureKeystoreDirectory()
+            ensureKeystoreDirectory();
             writeFileSync(file, keystore.toJSON());
             return new V4Keystore(file);
         } catch (err) {
@@ -55,7 +55,7 @@ export class V4Keystore implements ICGKeystore {
         const keypair = await this.decrypt(oldPassword);
         const keystore = Keystore.encrypt(keypair.privateKey.toBytes(), newPassword);
         try {
-            ensureKeystoreDirectory()
+            ensureKeystoreDirectory();
             writeFileSync(this.file, keystore.toJSON());
             this.keystore = keystore;
         } catch (err) {
@@ -103,15 +103,15 @@ export class V4Keystore implements ICGKeystore {
 
 export const V4KeystoreFactory: ICGKeystoreFactory = V4Keystore;
 
-function ensureKeystoreDirectory(){
+function ensureKeystoreDirectory(): void{
     try {
         statSync(KEYSTORE_DEFAULT_DIRECTORY);
         //file or directory exists
     }
     catch (err) {
-      if (err.code === 'ENOENT') {
+        if (err.code === "ENOENT") {
         //file or directory does not exist
-        mkdirSync(KEYSTORE_DEFAULT_DIRECTORY)
-      }
+            mkdirSync(KEYSTORE_DEFAULT_DIRECTORY);
+        }
     }
 }

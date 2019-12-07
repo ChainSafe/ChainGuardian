@@ -5,10 +5,10 @@ import {V4Keystore} from "../services/keystore";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 //import {KEYSTORE_DEFAULT_DIRECTORY} from "../constants/keystore";
-import { saveToDatabase, getFromDatabase } from "../services/utils/db-utils";
-import { KEYSTORE_DEFAULT_DIRECTORY, ACCOUNT_ID } from "../constants/keystore";
-import { CGAccount } from "../models/account";
-import { getV4Filename } from "../services/utils/crypto-utils";
+import {saveToDatabase} from "../services/utils/db-utils";
+import {KEYSTORE_DEFAULT_DIRECTORY, ACCOUNT_ID} from "../constants/keystore";
+import {CGAccount} from "../models/account";
+import {getV4Filename} from "../services/utils/crypto-utils";
 
 
 // Mnemonic action
@@ -65,10 +65,13 @@ export interface IWithdarawalKeyAction extends Action<RegisterActionTypes> {
 
 // After password action
 export const afterPasswordAction = (password: string) => {
-    return (dispatch: Dispatch<IAfterPasswordAction>, getState: () => IRootState): void => {
+    return (dispatch: Dispatch<Action<RegisterActionTypes>>, getState: () => IRootState): void => {
         // 1. Save to keystore
         const signingKey = getState().register.signingKey;
-        V4Keystore.create(`${KEYSTORE_DEFAULT_DIRECTORY}/${getV4Filename()}.json`, password, new Keypair(PrivateKey.fromHexString(signingKey)));
+        V4Keystore.create(
+            `${KEYSTORE_DEFAULT_DIRECTORY}/${getV4Filename()}.json`, 
+            password, new Keypair(PrivateKey.fromHexString(signingKey))
+        );
 
         // 2. Save account to db
         // FIXME should we save account here or after "Consent step" because of sendStats
@@ -81,15 +84,13 @@ export const afterPasswordAction = (password: string) => {
         saveToDatabase({
             id: ACCOUNT_ID,
             account
-        })
+        });
         
         // 3. Delete keys from redux
         dispatch(setClearKeys());
     };
 };
 
-export interface IAfterPasswordAction extends Action<RegisterActionTypes> {
-}
 
 export const setClearKeys = (): Action<RegisterActionTypes> => ({
     type: RegisterActionTypes.CLEAR_KEYS

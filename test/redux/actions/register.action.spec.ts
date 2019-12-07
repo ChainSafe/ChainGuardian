@@ -5,9 +5,7 @@ import {
     setSigningKey, setWithdrawalKey,
     storeWithdrawalKeyAction,
     setMnemonic,
-    storeSigningKeyMnemonicAction,
-    setClearKeys,
-    afterPasswordAction
+    storeSigningKeyMnemonicAction
 } from "../../../src/renderer/actions";
 import {IRootState} from "../../../src/renderer/reducers";
 import {IRegisterState} from "../../../src/renderer/reducers/register";

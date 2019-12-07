@@ -8,7 +8,7 @@ import {OnBoardingRoutes} from "../../constants/routes";
 import {SigningKeyVerifyContainer} from "./SigningKey/Verify/SigningMnemonicQuestion";
 import {SigningKeyGenerateContainer} from "./SigningKey/Generate/SigningMnemonic";
 import {SigningKeyImportContainer} from "./SigningKey/Import/SigningKeyImport";
-import DepositTxContainer from "./DepositTx/DepositTxContainer";
+import {DepositTxContainer} from "./DepositTx/DepositTxContainer";
 import {CreatePasswordContainer} from "./CreatePassword/CreatePasswordContainer";
 
 interface IOnboardStep {

@@ -20,7 +20,8 @@ export const generateDepositAction = (networkConfig: INetworkConfig, amount: str
             networkConfig.contract.address,
             networkConfig.config,
             amount);
-        const txData = `0x${depositTx.data.toString("hex")}`;
+        const txData = typeof depositTx.data === "object" ?
+            `0x${depositTx.data.toString("hex")}` : `0x${depositTx.data}`;
 
         dispatch(setDepositGenerated(true));
         dispatch(setDepositTransactionData(txData));

@@ -1,6 +1,6 @@
-import { Keypair } from "@chainsafe/bls/lib/keypair";
-import { readdirSync } from "fs";
-import { ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory } from "../services/keystore";
+import {Keypair} from "@chainsafe/bls/lib/keypair";
+import {readdirSync} from "fs";
+import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/keystore";
 
 export interface IAccount {
     name: string;

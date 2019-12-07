@@ -11,7 +11,7 @@ import {bindActionCreators, Dispatch} from "redux";
 import {storeWithdrawalKeyAction} from "../../../actions";
 import {publicKeySchema} from "./validation";
 import {ValidationResult} from "@hapi/joi";
-import { Routes, OnBoardingRoutes } from "../../../constants/routes";
+import {Routes, OnBoardingRoutes} from "../../../constants/routes";
 
 
 /**
@@ -45,7 +45,7 @@ class WithdrawalKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
 
     private handleSubmit= (input: string): void => {
         this.props.storeWithdrawalKey(input);
-        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
     };
 }
 
