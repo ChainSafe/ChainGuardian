@@ -8,6 +8,8 @@ import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {EthersNotifier} from "../services/deposit/ethers";
 
+const NETWORK_NAME = "ropsten"
+
 // Generate deposit action
 export const generateDepositAction = (networkConfig: INetworkConfig, amount: string) => {
     return (dispatch: Dispatch<IGenerateDepositAction>, getState: () => IRootState): void => {
@@ -29,10 +31,11 @@ export const generateDepositAction = (networkConfig: INetworkConfig, amount: str
 };
 
 // Verify deposit action
-export const verifyDepositAction = (networkConfig: INetworkConfig, provider: ethers.providers.Web3Provider) => {
+export const verifyDepositAction = (networkConfig: INetworkConfig) => {
     return (dispatch: Dispatch<IVerifyDepositAction>, getState: () => IRootState): void => {
         const signingKey = getState().register.signingKey;
         const keyPair = new Keypair(PrivateKey.fromHexString(signingKey));
+        const provider = ethers.getDefaultProvider(NETWORK_NAME);
         const ethersNotifier = new EthersNotifier(networkConfig, provider, keyPair);
 
         // Call deposit service and listen for event, when transaction is visible dispatch action

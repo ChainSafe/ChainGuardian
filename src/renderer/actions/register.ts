@@ -74,7 +74,6 @@ export const afterPasswordAction = (password: string) => {
         );
 
         // 2. Save account to db
-        // FIXME should we save account here or after "Consent step" because of sendStats
         const account = new CGAccount({
             name: ACCOUNT_ID,
             directory: KEYSTORE_DEFAULT_DIRECTORY,

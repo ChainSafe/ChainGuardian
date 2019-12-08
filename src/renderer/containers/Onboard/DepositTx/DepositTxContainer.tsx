@@ -119,18 +119,16 @@ export default class DepositTxComponent extends
         this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
     };
 
-    // TODO there is a flag in redux "isDepositVisible"
+    // TODO there is a flag in redux "isDepositVisible" so component should wait until flag is set to true
     private handleVerify = (): void => {
-        //const {selectedContractAddress, selectedNetworkIdx} = this.state;
-        // FIXME see what you will do about provider
-        /*
+        const {selectedContractAddress, selectedNetworkIdx} = this.state;
+
         this.props.verifyDeposit({
             contract: {
                 address: selectedContractAddress
             },
             config: depositContracts[selectedNetworkIdx].beaconConfig
         } as INetworkConfig)
-        */
     };
 }
 
