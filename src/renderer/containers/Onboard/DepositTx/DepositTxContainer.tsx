@@ -1,21 +1,21 @@
-import React, {Component, ReactElement} from "react";
-import {ButtonPrimary, ButtonSecondary} from "../../../components/Button/ButtonStandard";
-import {CopyField} from "../../../components/CopyField/CopyField";
-import {Dropdown} from "../../../components/Dropdown/Dropdown";
-import {connect} from "react-redux";
-import {config as mainnetBeaconConfig} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
-import {config as minimalBeaconConfig} from "@chainsafe/eth2.0-config/lib/presets/minimal";
-import {RouteComponentProps} from "react-router";
-import {copyToClipboard} from "../../../services/utils/clipboard-utils";
-import {bindActionCreators, Dispatch} from "redux";
-import {generateDepositAction, verifyDepositAction} from "../../../actions";
-import {INetworkConfig} from "../../../services/interfaces";
-import {IRootState} from "../../../reducers";
-import {Routes, OnBoardingRoutes} from "../../../constants/routes";
+import React, { Component, ReactElement } from "react";
+import { ButtonPrimary, ButtonSecondary } from "../../../components/Button/ButtonStandard";
+import { CopyField } from "../../../components/CopyField/CopyField";
+import { Dropdown } from "../../../components/Dropdown/Dropdown";
+import { connect } from "react-redux";
+import { config as mainnetBeaconConfig } from "@chainsafe/eth2.0-config/lib/presets/mainnet";
+import { config as minimalBeaconConfig } from "@chainsafe/eth2.0-config/lib/presets/minimal";
+import { RouteComponentProps } from "react-router";
+import { copyToClipboard } from "../../../services/utils/clipboard-utils";
+import { bindActionCreators, Dispatch } from "redux";
+import { generateDepositAction, verifyDepositAction } from "../../../actions";
+import { INetworkConfig } from "../../../services/interfaces";
+import { IRootState } from "../../../reducers";
+import { Routes, OnBoardingRoutes } from "../../../constants/routes";
 
 const depositContracts = [
-    {networkName: "Mainnet", address: "0x00000000000001", beaconConfig: mainnetBeaconConfig},
-    {networkName: "Minimal", address: "0x00000000000002", beaconConfig: minimalBeaconConfig},
+    { networkName: "Mainnet", address: "0x00000000000001", beaconConfig: mainnetBeaconConfig },
+    { networkName: "Minimal", address: "0x00000000000002", beaconConfig: minimalBeaconConfig },
 ];
 
 const VALIDATOR_DEPOSIT_AMOUNT = "32";
@@ -51,7 +51,7 @@ export default class DepositTxComponent extends
             },
             config: depositContracts[0].beaconConfig
         } as INetworkConfig,
-        VALIDATOR_DEPOSIT_AMOUNT);
+            VALIDATOR_DEPOSIT_AMOUNT);
     }
 
 
@@ -64,7 +64,7 @@ export default class DepositTxComponent extends
             },
             config: depositContracts[selected].beaconConfig
         } as INetworkConfig,
-        VALIDATOR_DEPOSIT_AMOUNT);
+            VALIDATOR_DEPOSIT_AMOUNT);
 
         this.setState({
             selectedNetworkIdx: selected,
@@ -76,7 +76,7 @@ export default class DepositTxComponent extends
     public render(): ReactElement {
         const networkOptions = depositContracts.map((contract) => { return contract.networkName; });
         const selectedContract = depositContracts[this.state.selectedNetworkIdx];
-        const {txData} = this.props.deposit;
+        const { txData } = this.props.deposit;
 
         return (
             <>
@@ -121,14 +121,21 @@ export default class DepositTxComponent extends
 
     // TODO there is a flag in redux "isDepositVisible" so component should wait until flag is set to true
     private handleVerify = (): void => {
-        const {selectedContractAddress, selectedNetworkIdx} = this.state;
-
+        const { selectedContractAddress, selectedNetworkIdx } = this.state;
+        // FIXME  pass network name from select but find names that ether.js supports
+        // You can use any standard network name
+        //  - "homestead"
+        //  - "rinkeby"
+        //  - "ropsten"
+        //  - "kovan"
+        //  - "goerli"
         this.props.verifyDeposit({
             contract: {
                 address: selectedContractAddress
             },
             config: depositContracts[selectedNetworkIdx].beaconConfig
-        } as INetworkConfig)
+        } as INetworkConfig,
+            "ropsten")
     };
 }
 
