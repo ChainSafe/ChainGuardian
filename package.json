@@ -23,7 +23,7 @@
     "url": "git+ssh://git@github.com:nodefactoryio/ChainGuardian.git"
   },
   "engines": {
-    "node": "12.4.0"
+    "node": "^12.4.0"
   },
   "homepage": "https://github.com/nodefactoryio/ChainGuardian",
   "scripts": {
@@ -120,6 +120,7 @@
     "@types/react-redux": "^7.0.9",
     "@types/react-router-dom": "4.2.6",
     "@types/react-test-renderer": "^16.8.1",
+    "@types/react-tooltip": "^3.11.0",
     "@types/sinon": "^7.5.0",
     "@types/storybook__react": "^4.0.2",
     "@types/uuid": "^3.4.5",
@@ -187,6 +188,7 @@
     "react-dom": "^16.8.6",
     "react-redux": "^7.0.3",
     "react-router-dom": "5.1.2",
+    "react-tooltip": "^3.11.1",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "uuid": "^3.3.3"
