@@ -46,15 +46,19 @@ const createWindow = async () => {
         show: false,
         icon: iconPath,
     });
-    win.maximize();
+    //win.maximize();
     win.once("ready-to-show", () => {
         if (win !== null) { win.show(); }
     });
     win.webContents.on("did-finish-load", async () => {
         if (win !== null) {
             win.setTitle("ChainGuardian");
-            databaseHandler = new DatabaseHandler()
-            await databaseHandler.start()
+            // FIXME NODE_ENV is not working in tests
+            if (process.env.NODE_ENV === "production") {
+                console.log(win.setTitle(process.env.NODE_ENV))
+                //databaseHandler = new DatabaseHandler()
+                //await databaseHandler.start()
+            }
         }
     });
 
@@ -79,10 +83,12 @@ const createWindow = async () => {
     }
 
     win.on("closed", async () => {
-        await databaseHandler.stop()
+        if (process.env.NODE_ENV === "production") {
+            await databaseHandler.stop()
+        }
         win = null;
     });
-    
+
     ipcMain.on(SAVE_TO_DATABASE_REQUEST, (event, arg: IIpcDatabaseEntry) => {
         databaseHandler.saveToDatabase(arg.id, arg.account)
         event.returnValue = true
@@ -92,7 +98,7 @@ const createWindow = async () => {
         const account = await databaseHandler.getFromDatabase(id)
         event.returnValue = account
     })
-    
+
     setApplicationMenu();
 };
 

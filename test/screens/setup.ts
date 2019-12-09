@@ -20,6 +20,7 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
         env: {NODE_ENV: "test"},
         startTimeout: 30000
     });
+
     try {
         await app.start();
     } catch (e) {
