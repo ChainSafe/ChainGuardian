@@ -1,9 +1,8 @@
 import React, {useState, ReactElement, useEffect} from "react";
 import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
-import * as Joi from "@hapi/joi";
-import {trimHex} from "../../services/validation/trim-hex";
 import {ValidationResult} from "@hapi/joi";
+import {Joi} from "../../services/validation";
 
 
 interface IKeyModalProps {
@@ -31,7 +30,7 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
 
         // default fallback validation => hex string
         const validationResult = (props.validate) ?
-            props.validate(input) : Joi.string().custom(trimHex).hex().validate(input);
+            props.validate(input) : Joi.crypto().hex().validate(input);
         const isValid = (!validationResult.error);
         setvalid(isValid);
         if (!isValid) {

@@ -23,4 +23,7 @@
 @import '../containers/Login/LoginContainer.scss';
 @import '../containers/Onboard/SigningKey/Generate/Mnemonic.scss';
 
+@import '../components/MultipleInputVertical/multipleinputvertical.scss';
+@import '../containers/Onboard/CreatePassword/CreatePasswordContainer';
+
 @import url('https://fonts.googleapis.com/css?family=Fira+Code|Lato|Palanquin+Dark:400,500,600,700|Palanquin:400,500&display=swap&subset=latin-ext');

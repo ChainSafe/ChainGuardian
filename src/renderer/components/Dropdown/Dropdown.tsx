@@ -4,6 +4,7 @@ import {useState} from "react";
 export interface IDropdownProps {
     options: Array<string>;
     current: number;
+    label?: string;
     onChange: (selected: number) => void;
 }
 
@@ -21,21 +22,26 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdo
     }
     
     return(
-        <div onClick={(): void=> hide()} className="dropdown-screen">
-            <div className="dropdown-container">
-                <div onClick={(): void=> showHide()} className="dropdown-selected">
-                    {props.options[props.current]}
-                </div>
-                <div className="dropdown-items">
-                    {props.options.map(option =>{
-                        return <div 
-                            key={option} 
-                            onClick={(): void => {props.onChange(getSelectedIndex(option));showHide();}} 
-                            className={`dropdown-item 
-                        ${visible}
-                        ${getSelectedIndex(option)===props.current?"selected":""}`} 
-                        >{option}</div>;
-                    })}
+        <div>
+            {props.label && <h3>{props.label}</h3>}
+            <div onClick={(): void=> hide()} className="dropdown-screen">
+                <div className="dropdown-container">
+                    <div onClick={(): void=> showHide()} className="dropdown-selected">
+                        <div>{props.options[props.current]}</div>
+                    </div>
+                    <div className="dropdown-items-container">
+                        <div className="dropdown-items">
+                            {props.options.map(option =>{
+                                return <div 
+                                    key={option} 
+                                    onClick={(): void => {props.onChange(getSelectedIndex(option));showHide();}} 
+                                    className={`dropdown-item 
+                                ${visible}
+                                ${getSelectedIndex(option)===props.current?"selected":""}`} 
+                                >{option}</div>;
+                            })}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
