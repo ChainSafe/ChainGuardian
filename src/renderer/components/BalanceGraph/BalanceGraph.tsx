@@ -15,7 +15,7 @@ export enum IntervalEnum {
 }
 
 export interface IBalanceGraphProps {
-    defaultInterval?: IntervalEnum;
+    defaultInterval: IntervalEnum;
     getData: (interval: IntervalEnum) => Promise<number[]>;
     //HOUR-last 60 minutes - 60 values
     //DAY-last 24 hours - 24 values
@@ -26,7 +26,7 @@ export interface IBalanceGraphProps {
 
 export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props: IBalanceGraphProps) => {
     const [data, setData] = useState<Array<object>>([]);
-    const [interval, setInterval] = useState<IntervalEnum>(IntervalEnum.WEEK);
+    const [interval, setInterval] = useState<IntervalEnum>(props.defaultInterval);
     const [refreshInterval, setRefreshInterval] = useState<number>(0);
 
     const setXAxis = (array: number[], interval: IntervalEnum): void=>{
@@ -56,66 +56,50 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
         interval===IntervalValue ? selector="selected" : null;
         return `graph-option ${selector}`;
     };
-    // let refreshInterval: number = 0;
+
+    const awaitData = async (): Promise<void>=>{
+        props.getData(interval).then((dataValueArray)=>{
+            setXAxis(dataValueArray, interval);
+        });
+    };
+
     useEffect(()=>{
-    
         clearInterval(refreshInterval);
-        console.log("ON MOUNT: " + refreshInterval);
 
         const timeNow = new Date();
-        console.log(timeNow);
+        const msUntil = (60-(timeNow.getSeconds()))*1000;
+        const minUntil = ((60-(timeNow.getMinutes()-1))*1000*60)+msUntil;
+        const hourUntil = ((24-(timeNow.getHours()-1))*1000*60*60)+minUntil;
+
         switch (interval) {
             case IntervalEnum.HOUR: {
-                const seconds = timeNow.getSeconds();
-                console.log("seconds now: " + seconds);
-            
                 const intervalHandler = (): void =>{
                     awaitData();
                     const localRefreshInterval = window.setInterval(awaitData, 60000);
                     setRefreshInterval(localRefreshInterval);
                 };
-
-                window.setTimeout(intervalHandler,(60-seconds)*1000);
-
-                console.log("Case HOUR, refreshInterval on case: " + refreshInterval);
+                window.setTimeout(intervalHandler,msUntil);
             }
                 break;
             case IntervalEnum.DAY: {
-                const msUntil = (60-(timeNow.getSeconds()))*1000;
-                const minUntil = ((60-(timeNow.getMinutes()-1))*1000*60)+msUntil;
-
                 const intervalHandler = (): void =>{
                     awaitData();
                     const localRefreshInterval = window.setInterval(awaitData, 3600000);
                     setRefreshInterval(localRefreshInterval);
                 };
-
                 window.setTimeout(intervalHandler,minUntil);
-
-                console.log("Case DAY, refreshInterval on case: " + refreshInterval);
             }
                 break;
             case (IntervalEnum.WEEK || IntervalEnum.MONTH): {
-                const msUntil = (60-(timeNow.getSeconds()))*1000;
-                const minUntil = ((60-(timeNow.getMinutes()-1))*1000*60)+msUntil;
-                const hourUntil = ((24-(timeNow.getHours()-1))*1000*60*60)+minUntil;
-
                 const intervalHandler = (): void =>{
                     awaitData();
                     const localRefreshInterval = window.setInterval(awaitData, 86400000);
                     setRefreshInterval(localRefreshInterval);
                 };
-
                 window.setTimeout(intervalHandler,hourUntil);
-
-                console.log("Case WEEK, refreshInterval on case: " + refreshInterval);
             }
                 break;
             case IntervalEnum.YEAR: {
-                const msUntil = (60-(timeNow.getSeconds()))*1000;
-                const minUntil = ((60-(timeNow.getMinutes()-1))*1000*60)+msUntil;
-                const hourUntil = ((24-(timeNow.getHours()-1))*1000*60*60)+minUntil;
-
                 const intervalHandler = (): void =>{
                     if (timeNow.getDate()===1){
                         awaitData();
@@ -123,24 +107,12 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
                     const localRefreshInterval = window.setInterval(awaitData, 86400000);
                     setRefreshInterval(localRefreshInterval);
                 };
-
                 window.setTimeout(intervalHandler, hourUntil);
-
-                console.log("Case YEAR, refreshInterval on case: " + refreshInterval);
             }
                 break;
         }
         awaitData();
     },[interval]);
-
-    const awaitData = async (): Promise<void>=>{
-        props.getData(interval).then((dataValueArray)=>{
-            setXAxis(dataValueArray, interval);
-            
-        });
-        console.log("Data loaded for: " + interval);
-        console.log("refreshInterval on data load: " + refreshInterval);
-    };
 
     return(
         <div className="balance-graph">

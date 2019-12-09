@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, number, select } from '@storybook/addon-knobs';
-import { BalanceGraph } from './BalanceGraph';
-import { IntervalEnum } from './BalanceGraph';
+import { BalanceGraph, IntervalEnum } from './BalanceGraph';
 
 storiesOf('BalanceGraph', module).add('BalanceGraph', () => {
     
     return <BalanceGraph 
-    defaultInterval={IntervalEnum.DAY}
+    defaultInterval={IntervalEnum.MONTH}
     getData={async ()=>{
         return(
             [2356,3213,8934,7924,7924,1245,3456,5673,2124,
