@@ -6,9 +6,10 @@ import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 //import {KEYSTORE_DEFAULT_DIRECTORY} from "../constants/keystore";
 import {saveToDatabase} from "../services/utils/db-utils";
-import {KEYSTORE_DEFAULT_DIRECTORY, ACCOUNT_ID} from "../constants/keystore";
+import {KEYSTORE_DEFAULT_DIRECTORY} from "../constants/keystore";
 import {CGAccount} from "../models/account";
 import {getV4Filename} from "../services/utils/crypto-utils";
+import { ACCOUNT_ID } from "../constants/db";
 
 
 // Mnemonic action
