@@ -9,7 +9,7 @@ import {saveToDatabase} from "../services/utils/db-utils";
 import {KEYSTORE_DEFAULT_DIRECTORY} from "../constants/keystore";
 import {CGAccount} from "../models/account";
 import {getV4Filename} from "../services/utils/crypto-utils";
-import { ACCOUNT_ID } from "../constants/db";
+import {ACCOUNT_ID} from "../constants/db";
 
 
 // Mnemonic action
