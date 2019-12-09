@@ -9,5 +9,7 @@ export enum OnBoardingRoutes {
     SIGNING_IMPORT = "1_a1",
     WITHDRAWAL_IMPORT = "2_b1",
     SIGNING_KEY_GENERATE ="1_skg",
-    SIGNING_KEY_VALIDATE ="1_skv"
+    SIGNING_KEY_VALIDATE ="1_skv",
+    DEPOSIT_TX = "4_0",
+    PASSWORD = "3_ps"
 }
