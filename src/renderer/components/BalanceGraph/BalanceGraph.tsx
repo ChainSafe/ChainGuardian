@@ -28,6 +28,9 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
     const [data, setData] = useState<Array<object>>([]);
     const [interval, setInterval] = useState<IntervalEnum>(props.defaultInterval);
     const [refreshInterval, setRefreshInterval] = useState<number>(0);
+    const [currentHour, setCurrentHour] = useState<number>(0);
+    const [currentDay, setCurrentDay] = useState<number>(0);
+    const [currentMonth, setCurrentMonth] = useState<number>(0);
 
     const setXAxis = (array: number[], interval: IntervalEnum): void=>{
         let dataArray: Array<object> = [];
@@ -64,54 +67,82 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
     };
 
     useEffect(()=>{
-        clearInterval(refreshInterval);
-
-        const timeNow = new Date();
-        const msUntil = (60-(timeNow.getSeconds()))*1000;
-        const minUntil = ((60-(timeNow.getMinutes()-1))*1000*60)+msUntil;
-        const hourUntil = ((24-(timeNow.getHours()-1))*1000*60*60)+minUntil;
+        
+        const timeOnMount = new Date();
+        setCurrentHour(timeOnMount.getHours());
+        setCurrentDay(timeOnMount.getDay());
+        setCurrentMonth(timeOnMount.getMonth());
 
         switch (interval) {
             case IntervalEnum.HOUR: {
-                const intervalHandler = (): void =>{
-                    awaitData();
-                    const localRefreshInterval = window.setInterval(awaitData, 60000);
-                    setRefreshInterval(localRefreshInterval);
-                };
-                window.setTimeout(intervalHandler,msUntil);
+                const localRefreshInterval = window.setInterval(awaitData, 60000);
+                setRefreshInterval(localRefreshInterval);
             }
                 break;
             case IntervalEnum.DAY: {
                 const intervalHandler = (): void =>{
-                    awaitData();
-                    const localRefreshInterval = window.setInterval(awaitData, 3600000);
-                    setRefreshInterval(localRefreshInterval);
+                    const timeOnInterval = new Date();
+                    if(currentHour===23){
+                        if(timeOnInterval.getHours()===0){
+                            setCurrentHour(timeOnInterval.getHours());
+                            awaitData();
+                        }
+                    } else {
+                        if(timeOnInterval.getHours()>currentHour){
+                            setCurrentHour(timeOnInterval.getHours());
+                            awaitData();
+                        }
+                    }
                 };
-                window.setTimeout(intervalHandler,minUntil);
+                const localRefreshInterval = window.setInterval(intervalHandler, 60000);
+                setRefreshInterval(localRefreshInterval);
             }
                 break;
             case (IntervalEnum.WEEK || IntervalEnum.MONTH): {
-                const intervalHandler = (): void =>{
-                    awaitData();
-                    const localRefreshInterval = window.setInterval(awaitData, 86400000);
-                    setRefreshInterval(localRefreshInterval);
+                const intervalHandler = (): void => {
+                    const timeOnInterval = new Date();
+                    if(currentDay===6){
+                        if(timeOnInterval.getDay()===0){
+                            setCurrentDay(timeOnInterval.getDay());
+                            awaitData();
+                        }
+                    } else {
+                        if(timeOnInterval.getDay()>currentDay){
+                            setCurrentDay(timeOnInterval.getDay());
+                            awaitData();
+                        }
+                    }
                 };
-                window.setTimeout(intervalHandler,hourUntil);
+                const localRefreshInterval = window.setInterval(intervalHandler, 60000);
+                setRefreshInterval(localRefreshInterval);
             }
                 break;
             case IntervalEnum.YEAR: {
-                const intervalHandler = (): void =>{
-                    if (timeNow.getDate()===1){
-                        awaitData();
+                const intervalHandler = (): void => {
+                    const timeOnInterval = new Date();
+                    if(currentMonth===11){
+                        if(timeOnInterval.getMonth()===0){
+                            setCurrentMonth(timeOnInterval.getMonth());
+                            awaitData();
+                        }
+                    } else {
+                        if(timeOnInterval.getMonth()>currentMonth){
+                            setCurrentMonth(timeOnInterval.getMonth());
+                            awaitData();
+                        }
                     }
-                    const localRefreshInterval = window.setInterval(awaitData, 86400000);
-                    setRefreshInterval(localRefreshInterval);
                 };
-                window.setTimeout(intervalHandler, hourUntil);
+                const localRefreshInterval = window.setInterval(intervalHandler, 60000);
+                setRefreshInterval(localRefreshInterval);
             }
                 break;
         }
         awaitData();
+
+        return(): void => {
+            clearInterval(refreshInterval);
+        };
+
     },[interval]);
 
     return(
