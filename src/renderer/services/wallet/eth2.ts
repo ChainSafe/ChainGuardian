@@ -20,7 +20,7 @@ export class Eth2HDWallet {
      */
     public static getKeypair(mnemonic: string, walletIndex = 0): Keypair {
         const secretKeyBuf = mnemonicToSecretKey(mnemonic, `m/12381/3600/${walletIndex}/0`);
-        const privateKey = PrivateKey.fromHexString(secretKeyBuf.toString("hex"));
+        const privateKey = PrivateKey.fromBytes(secretKeyBuf);
 
         return new Keypair(privateKey);
     }
