@@ -42,7 +42,6 @@
     "test:unit": "cross-env ELECTRON=1 yarn run jest --coverage \"test/unit\"",
     "test:e2e": "cross-env ELECTRON=1 yarn run jest \"test/e2e\"",
     "test:components": "yarn run jest --ci \"test/components\"",
-    "test:redux": "cross-env ELECTRON=1 yarn run jest \"test/redux\"",
     "test:screens": "yarn run jest \"test/screens\" --runInBand",
     "jest": "jest --verbose --colors",
     "pack": "yarn run build && electron-builder --dir",

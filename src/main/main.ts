@@ -54,11 +54,9 @@ const createWindow = async () => {
         if (win !== null) {
             win.setTitle("ChainGuardian");
             // FIXME NODE_ENV is not working in tests
-            if (process.env.NODE_ENV === "production") {
-                console.log(win.setTitle(process.env.NODE_ENV))
-                //databaseHandler = new DatabaseHandler()
-                //await databaseHandler.start()
-            }
+            //console.log(win.setTitle(process.env.NODE_ENV))
+            databaseHandler = new DatabaseHandler()
+            await databaseHandler.start()
         }
     });
 
@@ -83,9 +81,7 @@ const createWindow = async () => {
     }
 
     win.on("closed", async () => {
-        if (process.env.NODE_ENV === "production") {
-            await databaseHandler.stop()
-        }
+        await databaseHandler.stop()
         win = null;
     });
 

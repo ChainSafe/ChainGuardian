@@ -6,10 +6,10 @@ import {
     storeWithdrawalKeyAction,
     setMnemonic,
     storeSigningKeyMnemonicAction
-} from "../../../src/renderer/actions";
-import {IRootState} from "../../../src/renderer/reducers";
-import {IRegisterState} from "../../../src/renderer/reducers/register";
-import {IDepositState} from "../../../src/renderer/reducers/deposit";
+} from "../../../../src/renderer/actions";
+import {IRootState} from "../../../../src/renderer/reducers";
+import {IRegisterState} from "../../../../src/renderer/reducers/register";
+import {IDepositState} from "../../../../src/renderer/reducers/deposit";
 
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 const publicKeyStr =

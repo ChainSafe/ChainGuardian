@@ -11,10 +11,10 @@ import {EthersNotifier} from "../services/deposit/ethers";
 // Generate deposit action
 export const generateDepositAction = (networkConfig: INetworkConfig, amount: string) => {
     return (dispatch: Dispatch<IGenerateDepositAction>, getState: () => IRootState): void => {
-        const signingKey = getState().register.signingKey;
+        const {signingKey, withdrawalKey} = getState().register;
         const keyPair = new Keypair(PrivateKey.fromHexString(signingKey));
         // Call deposit service and dispatch action
-        const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1, "hex"), amount);
+        const depositData = generateDeposit(keyPair, Buffer.from(withdrawalKey, "hex"), amount);
         const depositTx = DepositTx.generateDepositTx(
             depositData,
             networkConfig.contract.address,
@@ -23,17 +23,16 @@ export const generateDepositAction = (networkConfig: INetworkConfig, amount: str
         const txData = typeof depositTx.data === "object" ?
             `0x${depositTx.data.toString("hex")}` : `0x${depositTx.data}`;
 
-        dispatch(setDepositGenerated(true));
         dispatch(setDepositTransactionData(txData));
     };
 };
 
 // Verify deposit action
-export const verifyDepositAction = (networkConfig: INetworkConfig, networkName: string) => {
+export const verifyDepositAction = (networkConfig: INetworkConfig) => {
     return (dispatch: Dispatch<IVerifyDepositAction>, getState: () => IRootState): void => {
         const signingKey = getState().register.signingKey;
         const keyPair = new Keypair(PrivateKey.fromHexString(signingKey));
-        const provider = ethers.getDefaultProvider(networkName.toLowerCase());
+        const provider = ethers.getDefaultProvider(networkConfig.networkName.toLowerCase());
         const ethersNotifier = new EthersNotifier(networkConfig, provider, keyPair);
 
         // Call deposit service and listen for event, when transaction is visible dispatch action
@@ -47,11 +46,6 @@ export const verifyDepositAction = (networkConfig: INetworkConfig, networkName: 
     };
 };
 
-
-export const setDepositGenerated = (isDepositGenerated: boolean): IGenerateDepositAction => ({
-    type: DepositActionTypes.GENERATE_DEPOSIT, payload: {isDepositGenerated}
-});
-
 export const setDepositTransactionData = (txData: string): IGenerateDepositAction => ({
     type: DepositActionTypes.DEPOSIT_TRANSACTION, payload: {txData}
 });
@@ -62,7 +56,6 @@ export const setDepositVisible = (isDepositVisible: boolean): IVerifyDepositActi
 });
 
 export interface IGenerateDepositPayload {
-    isDepositGenerated?: boolean;
     txData?: string;
 }
 

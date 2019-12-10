@@ -133,9 +133,9 @@ export default class DepositTxComponent extends
             contract: {
                 address: selectedContractAddress
             },
-            config: depositContracts[selectedNetworkIdx].beaconConfig
-        } as INetworkConfig,
-        "ropsten");
+            config: depositContracts[selectedNetworkIdx].beaconConfig,
+            networkName: "ropsten"
+        } as INetworkConfig);
     };
 }
 

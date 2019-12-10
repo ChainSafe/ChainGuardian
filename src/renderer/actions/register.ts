@@ -49,18 +49,18 @@ export interface ISigningKeyAction extends Action<RegisterActionTypes> {
 
 // Withdrawal key action
 export const storeWithdrawalKeyAction = (withdrawalKey: string) =>
-    (dispatch: Dispatch<IWithdarawalKeyAction>): void => {
+    (dispatch: Dispatch<IWithdrawalKeyAction>): void => {
         dispatch(setWithdrawalKey(withdrawalKey));
     };
 
-export const setWithdrawalKey = (withdrawalKey: string): IWithdarawalKeyAction => ({
+export const setWithdrawalKey = (withdrawalKey: string): IWithdrawalKeyAction => ({
     type: RegisterActionTypes.STORE_WITHDRAWAL_KEY, payload: {withdrawalKey}
 });
 export interface IStoreWithdrawalKeyPayload {
     withdrawalKey: string;
 }
 
-export interface IWithdarawalKeyAction extends Action<RegisterActionTypes> {
+export interface IWithdrawalKeyAction extends Action<RegisterActionTypes> {
     payload: IStoreWithdrawalKeyPayload;
 }
 

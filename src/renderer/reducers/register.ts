@@ -1,4 +1,4 @@
-import {ISigningKeyMnemonicAction, ISigningKeyAction, IWithdarawalKeyAction} from "../actions";
+import {ISigningKeyMnemonicAction, ISigningKeyAction, IWithdrawalKeyAction} from "../actions";
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 
@@ -26,7 +26,7 @@ export const registerReducer = (state = initialState, action: Action<RegisterAct
             });
         case RegisterActionTypes.STORE_WITHDRAWAL_KEY:
             return Object.assign({}, state, {
-                withdrawalKey: (action as IWithdarawalKeyAction).payload.withdrawalKey
+                withdrawalKey: (action as IWithdrawalKeyAction).payload.withdrawalKey
             });
 
         case RegisterActionTypes.CLEAR_KEYS:

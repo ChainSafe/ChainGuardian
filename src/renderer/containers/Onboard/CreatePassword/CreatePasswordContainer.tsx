@@ -90,7 +90,6 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
     private handleSubmit= (): void => {
         const {password} = this.state;
         this.props.afterPassword(password);
-        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
     };
 }
 

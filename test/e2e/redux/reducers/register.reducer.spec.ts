@@ -4,9 +4,9 @@ import {
     setWithdrawalKey, 
     setMnemonic, 
     setClearKeys
-} from "../../../src/renderer/actions";
-import {registerReducer as reducer, IRegisterState} from "../../../src/renderer/reducers/register";
-import {RegisterActionTypes} from "../../../src/renderer/constants/action-types";
+} from "../../../../src/renderer/actions";
+import {registerReducer as reducer, IRegisterState} from "../../../../src/renderer/reducers/register";
+import {RegisterActionTypes} from "../../../../src/renderer/constants/action-types";
 import {Action} from "redux";
 
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
