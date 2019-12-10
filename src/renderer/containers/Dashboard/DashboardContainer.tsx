@@ -49,7 +49,7 @@ export default class DashboardContainer extends React.Component {
 
         return (
             <>
-                <Background topBar={topBar}>
+                <Background topBar={topBar} scrollable={true}>
                     <div className={"validators-display"}>
                         {this.state.validators.map((v, index) => {
                             return <div key={index} className={"validator-wrapper"}>

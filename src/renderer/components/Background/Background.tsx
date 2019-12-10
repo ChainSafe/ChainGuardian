@@ -3,14 +3,18 @@ import logo from "../../assets/img/logo/Logo.svg";
 
 interface IBackgroundProps {
     basic?: boolean;
+    scrollable?: boolean;
     topBar?: any;
 }
 
-export const Background: React.FunctionComponent<React.PropsWithChildren<IBackgroundProps>> = ({
-    children, 
-    basic,
-    topBar}) => ( basic ?
-    <div className="background">
+export const Background: React.FunctionComponent<React.PropsWithChildren<IBackgroundProps>> = (
+    {
+        children,
+        basic,
+        scrollable,
+        topBar,
+    }) => ( basic ?
+    <div className={`background${scrollable ? " scrollable-y" : ""}`}>
         <div className={"top"}>
             <img className="logo" src={logo} />
             {topBar ? topBar : <DefaultTopBar />}
@@ -19,7 +23,7 @@ export const Background: React.FunctionComponent<React.PropsWithChildren<IBackgr
     </div> 
     : 
     <div className="background">
-        <div className="illustration" >
+        <div className={`illustration${scrollable ? " scrollable-y" : ""}`} >
             <div className={"top"}>
                 <img className="logo" src={logo} />
                 {topBar ? topBar : <DefaultTopBar />}
