@@ -64,7 +64,7 @@ export interface IV3Keystore {
 
 export interface INetworkConfig {
     config: IBeaconConfig;
-    networkName: string;
+    networkId: number;
     contract: {
         address: string,
         bytecode: string,

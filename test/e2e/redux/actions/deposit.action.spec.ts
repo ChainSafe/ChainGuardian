@@ -49,7 +49,7 @@ describe("deposit actions", () => {
     it("should dispatch generate deposit action", () => {
         const networkConfig = {
             config,
-            networkName: '',
+            networkId: 0,
             contract: {
                 address: "0x0",
                 bytecode: "",

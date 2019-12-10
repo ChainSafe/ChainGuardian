@@ -14,8 +14,8 @@ import {IRootState} from "../../../reducers";
 import {Routes, OnBoardingRoutes} from "../../../constants/routes";
 
 const depositContracts = [
-    {networkName: "Mainnet", address: "0x00000000000001", beaconConfig: mainnetBeaconConfig},
-    {networkName: "Minimal", address: "0x00000000000002", beaconConfig: minimalBeaconConfig},
+    {networkName: "Mainnet", address: "0x00000000000001", beaconConfig: mainnetBeaconConfig, networkId: 1},
+    {networkName: "Minimal", address: "0x00000000000002", beaconConfig: minimalBeaconConfig, networkId: 99},
 ];
 
 const VALIDATOR_DEPOSIT_AMOUNT = "32";
@@ -134,7 +134,7 @@ export default class DepositTxComponent extends
                 address: selectedContractAddress
             },
             config: depositContracts[selectedNetworkIdx].beaconConfig,
-            networkName: "ropsten"
+            networkId: depositContracts[selectedNetworkIdx].networkId
         } as INetworkConfig);
     };
 }

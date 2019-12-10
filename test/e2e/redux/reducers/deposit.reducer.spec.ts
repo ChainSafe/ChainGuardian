@@ -7,6 +7,7 @@ import {Action} from "redux";
 import {DepositActionTypes} from "../../../../src/renderer/constants/action-types";
 
 const initalState: IDepositState = {
+    isDepositGenerated: false,
     isDepositVisible: false,
     txData: ""
 };
@@ -34,7 +35,8 @@ describe("deposit reducer", () => {
             reducer({} as IDepositState, setDepositTransactionData("mock"))
         ).toEqual(
             {
-                txData: "mock"
+                txData: "mock",
+                isDepositGenerated: true
             }
         );
     });

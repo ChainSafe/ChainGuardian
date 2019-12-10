@@ -1,5 +1,5 @@
 import {ipcRenderer} from "electron";
-import {SAVE_TO_DATABASE_REQUEST, GET_FROM_DATABASE_REQUEST} from "../../constants/db";
+import {SAVE_TO_DATABASE_REQUEST, GET_FROM_DATABASE_REQUEST} from "../../constants/ipc";
 import {IIpcDatabaseEntry} from "../interfaces";
 import {CGAccount} from "../../models/account";
 

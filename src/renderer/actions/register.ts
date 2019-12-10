@@ -9,7 +9,6 @@ import {saveToDatabase} from "../services/utils/db-utils";
 import {KEYSTORE_DEFAULT_DIRECTORY} from "../constants/keystore";
 import {CGAccount} from "../models/account";
 import {getV4Filename} from "../services/utils/crypto-utils";
-import {ACCOUNT_ID} from "../constants/db";
 
 
 // Mnemonic action
@@ -76,13 +75,13 @@ export const afterPasswordAction = (password: string) => {
 
         // 2. Save account to db
         const account = new CGAccount({
-            name: ACCOUNT_ID,
+            name: "Test Account",
             directory: KEYSTORE_DEFAULT_DIRECTORY,
             sendStats: false
         });
         
         saveToDatabase({
-            id: ACCOUNT_ID,
+            id: "account",
             account
         });
         

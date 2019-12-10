@@ -5,7 +5,7 @@ import url from "url";
 import { setApplicationMenu } from './menu';
 import { DatabaseHandler } from "./database";
 import { IIpcDatabaseEntry } from "../renderer/services/interfaces";
-import { SAVE_TO_DATABASE_REQUEST, GET_FROM_DATABASE_REQUEST } from "../renderer/constants/db";
+import { SAVE_TO_DATABASE_REQUEST, GET_FROM_DATABASE_REQUEST } from "../renderer/constants/ipc";
 
 let win: BrowserWindow | null;
 let databaseHandler: DatabaseHandler;
