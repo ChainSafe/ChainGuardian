@@ -9,8 +9,8 @@ describe("Verify Mnemonic", () => {
                 question="Test question?"
                 answers={["Accept","Call","Iguanas"]}
                 correctAnswer="Iguanas"
-                onCorrectAnswer={(): void => console.log("correct")}
-                onInvalidAnswer={(): void => console.log("invalid")}/>)
+                onCorrectAnswer={(): void => {}}
+                onInvalidAnswer={(): void => {}}/>)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
