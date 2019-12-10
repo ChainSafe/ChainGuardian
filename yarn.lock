@@ -830,10 +830,10 @@
     bn.js "^5.0.0"
     buffer "^5.4.3"
 
-"@chainsafe/bls-keygen@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@chainsafe/bls-keygen/-/bls-keygen-0.0.1.tgz#3bad9e17b0c3d1aa28fc260d1efc667c7e24c706"
-  integrity sha512-LsHs0OFWOqJBB7F86rubwugdMuF7R8E70GOSa9XET7jDW45fuTSl9TfqexAn8fyPhom+7KHiTRq04m43oD/wyA==
+"@chainsafe/bls-keygen@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@chainsafe/bls-keygen/-/bls-keygen-0.0.2.tgz#f0ce10f34b0e63c996631c607681aaf1b64283c6"
+  integrity sha512-4Hs2YUafoO5ENQN7bQBKbrp8mwGBGYRgau7gkFzUhTLptY9lbEGENN2sc5GvpKjANfhXTbF/vOy9lghaHsFuNg==
   dependencies:
     "@chainsafe/bls-hd-key" "^0.0.1"
     assert "^2.0.0"
