@@ -15,6 +15,7 @@ interface IValidator {
     status: string;
     publicKey: string;
     deposit: number;
+    network: string;
 }
 
 export default class DashboardContainer extends React.Component {
@@ -24,12 +25,20 @@ export default class DashboardContainer extends React.Component {
         currentNetwork: 0
     };
 
-    private readonly networks: Array<string>;
+    private readonly networks: {[id: number]: string};
 
     public constructor(props: Readonly<{}>) {
         super(props);
+
+        // TODO - temporary object, import real network object
+        const networksMock: {[id: number]: string} = {
+            12: "NetworkA",
+            13: "NetworkB",
+            32: "NetworkC"
+        };
+
         this.state.validators = this.getValidators();
-        this.networks = this.getNetworks();
+        this.networks = {...networksMock, 0: "All networks"};
     }
 
     public render(): ReactNode {
@@ -39,7 +48,7 @@ export default class DashboardContainer extends React.Component {
                     <Dropdown
                         options={this.networks}
                         current={this.state.currentNetwork}
-                        onChange={this.onChangeNetwork}
+                        onChange={(selected): void => this.setState({currentNetwork: selected})}
                     />
                 </div>
                 <ButtonPrimary onClick={this.onAddNewValidator} buttonId={"add-validator"}>
@@ -51,30 +60,28 @@ export default class DashboardContainer extends React.Component {
             <>
                 <Background topBar={topBar} scrollable={true}>
                     <div className={"validators-display"}>
-                        {this.state.validators.map((v, index) => {
-                            return <div key={index} className={"validator-wrapper"}>
-                                <ValidatorSimple
-                                    name={v.name}
-                                    status={v.status}
-                                    publicKey={v.publicKey}
-                                    deposit={v.deposit}
-                                    onRemoveClick={(): void => {this.onRemoveValidator(index);}}
-                                    onExportClick={(): void => {this.onExportValidator(index);}}
-                                />
-                            </div>;
-                        })}
+                        {this.state.validators
+                            .filter(validator =>
+                                validator.network === this.networks[this.state.currentNetwork] ||
+                                this.state.currentNetwork === 0 // if all networks
+                            )
+                            .map((v, index) => {
+                                return <div key={index} className={"validator-wrapper"}>
+                                    <ValidatorSimple
+                                        name={v.name}
+                                        status={v.status}
+                                        publicKey={v.publicKey}
+                                        deposit={v.deposit}
+                                        onRemoveClick={(): void => {this.onRemoveValidator(index);}}
+                                        onExportClick={(): void => {this.onExportValidator(index);}}
+                                    />
+                                </div>;
+                            })}
                     </div>
                 </Background>
             </>
         );
     }
-
-    private onChangeNetwork = (selected: number): void => {
-        this.setState({currentNetwork: selected});
-        // TODO - set new network
-        // eslint-disable-next-line no-console
-        console.log(`New network selected: ${this.networks[selected]}`);
-    };
 
     private onAddNewValidator = (): void => {
         // TODO - implement
@@ -104,22 +111,20 @@ export default class DashboardContainer extends React.Component {
             name: "V1",
             status: "Working",
             publicKey: "0x1233567822345564",
-            deposit: 30
+            deposit: 30,
+            network: "NetworkA"
         },{
             name: "V2",
             status: "Not Working",
             publicKey: "0x1233567822345564",
-            deposit: 30
+            deposit: 30,
+            network: "NetworkA"
         },{
             name: "V3",
             status: "Not Working",
             publicKey: "0x1d32a7822345564",
-            deposit: 30
+            deposit: 30,
+            network: "NetworkB"
         }];
-    }
-
-    private getNetworks(): Array<string> {
-        // TODO - call real networks fetch
-        return ["All networks", "NetworkA", "NetworkB", "NetworkC"];
     }
 }

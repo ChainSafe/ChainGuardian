@@ -31,8 +31,10 @@ export default class LoginContainer extends React.Component {
                             focused onChange={this.handleChange} 
                             inputValue={this.state.input} 
                             placeholder="Enter password"
-                        /> 
-                        <ButtonSecondary buttonId="go" >GO</ButtonSecondary>
+                        />
+                        <Link to={Routes.DASHBOARD_ROUTE}>
+                            <ButtonSecondary buttonId="go" >GO</ButtonSecondary>
+                        </Link>
                     </div>
                     <h5 className="input-or">OR</h5>
                     <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING)}>

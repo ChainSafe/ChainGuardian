@@ -2,7 +2,7 @@ import * as React from "react";
 import {useState} from "react";
 
 export interface IDropdownProps {
-    options: Array<string>;
+    options: Array<string> | {[id: number]: string};
     current: number;
     label?: string;
     onChange: (selected: number) => void;
@@ -11,8 +11,13 @@ export interface IDropdownProps {
 export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdownProps) => {
     const [visible, setVisible]=useState("none");
 
-    function getSelectedIndex(clickedOption: string): number{
-        return (props.options.findIndex(option => option === clickedOption));
+    function getSelectedIndex(clickedOption: string): number {
+        if (Array.isArray(props.options)) {
+            return (props.options.findIndex(option => option === clickedOption));
+        } else {
+            return parseInt(Object.keys(props.options)[Object.values(props.options).indexOf(clickedOption)]);
+        }
+
     }
     function showHide(): void{
         visible === "none" ? setVisible("block") : setVisible("none");
@@ -31,15 +36,27 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdo
                     </div>
                     <div className="dropdown-items-container">
                         <div className="dropdown-items">
-                            {props.options.map(option =>{
-                                return <div 
-                                    key={option} 
-                                    onClick={(): void => {props.onChange(getSelectedIndex(option));showHide();}} 
-                                    className={`dropdown-item 
-                                ${visible}
-                                ${getSelectedIndex(option)===props.current?"selected":""}`} 
-                                >{option}</div>;
-                            })}
+                            { Array.isArray(props.options) ?
+                                // array of strings
+                                props.options.map(option =>{
+                                    return <div
+                                        key={option}
+                                        onClick={(): void => {props.onChange(getSelectedIndex(option));showHide();}}
+                                        className={`dropdown-item 
+                                    ${visible}
+                                    ${getSelectedIndex(option)===props.current?"selected":""}`}
+                                    >{option}</div>;}) :
+                                // mapping object
+                                Object.values(props.options).map(value => {
+                                    return <div
+                                        key={value}
+                                        onClick={(): void => {props.onChange(getSelectedIndex(value));showHide();}}
+                                        className={
+                                            `dropdown-item
+                                            ${visible}
+                                            ${getSelectedIndex(value)===props.current?"selected":""}`}
+                                    >{value}</div>;})
+                            }
                         </div>
                     </div>
                 </div>
