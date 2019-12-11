@@ -17,11 +17,11 @@ export function getV4Filename(timestamp?: number): string {
 
 export function eth1IdToEthersName(networkId: number): string {
     switch(networkId) {
-        case 1: return "homestead"
-        case 3: return "ropsten"
-        case 4: return "rinkeby"
-        case 42: return "kovan"
-        default: return "homestead"
+        case 1: return "homestead";
+        case 3: return "ropsten";
+        case 4: return "rinkeby";
+        case 42: return "kovan";
+        default: return "homestead";
     }
 }
 

@@ -7,7 +7,7 @@ import {generateDeposit, DepositTx} from "../services/deposit";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {EthersNotifier} from "../services/deposit/ethers";
-import { eth1IdToEthersName } from "../services/utils/crypto-utils";
+import {eth1IdToEthersName} from "../services/utils/crypto-utils";
 
 // Generate deposit action
 export const generateDepositAction = (networkConfig: INetworkConfig, amount: string) => {
@@ -33,7 +33,7 @@ export const verifyDepositAction = (networkConfig: INetworkConfig) => {
     return (dispatch: Dispatch<IVerifyDepositAction>, getState: () => IRootState): void => {
         const signingKey = getState().register.signingKey;
         const keyPair = new Keypair(PrivateKey.fromHexString(signingKey));
-        const ethersNetworkName = eth1IdToEthersName(networkConfig.networkId)
+        const ethersNetworkName = eth1IdToEthersName(networkConfig.networkId);
         const provider = ethers.getDefaultProvider(ethersNetworkName);
         const ethersNotifier = new EthersNotifier(networkConfig, provider, keyPair);
 

@@ -16,12 +16,13 @@ const initialState: IDepositState = {
 
 export const depositReducer = (state = initialState, action: Action<DepositActionTypes>): IDepositState => {
     switch (action.type) {
-        case DepositActionTypes.DEPOSIT_TRANSACTION:
-            const txData = (action as IGenerateDepositAction).payload.txData
+        case DepositActionTypes.DEPOSIT_TRANSACTION: {
+            const txData = (action as IGenerateDepositAction).payload.txData;
             return Object.assign({}, state, {
                 txData: txData,
                 isDepositGenerated: txData !== "" && txData !== null
             });
+        }
 
         case DepositActionTypes.DEPOSIT_VISIBLE:
             return Object.assign({}, state, {
