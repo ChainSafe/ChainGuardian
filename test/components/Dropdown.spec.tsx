@@ -6,7 +6,7 @@ describe("Dropdown", () => {
     it("renders correctly with array of options", () => {
         const tree = renderer
             .create(<Dropdown 
-                onChange={(selected): void=>(console.log(selected))} 
+                onChange={(): void=>{}} 
                 current={0} 
                 options={["All networks","Mainnet","Testnet","Networkname #1"]} />)
             .toJSON();
