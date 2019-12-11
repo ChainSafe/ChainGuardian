@@ -54,7 +54,6 @@ const createWindow = async () => {
         if (win !== null) {
             win.setTitle("ChainGuardian");
             // FIXME NODE_ENV is not working in tests
-            //console.log(win.setTitle(process.env.NODE_ENV))
             databaseHandler = new DatabaseHandler()
             await databaseHandler.start()
         }

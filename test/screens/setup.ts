@@ -1,6 +1,7 @@
 import {Application} from "spectron";
 import path from "path";
 import {Routes} from "../../src/renderer/constants/routes";
+import { existsSync, readdirSync, lstatSync, unlinkSync, rmdirSync } from "fs";
 
 export const TIMEOUT = 120000;
 
@@ -11,13 +12,16 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
         electronPath += ".cmd";
     }
     
+    const random = Math.floor(100000 + Math.random() * 900000)
+    const dbName = `test-level-${random}.db`
+
     const app = new Application({
         path: electronPath,
         args: [path.join(__dirname, "..", "..")],
         waitTimeout: 15000,
         quitTimeout: 4000,
         connectionRetryCount: 3,
-        env: {NODE_ENV: "test"},
+        env: {NODE_ENV: "test", DB_NAME: dbName},
         startTimeout: 30000
     });
 
@@ -38,6 +42,7 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
 export async function stopApp(app: Application): Promise<void> {
     if (app && app.isRunning()) {
         try {
+            deleteFolderRecursive('test-level.db')
             await app.stop();
         } catch (e) {
             console.log(e);
@@ -46,3 +51,17 @@ export async function stopApp(app: Application): Promise<void> {
         }
     }
 }
+
+var deleteFolderRecursive = function (path: string) {
+    if (existsSync(path)) {
+      readdirSync(path).forEach(function (file, index) {
+        var curPath = path + "/" + file;
+        if (lstatSync(curPath).isDirectory()) { // recurse
+          deleteFolderRecursive(curPath);
+        } else { // delete file
+          unlinkSync(curPath);
+        }
+      });
+      rmdirSync(path);
+    }
+  };
