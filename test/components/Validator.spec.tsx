@@ -8,10 +8,10 @@ describe("Validator", () => {
         const tree = renderer
             .create(<Validator
                 name={"Test title"}
-                onBeaconNodeClick={(): void=>console.log("")} 
-                onDetailsClick={(): void=>console.log("")} 
-                onRemoveClick={(): void=>console.log("")} 
-                onAddNodeClick={(): void=>console.log("")}
+                onBeaconNodeClick={(): void=>{}} 
+                onDetailsClick={(): void=>{}} 
+                onRemoveClick={(): void=>{}} 
+                onAddNodeClick={(): void=>{}}
                 stats={{
                     roi: 10,
                     balance: 0.1206,
@@ -34,10 +34,10 @@ describe("Validator", () => {
         const tree = renderer
             .create(<Validator
                 name={"Test title"}
-                onBeaconNodeClick={(): void=>console.log("")} 
-                onDetailsClick={(): void=>console.log("")} 
-                onRemoveClick={(): void=>console.log("")} 
-                onAddNodeClick={(): void=>console.log("")}
+                onBeaconNodeClick={(): void=>{}} 
+                onDetailsClick={(): void=>{}} 
+                onRemoveClick={(): void=>{}} 
+                onAddNodeClick={(): void=>{}}
                 stats={{
                     roi: 10,
                     balance: 0.1206,
@@ -73,8 +73,8 @@ describe("Validator", () => {
                 status={"Not working"}
                 publicKey={"6ffa3d24c9c26877d4a8bfa87455f44666ce93b7e13a3f84"}
                 deposit={20.345}
-                onExportClick={(): void=>console.log("")} 
-                onRemoveClick={(): void=>console.log("")} 
+                onExportClick={(): void=>{}} 
+                onRemoveClick={(): void=>{}} 
             />)
             .toJSON();
         expect(tree).toMatchSnapshot();
