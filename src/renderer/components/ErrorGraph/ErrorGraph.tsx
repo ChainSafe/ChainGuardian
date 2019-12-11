@@ -10,6 +10,8 @@ export interface IErrorGraphProps {
 
 export const ErrorGraph: React.FunctionComponent<IErrorGraphProps> = (props: IErrorGraphProps) => {
     const [data, setData] = useState<Array<object>>([]);
+    const [refreshIntervalId, setRefreshIntervalId] = useState<number>(0);
+    const [lastRefreshTime,setLastRefreshTime] = useState<number>(0);
 
     function normalize (dataArray: Array<object>, array: number[]): Array<object> {
         const dateToday = new Date();
@@ -17,7 +19,7 @@ export const ErrorGraph: React.FunctionComponent<IErrorGraphProps> = (props: IEr
         for (let i = 12; i >=0; i--) {
             dataArray.push({
                 name: ((hour-i)<1 ? 24+hour-i : hour-i) + "h",
-                error: array[i]
+                errors: array[i]
             });
         }
         return dataArray;
@@ -31,7 +33,29 @@ export const ErrorGraph: React.FunctionComponent<IErrorGraphProps> = (props: IEr
         });
     };
 
+    const initalTime = () => {
+        // const timeOnMount = new Date().getTime();
+        setLastRefreshTime(new Date().getTime());
+    }
     useEffect(()=>{
+        initalTime();
+        console.log(lastRefreshTime + " last refresh time");
+
+        const intervalHandler = (): void => {
+            const timeOnInterval = new Date().getTime();
+            console.log(timeOnInterval + " time on interval")
+            const diffInSeconds = (timeOnInterval-lastRefreshTime)/1000
+            console.log(diffInSeconds + " diff");
+            const hourToSeconds = 3600;
+            if(diffInSeconds>=hourToSeconds){
+                setLastRefreshTime(timeOnInterval);
+                awaitData();
+            }
+        }
+
+        const refreshInterval = window.setInterval(intervalHandler, 60000);
+        setRefreshIntervalId(refreshInterval);
+
         awaitData();
     },[])
 
@@ -47,7 +71,7 @@ export const ErrorGraph: React.FunctionComponent<IErrorGraphProps> = (props: IEr
                 <XAxis dataKey="name" stroke="#9ba7af" 
                     interval="preserveStartEnd" tickLine={false}/>
                 <Tooltip contentStyle={{color: "red"}} cursor={false} isAnimationActive={false}/>
-                <Bar dataKey="error" fill="#C3CBCF" barSize={28}/>
+                <Bar dataKey="errors" fill="#C3CBCF" barSize={28}/>
             </BarChart>
         </div>
     );
