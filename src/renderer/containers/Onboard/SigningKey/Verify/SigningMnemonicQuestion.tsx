@@ -21,8 +21,8 @@ class SigningMnemonicQuestion extends Component<IProps &  Pick<IRootState, "regi
                 question={`What’s the ${correctAnswerIndex + 1}th word in the mnemonic?`}
                 answers={[mnemonic[randArray[0]], mnemonic[randArray[1]], mnemonic[randArray[2]]]}
                 correctAnswer={mnemonic[correctAnswerIndex]}
-                onCorrectAnswer={(): void => console.log("correct")}
-                onInvalidAnswer={(): void => console.log("invalid")}
+                onCorrectAnswer={(): void => {}}
+                onInvalidAnswer={(): void => {}}
             />
         );
     }
