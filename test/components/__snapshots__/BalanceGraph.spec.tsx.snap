@@ -77,8 +77,8 @@ exports[`BalanceGraph renders correctly, day 1`] = `
         >
           <rect
             height={164}
-            width={564}
-            x={30}
+            width={584}
+            x={20}
             y={5}
           />
         </clipPath>
@@ -205,8 +205,8 @@ exports[`BalanceGraph renders correctly, hour 1`] = `
         >
           <rect
             height={164}
-            width={564}
-            x={30}
+            width={584}
+            x={20}
             y={5}
           />
         </clipPath>
@@ -333,8 +333,8 @@ exports[`BalanceGraph renders correctly, month 1`] = `
         >
           <rect
             height={164}
-            width={564}
-            x={30}
+            width={584}
+            x={20}
             y={5}
           />
         </clipPath>
@@ -461,8 +461,8 @@ exports[`BalanceGraph renders correctly, week 1`] = `
         >
           <rect
             height={164}
-            width={564}
-            x={30}
+            width={584}
+            x={20}
             y={5}
           />
         </clipPath>
@@ -589,8 +589,8 @@ exports[`BalanceGraph renders correctly, year 1`] = `
         >
           <rect
             height={164}
-            width={564}
-            x={30}
+            width={584}
+            x={20}
             y={5}
           />
         </clipPath>
