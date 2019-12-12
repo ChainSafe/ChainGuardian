@@ -24,33 +24,33 @@ exports[`Dropdown renders correctly with array of options 1`] = `
           className="dropdown-items"
         >
           <div
-            className="dropdown-item 
-                                    none
-                                    selected"
+            className="dropdown-item
+                none
+                selected"
             onClick={[Function]}
           >
             All networks
           </div>
           <div
-            className="dropdown-item 
-                                    none
-                                    "
+            className="dropdown-item
+                none
+                "
             onClick={[Function]}
           >
             Mainnet
           </div>
           <div
-            className="dropdown-item 
-                                    none
-                                    "
+            className="dropdown-item
+                none
+                "
             onClick={[Function]}
           >
             Testnet
           </div>
           <div
-            className="dropdown-item 
-                                    none
-                                    "
+            className="dropdown-item
+                none
+                "
             onClick={[Function]}
           >
             Networkname #1
@@ -87,32 +87,32 @@ exports[`Dropdown renders correctly with options object 1`] = `
         >
           <div
             className="dropdown-item
-                                            none
-                                            selected"
+                none
+                selected"
             onClick={[Function]}
           >
             All networks
           </div>
           <div
             className="dropdown-item
-                                            none
-                                            "
+                none
+                "
             onClick={[Function]}
           >
             Testnet
           </div>
           <div
             className="dropdown-item
-                                            none
-                                            "
+                none
+                "
             onClick={[Function]}
           >
             Networkname #1
           </div>
           <div
             className="dropdown-item
-                                            none
-                                            "
+                none
+                "
             onClick={[Function]}
           >
             Mainnet
