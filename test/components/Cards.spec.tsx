@@ -37,7 +37,7 @@ describe("Cards", () => {
     it("renders correctly, NodeCard", () => {
         const tree = renderer
             .create(<NodeCard 
-                onClick={(): void=>{console.log("");}} 
+                onClick={(): void=>{}} 
                 value={21} 
                 title="BeaconNode"
                 url="rocketsonic.hr"

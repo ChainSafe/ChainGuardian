@@ -42,7 +42,7 @@ export default class OnboardContainer extends Component<IProps, {}> {
         );
     }
 
-    private renderStep = (): any => {
+    private renderStep = (): React.FunctionComponent => {
         const {step} = this.props.match.params;
         return (this.Steper as any)[step];
     };
