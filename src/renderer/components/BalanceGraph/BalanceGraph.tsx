@@ -2,9 +2,7 @@ import * as React from "react";
 import {normalizeHour,normalizeDay,normalizeWeek,
     normalizeMonth,normalizeYear} from "../../services/balance_graph/normalizeDataPoints";
 import {useState, useEffect} from "react";
-import { 
-    LineChart, Line, XAxis, Tooltip,
-} from "recharts";
+import {LineChart, Line, XAxis, Tooltip,} from "recharts";
 
 export enum IntervalEnum {
     HOUR = "hour",
@@ -16,21 +14,23 @@ export enum IntervalEnum {
 
 export interface IBalanceGraphProps {
     defaultInterval: IntervalEnum;
+    /**
+     * Should return values based on IntervalEnum //
+     * IntervalEnum:
+     * HOUR-last 60 minutes - 60 values,
+     * DAY-last 24 hours - 24 values,
+     * WEEK-last 7 days - 7 values,
+     * MONTH-last 12 days - 12 values,
+     * YEAR-last 12 months- 12 values,
+     */
     getData: (interval: IntervalEnum) => Promise<number[]>;
-    //HOUR-last 60 minutes - 60 values
-    //DAY-last 24 hours - 24 values
-    //WEEK-last 7 days - 7 values
-    //MONTH-last 12 days - 12 values
-    //YEAR-last 12 months- 12 values
 }
 
 export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props: IBalanceGraphProps) => {
     const [data, setData] = useState<Array<object>>([]);
-    const [interval, setInterval] = useState<IntervalEnum>(props.defaultInterval);
-    const [refreshInterval, setRefreshInterval] = useState<number>(0);
-    const [currentHour, setCurrentHour] = useState<number>(0);
-    const [currentDay, setCurrentDay] = useState<number>(0);
-    const [currentMonth, setCurrentMonth] = useState<number>(0);
+    const [intervalOption, setIntervalOption] = useState<IntervalEnum>(props.defaultInterval);
+    const [refreshIntervalId, setRefreshIntervalId] = useState<number>(0);
+    const [lastRefreshTime, setLastRefreshTime] = useState<number>(new Date().getTime());
 
     const setXAxis = (array: number[], interval: IntervalEnum): void=>{
         let dataArray: Array<object> = [];
@@ -50,100 +50,50 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
     };
 
     const handleOptionClick = (IntervalValue: IntervalEnum): void=>{
-        setInterval(IntervalValue);
-        props.getData(interval);
+        setIntervalOption(IntervalValue);
+        const timeOnClick = new Date().getTime();
+        setLastRefreshTime(timeOnClick);
     };
 
     const renderGraphIntervalOption = (IntervalValue: IntervalEnum): string => {
         let selector = "";
-        interval===IntervalValue ? selector="selected" : null;
+        intervalOption===IntervalValue ? selector="selected" : null;
         return `graph-option ${selector}`;
     };
 
     const awaitData = async (): Promise<void>=>{
-        props.getData(interval).then((dataValueArray)=>{
-            setXAxis(dataValueArray, interval);
+        props.getData(intervalOption).then((dataValueArray)=>{
+            setXAxis(dataValueArray, intervalOption);
         });
     };
 
+    const intervalHandler = (option: IntervalEnum): void =>{
+        const timeOnInterval = new Date().getTime();
+        const diffInSeconds = (timeOnInterval - lastRefreshTime)/1000;
+        switch (option[0]) {
+            case IntervalEnum.HOUR: setLastRefreshTime(timeOnInterval);
+                break;
+            case IntervalEnum.DAY: if(diffInSeconds >= 3600) setLastRefreshTime(timeOnInterval);
+                break;
+            case IntervalEnum.WEEK:
+            case IntervalEnum.MONTH: if(diffInSeconds >= 86400) setLastRefreshTime(timeOnInterval);
+                break;
+            case IntervalEnum.YEAR: if(diffInSeconds >= 2678400) setLastRefreshTime(timeOnInterval);
+                break;
+        } 
+    };
+ 
     useEffect(()=>{
-        
-        const timeOnMount = new Date();
-        setCurrentHour(timeOnMount.getHours());
-        setCurrentDay(timeOnMount.getDay());
-        setCurrentMonth(timeOnMount.getMonth());
-
-        switch (interval) {
-            case IntervalEnum.HOUR: {
-                const localRefreshInterval = window.setInterval(awaitData, 60000);
-                setRefreshInterval(localRefreshInterval);
-            }
-                break;
-            case IntervalEnum.DAY: {
-                const intervalHandler = (): void =>{
-                    const timeOnInterval = new Date();
-                    if(currentHour===23){
-                        if(timeOnInterval.getHours()===0){
-                            setCurrentHour(timeOnInterval.getHours());
-                            awaitData();
-                        }
-                    } else {
-                        if(timeOnInterval.getHours()>currentHour){
-                            setCurrentHour(timeOnInterval.getHours());
-                            awaitData();
-                        }
-                    }
-                };
-                const localRefreshInterval = window.setInterval(intervalHandler, 60000);
-                setRefreshInterval(localRefreshInterval);
-            }
-                break;
-            case (IntervalEnum.WEEK || IntervalEnum.MONTH): {
-                const intervalHandler = (): void => {
-                    const timeOnInterval = new Date();
-                    if(currentDay===6){
-                        if(timeOnInterval.getDay()===0){
-                            setCurrentDay(timeOnInterval.getDay());
-                            awaitData();
-                        }
-                    } else {
-                        if(timeOnInterval.getDay()>currentDay){
-                            setCurrentDay(timeOnInterval.getDay());
-                            awaitData();
-                        }
-                    }
-                };
-                const localRefreshInterval = window.setInterval(intervalHandler, 60000);
-                setRefreshInterval(localRefreshInterval);
-            }
-                break;
-            case IntervalEnum.YEAR: {
-                const intervalHandler = (): void => {
-                    const timeOnInterval = new Date();
-                    if(currentMonth===11){
-                        if(timeOnInterval.getMonth()===0){
-                            setCurrentMonth(timeOnInterval.getMonth());
-                            awaitData();
-                        }
-                    } else {
-                        if(timeOnInterval.getMonth()>currentMonth){
-                            setCurrentMonth(timeOnInterval.getMonth());
-                            awaitData();
-                        }
-                    }
-                };
-                const localRefreshInterval = window.setInterval(intervalHandler, 60000);
-                setRefreshInterval(localRefreshInterval);
-            }
-                break;
-        }
         awaitData();
+        clearInterval(refreshIntervalId);
 
-        return(): void => {
-            clearInterval(refreshInterval);
+        const refreshIntervalValue = window.setInterval(intervalHandler, 60000,[intervalOption]);
+        setRefreshIntervalId(refreshIntervalValue);
+
+        return (): void => {
+            clearInterval(refreshIntervalId);
         };
-
-    },[interval]);
+    },[intervalOption,lastRefreshTime]);
 
     return(
         <div className="balance-graph">
@@ -169,7 +119,7 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
             </div>
             <LineChart
                 width={624} height={199} data={data}
-                margin={{top: 5, bottom: 0, left: 30, right: 30,}}>
+                margin={{top: 5, bottom: 0, left: 20, right: 20,}}>
                 <XAxis dataKey="name" stroke="#9ba7af" 
                     interval="preserveStartEnd" tickLine={false}/>
                 <Tooltip isAnimationActive={false}/>

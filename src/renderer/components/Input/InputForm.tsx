@@ -4,7 +4,7 @@ export interface IInputFormProps {
     label?: string;
     valid?: boolean;
     errorMessage?: string;
-    inputValue?: any;
+    inputValue?: string;
     placeholder?: string;
     onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
     focused?: boolean;
