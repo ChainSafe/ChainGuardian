@@ -46,7 +46,7 @@ const createWindow = async () => {
         show: false,
         icon: iconPath,
     });
-    //win.maximize();
+    win.maximize();
     win.once("ready-to-show", () => {
         if (win !== null) { win.show(); }
     });
