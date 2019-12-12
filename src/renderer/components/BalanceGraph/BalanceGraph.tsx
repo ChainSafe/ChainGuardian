@@ -15,11 +15,13 @@ export enum IntervalEnum {
 export interface IBalanceGraphProps {
     defaultInterval: IntervalEnum;
     /**
-     * HOUR-last 60 minutes - 60 values
-     * DAY-last 24 hours - 24 values
-     * WEEK-last 7 days - 7 values
-     * MONTH-last 12 days - 12 values
-     * YEAR-last 12 months- 12 values
+     * Should return values based on IntervalEnum //
+     * IntervalEnum:
+     * HOUR-last 60 minutes - 60 values,
+     * DAY-last 24 hours - 24 values,
+     * WEEK-last 7 days - 7 values,
+     * MONTH-last 12 days - 12 values,
+     * YEAR-last 12 months- 12 values,
      */
     getData: (interval: IntervalEnum) => Promise<number[]>;
 }
@@ -65,65 +67,32 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
         });
     };
 
-    const refresh = (intervalHandler: () => void): void => {
-        const localRefreshInterval = window.setInterval(intervalHandler, 60000);
-        setRefreshIntervalId(localRefreshInterval);
-    };
-
-    useEffect(()=>{
-        
-        clearInterval(refreshIntervalId);
-
-        switch (intervalOption) {
-            case IntervalEnum.HOUR: {
-                const timeOnInterval = new Date().getTime();
-                const intervalHandler = (): void =>{
-                    setLastRefreshTime(timeOnInterval);
-                };
-                refresh(intervalHandler);
-            }
+    const intervalHandler = (option: IntervalEnum): void =>{
+        const timeOnInterval = new Date().getTime();
+        const diffInSeconds = (timeOnInterval - lastRefreshTime)/1000;
+        switch (option[0]) {
+            case IntervalEnum.HOUR: setLastRefreshTime(timeOnInterval);
                 break;
-            case IntervalEnum.DAY: {
-                const intervalHandler = (): void =>{
-                    const timeOnInterval = new Date().getTime();
-                    const diffInSeconds = (timeOnInterval - lastRefreshTime)/1000;
-                    const hourToSeconds = 3600;
-                    if(diffInSeconds >= hourToSeconds){
-                        setLastRefreshTime(timeOnInterval);
-                    }
-                };
-                refresh(intervalHandler);
-            }
+            case IntervalEnum.DAY: if(diffInSeconds >= 3600) setLastRefreshTime(timeOnInterval);
                 break;
             case IntervalEnum.WEEK:
-            case IntervalEnum.MONTH: {
-                const intervalHandler = (): void =>{
-                    const timeOnInterval = new Date().getTime();
-                    const diffInSeconds = (timeOnInterval - lastRefreshTime)/1000;
-                    const dayToSeconds = 86400;
-                    if(diffInSeconds >= dayToSeconds){
-                        setLastRefreshTime(timeOnInterval);
-                    }
-                };
-                refresh(intervalHandler);
-            }
+            case IntervalEnum.MONTH: if(diffInSeconds >= 86400) setLastRefreshTime(timeOnInterval);
                 break;
-            case IntervalEnum.YEAR: {
-                const intervalHandler = (): void =>{
-                    const timeOnInterval = new Date().getTime();
-                    const diffInSeconds = (timeOnInterval - lastRefreshTime)/1000;
-                    const monthToSeconds = 2678400;
-                    if(diffInSeconds >= monthToSeconds){
-                        setLastRefreshTime(timeOnInterval);
-                    }
-                };
-                refresh(intervalHandler);
-            }
+            case IntervalEnum.YEAR: if(diffInSeconds >= 2678400) setLastRefreshTime(timeOnInterval);
                 break;
-        }
-
+        } 
+    };
+ 
+    useEffect(()=>{
         awaitData();
+        clearInterval(refreshIntervalId);
 
+        const refreshIntervalValue = window.setInterval(intervalHandler, 60000,[intervalOption]);
+        setRefreshIntervalId(refreshIntervalValue);
+
+        return (): void => {
+            clearInterval(refreshIntervalId);
+        };
     },[intervalOption,lastRefreshTime]);
 
     return(
