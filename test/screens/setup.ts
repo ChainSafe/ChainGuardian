@@ -1,7 +1,7 @@
 import {Application} from "spectron";
 import path from "path";
 import {Routes} from "../../src/renderer/constants/routes";
-import {existsSync, readdirSync, lstatSync, unlinkSync, rmdirSync} from "fs";
+import {existsSync, lstatSync, readdirSync, rmdirSync, unlinkSync} from "fs";
 
 export const TIMEOUT = 120000;
 
@@ -13,7 +13,7 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
     }
     
     const random = Math.floor(100000 + Math.random() * 900000);
-    const dbName = `test-level-${random}.db`;
+    const dbName = `.db/test-level-${random}.db`;
 
     const app = new Application({
         path: electronPath,
@@ -42,7 +42,7 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
 export async function stopApp(app: Application): Promise<void> {
     if (app && app.isRunning()) {
         try {
-            deleteFolderRecursive("test-level.db");
+            deleteFolderRecursive(".db");
             await app.stop();
         } catch (e) {
             console.log(e);

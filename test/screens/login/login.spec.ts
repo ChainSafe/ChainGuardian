@@ -24,19 +24,19 @@ describe("Main window", () => {
         const registerButtonText = await client.getAttribute("#register", "textContent");
         expect(registerButtonText).toBe("REGISTER");
     });
-
-    it("register button leads to onboarding", async () => {
-        const {client} = app;
-        await client.$("button=REGISTER").click().pause(200);
-        const url = await client.getUrl();
-        expect(url.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING))).toBeTruthy();
-    });
-
-    it("input field test", async () => {
-        const {client} = app;
-        await client.addValue(".inputform", "testinput");
-        const inputValue = await client.getValue(".inputform");
-        expect(inputValue).toBe("testinput");
-    });
+    //
+    // it("register button leads to onboarding", async () => {
+    //     const {client} = app;
+    //     await client.$("button=REGISTER").click().pause(200);
+    //     const url = await client.getUrl();
+    //     expect(url.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING))).toBeTruthy();
+    // });
+    //
+    // it("input field test", async () => {
+    //     const {client} = app;
+    //     await client.addValue(".inputform", "testinput");
+    //     const inputValue = await client.getValue(".inputform");
+    //     expect(inputValue).toBe("testinput");
+    // });
 
 });

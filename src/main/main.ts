@@ -1,11 +1,11 @@
 /* eslint-disable */
-import { app, BrowserWindow, ipcMain } from "electron";
-import path from "path";
-import url from "url";
-import { setApplicationMenu } from './menu';
-import { DatabaseHandler } from "./database";
-import { IIpcDatabaseEntry } from "../renderer/services/interfaces";
-import { SAVE_TO_DATABASE_REQUEST, GET_FROM_DATABASE_REQUEST } from "../renderer/constants/ipc";
+import { app, BrowserWindow, ipcMain } from 'electron';
+import path from 'path';
+import url from 'url';
+import { setApplicationMenu } from './menu/menu';
+import { DatabaseHandler } from './db/database';
+import { IIpcDatabaseEntry } from '../renderer/services/interfaces';
+import { GET_FROM_DATABASE_REQUEST, SAVE_TO_DATABASE_REQUEST } from '../renderer/constants/ipc';
 
 let win: BrowserWindow | null;
 let databaseHandler: DatabaseHandler;
@@ -53,9 +53,6 @@ const createWindow = async () => {
     win.webContents.on("did-finish-load", async () => {
         if (win !== null) {
             win.setTitle("ChainGuardian");
-            // FIXME NODE_ENV is not working in tests
-            databaseHandler = new DatabaseHandler()
-            await databaseHandler.start()
         }
     });
 
@@ -85,16 +82,18 @@ const createWindow = async () => {
     });
 
     ipcMain.on(SAVE_TO_DATABASE_REQUEST, (event, arg: IIpcDatabaseEntry) => {
-        databaseHandler.saveToDatabase(arg.id, arg.account)
+        databaseHandler.saveToDatabase(arg.id, arg.account);
         event.returnValue = true
-    })
+    });
 
     ipcMain.on(GET_FROM_DATABASE_REQUEST, async (event, id: string) => {
-        const account = await databaseHandler.getFromDatabase(id)
-        event.returnValue = account
-    })
+        event.returnValue = await databaseHandler.getFromDatabase(id)
+    });
 
     setApplicationMenu();
+
+    databaseHandler = new DatabaseHandler();
+    await databaseHandler.start()
 };
 
 app.on("ready", createWindow);
