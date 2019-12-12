@@ -1,0 +1,641 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BalanceGraph renders correctly, day 1`] = `
+<div
+  className="balance-graph"
+>
+  <div
+    className="graph-header"
+  >
+    <div
+      className="graph-title"
+    >
+      Validator Balance
+    </div>
+    <div
+      className="graph-options"
+    >
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1H
+      </div>
+      <div
+        className="graph-option selected"
+        onClick={[Function]}
+      >
+        1D
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1W
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1M
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1Y
+      </div>
+    </div>
+  </div>
+  <div
+    className="recharts-wrapper"
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onMouseMove={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    style={
+      Object {
+        "cursor": "default",
+        "height": 199,
+        "position": "relative",
+        "width": 624,
+      }
+    }
+  >
+    <svg
+      className="recharts-surface"
+      height={199}
+      version="1.1"
+      viewBox="0 0 624 199"
+      width={624}
+    >
+      <defs>
+        <clipPath
+          id="recharts6-clip"
+        >
+          <rect
+            height={164}
+            width={584}
+            x={20}
+            y={5}
+          />
+        </clipPath>
+      </defs>
+    </svg>
+    <div
+      className="recharts-tooltip-wrapper"
+      style={
+        Object {
+          "MozTransform": "translate(undefinedpx, undefinedpx)",
+          "OTransform": "translate(undefinedpx, undefinedpx)",
+          "WebkitTransform": "translate(undefinedpx, undefinedpx)",
+          "msTransform": "translate(undefinedpx, undefinedpx)",
+          "pointerEvents": "none",
+          "position": "absolute",
+          "top": 0,
+          "transform": "translate(undefinedpx, undefinedpx)",
+          "visibility": "hidden",
+        }
+      }
+    >
+      <div
+        className="recharts-default-tooltip"
+        style={
+          Object {
+            "backgroundColor": "#fff",
+            "border": "1px solid #ccc",
+            "margin": 0,
+            "padding": 10,
+            "whiteSpace": "nowrap",
+          }
+        }
+      >
+        <p
+          className="recharts-tooltip-label"
+          style={
+            Object {
+              "margin": 0,
+            }
+          }
+        >
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`BalanceGraph renders correctly, hour 1`] = `
+<div
+  className="balance-graph"
+>
+  <div
+    className="graph-header"
+  >
+    <div
+      className="graph-title"
+    >
+      Validator Balance
+    </div>
+    <div
+      className="graph-options"
+    >
+      <div
+        className="graph-option selected"
+        onClick={[Function]}
+      >
+        1H
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1D
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1W
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1M
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1Y
+      </div>
+    </div>
+  </div>
+  <div
+    className="recharts-wrapper"
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onMouseMove={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    style={
+      Object {
+        "cursor": "default",
+        "height": 199,
+        "position": "relative",
+        "width": 624,
+      }
+    }
+  >
+    <svg
+      className="recharts-surface"
+      height={199}
+      version="1.1"
+      viewBox="0 0 624 199"
+      width={624}
+    >
+      <defs>
+        <clipPath
+          id="recharts2-clip"
+        >
+          <rect
+            height={164}
+            width={584}
+            x={20}
+            y={5}
+          />
+        </clipPath>
+      </defs>
+    </svg>
+    <div
+      className="recharts-tooltip-wrapper"
+      style={
+        Object {
+          "MozTransform": "translate(undefinedpx, undefinedpx)",
+          "OTransform": "translate(undefinedpx, undefinedpx)",
+          "WebkitTransform": "translate(undefinedpx, undefinedpx)",
+          "msTransform": "translate(undefinedpx, undefinedpx)",
+          "pointerEvents": "none",
+          "position": "absolute",
+          "top": 0,
+          "transform": "translate(undefinedpx, undefinedpx)",
+          "visibility": "hidden",
+        }
+      }
+    >
+      <div
+        className="recharts-default-tooltip"
+        style={
+          Object {
+            "backgroundColor": "#fff",
+            "border": "1px solid #ccc",
+            "margin": 0,
+            "padding": 10,
+            "whiteSpace": "nowrap",
+          }
+        }
+      >
+        <p
+          className="recharts-tooltip-label"
+          style={
+            Object {
+              "margin": 0,
+            }
+          }
+        >
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`BalanceGraph renders correctly, month 1`] = `
+<div
+  className="balance-graph"
+>
+  <div
+    className="graph-header"
+  >
+    <div
+      className="graph-title"
+    >
+      Validator Balance
+    </div>
+    <div
+      className="graph-options"
+    >
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1H
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1D
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1W
+      </div>
+      <div
+        className="graph-option selected"
+        onClick={[Function]}
+      >
+        1M
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1Y
+      </div>
+    </div>
+  </div>
+  <div
+    className="recharts-wrapper"
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onMouseMove={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    style={
+      Object {
+        "cursor": "default",
+        "height": 199,
+        "position": "relative",
+        "width": 624,
+      }
+    }
+  >
+    <svg
+      className="recharts-surface"
+      height={199}
+      version="1.1"
+      viewBox="0 0 624 199"
+      width={624}
+    >
+      <defs>
+        <clipPath
+          id="recharts14-clip"
+        >
+          <rect
+            height={164}
+            width={584}
+            x={20}
+            y={5}
+          />
+        </clipPath>
+      </defs>
+    </svg>
+    <div
+      className="recharts-tooltip-wrapper"
+      style={
+        Object {
+          "MozTransform": "translate(undefinedpx, undefinedpx)",
+          "OTransform": "translate(undefinedpx, undefinedpx)",
+          "WebkitTransform": "translate(undefinedpx, undefinedpx)",
+          "msTransform": "translate(undefinedpx, undefinedpx)",
+          "pointerEvents": "none",
+          "position": "absolute",
+          "top": 0,
+          "transform": "translate(undefinedpx, undefinedpx)",
+          "visibility": "hidden",
+        }
+      }
+    >
+      <div
+        className="recharts-default-tooltip"
+        style={
+          Object {
+            "backgroundColor": "#fff",
+            "border": "1px solid #ccc",
+            "margin": 0,
+            "padding": 10,
+            "whiteSpace": "nowrap",
+          }
+        }
+      >
+        <p
+          className="recharts-tooltip-label"
+          style={
+            Object {
+              "margin": 0,
+            }
+          }
+        >
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`BalanceGraph renders correctly, week 1`] = `
+<div
+  className="balance-graph"
+>
+  <div
+    className="graph-header"
+  >
+    <div
+      className="graph-title"
+    >
+      Validator Balance
+    </div>
+    <div
+      className="graph-options"
+    >
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1H
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1D
+      </div>
+      <div
+        className="graph-option selected"
+        onClick={[Function]}
+      >
+        1W
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1M
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1Y
+      </div>
+    </div>
+  </div>
+  <div
+    className="recharts-wrapper"
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onMouseMove={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    style={
+      Object {
+        "cursor": "default",
+        "height": 199,
+        "position": "relative",
+        "width": 624,
+      }
+    }
+  >
+    <svg
+      className="recharts-surface"
+      height={199}
+      version="1.1"
+      viewBox="0 0 624 199"
+      width={624}
+    >
+      <defs>
+        <clipPath
+          id="recharts10-clip"
+        >
+          <rect
+            height={164}
+            width={584}
+            x={20}
+            y={5}
+          />
+        </clipPath>
+      </defs>
+    </svg>
+    <div
+      className="recharts-tooltip-wrapper"
+      style={
+        Object {
+          "MozTransform": "translate(undefinedpx, undefinedpx)",
+          "OTransform": "translate(undefinedpx, undefinedpx)",
+          "WebkitTransform": "translate(undefinedpx, undefinedpx)",
+          "msTransform": "translate(undefinedpx, undefinedpx)",
+          "pointerEvents": "none",
+          "position": "absolute",
+          "top": 0,
+          "transform": "translate(undefinedpx, undefinedpx)",
+          "visibility": "hidden",
+        }
+      }
+    >
+      <div
+        className="recharts-default-tooltip"
+        style={
+          Object {
+            "backgroundColor": "#fff",
+            "border": "1px solid #ccc",
+            "margin": 0,
+            "padding": 10,
+            "whiteSpace": "nowrap",
+          }
+        }
+      >
+        <p
+          className="recharts-tooltip-label"
+          style={
+            Object {
+              "margin": 0,
+            }
+          }
+        >
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`BalanceGraph renders correctly, year 1`] = `
+<div
+  className="balance-graph"
+>
+  <div
+    className="graph-header"
+  >
+    <div
+      className="graph-title"
+    >
+      Validator Balance
+    </div>
+    <div
+      className="graph-options"
+    >
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1H
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1D
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1W
+      </div>
+      <div
+        className="graph-option "
+        onClick={[Function]}
+      >
+        1M
+      </div>
+      <div
+        className="graph-option selected"
+        onClick={[Function]}
+      >
+        1Y
+      </div>
+    </div>
+  </div>
+  <div
+    className="recharts-wrapper"
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onMouseMove={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    style={
+      Object {
+        "cursor": "default",
+        "height": 199,
+        "position": "relative",
+        "width": 624,
+      }
+    }
+  >
+    <svg
+      className="recharts-surface"
+      height={199}
+      version="1.1"
+      viewBox="0 0 624 199"
+      width={624}
+    >
+      <defs>
+        <clipPath
+          id="recharts18-clip"
+        >
+          <rect
+            height={164}
+            width={584}
+            x={20}
+            y={5}
+          />
+        </clipPath>
+      </defs>
+    </svg>
+    <div
+      className="recharts-tooltip-wrapper"
+      style={
+        Object {
+          "MozTransform": "translate(undefinedpx, undefinedpx)",
+          "OTransform": "translate(undefinedpx, undefinedpx)",
+          "WebkitTransform": "translate(undefinedpx, undefinedpx)",
+          "msTransform": "translate(undefinedpx, undefinedpx)",
+          "pointerEvents": "none",
+          "position": "absolute",
+          "top": 0,
+          "transform": "translate(undefinedpx, undefinedpx)",
+          "visibility": "hidden",
+        }
+      }
+    >
+      <div
+        className="recharts-default-tooltip"
+        style={
+          Object {
+            "backgroundColor": "#fff",
+            "border": "1px solid #ccc",
+            "margin": 0,
+            "padding": 10,
+            "whiteSpace": "nowrap",
+          }
+        }
+      >
+        <p
+          className="recharts-tooltip-label"
+          style={
+            Object {
+              "margin": 0,
+            }
+          }
+        >
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
