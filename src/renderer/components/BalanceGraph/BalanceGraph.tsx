@@ -2,7 +2,7 @@ import * as React from "react";
 import {normalizeHour,normalizeDay,normalizeWeek,
     normalizeMonth,normalizeYear} from "../../services/balance_graph/normalizeDataPoints";
 import {useState, useEffect} from "react";
-import { LineChart, Line, XAxis, Tooltip,} from "recharts";
+import {LineChart, Line, XAxis, Tooltip,} from "recharts";
 
 export enum IntervalEnum {
     HOUR = "hour",
