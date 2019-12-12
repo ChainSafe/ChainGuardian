@@ -11,7 +11,7 @@ export interface IErrorGraphProps {
 export const ErrorGraph: React.FunctionComponent<IErrorGraphProps> = (props: IErrorGraphProps) => {
     const [data, setData] = useState<Array<object>>([]);
     const [refreshIntervalId, setRefreshIntervalId] = useState<number>(0);
-    const [lastRefreshTime,setLastRefreshTime] = useState<number>(0);
+    const [lastRefreshTime,setLastRefreshTime] = useState<number>(new Date().getTime());
 
     function normalize (dataArray: Array<object>, array: number[]): Array<object> {
         const dateToday = new Date();
@@ -33,13 +33,10 @@ export const ErrorGraph: React.FunctionComponent<IErrorGraphProps> = (props: IEr
         });
     };
 
-    const initalTime = () => {
-        // const timeOnMount = new Date().getTime();
-        setLastRefreshTime(new Date().getTime());
-    }
+    
     useEffect(()=>{
-        initalTime();
-        console.log(lastRefreshTime + " last refresh time");
+        
+        clearInterval(refreshIntervalId);
 
         const intervalHandler = (): void => {
             const timeOnInterval = new Date().getTime();
@@ -49,7 +46,6 @@ export const ErrorGraph: React.FunctionComponent<IErrorGraphProps> = (props: IEr
             const hourToSeconds = 3600;
             if(diffInSeconds>=hourToSeconds){
                 setLastRefreshTime(timeOnInterval);
-                awaitData();
             }
         }
 
@@ -57,7 +53,8 @@ export const ErrorGraph: React.FunctionComponent<IErrorGraphProps> = (props: IEr
         setRefreshIntervalId(refreshInterval);
 
         awaitData();
-    },[])
+         
+    },[lastRefreshTime])
 
     return(
         <div className="balance-graph" >
