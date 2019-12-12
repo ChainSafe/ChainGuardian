@@ -33,28 +33,26 @@ export const ErrorGraph: React.FunctionComponent<IErrorGraphProps> = (props: IEr
         });
     };
 
-    
-    useEffect(()=>{
-        
-        clearInterval(refreshIntervalId);
-
-        const intervalHandler = (): void => {
-            const timeOnInterval = new Date().getTime();
-            console.log(timeOnInterval + " time on interval")
-            const diffInSeconds = (timeOnInterval-lastRefreshTime)/1000
-            console.log(diffInSeconds + " diff");
-            const hourToSeconds = 3600;
-            if(diffInSeconds>=hourToSeconds){
-                setLastRefreshTime(timeOnInterval);
-            }
+    const intervalHandler = (): void => {
+        const timeOnInterval = new Date().getTime();
+        const diffInSeconds = (timeOnInterval-lastRefreshTime)/1000;
+        const hourToSeconds = 3600;
+        if(diffInSeconds>=hourToSeconds){
+            setLastRefreshTime(timeOnInterval);
         }
+    };
+
+    useEffect(()=>{
+        awaitData();
+        clearInterval(refreshIntervalId);
 
         const refreshInterval = window.setInterval(intervalHandler, 60000);
         setRefreshIntervalId(refreshInterval);
 
-        awaitData();
-         
-    },[lastRefreshTime])
+        return (): void =>{
+            clearInterval(refreshIntervalId);
+        };
+    },[lastRefreshTime]);
 
     return(
         <div className="balance-graph" >
@@ -63,8 +61,8 @@ export const ErrorGraph: React.FunctionComponent<IErrorGraphProps> = (props: IEr
                 <div className="graph-option position" >IN THE LAST DAY</div>
             </div>
             <BarChart
-            width={624} height={199} data={data}
-            margin={{top: 5, bottom: 0, left: 10, right: 10,}}>
+                width={624} height={199} data={data}
+                margin={{top: 5, bottom: 0, left: 10, right: 10,}}>
                 <XAxis dataKey="name" stroke="#9ba7af" 
                     interval="preserveStartEnd" tickLine={false}/>
                 <Tooltip contentStyle={{color: "red"}} cursor={false} isAnimationActive={false}/>
@@ -72,4 +70,4 @@ export const ErrorGraph: React.FunctionComponent<IErrorGraphProps> = (props: IEr
             </BarChart>
         </div>
     );
-}
+};

@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ErrorGraph renders correctly 1`] = `
+<div
+  className="balance-graph"
+>
+  <div
+    className="graph-header"
+  >
+    <div
+      className="graph-title"
+    >
+      Error Frequency
+    </div>
+    <div
+      className="graph-option position"
+    >
+      IN THE LAST DAY
+    </div>
+  </div>
+  <div
+    className="recharts-wrapper"
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onMouseMove={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    style={
+      Object {
+        "cursor": "default",
+        "height": 199,
+        "position": "relative",
+        "width": 624,
+      }
+    }
+  >
+    <svg
+      className="recharts-surface"
+      height={199}
+      version="1.1"
+      viewBox="0 0 624 199"
+      width={624}
+    >
+      <defs>
+        <clipPath
+          id="recharts2-clip"
+        >
+          <rect
+            height={164}
+            width={604}
+            x={10}
+            y={5}
+          />
+        </clipPath>
+      </defs>
+    </svg>
+    <div
+      className="recharts-tooltip-wrapper"
+      style={
+        Object {
+          "MozTransform": "translate(undefinedpx, undefinedpx)",
+          "OTransform": "translate(undefinedpx, undefinedpx)",
+          "WebkitTransform": "translate(undefinedpx, undefinedpx)",
+          "msTransform": "translate(undefinedpx, undefinedpx)",
+          "pointerEvents": "none",
+          "position": "absolute",
+          "top": 0,
+          "transform": "translate(undefinedpx, undefinedpx)",
+          "visibility": "hidden",
+        }
+      }
+    >
+      <div
+        className="recharts-default-tooltip"
+        style={
+          Object {
+            "backgroundColor": "#fff",
+            "border": "1px solid #ccc",
+            "color": "red",
+            "margin": 0,
+            "padding": 10,
+            "whiteSpace": "nowrap",
+          }
+        }
+      >
+        <p
+          className="recharts-tooltip-label"
+          style={
+            Object {
+              "margin": 0,
+            }
+          }
+        >
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
