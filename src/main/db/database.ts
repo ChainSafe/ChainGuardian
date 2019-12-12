@@ -4,24 +4,18 @@ import {config} from "@chainsafe/eth2.0-config/lib/presets/minimal";
 import {IService} from "../../renderer/services/interfaces";
 import {CGAccount} from "../../renderer/models/account";
 import {getConfig} from "../config/config";
-import {App} from "electron";
 
 export class DatabaseHandler implements IService {
-    // @ts-ignore
+
     private database: CGDatabase;
 
     public constructor() {
-        try {
-            this.database = new CGDatabase({
-                config,
-                controller: new LevelDbController({
-                    name: getConfig().db.name
-                })
-            });
-        } catch (e) {
-            console.log(e);
-        }
-
+        this.database = new CGDatabase({
+            config,
+            controller: new LevelDbController({
+                name: getConfig().db.name
+            })
+        });
     }
 
     public async start(): Promise<void> {
