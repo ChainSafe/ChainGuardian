@@ -6,6 +6,9 @@ import {MultipleInputVertical} from "../../../components/MultipleInputVertical/M
 import {RouteComponentProps} from "react-router";
 import {passwordFormSchema} from "./validation";
 import {joiValidationToErrorMessages} from "../../../services/validation/util";
+import {connect} from "react-redux";
+import {bindActionCreators, Dispatch} from "redux";
+import {afterPasswordAction} from "../../../actions";
 
 export interface IState {
     password: string;
@@ -16,7 +19,12 @@ export interface IState {
     };
 }
 
-export class CreatePasswordContainer extends Component<Pick<RouteComponentProps, "history">> {
+
+interface IInjectedProps {
+    afterPassword: typeof afterPasswordAction;
+}
+
+export class CreatePassword extends Component<Pick<RouteComponentProps, "history"> & IInjectedProps> {
 
     public state: IState = {
         password: "",
@@ -51,6 +59,7 @@ export class CreatePasswordContainer extends Component<Pick<RouteComponentProps,
                     <ButtonPrimary
                         buttonId="next"
                         disabled={ this.state.errorMessages.password !== "" || this.state.errorMessages.confirm !== ""}
+                        onClick={this.handleSubmit}
                     >
                         NEXT
                     </ButtonPrimary>
@@ -76,4 +85,22 @@ export class CreatePasswordContainer extends Component<Pick<RouteComponentProps,
         }
         this.setState({errorMessages: m});
     };
+
+    private handleSubmit= (): void => {
+        const {password} = this.state;
+        this.props.afterPassword(password);
+    };
 }
+
+const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
+    bindActionCreators(
+        {
+            afterPassword: afterPasswordAction,
+        },
+        dispatch
+    );
+
+export const CreatePasswordContainer = connect(
+    null,
+    mapDispatchToProps
+)(CreatePassword);

@@ -8,6 +8,11 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js'
     },
+    externals: {
+        'level':"require('level')",
+        'bcrypto':"require('bcrypto')",
+        'leveldown':"require('leveldown')",
+    },
     node: {
         __dirname: false,
         __filename: false

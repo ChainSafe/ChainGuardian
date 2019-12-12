@@ -19,7 +19,7 @@ export class AccountRepository extends Repository<CGAccount> {
             const {name, directory, sendStats} = this.serializer.deserialize(
                 value,
                 this.type
-            );
+            );  
             return new CGAccount({name, directory, sendStats});
         } catch (e) {
             return null;
