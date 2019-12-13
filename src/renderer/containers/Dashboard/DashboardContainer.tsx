@@ -4,13 +4,23 @@ import {ValidatorSimple} from "../../components/Validator/ValidatorSimple";
 import {Background} from "../../components/Background/Background";
 import {ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {Dropdown} from "../../components/Dropdown/Dropdown";
+import {exportKeystore} from "./export";
+import {Notification} from "../../components/Notification/Notification";
+import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 
 interface IState {
     validators: Array<IValidator>;
     currentNetwork: number;
+    notification: INotificationState;
 }
 
-interface IValidator {
+interface INotificationState {
+    title?: string;
+    level: Level;
+    visible: boolean;
+}
+
+export interface IValidator {
     name: string;
     status: string;
     publicKey: string;
@@ -20,9 +30,12 @@ interface IValidator {
 
 export default class DashboardContainer extends React.Component {
 
+    public HiddenNotification: INotificationState = {level: Level.INFO, visible: false};
+
     public state: IState = {
         validators: [],
-        currentNetwork: 0
+        currentNetwork: 0,
+        notification: this.HiddenNotification
     };
 
     private readonly networks: {[id: number]: string};
@@ -78,6 +91,16 @@ export default class DashboardContainer extends React.Component {
                                 </div>;
                             })}
                     </div>
+                    <Notification
+                        isVisible={this.state.notification.visible}
+                        level={this.state.notification.level}
+                        title={this.state.notification.title}
+                        horizontalPosition={Horizontal.RIGHT}
+                        verticalPosition={Vertical.BOTTOM}
+                        onClose={(): void => {
+                            this.setState({notification: this.HiddenNotification});
+                        }}
+                    />
                 </Background>
             </>
         );
@@ -100,15 +123,22 @@ export default class DashboardContainer extends React.Component {
     };
 
     private onExportValidator = (index: number): void => {
-        // TODO - implement
-        // eslint-disable-next-line no-console
-        console.log(`Export validator ${index}`);
+        const result = exportKeystore(this.state.validators[index]);
+        // show notification only if success or error, not on cancel
+        if(result.status) {
+            this.setState({
+                notification: {
+                    title: result.status.message,
+                    level: result.status.level,
+                    visible: true
+                }});
+        }
     };
 
     private getValidators(): Array<IValidator> {
         // TODO - call real validator fetch
         return [{
-            name: "V1",
+            name: "example",
             status: "Working",
             publicKey: "0x1233567822345564",
             deposit: 30,
