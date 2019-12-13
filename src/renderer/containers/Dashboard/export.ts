@@ -18,7 +18,7 @@ export const exportKeystore = (validator: IValidator): IExportStatus => {
     const savePath = dialog.showSaveDialogSync(remote.getCurrentWindow(),{
         title: `Saving keystore for validator ${validator.name}`,
         buttonLabel: "Export",
-        filters: [{name: "KeyStore", extensions: ["json"]}],
+        filters: [{name: "Keystore", extensions: ["json"]}],
         defaultPath: `${app.getPath("home")}/${validator.name}.json`,
     });
     // save keystore if destination selected
@@ -29,12 +29,12 @@ export const exportKeystore = (validator: IValidator): IExportStatus => {
             fs.writeFileSync(savePath, keystoreContent);
             return {status: {
                 level: Level.INFO,
-                message: `Successfully exported keystore for validator ${validator.name} to ${savePath}`
+                message: `Successfully exported keystore for validator ${validator.name} to ${savePath}.`
             }};
         } catch (e) {
             return {status: {
                 level: Level.ERROR,
-                message: `Export failed: ${e.message}`}
+                message: `Export failed: ${e.message}.`}
             };
         }
     }
