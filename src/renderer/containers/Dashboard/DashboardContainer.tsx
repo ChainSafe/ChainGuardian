@@ -138,7 +138,7 @@ export default class DashboardContainer extends React.Component {
     private getValidators(): Array<IValidator> {
         // TODO - call real validator fetch
         return [{
-            name: "example",
+            name: "V1",
             status: "Working",
             publicKey: "0x1233567822345564",
             deposit: 30,

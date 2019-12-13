@@ -1,8 +1,8 @@
 import {IValidator} from "./DashboardContainer";
-import fs from "fs";
 import {remote} from "electron";
 import {KEYSTORE_DEFAULT_DIRECTORY} from "../../constants/keystore";
 import {Level} from "../../components/Notification/NotificationEnums";
+import {copyFile} from "../../services/utils/file-utils";
 
 const app = remote.app;
 const dialog = remote.dialog;
@@ -23,20 +23,16 @@ export const exportKeystore = (validator: IValidator): IExportStatus => {
     });
     // save keystore if destination selected
     if (savePath) {
-        try {
-            const keystorePath = `${KEYSTORE_DEFAULT_DIRECTORY}/${validator.name}.json`;
-            const keystoreContent = fs.readFileSync(keystorePath, "utf-8");
-            fs.writeFileSync(savePath, keystoreContent);
-            return {status: {
-                level: Level.INFO,
-                message: `Successfully exported keystore for validator ${validator.name} to ${savePath}.`
-            }};
-        } catch (e) {
-            return {status: {
-                level: Level.ERROR,
-                message: `Export failed: ${e.message}.`}
-            };
-        }
+        const keystorePath = `${KEYSTORE_DEFAULT_DIRECTORY}/${validator.name}.json`;
+        const copyResult = copyFile(keystorePath, savePath);
+        return {
+            status: {
+                level: copyResult.success ? Level.INFO : Level.ERROR,
+                message: copyResult.success ?
+                    `Successfully exported keystore for validator ${validator.name} to ${savePath}.` :
+                    `Export failed: ${copyResult.message}.`
+            }
+        };
     }
     // destination path not selected
     return {};
