@@ -1,5 +1,6 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {CGAccount} from "../models/account";
 
 export interface IService {
     start(): Promise<void>;
@@ -63,9 +64,15 @@ export interface IV3Keystore {
 
 export interface INetworkConfig {
     config: IBeaconConfig;
+    networkId: number;
     contract: {
         address: string,
         bytecode: string,
         deployedAtBlock: number
     }
+}
+
+export interface IIpcDatabaseEntry {
+    id: string,
+    account: CGAccount
 }

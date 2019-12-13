@@ -20,10 +20,10 @@ export class CGAccount implements IAccount {
         account: IAccount,
         keystoreTarget: ICGKeystoreFactory = V4KeystoreFactory
     ) {
-        this.name = name;
+        this.name = account.name;
         // Add / to the end if not provided
         this.directory =
-      account.directory + (account.directory.endsWith("/") ? "" : "/");
+            account.directory + (account.directory.endsWith("/") ? "" : "/");
         this.sendStats = account.sendStats;
         this.keystoreTarget = keystoreTarget;
     }
@@ -32,7 +32,7 @@ export class CGAccount implements IAccount {
    * should return addresses from validator keystores in account directory
    */
     public getValidatorsAddresses(): string[] {
-    // Loop trough files in account directory
+        // Loop trough files in account directory
         const keystoreFiles: ICGKeystore[] = this.getKeystoreFiles();
 
         const validatorAddresses: string[] = keystoreFiles
@@ -57,13 +57,13 @@ export class CGAccount implements IAccount {
    * @param password decryption password of the keystore
    */
     public isCorrectPassword(password: string): boolean {
-    /**
-     * ? As there can be multiple keystore files there can also be
-     * ? different passwords that these keystores use, we need to
-     * ? define how are we going to handle these situations.
-     * * Currently, if any of the keystores matches the provided
-     * * password this method returns true.
-     */
+        /**
+         * ? As there can be multiple keystore files there can also be
+         * ? different passwords that these keystores use, we need to
+         * ? define how are we going to handle these situations.
+         * * Currently, if any of the keystores matches the provided
+         * * password this method returns true.
+         */
 
         const keystoreFiles = this.getKeystoreFiles();
 
@@ -113,7 +113,7 @@ export class CGAccount implements IAccount {
    * delete all unlocked keypairs from object
    */
     public lock(): void {
-    // Clear validator Keypairs
+        // Clear validator Keypairs
         this.validators = [];
     }
 

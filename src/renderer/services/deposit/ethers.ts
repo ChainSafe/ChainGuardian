@@ -16,10 +16,10 @@ export const DEPOSIT_EVENT_TIMEOUT_MESSAGE = "Timeout waiting for deposit event"
 
 export class EthersNotifier {
     private networkConfig: INetworkConfig;
-    private provider: ethers.providers.Web3Provider;
+    private provider: ethers.providers.BaseProvider;
     private signingKey: Keypair;
 
-    public constructor(networkConfig: INetworkConfig, provider: ethers.providers.Web3Provider, signingKey: Keypair) {
+    public constructor(networkConfig: INetworkConfig, provider: ethers.providers.BaseProvider, signingKey: Keypair) {
         this.networkConfig = networkConfig;
         this.provider = provider;
         this.signingKey = signingKey;

@@ -27,7 +27,7 @@ describe("Onboarding password setup screen", () => {
         const confirmPlaceholder = await client.getAttribute("#confirm", "placeholder");
         expect(confirmPlaceholder).to.be.equal("Confirm password");
         const currentStep: [] = await client.getAttribute(".step.current", "textContent");
-        expect(currentStep.length).to.be.equal(3);
+        expect(currentStep.length).to.be.equal(4);
     });
 
     it("should fail invalid inputs", async () => {
