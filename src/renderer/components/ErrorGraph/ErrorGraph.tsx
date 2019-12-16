@@ -26,7 +26,7 @@ export const ErrorGraph: React.FunctionComponent<IErrorGraphProps> = (props: IEr
     }
 
     const awaitData = async (): Promise<void>=>{
-        props.getData().then((dataValueArray)=>{
+        await props.getData().then((dataValueArray)=>{
             let dataArray: Array<object> = [];
             dataArray = normalize(dataArray,dataValueArray);
             setData(dataArray);
