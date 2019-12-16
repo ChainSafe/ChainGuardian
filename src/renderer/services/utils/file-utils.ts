@@ -5,10 +5,9 @@ export interface ICopyFileStatus {
     message: string
 }
 
-export function copyFile(fromPath: string, toPath: string, readOptions = "utf-8"): ICopyFileStatus {
+export function copyFile(fromPath: string, toPath: string): ICopyFileStatus {
     try {
-        const fileContent = fs.readFileSync(fromPath, readOptions);
-        fs.writeFileSync(toPath, fileContent);
+        fs.copyFileSync(fromPath, toPath);
         return {success: true, message: `File successfully copied from ${fromPath} to ${toPath}`};
     } catch (e) {
         return {success: false, message: e.message};

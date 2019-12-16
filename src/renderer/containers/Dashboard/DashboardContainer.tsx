@@ -125,11 +125,11 @@ export default class DashboardContainer extends React.Component {
     private onExportValidator = (index: number): void => {
         const result = exportKeystore(this.state.validators[index]);
         // show notification only if success or error, not on cancel
-        if(result.status) {
+        if(result) {
             this.setState({
                 notification: {
-                    title: result.status.message,
-                    level: result.status.level,
+                    title: result.message,
+                    level: result.level,
                     visible: true
                 }});
         }

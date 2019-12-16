@@ -189,7 +189,6 @@
     "levelup": "4.3.2",
     "node-cmd": "^3.0.0",
     "prop-types": "^15.7.2",
-    "quickly-copy-file": "^1.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.0.3",

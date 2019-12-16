@@ -8,13 +8,11 @@ const app = remote.app;
 const dialog = remote.dialog;
 
 export interface IExportStatus {
-    status?: {
-        message: string;
-        level: Level;
-    }
+    message: string;
+    level: Level;
 }
 
-export const exportKeystore = (validator: IValidator): IExportStatus => {
+export const exportKeystore = (validator: IValidator): IExportStatus | null => {
     const savePath = dialog.showSaveDialogSync(remote.getCurrentWindow(),{
         title: `Saving keystore for validator ${validator.name}`,
         buttonLabel: "Export",
@@ -26,14 +24,12 @@ export const exportKeystore = (validator: IValidator): IExportStatus => {
         const keystorePath = `${KEYSTORE_DEFAULT_DIRECTORY}/${validator.name}.json`;
         const copyResult = copyFile(keystorePath, savePath);
         return {
-            status: {
-                level: copyResult.success ? Level.INFO : Level.ERROR,
-                message: copyResult.success ?
-                    `Successfully exported keystore for validator ${validator.name} to ${savePath}.` :
-                    `Export failed: ${copyResult.message}.`
-            }
+            level: copyResult.success ? Level.INFO : Level.ERROR,
+            message: copyResult.success ?
+                `Successfully exported keystore for validator ${validator.name} to ${savePath}.` :
+                `Export failed: ${copyResult.message}.`
         };
     }
     // destination path not selected
-    return {};
+    return null;
 };
