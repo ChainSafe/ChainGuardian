@@ -2,7 +2,7 @@ import * as React from "react";
 import {useState} from "react";
 
 export interface IDropdownProps {
-    options: Array<string>;
+    options: Array<string> | {[id: number]: string};
     current: number;
     label?: string;
     onChange: (selected: number) => void;
@@ -11,14 +11,26 @@ export interface IDropdownProps {
 export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdownProps) => {
     const [visible, setVisible]=useState("none");
 
-    function getSelectedIndex(clickedOption: string): number{
-        return (props.options.findIndex(option => option === clickedOption));
-    }
+    const options = Array.isArray(props.options) ? {...props.options} : props.options;
+
     function showHide(): void{
         visible === "none" ? setVisible("block") : setVisible("none");
     }
+
     function hide(): void{
         visible === "block" ? setVisible("none") : null;
+    }
+
+    function renderOption(key: number): any {
+        return <div
+            key={options[key]}
+            onClick={(): void => {props.onChange(key);showHide();}}
+            className={
+                `dropdown-item
+                ${visible}
+                ${key === props.current ? "selected" : ""}`
+            }>
+            {options[key]}</div>;
     }
     
     return(
@@ -31,15 +43,11 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdo
                     </div>
                     <div className="dropdown-items-container">
                         <div className="dropdown-items">
-                            {props.options.map(option =>{
-                                return <div 
-                                    key={option} 
-                                    onClick={(): void => {props.onChange(getSelectedIndex(option));showHide();}} 
-                                    className={`dropdown-item 
-                                ${visible}
-                                ${getSelectedIndex(option)===props.current?"selected":""}`} 
-                                >{option}</div>;
-                            })}
+                            {
+                                Object.keys(options)
+                                    .map(v => parseInt(v))
+                                    .map(key => renderOption(key))
+                            }
                         </div>
                     </div>
                 </div>
