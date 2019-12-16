@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, number, select } from '@storybook/addon-knobs';
-import { ErrorGraph} from './ErrorGraph';
+import { ErrorFrequencGraph} from './ErrorFrequencyGraph';
 
-storiesOf('ErrorGraph', module).add('ErrorGraph', () => {
+storiesOf('ErrorFrequencGraph', module).add('ErrorFrequencGraph', () => {
     
-    return <ErrorGraph 
+    return <ErrorFrequencGraph 
     getData={async ()=>{
         return(
             [2,5,9,12,1,5,6,8,10,10,11,5,7,8

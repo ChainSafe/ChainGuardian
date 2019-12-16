@@ -4,11 +4,12 @@ import {
     BarChart, Bar, XAxis, Tooltip,
 } from "recharts";
 
-export interface IErrorGraphProps {
+export interface IErrorFrequencGraphProps {
     getData: () => Promise<number[]>;
 }
 
-export const ErrorGraph: React.FunctionComponent<IErrorGraphProps> = (props: IErrorGraphProps) => {
+export const ErrorFrequencGraph: React.FunctionComponent<IErrorFrequencGraphProps> = (
+    props: IErrorFrequencGraphProps) => {
     const [data, setData] = useState<Array<object>>([]);
     const [refreshIntervalId, setRefreshIntervalId] = useState<number>(0);
     const [lastRefreshTime,setLastRefreshTime] = useState<number>(new Date().getTime());
