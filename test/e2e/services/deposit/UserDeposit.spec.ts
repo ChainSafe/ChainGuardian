@@ -49,6 +49,7 @@ describe("Deposit transaction service unit tests", () => {
         depositContractAddress = await deployDepositContract(provider, toHexString(deployWallet.privateKey));
         networkConfig = {
             config,
+            networkId: 1,
             contract: {
                 address: depositContractAddress,
                 bytecode: DepositContract.bytecode,

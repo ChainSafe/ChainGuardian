@@ -26,8 +26,8 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
             <div className="validator-nodes-simple">
                 <h2>Status: {props.status}</h2>
                 <div className="validator-buttons-simple">
-                    <ButtonDestructive onClick={(): void=>{props.onRemoveClick;}}>REMOVE</ButtonDestructive>
-                    <ButtonSecondary onClick={(): void=>{props.onExportClick;}}>EXPORT</ButtonSecondary>
+                    <ButtonDestructive onClick={props.onRemoveClick}>REMOVE</ButtonDestructive>
+                    <ButtonSecondary onClick={props.onExportClick}>EXPORT</ButtonSecondary>
                 </div>
             </div>
         </div>

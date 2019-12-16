@@ -9,11 +9,21 @@
     z-index: 2;
     height: 100%;
 }
+
+.scrollable-y {
+    overflow-y: scroll;
+}
+
 .logo{
     padding: 48px;
 }
+
 .children{
     display: flex;
     place-content: center;
     z-index: 5;
+}
+
+.top {
+    display: flex;
 }

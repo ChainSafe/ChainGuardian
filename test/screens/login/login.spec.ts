@@ -1,6 +1,6 @@
 import {Application} from "spectron";
 import {setApp, stopApp, TIMEOUT} from "../setup";
-import {Routes, OnBoardingRoutes} from "../../../src/renderer/constants/routes";
+import {OnBoardingRoutes, Routes} from "../../../src/renderer/constants/routes";
 
 jest.setTimeout(TIMEOUT);
 
