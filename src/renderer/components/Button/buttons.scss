@@ -18,20 +18,14 @@
 }
 
 .copy-button{
+    cursor: pointer;
     width: 64px;
     height: 64px;
     background: rgba(0, 0, 0, 0);
     border: none;
-    .copyall{display: none;}
-    .copied{display: none;}
-    &:hover{
-        .copy{display: none;}
-        .copyall{display: block;}
-    }
+    outline: transparent;
     &:active{
-        .copy{display: none;}
-        .copyall{display: none;}
-        .copied{display: block;}
+        transform: scale(0.9);
     }
 }
 

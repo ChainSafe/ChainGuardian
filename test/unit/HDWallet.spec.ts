@@ -1,10 +1,10 @@
-import {Eth2HDWallet} from "../../src/renderer/services/Eth2HDWallet";
+import {Eth2HDWallet} from "../../src/renderer/services/wallet";
 const entropy = Buffer.from("69248c25e98665aac3fe2fc05ee4a1d3", "hex");
 const expectedMnemonic = "hard caught annual spread green step avocado shine scare warm chronic pond";
 
-const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
+const privateKeyStr = "0x49a23a24f575a7e6b712c4edd819126861783e76dca230ef2e3cc6c7e40d3c3b";
 const publicKeyStr =
-    "0x92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff4990daa18";
+    "0x95c259ecefa8e60edb099a6568887dd9ba35afa75062d01a12fcc5a40d402eca57afcdc1cff7e34fbcd84dfea0848bb9";
 
 describe(".generate()", () => {
     it("should work", () => {

@@ -4,10 +4,11 @@ export interface IInputFormProps {
     label?: string;
     valid?: boolean;
     errorMessage?: string;
-    inputValue?: any;
+    inputValue?: string;
     placeholder?: string;
     onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
     focused?: boolean;
+    readOnly?: boolean;
     inputId?: string;
 }
 
@@ -29,11 +30,12 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
                 autoFocus={props.focused}
                 placeholder={props.placeholder}
                 value={props.inputValue}
+                readOnly={props.readOnly}
                 className={`inputform ${classNamesValid(props.valid)}`} 
                 onChange={props.onChange} />
             <div 
-                className={`error-message ${(classNamesValid(props.valid) !== "error") ? "none" : "" }`}>
-                {props.errorMessage}</div>
+                className={"error-message"}>
+                {props.valid === false && props.errorMessage}</div>
         </form>
     );
 };

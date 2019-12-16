@@ -6,3 +6,6 @@ release/
 .__testdb
 .env
 coverage
+*.log
+package-lock.json
+test-level*.db

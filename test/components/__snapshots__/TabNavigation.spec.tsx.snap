@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TabNavigation renders correctly 1`] = `
+<div
+  className="tab-container"
+>
+  <div
+    className="tab current-tab"
+    onClick={[Function]}
+  >
+    Validator Stats
+  </div>
+  <div
+    className="tab "
+    onClick={[Function]}
+  >
+    Beacon Node
+  </div>
+  <div
+    className="tab "
+    onClick={[Function]}
+  >
+    Beacon Node
+  </div>
+</div>
+`;

@@ -1,24 +1,38 @@
 import * as React from "react";
 import {BackTab} from "../Button/ButtonAction";
+import ReactTooltip from "react-tooltip";
 export interface IModalProps {
     children?: any;
     hasBack?: boolean;
     onBack?: () => void;
+    topBar?: any;
 }
 
 export const Modal: React.FunctionComponent<React.PropsWithChildren<IModalProps>> = (
-    props: IModalProps) => (
-    props.hasBack ? 
-        <div className="modal">
-            <div className="backtab-position"><BackTab onClick={props.onBack} /></div>
-            <div className="modal-children">
-                {props.children}
+    props: IModalProps) => {
+    
+    React.useEffect(() => {
+        // Rebuild ReactTooltips after modal is mounted
+        ReactTooltip.rebuild();
+    });
+
+    return (
+        <div className="modal-container">
+            <div className="modal">
+                {props.hasBack && <div className="backtab-position">
+                    <BackTab onClick={props.onBack} />
+                </div>}
+                <div className="modal-content">
+                    {props.topBar ? props.topBar : <DefaultTopBar />}
+                    <div className="modal-children">
+                        {props.children}
+                    </div>
+                </div>
             </div>
         </div>
-        : 
-        <div className="modal">
-            <div className="modal-children">
-                {props.children}
-            </div>
-        </div>
+    );
+};
+
+const DefaultTopBar: React.FunctionComponent = () => (
+    <span className="top-bar"></span>
 );

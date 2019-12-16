@@ -2,32 +2,54 @@
 
 exports[`InputForm renders back button 1`] = `
 <div
-  className="modal"
+  className="modal-container"
 >
   <div
-    className="backtab-position"
+    className="modal"
   >
-    <button
-      className="back-tab"
+    <div
+      className="backtab-position"
     >
-      <img
-        className="icon"
-        src="test-file-stub"
+      <button
+        className="back-tab"
+      >
+        <img
+          className="icon"
+          src="test-file-stub"
+        />
+      </button>
+    </div>
+    <div
+      className="modal-content"
+    >
+      <span
+        className="top-bar"
       />
-    </button>
+      <div
+        className="modal-children"
+      />
+    </div>
   </div>
-  <div
-    className="modal-children"
-  />
 </div>
 `;
 
 exports[`InputForm renders correctly 1`] = `
 <div
-  className="modal"
+  className="modal-container"
 >
   <div
-    className="modal-children"
-  />
+    className="modal"
+  >
+    <div
+      className="modal-content"
+    >
+      <span
+        className="top-bar"
+      />
+      <div
+        className="modal-children"
+      />
+    </div>
+  </div>
 </div>
 `;

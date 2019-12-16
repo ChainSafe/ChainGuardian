@@ -1,22 +1,25 @@
 import * as React from "react";
+import {ReactNode} from "react";
 import {Background} from "../../components/Background/Background";
 import {Modal} from "../../components/Modal/Modal";
 import {InputForm} from "../../components/Input/InputForm";
 import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
+import {Link} from "react-router-dom";
+import {Routes, OnBoardingRoutes} from "../../constants/routes";
 
 interface IState {
     input: string;
 }
 
 export default class LoginContainer extends React.Component {
-    state: IState = {
+    public state: IState = {
         input: ""
     };
-    handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
+    public handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
         this.setState({input: e.currentTarget.value});
     };
     
-    render(): any {
+    public render(): ReactNode {
         return (
             <Background>
                 <Modal>
@@ -27,11 +30,16 @@ export default class LoginContainer extends React.Component {
                             inputId="inputPassword"
                             focused onChange={this.handleChange} 
                             inputValue={this.state.input} 
-                            placeholder="Enter password" /> 
-                        <ButtonSecondary buttonId="go" >GO</ButtonSecondary>
+                            placeholder="Enter password"
+                        />
+                        <Link to={Routes.DASHBOARD_ROUTE}>
+                            <ButtonSecondary buttonId="go" >GO</ButtonSecondary>
+                        </Link>
                     </div>
-                    <h5>OR</h5>
-                    <ButtonPrimary buttonId="register" >REGISTER</ButtonPrimary>
+                    <h5 className="input-or">OR</h5>
+                    <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING)}>
+                        <ButtonPrimary buttonId="register">REGISTER</ButtonPrimary>
+                    </Link>
                 </Modal>
             </Background>
         );

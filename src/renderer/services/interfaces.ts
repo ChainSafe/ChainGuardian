@@ -1,4 +1,6 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
+import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {CGAccount} from "../models/account";
 
 export interface IService {
     start(): Promise<void>;
@@ -6,11 +8,21 @@ export interface IService {
     stop(): Promise<void>;
 }
 
-
 export interface ICGKeystore {
     decrypt(password: string): Keypair;
     changePassword(oldPassword: string, newPassword: string): void;
     destroy(): void;
+    getAddress(): string;
+}
+
+export interface ICGKeystoreFactory {
+    new (file: string): ICGKeystore;
+}
+
+
+export interface IInputValidity{
+    isValid: boolean
+    message: string
 }
 
 /********************
@@ -46,5 +58,21 @@ export interface IV3Keystore {
     };
     id: string;
     version: number;
+    address: string;
 }
 /************************/
+
+export interface INetworkConfig {
+    config: IBeaconConfig;
+    networkId: number;
+    contract: {
+        address: string,
+        bytecode: string,
+        deployedAtBlock: number
+    }
+}
+
+export interface IIpcDatabaseEntry {
+    id: string,
+    account: CGAccount
+}

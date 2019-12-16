@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CopyField renders correctly 1`] = `
+Array [
+  <h3
+    className="copy-field-label"
+  />,
+  <div
+    className="copy-field"
+  >
+    <div
+      className="copy-field-body"
+      style={
+        Object {
+          "textAlign": undefined,
+        }
+      }
+    >
+      Test text for copy
+    </div>
+    <button
+      className="copy-button"
+    >
+      <img
+        className="icon copy"
+        data-place="top"
+        data-tip="Copy all"
+        src="test-file-stub"
+      />
+    </button>
+  </div>,
+]
+`;
+
+exports[`MnemonicCopyField renders correctly 1`] = `
+Array [
+  <h3
+    className="copy-field-label"
+  />,
+  <div
+    className="copy-field"
+  >
+    <div
+      className="copy-field-body"
+      style={
+        Object {
+          "textAlign": "center",
+        }
+      }
+    >
+      mnemonic text for copy
+    </div>
+    <button
+      className="copy-button"
+    >
+      <img
+        className="icon copy"
+        data-place="top"
+        data-tip="Copy all"
+        src="test-file-stub"
+      />
+    </button>
+  </div>,
+]
+`;

@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Cards renders correctly, NodeCard 1`] = `
+<div
+  className="node-card-container"
+  onClick={[Function]}
+>
+  <h2>
+    BeaconNode
+  </h2>
+  <span
+    className="node-text"
+  >
+    rocketsonic.hr
+  </span>
+  <h2>
+    21
+    ms
+  </h2>
+  <span
+    className="node-text time"
+  >
+    Average Response Time
+  </span>
+</div>
+`;
+
+exports[`Cards renders correctly, ValidatorStat, ETH 1`] = `
+<div
+  className="validator-card-container"
+>
+  <h5>
+    Balance
+  </h5>
+  <h1>
+    .1405
+  </h1>
+  <h5>
+    ETH
+  </h5>
+</div>
+`;
+
+exports[`Cards renders correctly, ValidatorStat, ROI 1`] = `
+<div
+  className="validator-card-container"
+>
+  <h5>
+    Return (ETH)
+  </h5>
+  <h1
+    className="plus"
+  >
+    +
+    20
+    %
+  </h1>
+  <h5
+    className="plus"
+  >
+    ROI
+  </h5>
+</div>
+`;
+
+exports[`Cards renders correctly, ValidatorStat, days 1`] = `
+<div
+  className="validator-card-container"
+>
+  <h5>
+    Uptime
+  </h5>
+  <h1>
+    45.3
+  </h1>
+  <h5>
+    DAYS
+  </h5>
+</div>
+`;
