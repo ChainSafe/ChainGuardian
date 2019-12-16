@@ -1,30 +1,31 @@
 import {
-    uint64,
+    BeaconBlock,
     BLSPubkey,
     Epoch,
-    ValidatorDuty,
-    Slot,
-    BeaconBlock,
-    uint8,
+    IndexedAttestation,
     Shard,
-    IndexedAttestation
+    Slot,
+    uint64,
+    uint8,
+    ValidatorDuty
 } from "@chainsafe/eth2.0-types";
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
-import {fromJson} from "@chainsafe/eth2.0-utils";
+import {fromJson, toJson} from "@chainsafe/eth2.0-utils";
 import {
-    FETCH_NODE_VERSION,
-    FETCH_GENESIS_TIME,
-    POLL_NODE_SYNCING,
     FETCH_FORK_INFORMATION,
-    FETCH_VALIDATOR_DUTIES,
+    FETCH_GENESIS_TIME,
+    FETCH_NODE_VERSION,
     FETCH_VALIDATOR_BLOCK,
-    PUBLISH_SIGNED_BLOCK,
+    FETCH_VALIDATOR_DUTIES,
+    POLL_NODE_SYNCING,
     PRODUCE_ATTESTATION,
-    PUBLISH_SIGNED_ATTESTATION
+    PUBLISH_SIGNED_ATTESTATION,
+    PUBLISH_SIGNED_BLOCK
 } from "../../constants/api";
-import {Syncing, ForkInformation, IBeaconAPIClient, IBeaconApiClientOptions} from "./interface";
+import {IBeaconAPIClient, IBeaconApiClientOptions} from "./interface";
 import {Client} from "./http/client";
 import {EmptyUrl} from "./errors";
+import {getChainForkSSZType, IChainFork, ISyncing, SyncingSSZType, ValidatorDutySSZTyoe} from "./types";
+import BN from "bn.js";
 
 export class Eth2 implements IBeaconAPIClient {
     private options: IBeaconApiClientOptions;
@@ -43,27 +44,39 @@ export class Eth2 implements IBeaconAPIClient {
     }
 
     public async fetchGenesisTime(): Promise<uint64> {
-        return this.httpClient.get<uint64>(FETCH_GENESIS_TIME);
+        return new BN(await this.httpClient.get<string>(FETCH_GENESIS_TIME));
     }
 
-    public async fetchNodeSyncing(): Promise<Syncing> {
-        return this.httpClient.get<Syncing>(POLL_NODE_SYNCING);
+    public async fetchNodeSyncing(): Promise<ISyncing> {
+        return fromJson<ISyncing>(
+            await this.httpClient.get<object>(POLL_NODE_SYNCING),
+            SyncingSSZType
+        );
     }
 
-    public async fetchForkInformation(): Promise<ForkInformation> {
-        return this.httpClient.get<ForkInformation>(FETCH_FORK_INFORMATION);
+    public async fetchForkInformation(): Promise<IChainFork> {
+        return fromJson<IChainFork>(
+            await this.httpClient.get<object>(FETCH_FORK_INFORMATION),
+            getChainForkSSZType(this.options.config)
+        );
     }
 
     public async fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty> {
-        return this.httpClient.get<ValidatorDuty>(FETCH_VALIDATOR_DUTIES(validatorPubkeys, epoch));
+        return fromJson<ValidatorDuty>(
+            await this.httpClient.get<object>(FETCH_VALIDATOR_DUTIES(validatorPubkeys, epoch)),
+            ValidatorDutySSZTyoe
+        );
     }
 
     public async fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock> {
-        return this.httpClient.get<BeaconBlock>(FETCH_VALIDATOR_BLOCK(slot, randaoReveal));
+        return fromJson<BeaconBlock>(
+            await this.httpClient.get<object>(FETCH_VALIDATOR_BLOCK(slot, randaoReveal)),
+            this.options.config.types.BeaconBlock
+        );
     }
 
-    public async publishSignedBlock(beaconBlock: BeaconBlock): Promise<any> {
-        return this.httpClient.post<BeaconBlock, any>(PUBLISH_SIGNED_BLOCK, beaconBlock);
+    public async publishSignedBlock(beaconBlock: BeaconBlock): Promise<void> {
+        await this.httpClient.post<object, void>(PUBLISH_SIGNED_BLOCK, toJson(beaconBlock));
     }
 
     public async produceAttestation(
@@ -72,13 +85,13 @@ export class Eth2 implements IBeaconAPIClient {
         slot: Slot,
         shard: Shard
     ): Promise<IndexedAttestation> {
-        const result = await this.httpClient.get<IndexedAttestation>(
+        const result = await this.httpClient.get<object>(
             PRODUCE_ATTESTATION(validatorPubkey, pocBit, slot, shard)
         );
-        return fromJson(result, this.config.types.IndexedAttestation);
+        return fromJson(result, this.options.config.types.IndexedAttestation);
     }
 
-    public async publishSignedAttestation(attestation: IndexedAttestation): Promise<any> {
-        return this.httpClient.post<IndexedAttestation, any>(PUBLISH_SIGNED_ATTESTATION, attestation);
+    public async publishSignedAttestation(attestation: IndexedAttestation): Promise<void> {
+        await this.httpClient.post<object, void>(PUBLISH_SIGNED_ATTESTATION, toJson(attestation));
     }
 }
