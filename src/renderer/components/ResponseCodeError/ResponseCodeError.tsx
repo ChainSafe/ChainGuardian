@@ -27,7 +27,7 @@ export const ResponseCodeError: React.FunctionComponent<IResponseCodeErrorProps>
     };
 
     const awaitData = async (): Promise<void>=>{
-        props.getData(intervalOption).then((dataValueArray)=>{
+        await props.getData(intervalOption).then((dataValueArray)=>{
             setData(dataValueArray);
         });
     };

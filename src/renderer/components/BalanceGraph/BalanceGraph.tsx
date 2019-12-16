@@ -62,7 +62,7 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
     };
 
     const awaitData = async (): Promise<void>=>{
-        props.getData(intervalOption).then((dataValueArray)=>{
+        await props.getData(intervalOption).then((dataValueArray)=>{
             setXAxis(dataValueArray, intervalOption);
         });
     };
