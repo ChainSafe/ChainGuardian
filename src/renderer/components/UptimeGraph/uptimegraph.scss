@@ -1,0 +1,16 @@
+.node-graph-container{
+    background-color: $neutral-600;
+    width: 405px;
+    height: 256px;
+    box-shadow: inset 0px 2px 6px rgba(10, 39, 51, 0.2);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.graph-option{
+    &.position{
+        color: $neutral-200;
+        align-self: flex-end;
+    }
+}
