@@ -6,12 +6,14 @@ export interface IRegisterState {
     mnemonic: string,
     signingKey: string,
     withdrawalKey: string
+    failedVerification: boolean
 }
 
 const initialState: IRegisterState = {
     mnemonic: "",
     signingKey: "",
-    withdrawalKey: ""
+    withdrawalKey: "",
+    failedVerification: false
 };
 
 export const registerReducer = (state = initialState, action: Action<RegisterActionTypes>): IRegisterState => {
