@@ -11,7 +11,7 @@ describe("LevelDB controller", () => {
         keyEncoding: "binary",
         valueEncoding: "binary"
     });
-    const db = new LevelDbController({db: testDb, name: dbLocation});
+    const db = new LevelDbController({db: testDb, location: dbLocation});
 
     beforeAll(async () => {
         await db.start();

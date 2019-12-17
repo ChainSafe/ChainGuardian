@@ -1,9 +1,9 @@
 export interface IDatabaseOptions {
-    name: string;
+    location: string;
 }
 
 const config: IDatabaseOptions = {
-    name: "./chainguardian-db"
+    location: "./chainguardian-db"
 };
 
 export default config;

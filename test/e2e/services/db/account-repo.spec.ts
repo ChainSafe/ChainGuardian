@@ -15,7 +15,7 @@ describe("Account Repository Test", () => {
         keyEncoding: "binary",
         valueEncoding: "binary"
     });
-    const db = new LevelDbController({db: testDb, name: dbLocation});
+    const db = new LevelDbController({db: testDb, location: dbLocation});
     const testId = "id";
 
     beforeAll(async () => {

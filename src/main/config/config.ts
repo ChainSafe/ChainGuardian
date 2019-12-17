@@ -23,7 +23,7 @@ export function getConfig(): IConfig {
     };
 
     const dbConfig = {
-        name: join(storageConfig.dataDir, "db/chainguardian.db") || env.DB_NAME as string
+        name: env.CG_DATABASE_LOCATION || join(storageConfig.dataDir, "db/chainguardian.db")
     };
 
     return {

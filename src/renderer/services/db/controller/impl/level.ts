@@ -9,6 +9,8 @@ import {EventEmitter} from "events";
 // @ts-ignore
 import level from "level";
 import {IDatabaseOptions} from "../../options";
+import * as fs from "fs";
+import {warn} from "electron-log";
 
 export interface ILevelDBOptions extends IDatabaseOptions {
     db?: LevelUp;
@@ -18,18 +20,23 @@ export interface ILevelDBOptions extends IDatabaseOptions {
  * The LevelDB implementation of DB
  */
 export class LevelDbController extends EventEmitter implements IDatabaseController {
-    private db: LevelUp;
+    private db!: LevelUp;
 
     private opts: ILevelDBOptions;
 
     public constructor(opts: ILevelDBOptions) {
         super();
         this.opts = opts;
-        this.db = opts.db || level(opts.name || "chainguardian", {keyEncoding: "binary", valueEncoding: "binary"});
     }
 
     public async start(): Promise<void> {
-        await this.db.open();
+        if(!this.db) {
+            this.db = this.opts.db 
+                || level(this.getDatabaseLocation(), {keyEncoding: "binary", valueEncoding: "binary"});
+        } else {
+            await this.db.open();
+        }
+
     }
 
     public async stop(): Promise<void> {
@@ -85,5 +92,14 @@ export class LevelDbController extends EventEmitter implements IDatabaseControll
                     resolve(searchData);
                 });
         });
+    }
+
+    private getDatabaseLocation(): string {
+        try {
+            fs.mkdirSync(this.opts.location, {recursive: true});
+        } catch (e) {
+            warn("creating database directories", e);
+        }
+        return this.opts.location;
     }
 }

@@ -13,7 +13,7 @@ export class DatabaseHandler implements IService {
         this.database = new CGDatabase({
             config,
             controller: new LevelDbController({
-                name: getConfig().db.name
+                location: getConfig().db.name
             })
         });
     }
