@@ -27,11 +27,15 @@ export const ErrorFrequencGraph: React.FunctionComponent<IErrorFrequencGraphProp
     }
 
     const awaitData = async (): Promise<void>=>{
-        await props.getData().then((dataValueArray)=>{
-            let dataArray: Array<object> = [];
-            dataArray = normalize(dataArray,dataValueArray);
-            setData(dataArray);
-        });
+        // await props.getData().then((dataValueArray)=>{
+        //     let dataArray: Array<object> = [];
+        //     dataArray = normalize(dataArray,dataValueArray);
+        //     setData(dataArray);
+
+        const dataValueArray = await props.getData();
+        let dataArray: Array<object> = [];
+        dataArray = normalize(dataArray,dataValueArray);
+        setData(dataArray);
     };
 
     const intervalHandler = (): void => {
