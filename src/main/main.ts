@@ -90,8 +90,8 @@ const createWindow = async () => {
 
     setApplicationMenu();
 
-    databaseHandler = new DatabaseHandler();
-    await databaseHandler.start()
+    // databaseHandler = new DatabaseHandler();
+    // await databaseHandler.start()
 };
 
 app.on("ready", createWindow);
