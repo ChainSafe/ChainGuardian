@@ -56,17 +56,15 @@ const createWindow = async () => {
         }
     });
 
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "test") {
         process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "1";
         win.loadURL("http://localhost:2003");
     } else {
-        win.loadURL(
-            url.format({
-                pathname: path.join(__dirname, "index.html"),
-                protocol: "file:",
-                slashes: true
-            })
-        );
+        let append = "";
+        if(process.env.CG_INITIAL_ROUTE) {
+            append += "#" + process.env.CG_INITIAL_ROUTE;
+        }
+        win.loadURL("file://" + path.join(__dirname, "index.html") + append);
     }
 
     if (process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "test") {

@@ -17,11 +17,11 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
 
     const app = new Application({
         path: electronPath,
-        args: [path.join(__dirname, "..", "..")],
+        args: [path.join(__dirname, "..", "../dist/main.js")],
         waitTimeout: 15000,
         quitTimeout: 4000,
         connectionRetryCount: 3,
-        env: {NODE_ENV: "test", DB_NAME: dbName},
+        env: {NODE_ENV: "test", DB_NAME: dbName, CG_INITIAL_ROUTE: url},
         startTimeout: 30000
     });
 
@@ -31,9 +31,6 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
         console.warn(e);
         await app.start();
     }
-
-    const currentUrl = await app.client.getUrl();
-    await app.browserWindow.loadURL(currentUrl.split("#")[0] + "#" + url);
 
     await app.client.waitUntilWindowLoaded();
     return app;
