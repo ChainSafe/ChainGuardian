@@ -18,10 +18,10 @@ storiesOf('Password prompt', module).add('Password input', () => {
             onSubmit={(password: string): ISubmitStatus => {
                 if (password === "password") {
                     setVisible(false);
-                    return {errorMessage: ""};
+                    return {valid: true};
                 } else {
                     setVisible(true);
-                    return {errorMessage: "Error"};
+                    return {valid: false, errorMessage: "Error"};
                 }
             }}
         />

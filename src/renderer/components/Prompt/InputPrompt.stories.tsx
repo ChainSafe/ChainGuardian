@@ -5,7 +5,7 @@ import { InputPrompt, ISubmitStatus } from './InputPrompt';
 import { Background } from '../Background/Background';
 import { useState } from 'react';
 
-storiesOf('Input prompt', module).add('Prompt input', () => {
+storiesOf('Input prompt', module).add('Basic prompt input', () => {
     const [visible, setVisible]=useState(false);
 
     const handler = () => setVisible(true);
@@ -14,16 +14,8 @@ storiesOf('Input prompt', module).add('Prompt input', () => {
     return <div>
         <InputPrompt
             display={visible}
-            onSubmit={(password: string): ISubmitStatus => {
-                if (password === "password") {
-                    setVisible(false);
-                    return {errorMessage: ""};
-                } else {
-                    setVisible(true);
-                    return {errorMessage: "Error"};
-                }
-            }}
-            title={"Enter password"}
+            onSubmit={(): ISubmitStatus => { return {valid: true};}}
+            title={"Input prompt"}
             />
         <Background />
     </div>
