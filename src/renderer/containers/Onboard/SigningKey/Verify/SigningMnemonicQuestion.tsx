@@ -5,14 +5,14 @@ import {bindActionCreators, Dispatch} from "redux";
 import {RouteComponentProps} from "react-router";
 import {getRandomInt, getRandomIntArray} from "../../../../services/mnemonic/utils/random";
 import {IRootState} from "../../../../reducers";
-import {storeFailedVerificationAction} from "../../../../actions";
+import {storeSigningMnemonicVerificationStatusAction} from "../../../../actions";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IOwnProps extends Pick<RouteComponentProps, "history"> {
 
 }
 interface IInjectedProps {
-    storeFailedVerification: typeof storeFailedVerificationAction;
+    setVerificationStatus: typeof storeSigningMnemonicVerificationStatusAction;
 }
 
 class SigningMnemonicQuestion extends Component<IOwnProps & IInjectedProps &  Pick<IRootState, "register">, {}> {
@@ -22,7 +22,7 @@ class SigningMnemonicQuestion extends Component<IOwnProps & IInjectedProps &  Pi
         const correctAnswerIndex = randArray[getRandomInt(3)];
 
         const handleInvalidAnswer = (): void => {
-            this.props.storeFailedVerification(true);
+            this.props.setVerificationStatus(true);
             this.props.history.goBack();
         };
         
@@ -44,7 +44,7 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "register"> => ({
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            storeFailedVerification: storeFailedVerificationAction,
+            setVerificationStatus: storeSigningMnemonicVerificationStatusAction,
         },
         dispatch
     );

@@ -19,7 +19,7 @@ const initialState: IRegisterState = {
 
 export const registerReducer = (state = initialState, action: Action<RegisterActionTypes>): IRegisterState => {
     switch (action.type) {
-        case RegisterActionTypes.STORE_FAILED_VERIFICATION:
+        case RegisterActionTypes.SET_SIGNING_MNEMONIC_VERIFICATION_STATUS:
             return Object.assign({}, state, {
                 failedVerification: (action as IFailedVerificationAction).payload.failedVerification
             });

@@ -11,13 +11,13 @@ import {CGAccount} from "../models/account";
 import {getV4Filename} from "../services/utils/crypto-utils";
 
 // Mnemonic Failed Verification
-export const storeFailedVerificationAction = (failedVerification: boolean) =>
+export const storeSigningMnemonicVerificationStatusAction = (failedVerification: boolean) =>
     (dispatch: Dispatch<IFailedVerificationAction>): void => {
-        dispatch(setFailedVerification(failedVerification));
+        dispatch(setSigningMnemonicVerificationStatus(failedVerification));
     };
 
-export const setFailedVerification = (failedVerification: boolean): IFailedVerificationAction => ({
-    type: RegisterActionTypes.STORE_FAILED_VERIFICATION, payload: {failedVerification}
+export const setSigningMnemonicVerificationStatus = (failedVerification: boolean): IFailedVerificationAction => ({
+    type: RegisterActionTypes.SET_SIGNING_MNEMONIC_VERIFICATION_STATUS, payload: {failedVerification}
 });
 
 export interface IStoreFailedVerificationPayload {

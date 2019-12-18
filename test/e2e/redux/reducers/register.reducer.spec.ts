@@ -4,7 +4,7 @@ import {
     setWithdrawalKey, 
     setMnemonic, 
     setClearKeys,
-    setFailedVerification
+    setSigningMnemonicVerificationStatus
 } from "../../../../src/renderer/actions";
 import {registerReducer as reducer, IRegisterState} from "../../../../src/renderer/reducers/register";
 import {RegisterActionTypes} from "../../../../src/renderer/constants/action-types";
@@ -61,7 +61,7 @@ describe("register reducer", () => {
 
     it("should handle setFailedVerification", () => {
         expect(
-            reducer({} as IRegisterState, setFailedVerification(true))
+            reducer({} as IRegisterState, setSigningMnemonicVerificationStatus(true))
         ).toEqual(
             {
                 failedVerification: true

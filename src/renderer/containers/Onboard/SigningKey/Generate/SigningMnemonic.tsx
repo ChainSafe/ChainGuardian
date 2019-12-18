@@ -6,7 +6,7 @@ import {Routes, OnBoardingRoutes} from "../../../../constants/routes";
 import {clipboard} from "electron";
 import {Eth2HDWallet} from "../../../../services/wallet";
 import {connect} from "react-redux";
-import {storeSigningKeyMnemonicAction,storeFailedVerificationAction} from "../../../../actions";
+import {storeSigningKeyMnemonicAction,storeSigningMnemonicVerificationStatusAction} from "../../../../actions";
 import {bindActionCreators, Dispatch} from "redux";
 import {Notification} from "../../../../components/Notification/Notification"; 
 import {Level, Horizontal, Vertical} from "../../../../components/Notification/NotificationEnums"; 
@@ -28,7 +28,7 @@ interface IOwnProps extends Pick<RouteComponentProps, "history"> {
  */
 interface IInjectedProps {
     storeMnemonic: typeof storeSigningKeyMnemonicAction;
-    storeFailedVerification: typeof storeFailedVerificationAction;
+    setVerificationStatus: typeof storeSigningMnemonicVerificationStatusAction;
 }
 
 class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRootState, "register">, IState> {
@@ -46,7 +46,7 @@ class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRoot
                     level={Level.ERROR}
                     horizontalPosition={Horizontal.CENTER}
                     verticalPosition={Vertical.TOP}
-                    onClose={(): void => {this.props.storeFailedVerification(false);}}
+                    onClose={(): void => {this.props.setVerificationStatus(false);}}
                 >
                     Please make sure you have saved your unique mnemonic in a safe location
                      that you can quickly refer to and try again.
@@ -77,7 +77,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
             storeMnemonic: storeSigningKeyMnemonicAction,
-            storeFailedVerification: storeFailedVerificationAction,
+            setVerificationStatus: storeSigningMnemonicVerificationStatusAction,
         },
         dispatch
     );
