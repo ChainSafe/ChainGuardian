@@ -8,7 +8,9 @@ describe("Input prompt", () => {
             .create(<InputPrompt
                 title={"Make input"}
                 display={true}
-                onSubmit={(): ISubmitStatus => {return {valid: true};}}>
+                onSubmit={(): ISubmitStatus => {return {valid: true};}}
+                onCancel={(): void => {}}
+            >
             </InputPrompt >)
             .toJSON();
         expect(tree).toMatchSnapshot();
