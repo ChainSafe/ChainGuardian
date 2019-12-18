@@ -10,6 +10,10 @@ export interface IPasswordPromptProps {
      */
     onSubmit: (password: string) => ISubmitStatus;
     /**
+     * Called on cancel password prompt.
+     */
+    onCancel: () => void;
+    /**
      * Boolean controlling is prompt displaying.
      */
     display: boolean;
@@ -19,6 +23,7 @@ export const PasswordPrompt: React.FunctionComponent<IPasswordPromptProps> = (pr
     return(
         <InputPrompt
             onSubmit={props.onSubmit}
+            onCancel={props.onCancel}
             display={props.display}
             title={"Confirm password"}
             placeholder={"Please reenter your password..."}

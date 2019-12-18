@@ -8,6 +8,7 @@ export interface IInputPromptProps {
     placeholder?: string;
     inputType?: string;
     onSubmit: (data: string) => ISubmitStatus;
+    onCancel: () => void;
     display: boolean;
 }
 
@@ -42,10 +43,14 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
                 />
                 <div className={"button-control"}>
                     <div className={"prompt-cancel-button"}>
-                        <ButtonDestructive>Cancel</ButtonDestructive>
+                        <ButtonDestructive onClick={props.onCancel}>
+                            Cancel
+                        </ButtonDestructive>
                     </div>
                     <div className={"prompt-confirm-button"}>
-                        <ButtonPrimary onClick={(): void => onSubmitWrapper()}>OK</ButtonPrimary>
+                        <ButtonPrimary onClick={(): void => onSubmitWrapper()}>
+                            OK
+                        </ButtonPrimary>
                     </div>
                 </div>
             </div>
