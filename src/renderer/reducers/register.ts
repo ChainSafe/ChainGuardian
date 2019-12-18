@@ -1,4 +1,5 @@
-import {ISigningKeyMnemonicAction, ISigningKeyAction, IWithdrawalKeyAction} from "../actions";
+import {ISigningKeyMnemonicAction, ISigningKeyAction, 
+    IWithdrawalKeyAction, IFailedVerificationAction} from "../actions";
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 
@@ -18,6 +19,10 @@ const initialState: IRegisterState = {
 
 export const registerReducer = (state = initialState, action: Action<RegisterActionTypes>): IRegisterState => {
     switch (action.type) {
+        case RegisterActionTypes.STORE_FAILED_VERIFICATION:
+            return Object.assign({}, state, {
+                failedVerification: (action as IFailedVerificationAction).payload.failedVerification
+            });
         case RegisterActionTypes.STORE_SIGNING_KEY_MNEMONIC:
             return Object.assign({}, state, {
                 mnemonic: (action as ISigningKeyMnemonicAction).payload.mnemonic

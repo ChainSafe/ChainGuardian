@@ -3,7 +3,8 @@ import {
     setSigningKey, 
     setWithdrawalKey, 
     setMnemonic, 
-    setClearKeys
+    setClearKeys,
+    setFailedVerification
 } from "../../../../src/renderer/actions";
 import {registerReducer as reducer, IRegisterState} from "../../../../src/renderer/reducers/register";
 import {RegisterActionTypes} from "../../../../src/renderer/constants/action-types";
@@ -17,7 +18,8 @@ const expectedMnemonic = "hard caught annual spread green step avocado shine sca
 const initalState: IRegisterState = {
     mnemonic: "",
     signingKey: "",
-    withdrawalKey: ""
+    withdrawalKey: "",
+    failedVerification: false
 };
 
 describe("register reducer", () => {
@@ -57,12 +59,23 @@ describe("register reducer", () => {
         );
     });
 
+    it("should handle setFailedVerification", () => {
+        expect(
+            reducer({} as IRegisterState, setFailedVerification(true))
+        ).toEqual(
+            {
+                failedVerification: true
+            }
+        );
+    });
+
     it("should handle s", () => {
         expect(
             reducer({
                 signingKey: "test key",
                 withdrawalKey: "test key",
-                mnemonic: "mock mnemonic"
+                mnemonic: "mock mnemonic",
+                failedVerification: false
             } as IRegisterState, setClearKeys())
         ).toEqual(
             initalState

@@ -6,7 +6,7 @@ import {Routes, OnBoardingRoutes} from "../../../../constants/routes";
 import {clipboard} from "electron";
 import {Eth2HDWallet} from "../../../../services/wallet";
 import {connect} from "react-redux";
-import {storeSigningKeyMnemonicAction} from "../../../../actions";
+import {storeSigningKeyMnemonicAction,storeFailedVerificationAction} from "../../../../actions";
 import {bindActionCreators, Dispatch} from "redux";
 import {Notification} from "../../../../components/Notification/Notification"; 
 import {Level, Horizontal, Vertical} from "../../../../components/Notification/NotificationEnums"; 
@@ -14,7 +14,6 @@ import {IRootState} from "../../../../reducers";
 
 interface IState {
     mnemonic: string;
-    showNotification: boolean;
 }
 
 /**
@@ -29,12 +28,12 @@ interface IOwnProps extends Pick<RouteComponentProps, "history"> {
  */
 interface IInjectedProps {
     storeMnemonic: typeof storeSigningKeyMnemonicAction;
+    storeFailedVerification: typeof storeFailedVerificationAction;
 }
 
 class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRootState, "register">, IState> {
     public state = {
         mnemonic: Eth2HDWallet.generate(),
-        showNotification: true
     };
     
     public render(): ReactElement {
@@ -42,12 +41,12 @@ class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRoot
         return (
             <>
                 <Notification
-                title="Oh no! That wasn’t the correct word."
-                isVisible={this.props.register.failedVerification}
-                level={Level.ERROR}
-                horizontalPosition={Horizontal.CENTER}
-                verticalPosition={Vertical.TOP}
-                onClose={()=>this.setState({showNotification: false})}
+                    title="Oh no! That wasn’t the correct word."
+                    isVisible={this.props.register.failedVerification}
+                    level={Level.ERROR}
+                    horizontalPosition={Horizontal.CENTER}
+                    verticalPosition={Vertical.TOP}
+                    onClose={(): void => {this.props.storeFailedVerification(false);}}
                 >
                     Please make sure you have saved your unique mnemonic in a safe location
                      that you can quickly refer to and try again.
@@ -78,6 +77,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
             storeMnemonic: storeSigningKeyMnemonicAction,
+            storeFailedVerification: storeFailedVerificationAction,
         },
         dispatch
     );
