@@ -10,6 +10,7 @@ export interface IInputFormProps {
     focused?: boolean;
     readOnly?: boolean;
     inputId?: string;
+    type?: string;
 }
 
 export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInputFormProps) => {
@@ -25,14 +26,16 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
     return( 
         <form>
             <div className="label">{props.label}</div>
-            <input 
+            <input
                 id={props.inputId}
                 autoFocus={props.focused}
                 placeholder={props.placeholder}
                 value={props.inputValue}
                 readOnly={props.readOnly}
                 className={`inputform ${classNamesValid(props.valid)}`} 
-                onChange={props.onChange} />
+                onChange={props.onChange}
+                type={props.type}
+            />
             <div 
                 className={"error-message"}>
                 {props.valid === false && props.errorMessage}</div>
