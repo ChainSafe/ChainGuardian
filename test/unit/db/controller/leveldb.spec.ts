@@ -2,8 +2,8 @@ import {assert, expect} from "chai";
 // @ts-ignore
 import level from "level";
 import leveldown from "leveldown";
-import {LevelDbController} from "../../../../src/renderer/services/db/controller";
 import {promisify} from "util";
+import {LevelDbController} from "../../../../src/main/db/controller";
 
 describe("LevelDB controller", () => {
     const dbLocation = "./.__testdb";

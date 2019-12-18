@@ -5,10 +5,10 @@ import {V4Keystore} from "../services/keystore";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 //import {KEYSTORE_DEFAULT_DIRECTORY} from "../constants/keystore";
-import {saveToDatabase} from "../services/utils/db-utils";
 import {KEYSTORE_DEFAULT_DIRECTORY} from "../constants/keystore";
-import {CGAccount} from "../models/account";
 import {getV4Filename} from "../services/utils/crypto-utils";
+import database from "../services/db/api/database";
+import { CGAccount } from '../models/account';
 
 
 // Mnemonic action
@@ -76,17 +76,17 @@ export const afterPasswordAction = (password: string) => {
             password, new Keypair(signingKey)
         );
 
-        // // 2. Save account to db
-        // const account = new CGAccount({
-        //     name: "Test Account",
-        //     directory: KEYSTORE_DEFAULT_DIRECTORY,
-        //     sendStats: false
-        // });
-        //
-        // await saveToDatabase({
-        //     id: "account",
-        //     account
-        // });
+        // 2. Save account to db
+        const account = new CGAccount({
+            name: "Test Account",
+            directory: KEYSTORE_DEFAULT_DIRECTORY,
+            sendStats: false
+        });
+
+        await database.account.set(
+            "account",
+            account
+        );
         
         // 3. Delete keys from redux
         dispatch(completeRegistrationSubmission());

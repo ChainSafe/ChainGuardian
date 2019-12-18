@@ -1,8 +1,8 @@
 import {app} from "electron";
 import {createWindow} from "./gui/window";
-import {DatabaseHandler} from "./db/database";
+import {DatabaseIpcHandler} from "./db/ipc";
 
-const db = new DatabaseHandler();
+const db = new DatabaseIpcHandler();
 
 app.on("before-quit", db.stop.bind(db));
 app.on("activate", db.start.bind(db));
