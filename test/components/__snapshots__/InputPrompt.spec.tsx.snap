@@ -33,6 +33,7 @@ exports[`Input prompt renders correctly 1`] = `
       >
         <button
           className="button btn-destructive "
+          onClick={[Function]}
         >
           <div
             className=""
