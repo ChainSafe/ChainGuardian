@@ -65,32 +65,39 @@ export interface IWithdrawalKeyAction extends Action<RegisterActionTypes> {
 
 // After password action
 export const afterPasswordAction = (password: string) => {
-    return (dispatch: Dispatch<Action<RegisterActionTypes>>, getState: () => IRootState): void => {
+    return async (dispatch: Dispatch<Action<RegisterActionTypes>>, getState: () => IRootState): Promise<void> => {
         // 1. Save to keystore
-        const signingKey = getState().register.signingKey;
-        V4Keystore.create(
+        dispatch(startRegistrationSubmission());
+        const signingKey = PrivateKey.fromBytes(
+            Buffer.from(getState().register.signingKey.slice(2), "hex")
+        );
+        await V4Keystore.create(
             `${KEYSTORE_DEFAULT_DIRECTORY}/${getV4Filename()}.json`, 
-            password, new Keypair(PrivateKey.fromHexString(signingKey))
+            password, new Keypair(signingKey)
         );
 
-        // 2. Save account to db
-        const account = new CGAccount({
-            name: "Test Account",
-            directory: KEYSTORE_DEFAULT_DIRECTORY,
-            sendStats: false
-        });
-        
-        saveToDatabase({
-            id: "account",
-            account
-        });
+        // // 2. Save account to db
+        // const account = new CGAccount({
+        //     name: "Test Account",
+        //     directory: KEYSTORE_DEFAULT_DIRECTORY,
+        //     sendStats: false
+        // });
+        //
+        // await saveToDatabase({
+        //     id: "account",
+        //     account
+        // });
         
         // 3. Delete keys from redux
-        dispatch(setClearKeys());
+        dispatch(completeRegistrationSubmission());
     };
 };
 
 
-export const setClearKeys = (): Action<RegisterActionTypes> => ({
-    type: RegisterActionTypes.CLEAR_KEYS
+export const startRegistrationSubmission = (): Action<RegisterActionTypes> => ({
+    type: RegisterActionTypes.START_REGISTRATION_SUBMISSION
+});
+
+export const completeRegistrationSubmission = (): Action<RegisterActionTypes> => ({
+    type: RegisterActionTypes.COMPLETED_REGISTRATION_SUBMISSION
 });

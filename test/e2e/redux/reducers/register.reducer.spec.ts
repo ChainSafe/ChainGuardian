@@ -3,7 +3,7 @@ import {
     setSigningKey, 
     setWithdrawalKey, 
     setMnemonic, 
-    setClearKeys
+    completeRegistrationSubmission
 } from "../../../../src/renderer/actions";
 import {registerReducer as reducer, IRegisterState} from "../../../../src/renderer/reducers/register";
 import {RegisterActionTypes} from "../../../../src/renderer/constants/action-types";
@@ -63,7 +63,7 @@ describe("register reducer", () => {
                 signingKey: "test key",
                 withdrawalKey: "test key",
                 mnemonic: "mock mnemonic"
-            } as IRegisterState, setClearKeys())
+            } as IRegisterState, completeRegistrationSubmission())
         ).toEqual(
             initalState
         );

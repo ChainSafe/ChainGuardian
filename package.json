@@ -124,6 +124,7 @@
     "@types/react-test-renderer": "^16.8.1",
     "@types/react-tooltip": "^3.11.0",
     "@types/recharts": "^1.8.3",
+    "@types/redux-logger": "^3.0.7",
     "@types/redux-mock-store": "0.0.13",
     "@types/sinon": "^7.5.0",
     "@types/storybook__react": "^4.0.2",
@@ -197,6 +198,7 @@
     "react-tooltip": "^3.11.1",
     "recharts": "^1.8.5",
     "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "uuid": "^3.3.3"
   }
