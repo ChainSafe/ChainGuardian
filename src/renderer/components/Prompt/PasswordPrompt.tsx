@@ -2,7 +2,15 @@ import * as React from "react";
 import {InputPrompt, ISubmitStatus} from "./InputPrompt";
 
 export interface IPasswordPromptProps {
-    onSubmit: (data: string) => ISubmitStatus;
+    /**
+     * Called on submit password confirmation.
+     * @param password that is entered in password prompt dialog
+     * @return ISubmitStatus containing information on validation success and errorMessage if any.
+     */
+    onSubmit: (password: string) => ISubmitStatus;
+    /**
+     * Boolean controlling is prompt displaying.
+     */
     display: boolean;
 }
 
@@ -11,7 +19,7 @@ export const PasswordPrompt: React.FunctionComponent<IPasswordPromptProps> = (pr
         <InputPrompt
             onSubmit={props.onSubmit}
             display={props.display}
-            title={"Enter password"}
+            title={"Confirm password"}
             placeholder={"Please reenter your password..."}
             inputType={"password"}
         />

@@ -12,16 +12,20 @@ export interface IInputPromptProps {
 }
 
 export interface ISubmitStatus {
-    errorMessage: string;
+    valid: boolean
+    errorMessage?: string;
 }
 
 export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: IInputPromptProps) => {
     const [inputData, setInputData] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string | undefined>();
+    const [valid, setValid] = useState<boolean | undefined>();
 
     function onSubmitWrapper(): void {
         const result = props.onSubmit(inputData);
-        setErrorMessage(result.errorMessage);
+        setValid(result.valid);
+        if (!result.valid)
+            setErrorMessage(result.errorMessage);
     }
 
     return(
@@ -32,7 +36,7 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
                     inputId={"prompt-input"}
                     placeholder={props.placeholder}
                     errorMessage={errorMessage}
-                    valid={errorMessage ? errorMessage.length === 0 : undefined}
+                    valid={valid}
                     onChange={(i): void => { setInputData(i.currentTarget.value); }}
                     type={props.inputType}
                 />

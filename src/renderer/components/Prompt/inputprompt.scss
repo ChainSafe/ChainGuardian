@@ -20,11 +20,13 @@ div.prompt-overlay {
 
 
 div.prompt-modal {
-  background-color: #1E3A4B;
+  background-color: $secondary-blue-600;
+  border-top: 4px solid $secondary-blue-400;
+  border-radius: 8px;
+  font-family: 'Palanquin', sans-serif;
   margin: 15% auto; /* 15% from the top and centered */
   padding: 15px;
-  border: 1px solid #888;
-  max-width: 600px;
+  max-width: 400px;
   display: block;
 }
 
@@ -44,6 +46,7 @@ div.prompt-confirm-button {
 }
 
 h2.prompt-title {
+  color: $secondary-blue-100;
   margin-bottom: 15px;
 }
 
