@@ -1,6 +1,6 @@
-import path from 'path';
-import { BrowserWindow } from 'electron';
-import { iconExtensions, installExtensions } from './utils';
+import path from "path";
+import {BrowserWindow} from "electron";
+import {iconExtensions, installExtensions} from "./utils";
 
 let win: BrowserWindow | null;
 

@@ -4,7 +4,7 @@ import {Level} from "../../components/Notification/NotificationEnums";
 import {copyFile} from "../../services/utils/file-utils";
 import * as path from "path";
 import {getConfig} from "../../../config/config";
-import { DEFAULT_ACCOUNT } from '../../constants/account';
+import {DEFAULT_ACCOUNT} from "../../constants/account";
 
 const app = remote.app;
 const dialog = remote.dialog;

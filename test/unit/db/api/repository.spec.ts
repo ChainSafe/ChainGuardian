@@ -7,7 +7,7 @@ import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {BulkRepository} from "../../../../src/renderer/services/db/api/repository";
 import {SSZ} from "../../../../src/renderer/services/db/serializers/ssz";
 import {IDatabaseController, LevelDbController} from "../../../../src/main/db/controller";
-import { Bucket } from '../../../../src/renderer/services/db/schema';
+import {Bucket} from "../../../../src/renderer/services/db/schema";
 
 chai.use(chaiAsPromised);
 
@@ -98,13 +98,15 @@ describe("database repository", () => {
 
     // it("should delete given items", async () => {
     //     await repository.deleteMany([1, 2, 3]);
-    //     expect(controller.batchDelete.withArgs(sinon.match(criteria => criteria.length === 3)).calledOnce).to.be.true;
+    //     expect(controller.batchDelete.withArgs(
+    //     sinon.match(criteria => criteria.length === 3)).calledOnce).to.be.true;
     // });
     //
     // it("should delete given items by value", async () => {
     //     const item = {bool: true, bytes: Buffer.alloc(32)};
     //     await repository.deleteManyByValue([item, item]);
-    //     expect(controller.batchDelete.withArgs(sinon.match(criteria => criteria.length === 2)).calledOnce).to.be.true;
+    //     expect(controller.batchDelete.withArgs(
+    //     sinon.match(criteria => criteria.length === 2)).calledOnce).to.be.true;
     // });
     //
     // it("should delete all items", async () => {
@@ -112,6 +114,7 @@ describe("database repository", () => {
     //     const items = [item, item];
     //     controller.search.resolves(items);
     //     await repository.deleteAll();
-    //     expect(controller.batchDelete.withArgs(sinon.match(criteria => criteria.length === 2)).calledOnce).to.be.true;
+    //     expect(controller.batchDelete.withArgs(
+    //     sinon.match(criteria => criteria.length === 2)).calledOnce).to.be.true;
     // });
 });
