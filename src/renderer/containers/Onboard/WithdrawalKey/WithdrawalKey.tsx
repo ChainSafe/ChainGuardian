@@ -19,12 +19,15 @@ export default function WithdrawalKey(): ReactElement {
                 <ButtonPrimary buttonId="generate" large>GENERATE</ButtonPrimary>
             </div>
 
-            <h5 className="input-or">OR</h5>
+            <div className="flex-column centered">
+                <h5 className="input-or">OR</h5>
 
-            <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX)}>
-                <ButtonInverted>SKIP</ButtonInverted>
-            </Link>
-            <p></p>
+                <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD)}>
+                    <ButtonInverted>SKIP</ButtonInverted>
+                </Link>
+
+                <p className="small">If you skip, we won’t be able to generate a deposit transaction.</p>
+            </div>
         </>
     );
 }
