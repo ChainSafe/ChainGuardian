@@ -32,7 +32,7 @@ class SigningMnemonicQuestion extends Component<IOwnProps & IInjectedProps &  Pi
                 answers={[mnemonic[randArray[0]], mnemonic[randArray[1]], mnemonic[randArray[2]]]}
                 correctAnswer={mnemonic[correctAnswerIndex]}
                 onCorrectAnswer={(): void => {}}
-                onInvalidAnswer={(): void => {handleInvalidAnswer();}}
+                onInvalidAnswer={(): void => {setTimeout(handleInvalidAnswer, 1000);}}
             />
         );
     }
