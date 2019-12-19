@@ -7,6 +7,7 @@ import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {BulkRepository} from "../../../../src/renderer/services/db/api/repository";
 import {SSZ} from "../../../../src/renderer/services/db/serializers/ssz";
 import {IDatabaseController, LevelDbController} from "../../../../src/main/db/controller";
+import { Bucket } from '../../../../src/renderer/services/db/schema';
 
 chai.use(chaiAsPromised);
 
@@ -23,8 +24,7 @@ const BucketMock = "testBucket";
 
 class TestRepository extends BulkRepository<ITestType> {
     public constructor(db: IDatabaseController) {
-        // @ts-ignore
-        super(config, db, SSZ, BucketMock, TestSSZType);
+        super(db, SSZ, BucketMock as unknown as Bucket, TestSSZType);
     }
 }
 

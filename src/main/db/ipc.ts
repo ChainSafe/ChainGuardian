@@ -1,6 +1,6 @@
 import {LevelDbController} from "./controller";
 import {IService} from "../../renderer/services/interfaces";
-import {getConfig} from "../config/config";
+import {getConfig} from "../../config/config";
 import {IpcDatabaseEvents} from "./events";
 import {ipcMain, IpcMainInvokeEvent, IpcMainEvent} from "electron";
 

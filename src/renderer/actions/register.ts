@@ -4,11 +4,11 @@ import {IRootState} from "../reducers";
 import {V4Keystore} from "../services/keystore";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
-//import {KEYSTORE_DEFAULT_DIRECTORY} from "../constants/keystore";
-import {KEYSTORE_DEFAULT_DIRECTORY} from "../constants/keystore";
-import {getV4Filename} from "../services/utils/crypto-utils";
 import database from "../services/db/api/database";
-import { CGAccount } from '../models/account';
+import {CGAccount} from "../models/account";
+import {getConfig} from "../../config/config";
+import * as path from "path";
+import {PublicKey} from "@chainsafe/bls/lib/publicKey";
 
 
 // Mnemonic action
@@ -71,15 +71,16 @@ export const afterPasswordAction = (password: string) => {
         const signingKey = PrivateKey.fromBytes(
             Buffer.from(getState().register.signingKey.slice(2), "hex")
         );
+        const accountDirectory = path.join(getConfig().storage.accountsDir, "default");
         await V4Keystore.create(
-            `${KEYSTORE_DEFAULT_DIRECTORY}/${getV4Filename()}.json`, 
+            path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
             password, new Keypair(signingKey)
         );
 
         // 2. Save account to db
         const account = new CGAccount({
-            name: "Test Account",
-            directory: KEYSTORE_DEFAULT_DIRECTORY,
+            name: "Default",
+            directory: accountDirectory,
             sendStats: false
         });
 
