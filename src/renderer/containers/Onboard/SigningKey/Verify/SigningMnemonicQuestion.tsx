@@ -7,6 +7,7 @@ import {IRootState} from "../../../../reducers";
 import { bindActionCreators, Dispatch } from 'redux';
 import { storeSigningKeyAction } from '../../../../actions';
 import { Eth2HDWallet } from '../../../../services/wallet';
+import { OnBoardingRoutes, Routes } from '../../../../constants/routes';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IProps extends Pick<RouteComponentProps, "history"> {
@@ -30,11 +31,13 @@ class SigningMnemonicQuestion extends Component<IProps &  Pick<IRootState, "regi
         );
     }
 
-    private onCorrectAnswer = () => {
-        const { register, storeSigningKey } = this.props;
+    private onCorrectAnswer = (): void => {
+        const { register, storeSigningKey, history } = this.props;
 
         const signingKey = Eth2HDWallet.getKeypair(register.mnemonic).privateKey.toHexString();
         storeSigningKey(signingKey);
+
+        history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
     }
 }
 
