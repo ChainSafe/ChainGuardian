@@ -2,6 +2,7 @@
     color: $neutral-100;
 }
 .inputform{
+    width: 100%;
     background: $neutral-600;
     box-shadow: inset 0px 2px 6px rgba(10, 39, 51, 0.2);
     border-radius: 4px;
@@ -11,9 +12,8 @@
     font-size: 500;
     font-size: 18px;
     color: $neutral-100;
-    padding: 16px 16px 16px 16px;
-    //margin-right: 24px;
-    box-sizing: border-box; // Take padding into account
+    padding: 16px 56px 16px 16px;
+    margin-right: 24px;
 
     &.success{
         background: $neutral-600 url(../assets/img/input/Success.svg) no-repeat;

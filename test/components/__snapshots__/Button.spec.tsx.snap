@@ -347,6 +347,12 @@ exports[`CopyButton renders correctly 1`] = `
 <button
   className="copy-button"
 >
+  <div
+    className="__react_component_tooltip place-right type-dark "
+    data-id="tooltip"
+  >
+    Copy All
+  </div>
   <img
     className="icon copy"
     data-place="top"

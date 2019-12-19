@@ -57,5 +57,6 @@ storiesOf('Button', module).add('Add Button', () => {
 });
 
 storiesOf('Button', module).add('Copy Button', () => {
-    return <CopyButton />;
+    const clickedValue = boolean("clicked?", false);
+    return <CopyButton clicked={clickedValue}/>;
 });
