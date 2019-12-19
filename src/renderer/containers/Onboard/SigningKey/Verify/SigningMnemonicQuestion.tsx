@@ -30,7 +30,7 @@ class SigningMnemonicQuestion extends Component<IProps &  Pick<IRootState, "regi
         );
     }
 
-    private onCorrectAnswer(): void {
+    private onCorrectAnswer = () => {
         const { register, storeSigningKey } = this.props;
 
         const signingKey = Eth2HDWallet.getKeypair(register.mnemonic).privateKey.toHexString();
