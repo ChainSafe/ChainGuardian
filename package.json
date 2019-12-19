@@ -199,5 +199,9 @@
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "uuid": "^3.3.3"
+  },
+  "resolutions": {
+    "bcrypto": "4.2.9",
+    "serialize-javascript": "2.1.1"
   }
 }
