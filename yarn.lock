@@ -3820,30 +3820,10 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-bcrypto@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/bcrypto/-/bcrypto-4.1.0.tgz#04fd2ec095e4eba121412e287b9c542cd7230a57"
-  integrity sha512-7QMCwNPAM53PcRG2gHwMHLcTjSwyQPYfTptRS38KuBZ7/Bf7zXVHZrQlvNnpu/m13qCVEMY4Wimnc+qt+rvMZg==
-  dependencies:
-    bsert "~0.0.10"
-    bufio "~1.0.6"
-    loady "~0.0.1"
-    nan "^2.13.2"
-
-bcrypto@^4.2.6:
+bcrypto@4.2.9, bcrypto@^4.1.0, bcrypto@^4.2.6, bcrypto@^4.2.8:
   version "4.2.9"
   resolved "https://registry.yarnpkg.com/bcrypto/-/bcrypto-4.2.9.tgz#d57794196c1c230d20bb12319387f733452a6a53"
   integrity sha512-upd5xGkB3REZwOOM2wGgUrc29HFQcm+mbXYLN8fKI2GcnWiCXmDU7f0wzr/ye2o1t0smhX3ddSzAqXIYEXehIw==
-  dependencies:
-    bsert "~0.0.10"
-    bufio "~1.0.6"
-    loady "~0.0.1"
-    nan "^2.13.2"
-
-bcrypto@^4.2.8:
-  version "4.2.8"
-  resolved "https://registry.yarnpkg.com/bcrypto/-/bcrypto-4.2.8.tgz#b51858d37a06e064bc1b0742633b394bd16298fc"
-  integrity sha512-qdmKQR5ykyWwyJepW7JOvveuRKTmFmJUG6Vjn0hGMcEk+4+nj7UVV1K9/JMd59Y+bA+BMb8nY5mrMXnakwH8Uw==
   dependencies:
     bsert "~0.0.10"
     bufio "~1.0.6"
@@ -11778,9 +11758,10 @@ send@0.17.1:
     range-parser "~1.2.1"
     statuses "~1.5.0"
 
-serialize-javascript@^1.7.0:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-1.9.1.tgz#cfc200aef77b600c47da9bb8149c943e798c2fdb"
+serialize-javascript@2.1.1, serialize-javascript@^1.7.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-2.1.1.tgz#952907a04a3e3a75af7f73d92d15e233862048b2"
+  integrity sha512-MPLPRpD4FNqWq9tTIjYG5LesFouDhdyH0EPY3gVK4DRD5+g4aDqdNSzLIwceulo3Yj+PL1bPh6laE5+H6LTcrQ==
 
 serve-favicon@^2.5.0:
   version "2.5.0"
