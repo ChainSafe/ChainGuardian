@@ -1,9 +1,11 @@
 import {Application} from "spectron";
 import path from "path";
 import {Routes} from "../../src/renderer/constants/routes";
-import {existsSync, lstatSync, readdirSync, rmdirSync, unlinkSync} from "fs";
+import {rmdirSync, unlinkSync, existsSync, readdirSync, lstatSync} from "fs";
 
 export const TIMEOUT = 120000;
+
+let dbLocation = "";
 
 export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Application> {
     const isWin = process.platform === "win32";
@@ -11,19 +13,22 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
     if(isWin) {
         electronPath += ".cmd";
     }
-    
-    const random = Math.floor(100000 + Math.random() * 900000);
-    const dbName = `.db/test-level-${random}.db`;
-
+    dbLocation = path.join(__dirname, "./test-screens.db");
+    try {
+        deleteFolderRecursive(dbLocation);
+    } catch (e) {
+        console.warn(e);
+    }
     const app = new Application({
         path: electronPath,
-        args: [path.join(__dirname, "..", "..")],
+        args: [path.join(__dirname, "..", "../dist/main.js")],
         waitTimeout: 15000,
         quitTimeout: 4000,
         connectionRetryCount: 3,
-        env: {NODE_ENV: "test", DB_NAME: dbName},
+        env: {NODE_ENV: "test", CG_DATABASE_LOCATION: dbLocation, CG_INITIAL_ROUTE: url},
         startTimeout: 30000
     });
+
 
     try {
         await app.start();
@@ -31,10 +36,6 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
         console.warn(e);
         await app.start();
     }
-
-    const currentUrl = await app.client.getUrl();
-    await app.browserWindow.loadURL(currentUrl.split("#")[0] + "#" + url);
-
     await app.client.waitUntilWindowLoaded();
     return app;
 }
@@ -42,13 +43,16 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
 export async function stopApp(app: Application): Promise<void> {
     if (app && app.isRunning()) {
         try {
-            deleteFolderRecursive(".db");
             await app.stop();
         } catch (e) {
-            console.log(e);
             app.mainProcess.exit(0);
             app.rendererProcess.exit(0);
         }
+    }
+    try {
+        deleteFolderRecursive(dbLocation);
+    } catch (e) {
+        console.warn(e);
     }
 }
 

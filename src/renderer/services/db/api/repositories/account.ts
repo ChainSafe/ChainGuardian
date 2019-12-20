@@ -1,14 +1,13 @@
-import {Repository, Id} from "../repository";
+import {Id, Repository} from "../repository";
 import {CGAccount} from "../../../../models/account";
-import {encodeKey, Bucket} from "../../schema";
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
-import {IDatabaseController} from "../../controller";
+import {Bucket, encodeKey} from "../../schema";
 import {Account} from "../../../../models/ssz/types";
 import {JSONSerializer} from "../../serializers/json";
+import {IDatabaseController} from "../../../../../main/db/controller";
 
 export class AccountRepository extends Repository<CGAccount> {
-    public constructor(config: IBeaconConfig, db: IDatabaseController) {
-        super(config, db, JSONSerializer, Bucket.account, Account);
+    public constructor(db: IDatabaseController) {
+        super(db, JSONSerializer, Bucket.account, Account);
     }
 
     // Override get method to wrap deserialized data into CGAccount instance

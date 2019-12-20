@@ -1,5 +1,6 @@
 import {DatabaseService, IDatabaseApiOptions} from "./abstract";
 import {AccountRepository} from "./repositories/account";
+import {IpcDatabaseController} from "../controller/ipc";
 
 export class CGDatabase extends DatabaseService {
 
@@ -7,7 +8,9 @@ export class CGDatabase extends DatabaseService {
 
     public constructor(opts: IDatabaseApiOptions) {
         super(opts);
-        this.account = new AccountRepository(this.config, this.db);
+        this.account = new AccountRepository(this.db);
     }
 
 }
+
+export default new CGDatabase({controller: new IpcDatabaseController()});
