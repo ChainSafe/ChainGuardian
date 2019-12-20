@@ -4,11 +4,12 @@ import {IRootState} from "../reducers";
 import {V4Keystore} from "../services/keystore";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
-//import {KEYSTORE_DEFAULT_DIRECTORY} from "../constants/keystore";
-import {saveToDatabase} from "../services/utils/db-utils";
-import {KEYSTORE_DEFAULT_DIRECTORY} from "../constants/keystore";
+import database from "../services/db/api/database";
 import {CGAccount} from "../models/account";
-import {getV4Filename} from "../services/utils/crypto-utils";
+import {getConfig} from "../../config/config";
+import * as path from "path";
+import {PublicKey} from "@chainsafe/bls/lib/publicKey";
+import {DEFAULT_ACCOUNT} from "../constants/account";
 
 // Mnemonic Failed Verification
 export const storeSigningMnemonicVerificationStatusAction = (failedVerification: boolean) =>
@@ -82,32 +83,40 @@ export interface IWithdrawalKeyAction extends Action<RegisterActionTypes> {
 
 // After password action
 export const afterPasswordAction = (password: string) => {
-    return (dispatch: Dispatch<Action<RegisterActionTypes>>, getState: () => IRootState): void => {
+    return async (dispatch: Dispatch<Action<RegisterActionTypes>>, getState: () => IRootState): Promise<void> => {
         // 1. Save to keystore
-        const signingKey = getState().register.signingKey;
-        V4Keystore.create(
-            `${KEYSTORE_DEFAULT_DIRECTORY}/${getV4Filename()}.json`, 
-            password, new Keypair(PrivateKey.fromHexString(signingKey))
+        dispatch(startRegistrationSubmission());
+        const signingKey = PrivateKey.fromBytes(
+            Buffer.from(getState().register.signingKey.slice(2), "hex")
+        );
+        const accountDirectory = path.join(getConfig().storage.accountsDir, DEFAULT_ACCOUNT);
+        await V4Keystore.create(
+            path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
+            password, new Keypair(signingKey)
         );
 
         // 2. Save account to db
         const account = new CGAccount({
-            name: "Test Account",
-            directory: KEYSTORE_DEFAULT_DIRECTORY,
+            name: "Default",
+            directory: accountDirectory,
             sendStats: false
         });
-        
-        saveToDatabase({
-            id: "account",
+
+        await database.account.set(
+            "account",
             account
-        });
+        );
         
         // 3. Delete keys from redux
-        dispatch(setClearKeys());
+        dispatch(completeRegistrationSubmission());
     };
 };
 
 
-export const setClearKeys = (): Action<RegisterActionTypes> => ({
-    type: RegisterActionTypes.CLEAR_KEYS
+export const startRegistrationSubmission = (): Action<RegisterActionTypes> => ({
+    type: RegisterActionTypes.START_REGISTRATION_SUBMISSION
+});
+
+export const completeRegistrationSubmission = (): Action<RegisterActionTypes> => ({
+    type: RegisterActionTypes.COMPLETED_REGISTRATION_SUBMISSION
 });

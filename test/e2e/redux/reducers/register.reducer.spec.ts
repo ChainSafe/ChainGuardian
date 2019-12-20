@@ -2,11 +2,11 @@
 import {
     setSigningKey, 
     setWithdrawalKey, 
-    setMnemonic, 
-    setClearKeys,
-    setSigningMnemonicVerificationStatus
+    setMnemonic,
+    setSigningMnemonicVerificationStatus,
+    completeRegistrationSubmission
 } from "../../../../src/renderer/actions";
-import {registerReducer as reducer, IRegisterState} from "../../../../src/renderer/reducers/register";
+import {IRegisterState, registerReducer as reducer} from "../../../../src/renderer/reducers/register";
 import {RegisterActionTypes} from "../../../../src/renderer/constants/action-types";
 import {Action} from "redux";
 
@@ -76,7 +76,7 @@ describe("register reducer", () => {
                 withdrawalKey: "test key",
                 mnemonic: "mock mnemonic",
                 failedVerification: false
-            } as IRegisterState, setClearKeys())
+            } as IRegisterState, completeRegistrationSubmission())
         ).toEqual(
             initalState
         );

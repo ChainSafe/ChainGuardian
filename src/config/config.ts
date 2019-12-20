@@ -1,12 +1,13 @@
 import {join} from "path";
 import {app} from "electron";
+import path from "path";
 
 const env = process.env;
 
 export interface IConfig {
     storage: {
         dataDir: string,
-        logsDir: string
+        accountsDir: string
     },
     db: {
         name: string
@@ -19,11 +20,11 @@ export function getConfig(): IConfig {
     }
     const storageConfig = {
         dataDir: app.getPath("userData"),
-        logsDir: app.getPath("logs")
+        accountsDir: path.join(app.getPath("userData"), "accounts")
     };
 
     const dbConfig = {
-        name: join(storageConfig.dataDir, "db/chainguardian.db") || env.DB_NAME as string
+        name: env.CG_DATABASE_LOCATION || join(storageConfig.dataDir, "db/chainguardian.db")
     };
 
     return {
