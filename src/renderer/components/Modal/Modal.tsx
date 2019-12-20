@@ -1,6 +1,5 @@
 import * as React from "react";
 import {BackTab} from "../Button/ButtonAction";
-import ReactTooltip from "react-tooltip";
 export interface IModalProps {
     children?: any;
     hasBack?: boolean;
@@ -10,11 +9,6 @@ export interface IModalProps {
 
 export const Modal: React.FunctionComponent<React.PropsWithChildren<IModalProps>> = (
     props: IModalProps) => {
-    
-    React.useEffect(() => {
-        // Rebuild ReactTooltips after modal is mounted
-        ReactTooltip.rebuild();
-    });
 
     return (
         <div className="modal-container">

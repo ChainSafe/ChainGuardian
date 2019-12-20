@@ -1,5 +1,4 @@
 .copy-field{
-    margin-top: 100px;
     background-color: $neutral-600;
     width: 608px;
     min-height: 25px;
@@ -22,6 +21,7 @@
     overflow-x: hidden;
     &.mnemonic{
         word-spacing: 15px;
+        text-align: center;
     }
 }
 .copy-field::-webkit-scrollbar
@@ -34,11 +34,8 @@
 {
 	border-radius: 4px;
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: $neutral-500;
-}
-
-.copy-field-body {
-    width: 95%;
+    background-color: $neutral-500;
+    z-index: -9999999999999999999999999999999;
 }
 
 .copy-button{
