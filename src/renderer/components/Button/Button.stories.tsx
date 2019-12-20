@@ -9,7 +9,8 @@ storiesOf('Button', module).add('Submit Primitive', () => {
     const value = boolean('focus', false);
     const largeButton = boolean('large button', false);
     const idValue = text('button id', null);
-    return  <ButtonPrimitive buttonId={idValue} large={largeButton} focused={value} >{content}</ButtonPrimitive>;
+    const disableValue = boolean('disabled', false);
+    return  <ButtonPrimitive disabled={disableValue} buttonId={idValue} large={largeButton} focused={value} >{content}</ButtonPrimitive>;
 }).addDecorator(withKnobs);
 
 storiesOf('Button', module).add('Submit Primary', () => {
@@ -17,7 +18,8 @@ storiesOf('Button', module).add('Submit Primary', () => {
     const value = boolean('focus', false);
     const largeButton = boolean('large button', false);
     const idValue = text('button id', null);
-    return <ButtonPrimary buttonId={idValue} large={largeButton} focused={value} >{content}</ButtonPrimary>;
+    const disableValue = boolean('disabled', false);
+    return <ButtonPrimary disabled={disableValue} buttonId={idValue} large={largeButton} focused={value} >{content}</ButtonPrimary>;
 }).addDecorator(withKnobs);
 
 storiesOf('Button', module).add('Submit Secondary', () => {
@@ -25,7 +27,8 @@ storiesOf('Button', module).add('Submit Secondary', () => {
     const value = boolean('focus', false);
     const largeButton = boolean('large button', false);
     const idValue = text('button id', null);
-    return <ButtonSecondary buttonId={idValue} large={largeButton} focused={value} >{content}</ButtonSecondary>;
+    const disableValue = boolean('disabled', false);
+    return <ButtonSecondary disabled={disableValue} buttonId={idValue} large={largeButton} focused={value} >{content}</ButtonSecondary>;
 }).addDecorator(withKnobs);
 
 storiesOf('Button', module).add('Submit Inverted', () => {
@@ -33,7 +36,8 @@ storiesOf('Button', module).add('Submit Inverted', () => {
     const value = boolean('focus', false);
     const largeButton = boolean('large button', false);
     const idValue = text('button id', null);
-    return <ButtonInverted buttonId={idValue} large={largeButton} focused={value} >{content}</ButtonInverted>;
+    const disableValue = boolean('disabled', false);
+    return <ButtonInverted disabled={disableValue} buttonId={idValue} large={largeButton} focused={value} >{content}</ButtonInverted>;
 }).addDecorator(withKnobs);
 
 storiesOf('Button', module).add('Submit Destructive', () => {
@@ -41,7 +45,8 @@ storiesOf('Button', module).add('Submit Destructive', () => {
     const value = boolean('focus', false);
     const largeButton = boolean('large button', false);
     const idValue = text('button id', null);
-    return <ButtonDestructive buttonId={idValue} large={largeButton} focused={value} >{content}</ButtonDestructive>;
+    const disableValue = boolean('disabled', false);
+    return <ButtonDestructive disabled={disableValue} buttonId={idValue} large={largeButton} focused={value} >{content}</ButtonDestructive>;
 }).addDecorator(withKnobs);
 
 storiesOf('Button', module).add('Back Tab', () => {

@@ -12,6 +12,7 @@ exports[`Verify Mnemonic renders correctly 1`] = `
   >
     <button
       className="button btn-inverted "
+      disabled={false}
       onClick={[Function]}
     >
       <div
@@ -22,6 +23,7 @@ exports[`Verify Mnemonic renders correctly 1`] = `
     </button>
     <button
       className="button btn-inverted "
+      disabled={false}
       onClick={[Function]}
     >
       <div
@@ -32,6 +34,7 @@ exports[`Verify Mnemonic renders correctly 1`] = `
     </button>
     <button
       className="button btn-inverted "
+      disabled={false}
       onClick={[Function]}
     >
       <div
