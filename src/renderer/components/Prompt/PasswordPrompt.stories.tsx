@@ -24,7 +24,7 @@ storiesOf('Password prompt', module).add('Password input', () => {
                     return {valid: false, errorMessage: "Error"};
                 }
             }}
-            onCancel={() => {}}
+            onCancel={() => {setVisible(false)}}
         />
         <Background />
     </div>

@@ -26,7 +26,7 @@ export const PasswordPrompt: React.FunctionComponent<IPasswordPromptProps> = (pr
             onCancel={props.onCancel}
             display={props.display}
             title={"Confirm password"}
-            placeholder={"Please reenter your password..."}
+            placeholder={"Please renter your password..."}
             inputType={"password"}
         />
     );

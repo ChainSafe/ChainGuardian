@@ -7,6 +7,12 @@ export interface IInputFormProps {
     inputValue?: string;
     placeholder?: string;
     onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
+    /**
+     * Call e.preventDefault() for disabling submit on enter.
+     *
+     * @param e - form event
+     */
+    onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
     focused?: boolean;
     readOnly?: boolean;
     inputId?: string;
@@ -24,7 +30,7 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
     };
 
     return( 
-        <form>
+        <form onSubmit={props.onSubmit}>
             <div className="label">{props.label}</div>
             <input
                 id={props.inputId}

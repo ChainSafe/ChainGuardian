@@ -15,7 +15,7 @@ storiesOf('Input prompt', module).add('Basic prompt input', () => {
         <InputPrompt
             display={visible}
             onSubmit={(): ISubmitStatus => { return {valid: true};}}
-            onCancel={() => {}}
+            onCancel={() => {setVisible(false)}}
             title={"Input prompt"}
             />
         <Background />

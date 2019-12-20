@@ -39,6 +39,7 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
                     errorMessage={errorMessage}
                     valid={valid}
                     onChange={(i): void => { setInputData(i.currentTarget.value); }}
+                    onSubmit={(e): void => {e.preventDefault();}} /** Disable submit on enter **/
                     type={props.inputType}
                 />
                 <div className={"button-control"}>
