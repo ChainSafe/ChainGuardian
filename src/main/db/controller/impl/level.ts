@@ -8,35 +8,45 @@ import {IDatabaseController, ISearchOptions} from "../interface";
 import {EventEmitter} from "events";
 // @ts-ignore
 import level from "level";
-import {IDatabaseOptions} from "../../options";
+import * as fs from "fs";
+import {warn} from "electron-log";
 
-export interface ILevelDBOptions extends IDatabaseOptions {
+export interface ILevelDBOptions {
     db?: LevelUp;
+    location: string;
 }
 
 /**
  * The LevelDB implementation of DB
  */
 export class LevelDbController extends EventEmitter implements IDatabaseController {
-    private db: LevelUp;
+    private db!: LevelUp;
 
     private opts: ILevelDBOptions;
 
-    public constructor(opts: ILevelDBOptions) {
+    public constructor(opts: Partial<ILevelDBOptions>) {
         super();
-        this.opts = opts;
-        this.db = opts.db || level(opts.name || "chainguardian", {keyEncoding: "binary", valueEncoding: "binary"});
+        if(!opts.db && !opts.location) {
+            throw new Error("Please specify database location");
+        }
+        this.opts = opts as ILevelDBOptions;
     }
 
     public async start(): Promise<void> {
-        await this.db.open();
+        if (!this.db) {
+            this.db = this.opts.db
+                || level(this.getDatabaseLocation(), {keyEncoding: "binary", valueEncoding: "binary"});
+        } else {
+            await this.db.open();
+        }
+
     }
 
     public async stop(): Promise<void> {
         await this.db.close();
     }
 
-    public async get(key: any): Promise<Buffer | null> {
+    public async get(key: unknown): Promise<Buffer | null> {
         try {
             return await this.db.get(key);
         } catch (e) {
@@ -47,29 +57,29 @@ export class LevelDbController extends EventEmitter implements IDatabaseControll
         }
     }
 
-    public put(key: any, value: any): Promise<any> {
+    public put(key: unknown, value: unknown): Promise<any> {
         return this.db.put(key, value);
     }
 
-    public async batchPut(items: { key: any; value: any }[]): Promise<any> {
+    public async batchPut(items: { key: unknown; value: unknown }[]): Promise<any> {
         const batch = this.db.batch();
         items.forEach(item => batch.put(item.key, item.value));
         await batch.write();
     }
 
-    public async batchDelete(items: any[]): Promise<any> {
+    public async batchDelete(items: unknown[]): Promise<void> {
         const batch = this.db.batch();
         items.forEach(item => batch.del(item));
         await batch.write();
     }
 
-    public async delete(key: any): Promise<void> {
+    public async delete(key: unknown): Promise<void> {
         await this.db.del(key);
     }
 
-    public search(opts: ISearchOptions): Promise<any> {
-        return new Promise<any[]>(resolve => {
-            const searchData: any[] = [];
+    public search(opts: ISearchOptions): Promise<Buffer[]> {
+        return new Promise(resolve => {
+            const searchData: Buffer[] = [];
             this.db
                 .createValueStream({
                     gt: opts.gt,
@@ -85,5 +95,14 @@ export class LevelDbController extends EventEmitter implements IDatabaseControll
                     resolve(searchData);
                 });
         });
+    }
+
+    private getDatabaseLocation(): string {
+        try {
+            fs.mkdirSync(this.opts.location, {recursive: true});
+        } catch (e) {
+            warn("creating database directories", e);
+        }
+        return this.opts.location;
     }
 }

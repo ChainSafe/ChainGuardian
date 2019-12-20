@@ -2,8 +2,8 @@ import {assert, expect} from "chai";
 // @ts-ignore
 import level from "level";
 import leveldown from "leveldown";
-import {LevelDbController} from "../../../../src/renderer/services/db/controller";
 import {promisify} from "util";
+import {LevelDbController} from "../../../../src/main/db/controller";
 
 describe("LevelDB controller", () => {
     const dbLocation = "./.__testdb";
@@ -11,7 +11,7 @@ describe("LevelDB controller", () => {
         keyEncoding: "binary",
         valueEncoding: "binary"
     });
-    const db = new LevelDbController({db: testDb, name: dbLocation});
+    const db = new LevelDbController({db: testDb, location: dbLocation});
 
     beforeAll(async () => {
         await db.start();

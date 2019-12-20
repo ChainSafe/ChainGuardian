@@ -1,11 +1,10 @@
 import {CGDatabase} from "../../../../src/renderer/services/db/api";
-import {LevelDbController} from "../../../../src/renderer/services/db";
-import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {CGAccount} from "../../../../src/renderer/models/account";
 // @ts-ignore
 import level from "level";
 import {promisify} from "util";
 import leveldown from "leveldown";
+import {LevelDbController} from "../../../../src/main/db/controller";
 
 describe("Account Repository Test", () => {
     let database: CGDatabase, controller;
@@ -15,7 +14,7 @@ describe("Account Repository Test", () => {
         keyEncoding: "binary",
         valueEncoding: "binary"
     });
-    const db = new LevelDbController({db: testDb, name: dbLocation});
+    const db = new LevelDbController({db: testDb, location: dbLocation});
     const testId = "id";
 
     beforeAll(async () => {
@@ -29,7 +28,7 @@ describe("Account Repository Test", () => {
 
     beforeEach(() => {
         controller = db;
-        database = new CGDatabase({controller, config});
+        database = new CGDatabase({controller});
     });
 
     afterEach(() => {
@@ -54,7 +53,7 @@ describe("Account Repository Test", () => {
             sendStats: false
         });
 
-        database.account.set(testId, account);
+        await database.account.set(testId, account);
 
         const fetchedAccount: CGAccount | null = await database.account.get(testId);
 

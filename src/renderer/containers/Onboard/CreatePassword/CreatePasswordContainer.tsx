@@ -9,6 +9,7 @@ import {joiValidationToErrorMessages} from "../../../services/validation/util";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
 import {afterPasswordAction} from "../../../actions";
+import {Routes} from "../../../constants/routes";
 
 export interface IState {
     password: string;
@@ -89,6 +90,7 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
     private handleSubmit= (): void => {
         const {password} = this.state;
         this.props.afterPassword(password);
+        this.props.history.push(Routes.DASHBOARD_ROUTE);
     };
 }
 
