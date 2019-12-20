@@ -1,6 +1,6 @@
 import React, {ReactElement} from "react";
 import {Link} from "react-router-dom";
-import {ButtonSecondary, ButtonPrimary} from "../../../components/Button/ButtonStandard";
+import {ButtonSecondary,ButtonPrimary} from "../../../components/Button/ButtonStandard";
 import {Routes, OnBoardingRoutes} from "../../../constants/routes";
 
 export default function SigningKey(): ReactElement {

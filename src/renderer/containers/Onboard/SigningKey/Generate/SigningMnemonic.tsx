@@ -52,7 +52,7 @@ class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRoot
                      that you can quickly refer to and try again.
                 </Notification>
                 <h1>Here’s your special signing key mnemonic</h1>
-                <p>This is yours and yours only! Please store it somewhere safe, 
+                <p className="mnemonic-paragraph">This is yours and yours only! Please store it somewhere safe, 
                     like physically writing it down with pen and paper. 
                     You should never store your key in a note-taking app like Evernote, 
                     including cloud storage apps like Dropbox.</p>

@@ -11,40 +11,35 @@ import * as path from "path";
 import {PublicKey} from "@chainsafe/bls/lib/publicKey";
 import {DEFAULT_ACCOUNT} from "../constants/account";
 
-// Mnemonic Failed Verification
-export const storeSigningMnemonicVerificationStatusAction = (failedVerification: boolean) =>
-    (dispatch: Dispatch<IFailedVerificationAction>): void => {
-        dispatch(setSigningMnemonicVerificationStatus(failedVerification));
+//Signing actions
+// Signing Mnemonic action
+export const storeSigningMnemonicAction = (signingMnemonic: string) =>
+    (dispatch: Dispatch<ISigningMnemonicAction>): void => {
+        dispatch(setSigningMnemonic(signingMnemonic));
     };
-
-export const setSigningMnemonicVerificationStatus = (failedVerification: boolean): IFailedVerificationAction => ({
-    type: RegisterActionTypes.SET_SIGNING_MNEMONIC_VERIFICATION_STATUS, payload: {failedVerification}
+export const setSigningMnemonic = (signingMnemonic: string): ISigningMnemonicAction => ({
+    type: RegisterActionTypes.STORE_SIGNING_MNEMONIC, payload: {signingMnemonic}
 });
-
-export interface IStoreFailedVerificationPayload {
-    failedVerification: boolean;
+export interface IStoreSigningMnemonicPayload {
+    signingMnemonic: string;
+}
+export interface ISigningMnemonicAction extends Action<RegisterActionTypes> {
+    payload: IStoreSigningMnemonicPayload;
 }
 
-export interface IFailedVerificationAction extends Action<RegisterActionTypes> {
-    payload: IStoreFailedVerificationPayload;
-}
-
-// Mnemonic action
-export const storeSigningKeyMnemonicAction = (mnemonic: string) =>
-    (dispatch: Dispatch<ISigningKeyMnemonicAction>): void => {
-        dispatch(setMnemonic(mnemonic));
+// Signing Mnemonic Failed Verification
+export const storeSigningVerificationStatusAction = (signingVerification: boolean) =>
+    (dispatch: Dispatch<ISigningVerificationStatusAction>): void => {
+        dispatch(setSigningVerificationStatus(signingVerification));
     };
-
-export const setMnemonic = (mnemonic: string): ISigningKeyMnemonicAction => ({
-    type: RegisterActionTypes.STORE_SIGNING_KEY_MNEMONIC, payload: {mnemonic}
+export const setSigningVerificationStatus = (signingVerification: boolean): ISigningVerificationStatusAction => ({
+    type: RegisterActionTypes.STORE_SIGNING_VERIFICATION_STATUS, payload: {signingVerification}
 });
-
-export interface IStoreSigningKeyMnemonicPayload {
-    mnemonic: string;
+export interface IStoreSigningVerificationStatusPayload {
+    signingVerification: boolean;
 }
-
-export interface ISigningKeyMnemonicAction extends Action<RegisterActionTypes> {
-    payload: IStoreSigningKeyMnemonicPayload;
+export interface ISigningVerificationStatusAction extends Action<RegisterActionTypes> {
+    payload: IStoreSigningVerificationStatusPayload;
 }
 
 // Signing key action
@@ -52,16 +47,44 @@ export const storeSigningKeyAction = (signingKey: string) =>
     (dispatch: Dispatch<ISigningKeyAction>): void => {
         dispatch(setSigningKey(signingKey));
     };
-
 export const setSigningKey = (signingKey: string): ISigningKeyAction => ({
     type: RegisterActionTypes.STORE_SIGNING_KEY, payload: {signingKey}
 });
 export interface IStoreSigningKeyPayload {
     signingKey: string;
 }
-
 export interface ISigningKeyAction extends Action<RegisterActionTypes> {
     payload: IStoreSigningKeyPayload;
+}
+//Withdrawal actions
+// Withdrawal Mnemonic action
+export const storeWithdrawalMnemonicAction = (withdrawalMnemonic: string) =>
+    (dispatch: Dispatch<IWithdrawalMnemonicAction>): void => {
+        dispatch(setWithdrawalMnemonic(withdrawalMnemonic));
+    };
+export const setWithdrawalMnemonic = (withdrawalMnemonic: string): IWithdrawalMnemonicAction => ({
+    type: RegisterActionTypes.STORE_WITHDRAWAL_MNEMONIC, payload: {withdrawalMnemonic}
+});
+export interface IStoreWithdrawalMnemonicPayload {
+    withdrawalMnemonic: string;
+}
+export interface IWithdrawalMnemonicAction extends Action<RegisterActionTypes> {
+    payload: IStoreWithdrawalMnemonicPayload;
+}
+
+// Withdrawal Mnemonic Failed Verification
+export const storeWithdrawalVerificationStatusAction = (withdrawalVerification: boolean) =>
+    (dispatch: Dispatch<IWithdrawalVerificationStatusAction>): void => {
+        dispatch(setWithdrawalVerificationStatus(withdrawalVerification));
+    };
+export const setWithdrawalVerificationStatus = (withdrawalVerification: boolean): IWithdrawalVerificationStatusAction => ({
+    type: RegisterActionTypes.STORE_WITHDRAWAL_VERIFICATION_STATUS, payload: {withdrawalVerification}
+});
+export interface IStoreWithdrawalVerificationStatusPayload {
+    withdrawalVerification: boolean;
+}
+export interface IWithdrawalVerificationStatusAction extends Action<RegisterActionTypes> {
+    payload: IStoreWithdrawalVerificationStatusPayload;
 }
 
 // Withdrawal key action
@@ -69,14 +92,12 @@ export const storeWithdrawalKeyAction = (withdrawalKey: string) =>
     (dispatch: Dispatch<IWithdrawalKeyAction>): void => {
         dispatch(setWithdrawalKey(withdrawalKey));
     };
-
 export const setWithdrawalKey = (withdrawalKey: string): IWithdrawalKeyAction => ({
     type: RegisterActionTypes.STORE_WITHDRAWAL_KEY, payload: {withdrawalKey}
 });
 export interface IStoreWithdrawalKeyPayload {
     withdrawalKey: string;
 }
-
 export interface IWithdrawalKeyAction extends Action<RegisterActionTypes> {
     payload: IStoreWithdrawalKeyPayload;
 }

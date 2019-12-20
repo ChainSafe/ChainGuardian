@@ -1,35 +1,55 @@
-import {ISigningKeyMnemonicAction, ISigningKeyAction, 
-    IWithdrawalKeyAction, IFailedVerificationAction} from "../actions";
+import {
+    ISigningMnemonicAction, 
+    ISigningVerificationStatusAction,
+    ISigningKeyAction, 
+    IWithdrawalMnemonicAction,
+    IWithdrawalVerificationStatusAction,
+    IWithdrawalKeyAction, 
+} from "../actions";
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 
 export interface IRegisterState {
-    mnemonic: string,
+    signingMnemonic: string,
+    signingVerification: boolean,
     signingKey: string,
-    withdrawalKey: string
-    failedVerification: boolean
+    withdrawalMnemonic: string,
+    withdrawalVerification: boolean,
+    withdrawalKey: string,
 }
 
 const initialState: IRegisterState = {
-    mnemonic: "",
+    signingMnemonic: "",
+    signingVerification: false,
     signingKey: "",
+    withdrawalMnemonic: "",
+    withdrawalVerification: false,
     withdrawalKey: "",
-    failedVerification: false
 };
 
 export const registerReducer = (state = initialState, action: Action<RegisterActionTypes>): IRegisterState => {
     switch (action.type) {
-        case RegisterActionTypes.SET_SIGNING_MNEMONIC_VERIFICATION_STATUS:
+
+        case RegisterActionTypes.STORE_SIGNING_MNEMONIC:
             return Object.assign({}, state, {
-                failedVerification: (action as IFailedVerificationAction).payload.failedVerification
+                signingMnemonic: (action as ISigningMnemonicAction).payload.signingMnemonic
             });
-        case RegisterActionTypes.STORE_SIGNING_KEY_MNEMONIC:
+        case RegisterActionTypes.STORE_SIGNING_VERIFICATION_STATUS:
             return Object.assign({}, state, {
-                mnemonic: (action as ISigningKeyMnemonicAction).payload.mnemonic
+                signingVerification: (action as ISigningVerificationStatusAction).payload.signingVerification
             });
         case RegisterActionTypes.STORE_SIGNING_KEY:
             return Object.assign({}, state, {
                 signingKey: (action as ISigningKeyAction).payload.signingKey
+            });
+
+        case RegisterActionTypes.STORE_WITHDRAWAL_MNEMONIC:
+            return Object.assign({}, state, {
+                withdrawalMnemonic: (action as IWithdrawalMnemonicAction).payload.withdrawalMnemonic
+            });
+        case RegisterActionTypes.STORE_WITHDRAWAL_VERIFICATION_STATUS:
+            return Object.assign({}, state, {
+                withdrawalVerification: (action as IWithdrawalVerificationStatusAction).payload.withdrawalVerification
             });
         case RegisterActionTypes.STORE_WITHDRAWAL_KEY:
             return Object.assign({}, state, {

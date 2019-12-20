@@ -1,17 +1,17 @@
 import React, {Component, ReactElement} from "react";
-import KeyModalContent from "../../../components/KeyModalContent/KeyModalContent";
+import KeyModalContent from "../../../../components/KeyModalContent/KeyModalContent";
 import {
     IMPORT_WITHDRAWAL_KEY_TITLE, 
     IMPORT_WITHDRAWAL_KEY_DESCRIPTION,
     IMPORT_WITHDRAWAL_KEY_PLACEHOLDER
-} from "../../../constants/strings";
+} from "../../../../constants/strings";
 import {RouteComponentProps} from "react-router-dom";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
-import {storeWithdrawalKeyAction} from "../../../actions";
+import {storeWithdrawalKeyAction} from "../../../../actions";
 import {publicKeySchema} from "./validation";
 import {ValidationResult} from "@hapi/joi";
-import {Routes, OnBoardingRoutes} from "../../../constants/routes";
+import {Routes, OnBoardingRoutes} from "../../../../constants/routes";
 
 
 /**
