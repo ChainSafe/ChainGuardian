@@ -5,7 +5,7 @@ import {CopyField, MnemonicCopyField} from "../../src/renderer/components/CopyFi
 describe("CopyField", () => {
     it("renders correctly", () => {
         const tree = renderer
-            .create(<CopyField value="Test text for copy"/>)
+            .create(<CopyField onCopy={(): void => {}} value="Test text for copy"/>)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
@@ -14,7 +14,7 @@ describe("CopyField", () => {
 describe("MnemonicCopyField", () => {
     it("renders correctly", () => {
         const tree = renderer
-            .create(<MnemonicCopyField value="mnemonic text for copy"/>)
+            .create(<MnemonicCopyField onCopy={(): void => {}} value="mnemonic text for copy"/>)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
