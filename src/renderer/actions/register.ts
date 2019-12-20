@@ -10,6 +10,23 @@ import {KEYSTORE_DEFAULT_DIRECTORY} from "../constants/keystore";
 import {CGAccount} from "../models/account";
 import {getV4Filename} from "../services/utils/crypto-utils";
 
+// Mnemonic Failed Verification
+export const storeSigningMnemonicVerificationStatusAction = (failedVerification: boolean) =>
+    (dispatch: Dispatch<IFailedVerificationAction>): void => {
+        dispatch(setSigningMnemonicVerificationStatus(failedVerification));
+    };
+
+export const setSigningMnemonicVerificationStatus = (failedVerification: boolean): IFailedVerificationAction => ({
+    type: RegisterActionTypes.SET_SIGNING_MNEMONIC_VERIFICATION_STATUS, payload: {failedVerification}
+});
+
+export interface IStoreFailedVerificationPayload {
+    failedVerification: boolean;
+}
+
+export interface IFailedVerificationAction extends Action<RegisterActionTypes> {
+    payload: IStoreFailedVerificationPayload;
+}
 
 // Mnemonic action
 export const storeSigningKeyMnemonicAction = (mnemonic: string) =>

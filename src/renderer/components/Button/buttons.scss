@@ -169,6 +169,10 @@
         &:active {
             background: $system-success-400;
         }
+        &:disabled {
+            background: $system-success-300;
+            opacity: 0.5;
+        }
     }
 
     &.btn-destructive {
@@ -187,6 +191,10 @@
 
         &:active {
             background: $system-error-700;
+        }
+        &:disabled {
+            background: $system-error-600;
+            opacity: 0.8;
         }
     }
 }

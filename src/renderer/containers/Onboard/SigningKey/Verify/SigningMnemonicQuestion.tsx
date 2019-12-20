@@ -1,24 +1,34 @@
 import React, {Component, ReactElement} from "react";
-import {VerifyMnemonic} from "../../../../components/VerifyMnemonic/VerifyMnemonic";
 import {connect} from "react-redux";
 import {RouteComponentProps} from "react-router";
+import {bindActionCreators, Dispatch} from "redux";
+
+import {VerifyMnemonic} from "../../../../components/VerifyMnemonic/VerifyMnemonic";
 import {getRandomInt, getRandomIntArray} from "../../../../services/mnemonic/utils/random";
 import {IRootState} from "../../../../reducers";
-import {bindActionCreators, Dispatch} from "redux";
 import {storeSigningKeyAction} from "../../../../actions";
 import {Eth2HDWallet} from "../../../../services/wallet";
 import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
+import {storeSigningMnemonicVerificationStatusAction} from "../../../../actions";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface IProps extends Pick<RouteComponentProps, "history"> {
+interface IOwnProps extends Pick<RouteComponentProps, "history"> {
 
 }
+interface IInjectedProps {
+    setVerificationStatus: typeof storeSigningMnemonicVerificationStatusAction;
+}
 
-class SigningMnemonicQuestion extends Component<IProps &  Pick<IRootState, "register"> & IInjectedProps, {}> {
+class SigningMnemonicQuestion extends Component<IOwnProps &  Pick<IRootState, "register"> & IInjectedProps, {}> {
     public render(): ReactElement {
         const mnemonic = this.props.register.mnemonic.split(" ");
         const randArray = getRandomIntArray(12);
         const correctAnswerIndex = randArray[getRandomInt(3)];
+
+        const handleInvalidAnswer = (): void => {
+            this.props.setVerificationStatus(true);
+            this.props.history.goBack();
+        };
 
         return (
             <VerifyMnemonic
@@ -26,7 +36,7 @@ class SigningMnemonicQuestion extends Component<IProps &  Pick<IRootState, "regi
                 answers={[mnemonic[randArray[0]], mnemonic[randArray[1]], mnemonic[randArray[2]]]}
                 correctAnswer={mnemonic[correctAnswerIndex]}
                 onCorrectAnswer={this.onCorrectAnswer}
-                onInvalidAnswer={(): void => {}}
+                onInvalidAnswer={(): void => {setTimeout(handleInvalidAnswer, 1000);}}
             />
         );
     }
@@ -54,6 +64,10 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "register"> => ({
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators({
         storeSigningKey: storeSigningKeyAction,
+        setVerificationStatus: storeSigningMnemonicVerificationStatusAction,
     }, dispatch);
 
-export const SigningKeyVerifyContainer = connect(mapStateToProps, mapDispatchToProps)(SigningMnemonicQuestion);
+export const SigningKeyVerifyContainer = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(SigningMnemonicQuestion);
