@@ -53,7 +53,7 @@ describe("Account Repository Test", () => {
             sendStats: false
         });
 
-        database.account.set(testId, account);
+        await database.account.set(testId, account);
 
         const fetchedAccount: CGAccount | null = await database.account.get(testId);
 
