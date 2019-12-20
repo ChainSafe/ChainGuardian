@@ -11,6 +11,23 @@ import * as path from "path";
 import {PublicKey} from "@chainsafe/bls/lib/publicKey";
 import {DEFAULT_ACCOUNT} from "../constants/account";
 
+// Mnemonic Failed Verification
+export const storeSigningMnemonicVerificationStatusAction = (failedVerification: boolean) =>
+    (dispatch: Dispatch<IFailedVerificationAction>): void => {
+        dispatch(setSigningMnemonicVerificationStatus(failedVerification));
+    };
+
+export const setSigningMnemonicVerificationStatus = (failedVerification: boolean): IFailedVerificationAction => ({
+    type: RegisterActionTypes.SET_SIGNING_MNEMONIC_VERIFICATION_STATUS, payload: {failedVerification}
+});
+
+export interface IStoreFailedVerificationPayload {
+    failedVerification: boolean;
+}
+
+export interface IFailedVerificationAction extends Action<RegisterActionTypes> {
+    payload: IStoreFailedVerificationPayload;
+}
 
 // Mnemonic action
 export const storeSigningKeyMnemonicAction = (mnemonic: string) =>
