@@ -25,29 +25,29 @@ class SigningMnemonicQuestion extends Component<IOwnProps &  Pick<IRootState, "r
         const randArray = getRandomIntArray(12);
         const correctAnswerIndex = randArray[getRandomInt(3)];
 
-        const handleInvalidAnswer = (): void => {
-            this.props.setVerificationStatus(true);
-            this.props.history.goBack();
-        };
-
         return (
             <VerifyMnemonic
                 question={`What’s the ${correctAnswerIndex + 1}th word in the mnemonic?`}
                 answers={[mnemonic[randArray[0]], mnemonic[randArray[1]], mnemonic[randArray[2]]]}
                 correctAnswer={mnemonic[correctAnswerIndex]}
-                onCorrectAnswer={this.onCorrectAnswer}
-                onInvalidAnswer={(): void => {setTimeout(handleInvalidAnswer, 1000);}}
+                onCorrectAnswer={this.handleCorrectAnswer}
+                onInvalidAnswer={(): void => {setTimeout(this.handleInvalidAnswer, 1000);}}
             />
         );
     }
 
-    private onCorrectAnswer = (): void => {
+    private handleCorrectAnswer = (): void => {
         const {register, storeSigningKey, history} = this.props;
 
         const signingKey = Eth2HDWallet.getKeypair(register.mnemonic).privateKey.toHexString();
         storeSigningKey(signingKey);
 
         history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
+    };
+
+    private handleInvalidAnswer = (): void => {
+        this.props.setVerificationStatus(true);
+        this.props.history.goBack();
     };
 }
 
