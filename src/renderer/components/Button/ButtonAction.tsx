@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import arrow from "../../assets/img/buttons/Backtab.svg";
 import add from "../../assets/img/buttons/Add.svg";
 import copyDefault from "../../assets/img/buttons/CopyDefault.svg";
@@ -8,8 +8,8 @@ export interface IActionButtonProps {
     onClick?: () => void;
 }
 
-export interface ICopyButtonProps extends IActionButtonProps {
-    clicked?: boolean;
+export interface ICopyButtonProps {
+    onClick: () => void;
 }
 
 export const BackTab: React.FunctionComponent<IActionButtonProps> = ({onClick}) => {
@@ -21,11 +21,22 @@ export const BackTab: React.FunctionComponent<IActionButtonProps> = ({onClick}) 
 };
 
 export const CopyButton: React.FunctionComponent<ICopyButtonProps> = (props: ICopyButtonProps) => {
+    const [clicked, setClicked] = useState(false);
+
+    const handleClick = (): void => {
+        props.onClick();
+        const handleTimeout= (): void => {
+            setClicked(false);
+        };
+        setClicked(true);
+        setTimeout(handleTimeout,1000);
+    };
+
     return(<button
         className={"copy-button"} 
-        onClick={props.onClick}>
+        onClick={handleClick}>
         <ReactTooltip effect="solid" place="right"
-            getContent={(): string =>{return props.clicked ? "Copied!" : "Copy All";}}
+            getContent={(): string =>{return clicked ? "Copied!" : "Copy All";}}
         />
         <img data-tip="Copy all" data-place="top" className={"icon copy"} src={copyDefault} />
     </button>);

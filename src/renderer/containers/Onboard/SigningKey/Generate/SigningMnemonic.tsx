@@ -11,7 +11,6 @@ import {bindActionCreators, Dispatch} from "redux";
 
 interface IState {
     mnemonic: string;
-    copied: boolean;
 }
 
 /**
@@ -31,14 +30,6 @@ interface IInjectedProps {
 class SigningMnemonic extends Component<IOwnProps & IInjectedProps, IState> {
     public state = {
         mnemonic: Eth2HDWallet.generate(),
-        copied: false,
-    };
-    
-    public handleCopy = (): void => {
-        clipboard.writeText(this.state.mnemonic);
-        this.setState(()=>{
-            return {copied: true};
-        });
     };
     
     public render(): ReactElement {
@@ -51,9 +42,8 @@ class SigningMnemonic extends Component<IOwnProps & IInjectedProps, IState> {
                     You should never store your key in a note-taking app like Evernote, 
                     including cloud storage apps like Dropbox.</p>
                 <MnemonicCopyField
-                    clicked={this.state.copied}
                     value={mnemonic}
-                    onCopy={(): void => this.handleCopy()}
+                    onCopy={(): void => clipboard.writeText(mnemonic)}
                 />
                 <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_KEY_VALIDATE)}>
                     <ButtonPrimary 

@@ -20,6 +20,7 @@ Array [
     </div>
     <button
       className="copy-button"
+      onClick={[Function]}
     >
       <div
         className="__react_component_tooltip place-right type-dark "
@@ -58,6 +59,7 @@ Array [
     </div>
     <button
       className="copy-button"
+      onClick={[Function]}
     >
       <div
         className="__react_component_tooltip place-right type-dark "
