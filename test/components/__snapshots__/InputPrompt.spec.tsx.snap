@@ -12,7 +12,9 @@ exports[`Input prompt renders correctly 1`] = `
     >
       Make input
     </h2>
-    <form>
+    <form
+      onSubmit={[Function]}
+    >
       <div
         className="label"
       />
