@@ -1,32 +1,28 @@
 // tslint:disable-next-line: import-name
 import BN from "bn.js";
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
-
-import {IDatabaseController} from "../controller";
 import {Bucket, encodeKey} from "../schema";
 import {ICGSerialization} from "../abstract";
+import {IDatabaseController} from "../../../../main/db/controller";
+import {AnySSZType} from "@chainsafe/ssz";
 
 export type Id = Buffer | string | number | BN;
 
 export abstract class Repository<T> {
-    protected config: IBeaconConfig;
 
     protected db: IDatabaseController;
 
     protected bucket: Bucket;
 
-    protected type: any;
+    protected type: AnySSZType;
 
-    protected serializer: ICGSerialization<any>;
+    protected serializer: ICGSerialization<unknown>;
 
     public constructor(
-        config: IBeaconConfig,
         db: IDatabaseController,
-        serializer: ICGSerialization<any>,
+        serializer: ICGSerialization<unknown>,
         bucket: Bucket,
-        type: any
+        type: AnySSZType
     ) {
-        this.config = config;
         this.db = db;
         this.serializer = serializer;
         this.bucket = bucket;
@@ -66,22 +62,22 @@ export abstract class BulkRepository<T> extends Repository<T> {
             gt: encodeKey(this.bucket, Buffer.alloc(0)),
             lt: encodeKey(this.bucket + 1, Buffer.alloc(0))
         });
-        return (data || []).map(data => this.serializer.deserialize(data, this.type));
+        return (data || []).map(data => this.serializer.deserialize(data as Buffer, this.type));
     }
 
-    public async deleteMany(ids: Id[]): Promise<void> {
-        const criteria: (Buffer | string)[] = [];
-        ids.forEach(id => criteria.push(encodeKey(this.bucket, id)));
-        await this.db.batchDelete(criteria);
-    }
+    // public async deleteMany(ids: Id[]): Promise<void> {
+    //     const criteria: (Buffer | string)[] = [];
+    //     ids.forEach(id => criteria.push(encodeKey(this.bucket, id)));
+    //     await this.db.batchDelete(criteria);
+    // }
 
-    public async deleteManyByValue(values: T[]): Promise<void> {
-        await this.deleteMany(values.map(value => this.serializer.hashTreeRoot(value, this.type)));
-    }
-
-    public async deleteAll(idFunction?: (value: T) => Id): Promise<void> {
-        const data = await this.getAll();
-        const defaultIdFunction: (value: T) => Id = (value): Id => this.serializer.hashTreeRoot(value, this.type);
-        await this.deleteMany(data.map(idFunction || defaultIdFunction));
-    }
+    // public async deleteManyByValue(values: T[]): Promise<void> {
+    //     await this.deleteMany(values.map(value => this.serializer.hashTreeRoot(value, this.type)));
+    // }
+    //
+    // public async deleteAll(idFunction?: (value: T) => Id): Promise<void> {
+    //     const data = await this.getAll();
+    //     const defaultIdFunction: (value: T) => Id = (value): Id => this.serializer.hashTreeRoot(value, this.type);
+    //     await this.deleteMany(data.map(idFunction || defaultIdFunction));
+    // }
 }

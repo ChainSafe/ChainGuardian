@@ -7,9 +7,16 @@ export interface IInputFormProps {
     inputValue?: string;
     placeholder?: string;
     onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
+    /**
+     * Call e.preventDefault() for disabling submit on enter.
+     *
+     * @param e - form event
+     */
+    onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
     focused?: boolean;
     readOnly?: boolean;
     inputId?: string;
+    type?: string;
 }
 
 export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInputFormProps) => {
@@ -23,16 +30,18 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
     };
 
     return( 
-        <form>
+        <form onSubmit={props.onSubmit}>
             <div className="label">{props.label}</div>
-            <input 
+            <input
                 id={props.inputId}
                 autoFocus={props.focused}
                 placeholder={props.placeholder}
                 value={props.inputValue}
                 readOnly={props.readOnly}
                 className={`inputform ${classNamesValid(props.valid)}`} 
-                onChange={props.onChange} />
+                onChange={props.onChange}
+                type={props.type}
+            />
             <div 
                 className={"error-message"}>
                 {props.valid === false && props.errorMessage}</div>

@@ -36,7 +36,7 @@ export const registerReducer = (state = initialState, action: Action<RegisterAct
                 withdrawalKey: (action as IWithdrawalKeyAction).payload.withdrawalKey
             });
 
-        case RegisterActionTypes.CLEAR_KEYS:
+        case RegisterActionTypes.COMPLETED_REGISTRATION_SUBMISSION:
             return Object.assign({}, state, initialState);
         default:
             return state;

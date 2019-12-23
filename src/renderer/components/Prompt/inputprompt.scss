@@ -1,0 +1,55 @@
+div.prompt-overlay {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(43,43,43); /* Fallback color */
+  background-color: rgba(43,43,43,0.7); /* Black w/ opacity */
+}
+
+.prompt-show {
+  display: block;
+}
+
+.prompt-hide {
+  display: none;
+}
+
+
+div.prompt-modal {
+  background-color: $secondary-blue-600;
+  border-top: 4px solid $secondary-blue-400;
+  border-radius: 8px;
+  font-family: 'Palanquin', sans-serif;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 15px;
+  max-width: 400px;
+  display: block;
+}
+
+div.button-control {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+div.prompt-cancel-button {
+  float: right;
+}
+
+div.prompt-confirm-button {
+  margin-left: 32px;
+  float: right;
+}
+
+h2.prompt-title {
+  color: $secondary-blue-100;
+  margin-bottom: 15px;
+}
+
+#prompt-input {
+  width: 100%;
+}

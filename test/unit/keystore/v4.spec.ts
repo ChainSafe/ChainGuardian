@@ -4,12 +4,11 @@ import fs from "fs";
 import sinon from "sinon";
 import {ICGKeystore, V4Keystore} from "../../../src/renderer/services/keystore";
 import example from "./example.v4.json";
-import {getV4Filename} from "../../../src/renderer/services/utils/crypto-utils";
 
 const privateKey = "0e43429c844ccedd4aff7aaa05fe996f41f9464b360ca03a4349387ba49b3e18";
 const privateKeyStr = `0x${privateKey}`;
 
-const keyStoreFilePath = `${getV4Filename()}.json`;
+const keyStoreFilePath = `keystore-${Math.random() * 1000}.json`;
 const password = "test";
 const newPassword = "newTest";
 

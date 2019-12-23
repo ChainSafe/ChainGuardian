@@ -1,19 +1,16 @@
-import {IDatabaseController} from "../controller";
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {IService} from "../../interfaces";
+import {IpcDatabaseController} from "../controller/ipc";
+import {IDatabaseController} from "../../../../main/db/controller";
 
 export interface IDatabaseApiOptions {
-    config: IBeaconConfig;
-    controller: IDatabaseController;
+    controller?: IDatabaseController;
 }
 
 export abstract class DatabaseService implements IService {
-    protected readonly config: IBeaconConfig;
     protected readonly db: IDatabaseController;
 
     protected constructor(opts: IDatabaseApiOptions) {
-        this.config = opts.config;
-        this.db = opts.controller;
+        this.db = opts.controller || new IpcDatabaseController();
     }
 
     public async start(): Promise<void> {

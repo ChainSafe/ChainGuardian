@@ -2,9 +2,11 @@ import {Store, applyMiddleware, createStore, Middleware} from "redux";
 import {composeWithDevTools} from "redux-devtools-extension";
 import {IRootState, rootReducer} from "../reducers";
 import thunk from "redux-thunk";
+// Logger with default options
+import logger from "redux-logger";
 
 const configureStore = (initialState?: IRootState): Store<IRootState | undefined> => {
-    const middlewares: Middleware[] = [thunk],
+    const middlewares: Middleware[] = [thunk, logger],
         enhancer = composeWithDevTools(applyMiddleware(...middlewares));
     return createStore(rootReducer, initialState, enhancer);
 };
