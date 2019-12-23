@@ -1,10 +1,14 @@
 import React, {Component, ReactElement} from "react";
-import {VerifyMnemonic} from "../../../../components/VerifyMnemonic/VerifyMnemonic";
 import {connect} from "react-redux";
-import {bindActionCreators, Dispatch} from "redux";
 import {RouteComponentProps} from "react-router";
+import {bindActionCreators, Dispatch} from "redux";
+
+import {VerifyMnemonic} from "../../../../components/VerifyMnemonic/VerifyMnemonic";
 import {getRandomInt, getRandomIntArray} from "../../../../services/mnemonic/utils/random";
 import {IRootState} from "../../../../reducers";
+import {storeSigningKeyAction} from "../../../../actions";
+import {Eth2HDWallet} from "../../../../services/wallet";
+import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
 import {storeSigningMnemonicVerificationStatusAction} from "../../../../actions";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -15,39 +19,53 @@ interface IInjectedProps {
     setVerificationStatus: typeof storeSigningMnemonicVerificationStatusAction;
 }
 
-class SigningMnemonicQuestion extends Component<IOwnProps & IInjectedProps &  Pick<IRootState, "register">, {}> {
+class SigningMnemonicQuestion extends Component<IOwnProps &  Pick<IRootState, "register"> & IInjectedProps, {}> {
     public render(): ReactElement {
         const mnemonic = this.props.register.mnemonic.split(" ");
         const randArray = getRandomIntArray(12);
         const correctAnswerIndex = randArray[getRandomInt(3)];
 
-        const handleInvalidAnswer = (): void => {
-            this.props.setVerificationStatus(true);
-            this.props.history.goBack();
-        };
-        
         return (
             <VerifyMnemonic
                 question={`What’s the ${correctAnswerIndex + 1}th word in the mnemonic?`}
                 answers={[mnemonic[randArray[0]], mnemonic[randArray[1]], mnemonic[randArray[2]]]}
                 correctAnswer={mnemonic[correctAnswerIndex]}
-                onCorrectAnswer={(): void => {}}
-                onInvalidAnswer={(): void => {setTimeout(handleInvalidAnswer, 1000);}}
+                onCorrectAnswer={this.handleCorrectAnswer}
+                onInvalidAnswer={(): void => {setTimeout(this.handleInvalidAnswer, 1000);}}
             />
         );
     }
+
+    private handleCorrectAnswer = (): void => {
+        const {register, storeSigningKey, history} = this.props;
+
+        const signingKey = Eth2HDWallet.getKeypair(register.mnemonic).privateKey.toHexString();
+        storeSigningKey(signingKey);
+
+        history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
+    };
+
+    private handleInvalidAnswer = (): void => {
+        this.props.setVerificationStatus(true);
+        this.props.history.goBack();
+    };
+}
+
+// redux
+
+interface IInjectedProps {
+    storeSigningKey: typeof storeSigningKeyAction;
 }
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "register"> => ({
     register: state.register
 });
+
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
-    bindActionCreators(
-        {
-            setVerificationStatus: storeSigningMnemonicVerificationStatusAction,
-        },
-        dispatch
-    );
+    bindActionCreators({
+        storeSigningKey: storeSigningKeyAction,
+        setVerificationStatus: storeSigningMnemonicVerificationStatusAction,
+    }, dispatch);
 
 export const SigningKeyVerifyContainer = connect(
     mapStateToProps,

@@ -13,6 +13,33 @@ jest.setTimeout(TIMEOUT);
 const publicKeyStr =
     "0x92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff4990daa18";
 
+
+describe("Onboarding withdrawal key initial screen", () => {
+    let app: Application;
+
+    beforeEach(async () => {
+        app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
+    });
+
+    afterEach(async () => {
+        await stopApp(app);
+    });
+
+    it("skip button leads to password screen", async function () {
+        const {client} = app;
+        await client.$("button=SKIP").click();
+        const url = await client.getUrl();
+        expect(url.endsWith(OnBoardingRoutes.PASSWORD)).to.be.true;
+    });
+
+    it("import button leads to withdrawal key import screen", async function () {
+        const {client} = app;
+        await client.$("button=IMPORT").click();
+        const url = await client.getUrl();
+        expect(url.endsWith(OnBoardingRoutes.WITHDRAWAL_IMPORT)).to.be.true;
+    });
+});
+
 describe("Onboarding withdrawal key import screen", () => {
     let app: Application;
 
