@@ -23,25 +23,25 @@ class WithdrawalMnemonicQuestion extends Component<IOwnProps & IInjectedProps & 
         const randArray = getRandomIntArray(12);
         const correctAnswerIndex = randArray[getRandomInt(3)];
 
-        const handleInvalidAnswer = (): void => {
-            this.props.setVerificationStatus(true);
-            this.props.history.goBack();
-        };
-        
-        const handleCorrectAnswer= (): void => {
-            this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
-        };
-
         return (
             <VerifyMnemonic
                 question={`What’s the ${ordinalSuffix(correctAnswerIndex+1)} word in the mnemonic?`}
                 answers={[mnemonic[randArray[0]], mnemonic[randArray[1]], mnemonic[randArray[2]]]}
                 correctAnswer={mnemonic[correctAnswerIndex]}
-                onCorrectAnswer={(): void => {setTimeout(handleCorrectAnswer, 1000);}}
-                onInvalidAnswer={(): void => {setTimeout(handleInvalidAnswer, 1000);}}
+                onCorrectAnswer={(): void => {setTimeout(this.handleCorrectAnswer, 1000);}}
+                onInvalidAnswer={(): void => {setTimeout(this.handleInvalidAnswer, 1000);}}
             />
         );
     }
+
+    private handleInvalidAnswer = (): void => {
+        this.props.setVerificationStatus(true);
+        this.props.history.goBack();
+    };
+    
+    private handleCorrectAnswer= (): void => {
+        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
+    };
 }
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "register"> => ({

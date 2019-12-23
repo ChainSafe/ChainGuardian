@@ -29,13 +29,13 @@ export const VerifyMnemonic: React.FunctionComponent<IVerifyMnemonicProps> = (
                 {props.answers.map(answer => {
                     if(clicked && (answer === props.correctAnswer)){
                         return (
-                            <ButtonInverted 
+                            <ButtonInverted
                                 disabled={clicked}
-                                key={answer} 
+                                key={answer}
                                 onClick={(): void => isCorrect(
-                                    answer, 
-                                    props.correctAnswer, 
-                                    props.onCorrectAnswer, 
+                                    answer,
+                                    props.correctAnswer,
+                                    props.onCorrectAnswer,
                                     props.onInvalidAnswer)}>
                                 {answer}
                             </ButtonInverted>);
@@ -53,7 +53,8 @@ export const VerifyMnemonic: React.FunctionComponent<IVerifyMnemonicProps> = (
                             </ButtonDestructive>);
                     } else{
                         return (
-                            <ButtonInverted 
+                            <ButtonInverted
+                                dataField={(answer === props.correctAnswer).toString()}
                                 disabled={clicked}
                                 key={answer} 
                                 onClick={(): void => isCorrect(

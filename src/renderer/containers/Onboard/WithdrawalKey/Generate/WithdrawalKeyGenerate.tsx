@@ -57,7 +57,7 @@ class WithdrawalKeyGenerate extends Component<IOwnProps & IInjectedProps &  Pick
                 <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL_KEY_VALIDATE)}>
                     <ButtonPrimary
                         onClick={(): void => {this.props.storeMnemonic(mnemonic);}}
-                        buttonId="savedMnemonic"
+                        buttonId="savedWithdrawalMnemonic"
                     >
                         I SAVED THIS MNEMONIC
                     </ButtonPrimary>

@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Input prompt renders correctly 1`] = `
+<div
+  className="prompt-overlay prompt-show"
+>
+  <div
+    className="prompt-modal"
+  >
+    <h2
+      className="prompt-title"
+    >
+      Make input
+    </h2>
+    <form
+      onSubmit={[Function]}
+    >
+      <div
+        className="label"
+      />
+      <input
+        className="inputform "
+        id="prompt-input"
+        onChange={[Function]}
+      />
+      <div
+        className="error-message"
+      />
+    </form>
+    <div
+      className="button-control"
+    >
+      <div
+        className="prompt-cancel-button"
+      >
+        <button
+          className="button btn-destructive "
+          onClick={[Function]}
+        >
+          <div
+            className=""
+          >
+            Cancel
+          </div>
+        </button>
+      </div>
+      <div
+        className="prompt-confirm-button"
+      >
+        <button
+          className="button btn-primary "
+          onClick={[Function]}
+        >
+          <div
+            className=""
+          >
+            OK
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

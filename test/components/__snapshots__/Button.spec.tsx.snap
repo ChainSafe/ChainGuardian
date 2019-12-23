@@ -346,7 +346,14 @@ exports[`ButtonSecondary renders large button 1`] = `
 exports[`CopyButton renders correctly 1`] = `
 <button
   className="copy-button"
+  onClick={[Function]}
 >
+  <div
+    className="__react_component_tooltip place-right type-dark "
+    data-id="tooltip"
+  >
+    Copy All
+  </div>
   <img
     className="icon copy"
     data-place="top"

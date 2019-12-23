@@ -63,7 +63,7 @@ class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRoot
                 <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_KEY_VALIDATE)}>
                     <ButtonPrimary 
                         onClick={(): void => {this.props.storeMnemonic(mnemonic);}}
-                        buttonId="savedMnemonic"
+                        buttonId="savedSigningMnemonic"
                     >I SAVED THIS MNEMONIC</ButtonPrimary>
                 </Link>
             </>

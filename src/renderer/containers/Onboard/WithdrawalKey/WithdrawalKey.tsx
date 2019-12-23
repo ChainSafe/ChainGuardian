@@ -20,7 +20,9 @@ export default function WithdrawalKey(): ReactElement {
                 </Link>
             </div>
             <h5 className="input-or">OR</h5>
-            <ButtonPrimitive buttonId="skip">SKIP</ButtonPrimitive>
+            <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD)}>
+                <ButtonPrimitive buttonId="skip">SKIP</ButtonPrimitive>
+            </Link>
             <div className="skip-notes" >If you skip, we won’t be able to generate a deposit transaction</div>
         </>
     );

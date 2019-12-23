@@ -14,6 +14,7 @@ jest.setTimeout(TIMEOUT);
 const mnemonic = "hard caught annual spread green step avocado shine scare warm chronic pond";
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 
+
 describe("Onboarding signing key import screen", () => {
     let app: Application;
 
@@ -63,7 +64,7 @@ describe("Onboarding signing key import screen", () => {
         await client.setValue(".inputform", privateKeyStr);
         let errorMessage = await client.getText(".error-message");
         expect(errorMessage).to.be.equal("");
-        
+
         // Valid mnemonic
         await client.setValue(".inputform", mnemonic);
         errorMessage = await client.getText(".error-message");
@@ -91,4 +92,29 @@ describe("Onboarding signing key import screen", () => {
         ))).to.be.true;
     });
 
+});
+
+describe("Onboarding signing key validate screen", () => {
+    let app: Application;
+
+    beforeEach(async () => {
+        app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_KEY_GENERATE));
+    });
+
+    afterEach(async () => {
+        await stopApp(app);
+    });
+
+    // it("should redirect to withdrawal key flow on correct answer", async () => {
+    //     const {client} = app;
+    //     await client.$("#savedSigningMnemonic").click();
+    //     const verificationUrl = await client.getUrl();
+    //     expect(verificationUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
+    //         OnBoardingRoutes.SIGNING_KEY_VALIDATE
+    //     ))).to.be.true;
+
+    //     await client.$(".verify-button-container button[datafield=true]").click();
+    //     const url = await client.getUrl();
+    //     expect(url.endsWith(OnBoardingRoutes.WITHDRAWAL)).to.be.true;
+    // });
 });

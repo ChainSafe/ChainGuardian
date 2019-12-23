@@ -189,7 +189,7 @@ describe("BackTab", () => {
 describe("CopyButton", () => {
     it("renders correctly", () => {
         const tree = renderer
-            .create(<CopyButton />)
+            .create(<CopyButton onClick={(): void => {}} />)
             .toJSON();
         expect(tree).toMatchSnapshot();
     });

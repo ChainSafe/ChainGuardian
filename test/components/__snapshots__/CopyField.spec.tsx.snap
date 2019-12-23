@@ -6,7 +6,7 @@ Array [
     className="copy-field-label"
   />,
   <div
-    className="copy-field"
+    className="copy-field "
   >
     <div
       className="copy-field-body"
@@ -20,7 +20,14 @@ Array [
     </div>
     <button
       className="copy-button"
+      onClick={[Function]}
     >
+      <div
+        className="__react_component_tooltip place-right type-dark "
+        data-id="tooltip"
+      >
+        Copy All
+      </div>
       <img
         className="icon copy"
         data-place="top"
@@ -38,13 +45,13 @@ Array [
     className="copy-field-label"
   />,
   <div
-    className="copy-field"
+    className="copy-field mnemonic"
   >
     <div
       className="copy-field-body"
       style={
         Object {
-          "textAlign": "center",
+          "textAlign": undefined,
         }
       }
     >
@@ -52,7 +59,14 @@ Array [
     </div>
     <button
       className="copy-button"
+      onClick={[Function]}
     >
+      <div
+        className="__react_component_tooltip place-right type-dark "
+        data-id="tooltip"
+      >
+        Copy All
+      </div>
       <img
         className="icon copy"
         data-place="top"
