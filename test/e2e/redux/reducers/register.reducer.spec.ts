@@ -2,8 +2,10 @@
 import {
     setSigningKey, 
     setWithdrawalKey, 
-    setMnemonic,
-    setSigningMnemonicVerificationStatus,
+    setSigningMnemonic,
+    setSigningVerificationStatus,
+    setWithdrawalMnemonic,
+    setWithdrawalVerificationStatus,
     completeRegistrationSubmission
 } from "../../../../src/renderer/actions";
 import {IRegisterState, registerReducer as reducer} from "../../../../src/renderer/reducers/register";
@@ -16,10 +18,12 @@ const publicKeyStr =
 const expectedMnemonic = "hard caught annual spread green step avocado shine scare warm chronic pond";
 
 const initalState: IRegisterState = {
-    mnemonic: "",
+    signingMnemonic: "",
+    signingVerification: false,
     signingKey: "",
+    withdrawalMnemonic: "",
+    withdrawalVerification: false,
     withdrawalKey: "",
-    failedVerification: false
 };
 
 describe("register reducer", () => {
@@ -49,22 +53,42 @@ describe("register reducer", () => {
         );
     });
 
-    it("should handle setMnemonic", () => {
+    it("should handle setSigningMnemonic", () => {
         expect(
-            reducer({} as IRegisterState, setMnemonic(expectedMnemonic))
+            reducer({} as IRegisterState, setSigningMnemonic(expectedMnemonic))
         ).toEqual(
             {
-                mnemonic: expectedMnemonic
+                signingMnemonic: expectedMnemonic
             }
         );
     });
 
-    it("should handle setFailedVerification", () => {
+    it("should handle setSigningVerificationStatus", () => {
         expect(
-            reducer({} as IRegisterState, setSigningMnemonicVerificationStatus(true))
+            reducer({} as IRegisterState, setSigningVerificationStatus(true))
         ).toEqual(
             {
-                failedVerification: true
+                signingVerification: true
+            }
+        );
+    });
+
+    it("should handle setWithdrawalMnemonic", () => {
+        expect(
+            reducer({} as IRegisterState, setWithdrawalMnemonic(expectedMnemonic))
+        ).toEqual(
+            {
+                withdrawalMnemonic: expectedMnemonic
+            }
+        );
+    });
+
+    it("should handle setWithdrawalVerificationStatus", () => {
+        expect(
+            reducer({} as IRegisterState, setWithdrawalVerificationStatus(true))
+        ).toEqual(
+            {
+                withdrawalVerification: true
             }
         );
     });
@@ -72,10 +96,12 @@ describe("register reducer", () => {
     it("should handle s", () => {
         expect(
             reducer({
+                signingMnemonic: "mock mnemonic",
+                signingVerification: false,
                 signingKey: "test key",
+                withdrawalMnemonic: "mock mnemonic",
+                withdrawalVerification: false,
                 withdrawalKey: "test key",
-                mnemonic: "mock mnemonic",
-                failedVerification: false
             } as IRegisterState, completeRegistrationSubmission())
         ).toEqual(
             initalState

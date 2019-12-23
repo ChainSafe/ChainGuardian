@@ -77,7 +77,7 @@ export const storeWithdrawalVerificationStatusAction = (withdrawalVerification: 
     (dispatch: Dispatch<IWithdrawalVerificationStatusAction>): void => {
         dispatch(setWithdrawalVerificationStatus(withdrawalVerification));
     };
-export const setWithdrawalVerificationStatus = (withdrawalVerification: boolean): IWithdrawalVerificationStatusAction => ({
+export const setWithdrawalVerificationStatus=(withdrawalVerification: boolean): IWithdrawalVerificationStatusAction=>({
     type: RegisterActionTypes.STORE_WITHDRAWAL_VERIFICATION_STATUS, payload: {withdrawalVerification}
 });
 export interface IStoreWithdrawalVerificationStatusPayload {

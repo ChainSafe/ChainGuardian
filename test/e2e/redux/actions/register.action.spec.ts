@@ -4,8 +4,10 @@ import {
     storeSigningKeyAction,
     setSigningKey, setWithdrawalKey,
     storeWithdrawalKeyAction,
-    setMnemonic,
-    storeSigningKeyMnemonicAction
+    setSigningMnemonic,
+    storeSigningMnemonicAction,
+    setWithdrawalMnemonic,
+    storeWithdrawalMnemonicAction
 } from "../../../../src/renderer/actions";
 import {IRootState} from "../../../../src/renderer/reducers";
 import {IRegisterState} from "../../../../src/renderer/reducers/register";
@@ -51,11 +53,20 @@ describe("register actions", () => {
         expect(reduxStore.getActions()).toEqual(expectedActions);
     });
 
-    it("should dispatch store mnemonic action", () => {
+    it("should dispatch store signing mnemonic action", () => {
         const expectedActions = [
-            setMnemonic(expectedMnemonic)
+            setSigningMnemonic(expectedMnemonic)
         ];
-        reduxStore.dispatch<any>(storeSigningKeyMnemonicAction(expectedMnemonic));
+        reduxStore.dispatch<any>(storeSigningMnemonicAction(expectedMnemonic));
+
+        expect(reduxStore.getActions()).toEqual(expectedActions);
+    });
+
+    it("should dispatch store withdrawal mnemonic action", () => {
+        const expectedActions = [
+            setWithdrawalMnemonic(expectedMnemonic)
+        ];
+        reduxStore.dispatch<any>(storeWithdrawalMnemonicAction(expectedMnemonic));
 
         expect(reduxStore.getActions()).toEqual(expectedActions);
     });

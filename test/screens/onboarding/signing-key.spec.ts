@@ -87,7 +87,7 @@ describe("Onboarding signing key import screen", () => {
         await client.$("#submit").click();
         postClickUrl = await client.getUrl();
         expect(postClickUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
-            OnBoardingRoutes.WITHDRAWAL_IMPORT
+            OnBoardingRoutes.WITHDRAWAL
         ))).to.be.true;
     });
 

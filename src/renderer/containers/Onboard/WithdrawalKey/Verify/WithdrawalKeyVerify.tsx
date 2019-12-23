@@ -4,20 +4,22 @@ import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
 import {RouteComponentProps} from "react-router";
 import {getRandomInt, getRandomIntArray} from "../../../../services/mnemonic/utils/random";
+import {ordinalSuffix} from "../../../../services/mnemonic/utils/ordinalSuffix";
 import {IRootState} from "../../../../reducers";
-import {storeSigningMnemonicVerificationStatusAction} from "../../../../actions";
+import {storeWithdrawalVerificationStatusAction} from "../../../../actions";
+import {Routes, OnBoardingRoutes} from "../../../../constants/routes";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IOwnProps extends Pick<RouteComponentProps, "history"> {
 
 }
 interface IInjectedProps {
-    setVerificationStatus: typeof storeSigningMnemonicVerificationStatusAction;
+    setVerificationStatus: typeof storeWithdrawalVerificationStatusAction;
 }
 
-class SigningMnemonicQuestion extends Component<IOwnProps & IInjectedProps &  Pick<IRootState, "register">, {}> {
+class WithdrawalMnemonicQuestion extends Component<IOwnProps & IInjectedProps &  Pick<IRootState, "register">, {}> {
     public render(): ReactElement {
-        const mnemonic = this.props.register.mnemonic.split(" ");
+        const mnemonic = this.props.register.withdrawalMnemonic.split(" ");
         const randArray = getRandomIntArray(12);
         const correctAnswerIndex = randArray[getRandomInt(3)];
 
@@ -26,12 +28,16 @@ class SigningMnemonicQuestion extends Component<IOwnProps & IInjectedProps &  Pi
             this.props.history.goBack();
         };
         
+        const handleCorrectAnswer= (): void => {
+            this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
+        };
+
         return (
             <VerifyMnemonic
-                question={`What’s the ${correctAnswerIndex + 1}th word in the mnemonic?`}
+                question={`What’s the ${ordinalSuffix(correctAnswerIndex+1)} word in the mnemonic?`}
                 answers={[mnemonic[randArray[0]], mnemonic[randArray[1]], mnemonic[randArray[2]]]}
                 correctAnswer={mnemonic[correctAnswerIndex]}
-                onCorrectAnswer={(): void => {}}
+                onCorrectAnswer={(): void => {setTimeout(handleCorrectAnswer, 1000);}}
                 onInvalidAnswer={(): void => {setTimeout(handleInvalidAnswer, 1000);}}
             />
         );
@@ -44,12 +50,12 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "register"> => ({
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            setVerificationStatus: storeSigningMnemonicVerificationStatusAction,
+            setVerificationStatus: storeWithdrawalVerificationStatusAction,
         },
         dispatch
     );
 
-export const SigningKeyVerifyContainer = connect(
+export const WithdrawalKeyVerifyContainer = connect(
     mapStateToProps,
     mapDispatchToProps
-)(SigningMnemonicQuestion);
+)(WithdrawalMnemonicQuestion);

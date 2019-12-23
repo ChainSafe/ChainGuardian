@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import {ButtonSecondary, ButtonPrimary, ButtonPrimitive} from "../../../components/Button/ButtonStandard";
 import {Routes, OnBoardingRoutes} from "../../../constants/routes";
 
-export function WithdrawalKey(): ReactElement {
+export default function WithdrawalKey(): ReactElement {
     return (
         <>
             <h1>Get a withdrawal key</h1>
@@ -15,7 +15,7 @@ export function WithdrawalKey(): ReactElement {
                 <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL_IMPORT)}>
                     <ButtonSecondary buttonId="import" large>IMPORT</ButtonSecondary>
                 </Link>
-                <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_KEY_GENERATE)}>
+                <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL_KEY_GENERATE)}>
                     <ButtonPrimary buttonId="generate" large>GENERATE</ButtonPrimary>
                 </Link>
             </div>

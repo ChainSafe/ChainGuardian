@@ -6,7 +6,7 @@ import {Routes, OnBoardingRoutes} from "../../../../constants/routes";
 import {clipboard} from "electron";
 import {Eth2HDWallet} from "../../../../services/wallet";
 import {connect} from "react-redux";
-import {storeSigningKeyMnemonicAction,storeSigningMnemonicVerificationStatusAction} from "../../../../actions";
+import {storeSigningMnemonicAction,storeSigningVerificationStatusAction} from "../../../../actions";
 import {bindActionCreators, Dispatch} from "redux";
 import {Notification} from "../../../../components/Notification/Notification"; 
 import {Level, Horizontal, Vertical} from "../../../../components/Notification/NotificationEnums"; 
@@ -27,8 +27,8 @@ interface IOwnProps extends Pick<RouteComponentProps, "history"> {
  * injected by redux
  */
 interface IInjectedProps {
-    storeMnemonic: typeof storeSigningKeyMnemonicAction;
-    setVerificationStatus: typeof storeSigningMnemonicVerificationStatusAction;
+    storeMnemonic: typeof storeSigningMnemonicAction;
+    setVerificationStatus: typeof storeSigningVerificationStatusAction;
 }
 
 class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRootState, "register">, IState> {
@@ -42,7 +42,7 @@ class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRoot
             <>
                 <Notification
                     title="Oh no! That wasn’t the correct word."
-                    isVisible={this.props.register.failedVerification}
+                    isVisible={this.props.register.signingVerification}
                     level={Level.ERROR}
                     horizontalPosition={Horizontal.CENTER}
                     verticalPosition={Vertical.TOP}
@@ -76,8 +76,8 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "register"> => ({
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            storeMnemonic: storeSigningKeyMnemonicAction,
-            setVerificationStatus: storeSigningMnemonicVerificationStatusAction,
+            storeMnemonic: storeSigningMnemonicAction,
+            setVerificationStatus: storeSigningVerificationStatusAction,
         },
         dispatch
     );
