@@ -1,5 +1,5 @@
 import {PUBLIC_KEY_LENGTH} from "@chainsafe/bls/lib/constants";
-import {Joi} from "../../../services/validation";
+import {Joi} from "../../../../services/validation";
 import {StringSchema} from "@hapi/joi";
 
 export const PUBLIC_KEY_NOT_STRING_MESSAGE="Public key is empty string";

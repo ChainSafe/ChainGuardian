@@ -6,7 +6,7 @@ import {IMPORT_WITHDRAWAL_KEY_PLACEHOLDER} from "../../../src/renderer/constants
 import {
     PUBLIC_KEY_WRONG_CHARACTERS_MESSAGE,
     PUBLIC_KEY_WRONG_LENGTH_MESSAGE
-} from "../../../src/renderer/containers/Onboard/WithdrawalKey/validation";
+} from "../../../src/renderer/containers/Onboard/WithdrawalKey/Import/validation";
 
 jest.setTimeout(TIMEOUT);
 

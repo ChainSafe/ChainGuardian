@@ -43,7 +43,7 @@ class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
     private handleSubmit= (input: string): void => {
         const signingKey = input.startsWith("0x") ? input : Eth2HDWallet.getKeypair(input).privateKey.toHexString();
         this.props.storeSigningKey(signingKey);
-        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL_IMPORT));
+        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
     };
 
 }
