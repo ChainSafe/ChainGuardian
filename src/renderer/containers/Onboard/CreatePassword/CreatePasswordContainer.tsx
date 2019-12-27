@@ -37,6 +37,7 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
         const inputs: Array<IInputFormProps> = [
             {
                 inputId:"password",
+                focused: true,
                 onChange: this.handleChange,
                 placeholder: "Enter password",
                 valid: this.isValid(this.state.errorMessages.password),
