@@ -11,6 +11,21 @@ import * as path from "path";
 import {PublicKey} from "@chainsafe/bls/lib/publicKey";
 import {DEFAULT_ACCOUNT} from "../constants/account";
 
+//Login Authentication
+export const storeAuthAction = (auth: string) =>
+    (dispatch: Dispatch<IStoreAuthAction>): void => {
+        dispatch(setAuth(auth));
+    };
+export const setAuth = (auth: string): IStoreAuthAction => ({
+    type: RegisterActionTypes.STORE_AUTH, payload: {auth}
+});
+export interface IStoreAuthPayload {
+    auth: string;
+}
+export interface IStoreAuthAction extends Action<RegisterActionTypes> {
+    payload: IStoreAuthPayload;
+}
+
 //Signing actions
 // Signing Mnemonic action
 export const storeSigningMnemonicAction = (signingMnemonic: string) =>

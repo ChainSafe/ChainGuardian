@@ -1,4 +1,5 @@
 import {
+    IStoreAuthAction,
     ISigningMnemonicAction, 
     ISigningVerificationStatusAction,
     ISigningKeyAction, 
@@ -10,6 +11,7 @@ import {RegisterActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 
 export interface IRegisterState {
+    auth: string,
     signingMnemonic: string,
     signingVerification: boolean,
     signingKey: string,
@@ -19,6 +21,7 @@ export interface IRegisterState {
 }
 
 const initialState: IRegisterState = {
+    auth: "",
     signingMnemonic: "",
     signingVerification: false,
     signingKey: "",
@@ -30,6 +33,10 @@ const initialState: IRegisterState = {
 export const registerReducer = (state = initialState, action: Action<RegisterActionTypes>): IRegisterState => {
     switch (action.type) {
 
+        case RegisterActionTypes.STORE_AUTH:
+            return Object.assign({}, state, {
+                auth: (action as IStoreAuthAction).payload.auth
+            });
         case RegisterActionTypes.STORE_SIGNING_MNEMONIC:
             return Object.assign({}, state, {
                 signingMnemonic: (action as ISigningMnemonicAction).payload.signingMnemonic

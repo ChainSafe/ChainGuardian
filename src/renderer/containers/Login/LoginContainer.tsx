@@ -6,39 +6,34 @@ import {InputForm} from "../../components/Input/InputForm";
 import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
 import {Link} from "react-router-dom";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
-import {CGAccount} from "../../models/account";
 import {RouteComponentProps} from "react-router";
 import {Notification} from "../../components/Notification/Notification";
 import {Level, Horizontal, Vertical} from "../../components/Notification/NotificationEnums";
+import database from "../../services/db/api/database";
+import {bindActionCreators, Dispatch} from "redux";
+import {connect} from "react-redux";
+import {storeAuthAction,} from "../../actions";
+import {IRootState} from "../../reducers";
 
 interface IState {
     input: string;
     notification: boolean;
 }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface IOwnProps extends Pick<RouteComponentProps, "history"> {
+}
+interface IInjectedProps{
+    storeAuth: typeof storeAuthAction;
+}
 
-export default class LoginContainer extends Component<RouteComponentProps> {
+class Login extends Component<
+IOwnProps & IInjectedProps & Pick<IRootState, "register">, IState> {
+
     public state: IState = {
         input: "",
-        notification: false
-    };
-    private handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
-        this.setState({input: e.currentTarget.value});
+        notification: false,
     };
     
-    private handleSubmit = (): void => {
-        const account = new CGAccount({
-            name: "",
-            directory: "",
-            sendStats: false
-        });
-        console.log(account.isCorrectPassword(this.state.input));
-        if(account.isCorrectPassword(this.state.input)){
-            this.props.history.push(Routes.DASHBOARD_ROUTE);
-        } else {
-            this.setState({notification: true});
-        }
-    }
-
     public render(): ReactElement {
         return (
             <Background>
@@ -61,10 +56,11 @@ export default class LoginContainer extends Component<RouteComponentProps> {
                             focused onChange={this.handleChange} 
                             inputValue={this.state.input} 
                             placeholder="Enter password"
+                            onSubmit={(e): void => {e.preventDefault();}}
                         />
                         <ButtonSecondary
                             buttonId="go"
-                            onClick={(): void => {this.handleSubmit()}}
+                            onClick={(): void => {this.handleSubmit();}}
                         >GO</ButtonSecondary>
                     </div>
                     <h5 className="input-or">OR</h5>
@@ -75,4 +71,38 @@ export default class LoginContainer extends Component<RouteComponentProps> {
             </Background>
         );
     }
+    private handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
+        this.setState({input: e.currentTarget.value});
+    };
+    
+    private handleSubmit = async (): Promise<void> => {
+
+        const account = await database.account.get("account");
+        console.log(account);
+        if(account!==null){
+            if(account.isCorrectPassword(this.state.input)){
+                this.props.storeAuth(this.state.input);
+                this.props.history.push(Routes.DASHBOARD_ROUTE);
+            } else {
+                console.log("wrong password");
+                this.setState({notification: true});
+            }
+        }else {
+            console.log("account===null");
+            this.setState({notification: true});
+        }
+    };
 }
+
+const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
+    bindActionCreators(
+        {
+            storeAuth: storeAuthAction,
+        },
+        dispatch
+    );
+
+export const LoginContainer = connect(
+    null,
+    mapDispatchToProps
+)(Login);
