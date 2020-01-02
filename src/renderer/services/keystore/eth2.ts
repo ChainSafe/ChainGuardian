@@ -4,6 +4,8 @@ import {existsSync, readFileSync, unlinkSync, writeFileSync,mkdirSync, statSync}
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {Keystore, IKeystore} from "@nodefactory/bls-keystore";
 import bech32 from "bech32";
+import {dirname} from "path";
+import {warn} from "electron-log";
 
 const KEY_PATH = "m/12381/60/0/0";
 const ETH2_ADDRESS_PREFIX="eth2";
@@ -104,13 +106,9 @@ export const V4KeystoreFactory: ICGKeystoreFactory = V4Keystore;
 
 function ensureKeystoreDirectory(file: string): void{
     try {
-        statSync(file);
-        //file or directory exists
+        mkdirSync(dirname(file), {recursive: true});
     }
     catch (err) {
-        if (err.code === "ENOENT") {
-        //file or directory does not exist
-            mkdirSync(file);
-        }
+        warn("ensuring directory exists", err);
     }
 }
