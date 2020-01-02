@@ -1,6 +1,6 @@
 import {ICGKeystore, ICGKeystoreFactory} from "./interface";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
-import {existsSync, readFileSync, unlinkSync, writeFileSync,mkdirSync, statSync} from "fs";
+import {existsSync, readFileSync, unlinkSync, writeFileSync,mkdirSync} from "fs";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {Keystore, IKeystore} from "@nodefactory/bls-keystore";
 import bech32 from "bech32";

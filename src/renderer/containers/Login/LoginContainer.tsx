@@ -71,25 +71,22 @@ IOwnProps & IInjectedProps & Pick<IRootState, "register">, IState> {
             </Background>
         );
     }
+    
     private handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
         this.setState({input: e.currentTarget.value});
     };
     
     private handleSubmit = async (): Promise<void> => {
         const account = await database.account.get("account");
-        console.log(account);
         if(account!==null){
             if(account.isCorrectPassword(this.state.input)){
-                
                 await account.unlock(this.state.input);
                 this.props.storeAuth(account);
                 this.props.history.push(Routes.DASHBOARD_ROUTE);
             } else {
-                console.log("wrong password");
                 this.setState({notification: true});
             }
         }else {
-            console.log("account===null");
             this.setState({notification: true});
         }
     };
