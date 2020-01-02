@@ -10,6 +10,7 @@ import {getConfig} from "../../config/config";
 import * as path from "path";
 import {PublicKey} from "@chainsafe/bls/lib/publicKey";
 import {DEFAULT_ACCOUNT} from "../constants/account";
+import {remote} from "electron";
 
 //Login Authentication
 export const storeAuthAction = (auth: CGAccount) =>
@@ -125,12 +126,11 @@ export const afterPasswordAction = (password: string) => {
         const signingKey = PrivateKey.fromBytes(
             Buffer.from(getState().register.signingKey.slice(2), "hex")
         );
-        const accountDirectory = path.join(getConfig().storage.accountsDir, DEFAULT_ACCOUNT);
+        const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
         await V4Keystore.create(
             path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
             password, new Keypair(signingKey)
         );
-
         // 2. Save account to db
         const account = new CGAccount({
             name: "Default",
