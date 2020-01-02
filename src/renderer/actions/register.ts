@@ -12,15 +12,15 @@ import {PublicKey} from "@chainsafe/bls/lib/publicKey";
 import {DEFAULT_ACCOUNT} from "../constants/account";
 
 //Login Authentication
-export const storeAuthAction = (auth: string) =>
+export const storeAuthAction = (auth: CGAccount) =>
     (dispatch: Dispatch<IStoreAuthAction>): void => {
         dispatch(setAuth(auth));
     };
-export const setAuth = (auth: string): IStoreAuthAction => ({
+export const setAuth = (auth: CGAccount): IStoreAuthAction => ({
     type: RegisterActionTypes.STORE_AUTH, payload: {auth}
 });
 export interface IStoreAuthPayload {
-    auth: string;
+    auth: CGAccount;
 }
 export interface IStoreAuthAction extends Action<RegisterActionTypes> {
     payload: IStoreAuthPayload;

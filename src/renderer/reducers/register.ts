@@ -9,9 +9,10 @@ import {
 } from "../actions";
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action} from "redux";
+import {CGAccount} from "../models/account";
 
 export interface IRegisterState {
-    auth: string,
+    auth: CGAccount,
     signingMnemonic: string,
     signingVerification: boolean,
     signingKey: string,
@@ -21,7 +22,11 @@ export interface IRegisterState {
 }
 
 const initialState: IRegisterState = {
-    auth: "",
+    auth: new CGAccount({
+        name: "",
+        directory: "",
+        sendStats: false
+    }),
     signingMnemonic: "",
     signingVerification: false,
     signingKey: "",

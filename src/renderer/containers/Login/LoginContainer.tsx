@@ -46,7 +46,7 @@ IOwnProps & IInjectedProps & Pick<IRootState, "register">, IState> {
                         verticalPosition={Vertical.TOP}
                         onClose={(): void => {this.setState({notification: false});}}
                     >
-                    Try again.
+                    Password does not exist, please register.
                     </Notification>
                     <h1>Welcome!</h1>
                     <p>Please enter your password or set up an account to get started.</p>
@@ -76,12 +76,13 @@ IOwnProps & IInjectedProps & Pick<IRootState, "register">, IState> {
     };
     
     private handleSubmit = async (): Promise<void> => {
-
         const account = await database.account.get("account");
         console.log(account);
         if(account!==null){
             if(account.isCorrectPassword(this.state.input)){
-                this.props.storeAuth(this.state.input);
+                
+                await account.unlock(this.state.input);
+                this.props.storeAuth(account);
                 this.props.history.push(Routes.DASHBOARD_ROUTE);
             } else {
                 console.log("wrong password");
