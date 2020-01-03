@@ -1,5 +1,4 @@
 import {
-    IStoreAuthAction,
     ISigningMnemonicAction, 
     ISigningVerificationStatusAction,
     ISigningKeyAction, 
@@ -9,10 +8,8 @@ import {
 } from "../actions";
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action} from "redux";
-import {CGAccount} from "../models/account";
 
 export interface IRegisterState {
-    auth: CGAccount,
     signingMnemonic: string,
     signingVerification: boolean,
     signingKey: string,
@@ -22,11 +19,6 @@ export interface IRegisterState {
 }
 
 const initialState: IRegisterState = {
-    auth: new CGAccount({
-        name: "",
-        directory: "",
-        sendStats: false
-    }),
     signingMnemonic: "",
     signingVerification: false,
     signingKey: "",
@@ -38,10 +30,6 @@ const initialState: IRegisterState = {
 export const registerReducer = (state = initialState, action: Action<RegisterActionTypes>): IRegisterState => {
     switch (action.type) {
 
-        case RegisterActionTypes.STORE_AUTH:
-            return Object.assign({}, state, {
-                auth: (action as IStoreAuthAction).payload.auth
-            });
         case RegisterActionTypes.STORE_SIGNING_MNEMONIC:
             return Object.assign({}, state, {
                 signingMnemonic: (action as ISigningMnemonicAction).payload.signingMnemonic

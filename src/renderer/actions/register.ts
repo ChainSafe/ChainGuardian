@@ -12,21 +12,6 @@ import {PublicKey} from "@chainsafe/bls/lib/publicKey";
 import {DEFAULT_ACCOUNT} from "../constants/account";
 import {remote} from "electron";
 
-//Login Authentication
-export const storeAuthAction = (auth: CGAccount) =>
-    (dispatch: Dispatch<IStoreAuthAction>): void => {
-        dispatch(setAuth(auth));
-    };
-export const setAuth = (auth: CGAccount): IStoreAuthAction => ({
-    type: RegisterActionTypes.STORE_AUTH, payload: {auth}
-});
-export interface IStoreAuthPayload {
-    auth: CGAccount;
-}
-export interface IStoreAuthAction extends Action<RegisterActionTypes> {
-    payload: IStoreAuthPayload;
-}
-
 //Signing actions
 // Signing Mnemonic action
 export const storeSigningMnemonicAction = (signingMnemonic: string) =>

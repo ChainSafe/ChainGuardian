@@ -9,6 +9,7 @@ import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {RouteComponentProps} from "react-router";
 import {Notification} from "../../components/Notification/Notification";
 import {Level, Horizontal, Vertical} from "../../components/Notification/NotificationEnums";
+import {INotification} from "../../services/utils/notification-utils";
 import database from "../../services/db/api/database";
 import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
@@ -17,21 +18,21 @@ import {IRootState} from "../../reducers";
 
 interface IState {
     input: string;
-    notification: boolean;
+    notification: INotification | null;
 }
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface IOwnProps extends Pick<RouteComponentProps, "history"> {
-}
+
+type IOwnProps = Pick<RouteComponentProps, "history">;
+
 interface IInjectedProps{
     storeAuth: typeof storeAuthAction;
 }
 
 class Login extends Component<
-IOwnProps & IInjectedProps & Pick<IRootState, "register">, IState> {
+IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
 
     public state: IState = {
         input: "",
-        notification: false,
+        notification: null,
     };
     
     public render(): ReactElement {
@@ -39,14 +40,14 @@ IOwnProps & IInjectedProps & Pick<IRootState, "register">, IState> {
             <Background>
                 <Modal>
                     <Notification
-                        title="Incorrect password"
-                        isVisible={this.state.notification}
+                        title={this.state.notification ? this.state.notification.title : ""}
+                        isVisible={this.handleNotification()}
                         level={Level.ERROR}
                         horizontalPosition={Horizontal.CENTER}
                         verticalPosition={Vertical.TOP}
-                        onClose={(): void => {this.setState({notification: false});}}
+                        onClose={(): void => {this.setState({notification: null});}}
                     >
-                    Password does not exist, please register.
+                        {this.state.notification ? this.state.notification.message : ""}
                     </Notification>
                     <h1>Welcome!</h1>
                     <p>Please enter your password or set up an account to get started.</p>
@@ -71,23 +72,37 @@ IOwnProps & IInjectedProps & Pick<IRootState, "register">, IState> {
             </Background>
         );
     }
-    
+    private handleNotification = (): boolean => {
+        return this.state.notification!==null ? true : false ;
+    };
+
     private handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
         this.setState({input: e.currentTarget.value});
     };
     
     private handleSubmit = async (): Promise<void> => {
         const account = await database.account.get("account");
-        if(account!==null){
-            if(account.isCorrectPassword(this.state.input)){
+        console.log(account);
+        if(account!==null) {
+            const isCorrectValue = await account.isCorrectPassword(this.state.input);
+            if(isCorrectValue){
                 await account.unlock(this.state.input);
                 this.props.storeAuth(account);
+                this.setState({notification: null});
                 this.props.history.push(Routes.DASHBOARD_ROUTE);
             } else {
-                this.setState({notification: true});
+                this.setState({notification: {
+                    title: "Incorrect password",
+                    message: "Try again"
+                }});
+                this.handleNotification();
             }
-        }else {
-            this.setState({notification: true});
+        } else {
+            this.setState({notification: {
+                title: "Account does not exist",
+                message: "Please register"
+            }});
+            this.handleNotification();
         }
     };
 }
