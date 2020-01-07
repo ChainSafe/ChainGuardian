@@ -1,6 +1,16 @@
 .inputform::placeholder{
     color: $neutral-100;
 }
+.input-eye{
+    width: 40px;
+    fill: red;
+    &.none{
+        display: none;
+    }
+}
+.input-container{
+    margin-right: 24px;
+}
 .inputform{
     width: 100%;
     background: $neutral-600;
@@ -13,7 +23,7 @@
     font-size: 18px;
     color: $neutral-100;
     padding: 16px 56px 16px 16px;
-    margin-right: 24px;
+    margin-right: 12px;
 
     &.success{
         background: $neutral-600 url(../assets/img/input/Success.svg) no-repeat;
