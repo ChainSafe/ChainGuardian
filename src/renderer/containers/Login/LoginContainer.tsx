@@ -41,7 +41,7 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
                 <Modal>
                     <Notification
                         title={this.state.notification ? this.state.notification.title : ""}
-                        isVisible={this.handleNotification()}
+                        isVisible={this.isNotificationVisible()}
                         level={Level.ERROR}
                         horizontalPosition={Horizontal.CENTER}
                         verticalPosition={Vertical.TOP}
@@ -72,7 +72,7 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
             </Background>
         );
     }
-    private handleNotification = (): boolean => {
+    private isNotificationVisible = (): boolean => {
         return this.state.notification!==null ? true : false ;
     };
 
@@ -82,7 +82,6 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
     
     private handleSubmit = async (): Promise<void> => {
         const account = await database.account.get("account");
-        console.log(account);
         if(account!==null) {
             const isCorrectValue = await account.isCorrectPassword(this.state.input);
             if(isCorrectValue){
@@ -95,14 +94,12 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
                     title: "Incorrect password",
                     message: "Try again"
                 }});
-                this.handleNotification();
             }
         } else {
             this.setState({notification: {
                 title: "Account does not exist",
                 message: "Please register"
             }});
-            this.handleNotification();
         }
     };
 }

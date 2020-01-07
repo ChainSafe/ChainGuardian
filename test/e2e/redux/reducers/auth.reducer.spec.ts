@@ -11,11 +11,7 @@ const account = new CGAccount({
 });
 
 const initalState: IAuthState = {
-    auth: new CGAccount({
-        name: "",
-        directory: "",
-        sendStats: null
-    }),
+    auth: null,
 };
 
 describe("auth reducer", () => {

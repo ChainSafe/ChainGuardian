@@ -8,11 +8,7 @@ export interface IAuthState {
 }
 
 const initialState: IAuthState = {
-    auth: new CGAccount({
-        name: "",
-        directory: "",
-        sendStats: null,
-    }),
+    auth: null,
 };
 
 export const authReducer = (state = initialState, action: Action<AuthActionTypes>): IAuthState => {
