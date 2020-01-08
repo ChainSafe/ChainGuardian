@@ -25,15 +25,24 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
     function onSubmitWrapper(): void {
         const result = props.onSubmit(inputData);
         setValid(result.valid);
-        if (!result.valid)
+        if (!result.valid) {
             setErrorMessage(result.errorMessage);
+        }
+        else {
+            setTimeout(setInputData,500,""); /** Prompt reset */ 
+            setTimeout(setValid,500,undefined);
+        }
     }
-
+    function onCancelWrapper(): void {
+        setInputData("");
+        props.onCancel();
+    }
     return(
         <div className={`prompt-overlay ${props.display ? "prompt-show" : "prompt-hide"}`}>
             <div className={"prompt-modal"}>
                 <h2 className={"prompt-title"}>{props.title}</h2>
                 <InputForm
+                    inputValue={inputData}
                     inputId={"prompt-input"}
                     placeholder={props.placeholder}
                     errorMessage={errorMessage}
@@ -44,12 +53,12 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
                 />
                 <div className={"button-control"}>
                     <div className={"prompt-cancel-button"}>
-                        <ButtonDestructive onClick={props.onCancel}>
+                        <ButtonDestructive onClick={onCancelWrapper}>
                             Cancel
                         </ButtonDestructive>
                     </div>
                     <div className={"prompt-confirm-button"}>
-                        <ButtonPrimary onClick={(): void => onSubmitWrapper()}>
+                        <ButtonPrimary onClick={onSubmitWrapper}>
                             OK
                         </ButtonPrimary>
                     </div>

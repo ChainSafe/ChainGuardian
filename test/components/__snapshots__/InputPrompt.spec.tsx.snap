@@ -18,11 +18,19 @@ exports[`Input prompt renders correctly 1`] = `
       <div
         className="label"
       />
-      <input
-        className="inputform "
-        id="prompt-input"
-        onChange={[Function]}
-      />
+      <div
+        className="inputform-container"
+      >
+        <input
+          className="inputform "
+          id="prompt-input"
+          onChange={[Function]}
+          value=""
+        />
+        <div
+          className="input-eye none"
+        />
+      </div>
       <div
         className="error-message"
       />
