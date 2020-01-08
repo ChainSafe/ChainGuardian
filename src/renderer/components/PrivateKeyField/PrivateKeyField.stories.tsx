@@ -12,11 +12,12 @@ storiesOf('Private Key Field', module).add('Private Key Field', () => {
         error: false,
     }
     const defaultValue = undefined;
-    const label = text("label text", "Input")
+    const label = text("label text", "Private key")
     const validValue = select("valid", options, defaultValue,);
     const eMessage = text("error message", "Error message");
     const idValue = text("id", "");
-    const inputValue = text("inputValue", "test");
+    const inputValue = text("Private Key", "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259");
+    const passwordValue = text("Password", "test");
     const divStyle={
         width: "500px"
     }
@@ -25,6 +26,7 @@ storiesOf('Private Key Field', module).add('Private Key Field', () => {
             <Modal>
                 <div style={divStyle}>
                     <PrivateKeyField 
+                        password={passwordValue}
                         inputValue={inputValue}
                         inputId={idValue} 
                         valid={validValue} 

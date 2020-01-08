@@ -1,5 +1,4 @@
 import * as React from "react";
-import eyeIcon from "../../assets/img/input/eye-regular.svg"
 
 export interface IInputFormProps {
     label?: string;
@@ -45,9 +44,8 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
                     onChange={props.onChange}
                     type={props.type}
                 />
-                <img 
+                <div
                     className={`input-eye ${props.eye? "" : "none"}`}
-                    src={eyeIcon} 
                     onClick={props.onEyeClick}
                 />
             </div>

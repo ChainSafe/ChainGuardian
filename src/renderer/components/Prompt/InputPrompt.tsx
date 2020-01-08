@@ -34,6 +34,7 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
             <div className={"prompt-modal"}>
                 <h2 className={"prompt-title"}>{props.title}</h2>
                 <InputForm
+                    inputValue={inputData}
                     inputId={"prompt-input"}
                     placeholder={props.placeholder}
                     errorMessage={errorMessage}
@@ -44,12 +45,19 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
                 />
                 <div className={"button-control"}>
                     <div className={"prompt-cancel-button"}>
-                        <ButtonDestructive onClick={props.onCancel}>
+                        <ButtonDestructive onClick={(): void=>{
+                            setInputData("");
+                            props.onCancel();
+                        }}>
                             Cancel
                         </ButtonDestructive>
                     </div>
                     <div className={"prompt-confirm-button"}>
-                        <ButtonPrimary onClick={(): void => onSubmitWrapper()}>
+                        <ButtonPrimary onClick={(): void => {
+                            onSubmitWrapper();
+                            setTimeout(setInputData,500,""); /** Prompt reset */ 
+                            setTimeout(setValid,500,undefined);
+                        }}>
                             OK
                         </ButtonPrimary>
                     </div>

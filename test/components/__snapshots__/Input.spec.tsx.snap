@@ -7,9 +7,16 @@ exports[`InputForm renders correctly 1`] = `
   >
     Input
   </div>
-  <input
-    className="inputform "
-  />
+  <div
+    className="input-container"
+  >
+    <input
+      className="inputform "
+    />
+    <div
+      className="input-eye none"
+    />
+  </div>
   <div
     className="error-message"
   />
@@ -23,9 +30,16 @@ exports[`InputForm renders error and message 1`] = `
   >
     Input
   </div>
-  <input
-    className="inputform error"
-  />
+  <div
+    className="input-container"
+  >
+    <input
+      className="inputform error"
+    />
+    <div
+      className="input-eye none"
+    />
+  </div>
   <div
     className="error-message"
   >
@@ -41,10 +55,17 @@ exports[`InputForm renders focused input 1`] = `
   >
     Input
   </div>
-  <input
-    autoFocus={true}
-    className="inputform "
-  />
+  <div
+    className="input-container"
+  >
+    <input
+      autoFocus={true}
+      className="inputform "
+    />
+    <div
+      className="input-eye none"
+    />
+  </div>
   <div
     className="error-message"
   />
@@ -58,10 +79,17 @@ exports[`InputForm renders input id 1`] = `
   >
     Input
   </div>
-  <input
-    className="inputform "
-    id="testid"
-  />
+  <div
+    className="input-container"
+  >
+    <input
+      className="inputform "
+      id="testid"
+    />
+    <div
+      className="input-eye none"
+    />
+  </div>
   <div
     className="error-message"
   />
@@ -75,9 +103,16 @@ exports[`InputForm renders success 1`] = `
   >
     Input
   </div>
-  <input
-    className="inputform success"
-  />
+  <div
+    className="input-container"
+  >
+    <input
+      className="inputform success"
+    />
+    <div
+      className="input-eye none"
+    />
+  </div>
   <div
     className="error-message"
   />
@@ -91,10 +126,17 @@ exports[`InputForm renders value 1`] = `
   >
     Input
   </div>
-  <input
-    className="inputform "
-    value="textfortest"
-  />
+  <div
+    className="input-container"
+  >
+    <input
+      className="inputform "
+      value="textfortest"
+    />
+    <div
+      className="input-eye none"
+    />
+  </div>
   <div
     className="error-message"
   />
