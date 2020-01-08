@@ -13,7 +13,7 @@ Array [
         className="label"
       />
       <div
-        className="input-container"
+        className="inputfrom-container"
       >
         <input
           autoFocus={true}
@@ -67,7 +67,7 @@ Array [
         className="label"
       />
       <div
-        className="input-container"
+        className="inputfrom-container"
       >
         <input
           autoFocus={true}

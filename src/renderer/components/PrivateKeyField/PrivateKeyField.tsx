@@ -9,9 +9,10 @@ export interface IPrivateKeyProps extends IInputFormProps {
 }
 export const PrivateKeyField: React.FunctionComponent<IPrivateKeyProps> = (props: IPrivateKeyProps) => {
     const[showPrompt,setShowPrompt]=useState<boolean>(false);
-    const[privateKey/*, setPrivateKey **/]=useState<string | undefined>(props.inputValue);
     const[timeoutStatus, setTimeoutStatus]=useState<boolean>(false);
     const[passwordType, setPasswordType]=useState<string>("password");
+
+    const privateKey = props.inputValue;
 
     const handlePromptSubmit = (promptPassword: string): ISubmitStatus => {
         if(promptPassword===props.password){
@@ -45,8 +46,6 @@ export const PrivateKeyField: React.FunctionComponent<IPrivateKeyProps> = (props
                 errorMessage={props.errorMessage}
                 inputValue={privateKey}
                 placeholder={props.placeholder}
-                // onChange={(e): void => {setPrivateKey(e.currentTarget.value);props.onChange}}
-                onSubmit={(e): void => {e.preventDefault();props.onSubmit;}}
                 focused={props.focused}
                 readOnly={props.readOnly}
                 inputId={props.inputId}

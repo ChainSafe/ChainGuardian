@@ -19,7 +19,7 @@ exports[`Input prompt renders correctly 1`] = `
         className="label"
       />
       <div
-        className="input-container"
+        className="inputfrom-container"
       >
         <input
           className="inputform "

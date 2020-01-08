@@ -33,7 +33,7 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
     return( 
         <form onSubmit={props.onSubmit}>
             <div className="label">{props.label}</div>
-            <div className="input-container">
+            <div className="inputfrom-container">
                 <input
                     id={props.inputId}
                     autoFocus={props.focused}
