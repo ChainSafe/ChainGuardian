@@ -15,7 +15,7 @@ import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
 import {storeAuthAction,} from "../../actions";
 import {IRootState} from "../../reducers";
-import {DEFAULT_ACCOUNT} from "../../constants/account"
+import {DEFAULT_ACCOUNT} from "../../constants/account";
 
 interface IState {
     input: string;
