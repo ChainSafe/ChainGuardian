@@ -15,6 +15,7 @@ import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
 import {storeAuthAction,} from "../../actions";
 import {IRootState} from "../../reducers";
+import {DEFAULT_ACCOUNT} from "../../constants/account"
 
 interface IState {
     input: string;
@@ -81,7 +82,7 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
     };
     
     private handleSubmit = async (): Promise<void> => {
-        const account = await database.account.get("account");
+        const account = await database.account.get(DEFAULT_ACCOUNT);
         if(account!==null) {
             const isCorrectValue = await account.isCorrectPassword(this.state.input);
             if(isCorrectValue){

@@ -124,7 +124,7 @@ export const afterPasswordAction = (password: string) => {
         });
 
         await database.account.set(
-            "account",
+            DEFAULT_ACCOUNT,
             account
         );
         
