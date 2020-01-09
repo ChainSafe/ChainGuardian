@@ -75,7 +75,7 @@ describe("Validator", () => {
                 deposit={20.345}
                 onExportClick={(): void=>{}} 
                 onRemoveClick={(): void=>{}} 
-                privateKey="6ffa3d24c9c26877d4a8bfa87455f44666ce93b7e13a3f84"
+                privateKey="6ffb3d24c9c26877d4a8bfa87455f44666ce93b7e13a3f84"
                 password="mock"
             />)
             .toJSON();
