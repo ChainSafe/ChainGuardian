@@ -18,7 +18,7 @@ storiesOf('Input Form', module).add('Input Form', () => {
         width: "700px"
     }
     return  (
-        <div style={divStyle}>
+        // <div style={divStyle}>
             <InputForm 
                 inputId={idValue} 
                 valid={validValue} 
@@ -26,7 +26,7 @@ storiesOf('Input Form', module).add('Input Form', () => {
                 errorMessage={eMessage} 
                 onSubmit={():void => {}}
                 eye
-            />;
-        </div>
+            />
+        // </div>
     );
 }).addDecorator(withKnobs);

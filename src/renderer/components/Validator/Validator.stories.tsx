@@ -37,9 +37,13 @@ storiesOf('Validator', module).add('Validator simple', () => {
     const depositValue = number("deposit", 0.3403);
     const title = text("name","001");
     const statusValue = text("status","Not working");
-    const publicKeyValue = text("public key","6ffa3d24c9c26877d4a8bfa87455f44666ce93b7e13a3f84");
+    const publicKeyValue = text("public key","0x92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff4990daa18");
+    const privateKeyValue = text("private key","0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259");
+    const passwordValue = text("password","mock");
     return <div >
             <ValidatorSimple
+            password={passwordValue}
+            privateKey={privateKeyValue}
             name={title}
             status={statusValue}
             publicKey={publicKeyValue}

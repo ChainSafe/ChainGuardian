@@ -324,47 +324,155 @@ exports[`Validator renders correctly, 4 nodes 1`] = `
 
 exports[`Validator renders correctly, Validator simple 1`] = `
 <div
-  className="validator-container"
+  className="validator-simple-container"
 >
   <div
-    className="validator-stats"
+    className="validator-simple-keys"
   >
     <h2>
       Validator 002
     </h2>
     <div
-      className="validator-stats-container"
+      className="prompt-overlay prompt-hide"
     >
       <div
-        className="validator-card-container"
+        className="prompt-modal"
       >
-        <h5>
-          Deposit
-        </h5>
-        <h1>
-          20.345
-        </h1>
-        <h5>
-          ETH
-        </h5>
+        <h2
+          className="prompt-title"
+        >
+          Confirm password
+        </h2>
+        <form
+          onSubmit={[Function]}
+        >
+          <div
+            className="label"
+          />
+          <div
+            className="inputform-container"
+          >
+            <input
+              className="inputform "
+              id="prompt-input"
+              onChange={[Function]}
+              placeholder="Please renter your password..."
+              type="password"
+              value=""
+            />
+            <div
+              className="input-eye none"
+            />
+          </div>
+          <div
+            className="error-message"
+          />
+        </form>
+        <div
+          className="button-control"
+        >
+          <div
+            className="prompt-cancel-button"
+          >
+            <button
+              className="button btn-destructive "
+              onClick={[Function]}
+            >
+              <div
+                className=""
+              >
+                Cancel
+              </div>
+            </button>
+          </div>
+          <div
+            className="prompt-confirm-button"
+          >
+            <button
+              className="button btn-primary "
+              onClick={[Function]}
+            >
+              <div
+                className=""
+              >
+                OK
+              </div>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-    <h5
-      className="public-key"
-    >
-      PUBLIC KEY: 
-      6ffa3d24c9c26877d4a8bfa87455f44666ce93b7e13a3f84
-    </h5>
+    <form>
+      <div
+        className="label"
+      >
+        PRIVATE KEY
+      </div>
+      <div
+        className="inputform-container"
+      >
+        <input
+          autoFocus={false}
+          className="inputform "
+          readOnly={true}
+          type="password"
+        />
+        <div
+          className="input-eye "
+          onClick={[Function]}
+        />
+      </div>
+      <div
+        className="error-message"
+      />
+    </form>
+    <form>
+      <div
+        className="label"
+      >
+        PUBLIC KEY
+      </div>
+      <div
+        className="inputform-container"
+      >
+        <input
+          autoFocus={false}
+          className="inputform "
+          readOnly={true}
+          type="text"
+          value="6ffa3d24c9c26877d4a8bfa87455f44666ce93b7e13a3f84"
+        />
+        <div
+          className="input-eye none"
+        />
+      </div>
+      <div
+        className="error-message"
+      />
+    </form>
   </div>
   <div
-    className="validator-nodes-simple"
+    className="validator-simple-status"
   >
     <h2>
       Status: 
       Not working
     </h2>
     <div
-      className="validator-buttons-simple"
+      className="validator-card-container"
+    >
+      <h5>
+        Deposit
+      </h5>
+      <h1>
+        20.345
+      </h1>
+      <h5>
+        ETH
+      </h5>
+    </div>
+    <div
+      className="validator-simple-buttons"
     >
       <button
         className="button btn-destructive "
