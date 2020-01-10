@@ -24,7 +24,7 @@ storiesOf('Private Key Field', module).add('Private Key Field', () => {
     return  (
         <Background>
             <Modal>
-                <div style={divStyle}>
+                {/* <div style={divStyle}> */}
                     <PrivateKeyField 
                         password={passwordValue}
                         inputValue={inputValue}
@@ -33,7 +33,7 @@ storiesOf('Private Key Field', module).add('Private Key Field', () => {
                         label={label} 
                         errorMessage={eMessage} 
                     />
-                </div>
+                {/* </div> */}
             </Modal>
         </Background>
     );
