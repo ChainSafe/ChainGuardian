@@ -7,6 +7,10 @@ import {Dropdown} from "../../components/Dropdown/Dropdown";
 import {exportKeystore} from "./export";
 import {Notification} from "../../components/Notification/Notification";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
+import {CGAccount} from "../../models/account";
+import database from "../../services/db/api/database";
+import { DEFAULT_ACCOUNT } from "../../constants/account";
+import {Loading} from "../../components/Loading/Loading";
 
 interface IState {
     validators: Array<IValidator>;
@@ -51,11 +55,13 @@ export default class DashboardContainer extends React.Component {
             13: "NetworkB",
             32: "NetworkC"
         };
-
-        this.state.validators = this.getValidators();
+        // this.state.validators = this.getValidators();
         this.networks = {...networksMock, 0: "All networks"};
-    }
 
+        this.getValidatorsData();
+        
+    }
+    
     public render(): ReactNode {
         const topBar =
             <div className={"validator-top-bar"}>
@@ -110,6 +116,37 @@ export default class DashboardContainer extends React.Component {
         );
     }
 
+    private getValidatorsData = async (): Promise<Array<object>> => {
+        const validatorArray = [];
+
+        const validatorsData = await database.account.get(DEFAULT_ACCOUNT);
+        if(validatorsData){
+            await validatorsData.unlock("!Q1q1q") /** TEMP */
+            const x =validatorsData.getValidators();
+            const y =validatorsData.getValidatorsAddresses();
+            console.log("validators: ");
+            console.log(x);
+            console.log("validators addresses: ");
+            console.log(y);
+            console.log("hex string x[0]: " + x[0].privateKey.toHexString());
+            
+            for (let i = 0; i < x.length; i++) {
+                validatorArray.push({
+                    name: "TODO name",
+                    status: "TODO status",
+                    publicKey: x[i].publicKey.toHexString(),
+                    deposit: 30,
+                    network: `${i%2===0 ? "NetworkA" : "NetworkB"}`, /** TEMP */
+                    privateKey: x[i].privateKey.toHexString(),
+                    password: "!Q1q1q" /** TEMP */
+                })
+            }
+            console.log(validatorArray)
+        }
+        this.state.validators = validatorArray;
+        return validatorArray;
+    }
+
     private onAddNewValidator = (): void => {
         // TODO - implement
         // eslint-disable-next-line no-console
@@ -141,6 +178,7 @@ export default class DashboardContainer extends React.Component {
 
     private getValidators(): Array<IValidator> {
         // TODO - call real validator fetch
+
         return [{
             name: "V1",
             status: "Working",
