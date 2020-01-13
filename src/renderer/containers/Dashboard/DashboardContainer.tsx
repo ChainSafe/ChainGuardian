@@ -26,6 +26,8 @@ export interface IValidator {
     publicKey: string;
     deposit: number;
     network: string;
+    privateKey: string;
+    password: string;
 }
 
 export default class DashboardContainer extends React.Component {
@@ -87,6 +89,8 @@ export default class DashboardContainer extends React.Component {
                                         deposit={v.deposit}
                                         onRemoveClick={(): void => {this.onRemoveValidator(index);}}
                                         onExportClick={(): void => {this.onExportValidator(index);}}
+                                        privateKey={v.privateKey}
+                                        password={v.password}
                                     />
                                 </div>;
                             })}
@@ -140,21 +144,27 @@ export default class DashboardContainer extends React.Component {
         return [{
             name: "V1",
             status: "Working",
-            publicKey: "0x1233567822345564",
+            publicKey: "0x32rzhcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff499",
             deposit: 30,
-            network: "NetworkA"
+            network: "NetworkA",
+            privateKey: "0xe68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259",
+            password: "mock"
         },{
             name: "V2",
             status: "Not Working",
-            publicKey: "0x1233567822345564",
+            publicKey: "0x22rrrcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff499",
             deposit: 30,
-            network: "NetworkA"
+            network: "NetworkA",
+            privateKey: "0x92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff499",
+            password: "mock"
         },{
             name: "V3",
             status: "Not Working",
             publicKey: "0x1d32a7822345564",
             deposit: 30,
-            network: "NetworkB"
+            network: "NetworkB",
+            privateKey: "0x62dddcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff499s",
+            password: "mock"
         }];
     }
 }

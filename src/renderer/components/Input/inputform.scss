@@ -1,6 +1,24 @@
 .inputform::placeholder{
     color: $neutral-100;
 }
+.input-eye{
+    margin-left: 12px;
+    width: 50px;
+    height: 50px;
+    background: url(../assets/img/input/eye-regular.svg) no-repeat center center;
+    &.none{
+        display: none;
+    }
+    &:hover{
+        background: url(../assets/img/input/eye-regular-hover.svg) no-repeat center center;
+    }
+}
+.inputform-container{
+    width: 100%;
+    margin-right: 24px;
+    display: flex;
+    align-items: center;
+}
 .inputform{
     width: 100%;
     background: $neutral-600;
@@ -13,7 +31,7 @@
     font-size: 18px;
     color: $neutral-100;
     padding: 16px 56px 16px 16px;
-    margin-right: 24px;
+    // margin-right: 12px;
 
     &.success{
         background: $neutral-600 url(../assets/img/input/Success.svg) no-repeat;
