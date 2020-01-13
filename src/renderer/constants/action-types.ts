@@ -16,3 +16,7 @@ export enum DepositActionTypes {
     DEPOSIT_TRANSACTION = "DEPOSIT_TRANSACTION",
     DEPOSIT_VISIBLE = "DEPOSIT_VISIBLE"
 }
+
+export enum AuthActionTypes {
+    STORE_AUTH = "STORE_AUTH"
+}

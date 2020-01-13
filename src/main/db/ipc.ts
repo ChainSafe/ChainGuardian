@@ -6,15 +6,12 @@ import {ipcMain, IpcMainInvokeEvent, IpcMainEvent} from "electron";
 
 export class DatabaseIpcHandler implements IService {
 
-    private database: LevelDbController;
+    private database!: LevelDbController;
 
-    public constructor() {
+    public async start(): Promise<void> {
         this.database = new LevelDbController({
             location: getConfig().db.name
         });
-    }
-
-    public async start(): Promise<void> {
         await this.database.start();
         ipcMain.handle(IpcDatabaseEvents.DATABASE_GET, this.handleGet);
         ipcMain.on(IpcDatabaseEvents.DATABASE_PUT, this.handlePut);

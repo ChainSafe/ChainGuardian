@@ -5,13 +5,13 @@ import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/ke
 export interface IAccount {
     name: string;
     directory: string;
-    sendStats: boolean;
+    sendStats: boolean | null;
 }
 
 export class CGAccount implements IAccount {
     public name: string;
     public directory: string;
-    public sendStats: boolean;
+    public sendStats: boolean | null;
 
     private validators: Keypair[] = [];
     private keystoreTarget: ICGKeystoreFactory;
@@ -56,7 +56,7 @@ export class CGAccount implements IAccount {
    * Check if password is valid
    * @param password decryption password of the keystore
    */
-    public isCorrectPassword(password: string): boolean {
+    public async isCorrectPassword(password: string): Promise<boolean> {
         /**
          * ? As there can be multiple keystore files there can also be
          * ? different passwords that these keystores use, we need to
@@ -77,7 +77,7 @@ export class CGAccount implements IAccount {
      */
         const keystore = keystoreFiles[0];
         try {
-            keystore.decrypt(password);
+            await keystore.decrypt(password);
         } catch (e) {
             // wrong password
             return false;
