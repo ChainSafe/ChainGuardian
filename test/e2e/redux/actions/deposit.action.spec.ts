@@ -13,6 +13,7 @@ import {IDepositState} from "../../../../src/renderer/reducers/deposit";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {generateDeposit, DepositTx} from "../../../../src/renderer/services/deposit";
+import {IAuthState} from "../../../../src/renderer/reducers/auth";
 
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 const publicKeyStr =
@@ -23,7 +24,8 @@ const initialState: IRootState = {
         signingKey: privateKeyStr,
         withdrawalKey: publicKeyStr
     } as IRegisterState,
-    deposit: {} as IDepositState
+    deposit: {} as IDepositState,
+    auth: {} as IAuthState
 };
 
 

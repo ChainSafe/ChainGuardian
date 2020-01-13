@@ -117,10 +117,14 @@ describe("CGAccount tests", () => {
         }).toThrowError();
     });
 
-    it("should be able to verify correct password", () => {
+    it("should be able to verify correct password", async () => {
         const account = createTestAccount();
 
-        expect(account.isCorrectPassword(PRIMARY_KEYSTORE_PASSWORD)).toEqual(true);
-        expect(account.isCorrectPassword("wrongPassword")).toEqual(false);
+        const isCorrectTrue = await account.isCorrectPassword(PRIMARY_KEYSTORE_PASSWORD);
+        expect(isCorrectTrue).toEqual(true);
+
+        const isCorrectFalse = await account.isCorrectPassword("wrongPassword");
+        expect(isCorrectFalse).toEqual(false);
+
     });
 });
