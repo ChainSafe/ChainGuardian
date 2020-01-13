@@ -13,7 +13,7 @@ import {INotification} from "../../services/utils/notification-utils";
 import database from "../../services/db/api/database";
 import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
-import {storeAuthAction,} from "../../actions";
+import {storeAuthAction} from "../../actions/auth";
 import {IRootState} from "../../reducers";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
 
