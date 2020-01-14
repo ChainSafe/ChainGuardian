@@ -16,3 +16,17 @@ export interface IStoreAuthPayload {
 export interface IStoreAuthAction extends Action<AuthActionTypes> {
     payload: IStoreAuthPayload;
 }
+//Storing password
+export const storePasswordAction = (password: string) =>
+    (dispatch: Dispatch<IStorePasswordAction>): void => {
+        dispatch(setPassword(password));
+    };
+export const setPassword = (password: string): IStorePasswordAction => ({
+    type: AuthActionTypes.STORE_PASSWORD, payload: {password}
+});
+export interface IStorePasswordPayload {
+    password: string;
+}
+export interface IStorePasswordAction extends Action<AuthActionTypes> {
+    payload: IStorePasswordPayload;
+}

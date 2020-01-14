@@ -12,7 +12,6 @@ export interface IValidatorSimpleProps {
     onRemoveClick: () => void;
     onExportClick: () => void;
     privateKey: string;
-    password: string;
 }
 
 export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
@@ -23,7 +22,6 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
             <div className="validator-simple-keys">
                 <h2>{props.name}</h2>
                 <PrivateKeyField
-                    password={props.password}
                     label="PRIVATE KEY"
                     inputValue={props.privateKey}
                 />

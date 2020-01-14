@@ -13,7 +13,7 @@ import {INotification} from "../../services/utils/notification-utils";
 import database from "../../services/db/api/database";
 import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
-import {storeAuthAction} from "../../actions/auth";
+import {storeAuthAction,storePasswordAction} from "../../actions/auth";
 import {IRootState} from "../../reducers";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
 
@@ -26,6 +26,7 @@ type IOwnProps = Pick<RouteComponentProps, "history">;
 
 interface IInjectedProps{
     storeAuth: typeof storeAuthAction;
+    storePassword: typeof storePasswordAction;
 }
 
 class Login extends Component<
@@ -87,6 +88,7 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
             const isCorrectValue = await account.isCorrectPassword(this.state.input);
             if(isCorrectValue){
                 await account.unlock(this.state.input);
+                this.props.storePassword(this.state.input); /** Storing password to redux */
                 this.props.storeAuth(account);
                 this.setState({notification: null});
                 this.props.history.push(Routes.DASHBOARD_ROUTE);
@@ -109,6 +111,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
             storeAuth: storeAuthAction,
+            storePassword: storePasswordAction
         },
         dispatch
     );

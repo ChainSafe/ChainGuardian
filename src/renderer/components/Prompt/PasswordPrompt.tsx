@@ -8,7 +8,7 @@ export interface IPasswordPromptProps {
      * @param password - that is entered in password prompt dialog
      * @return ISubmitStatus - containing information on validation success and errorMessage if any.
      */
-    onSubmit: (password: string) => ISubmitStatus;
+    onSubmit: (password: string) => Promise<ISubmitStatus>;
     /**
      * Called on cancel password prompt.
      */

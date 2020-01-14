@@ -18,5 +18,6 @@ export enum DepositActionTypes {
 }
 
 export enum AuthActionTypes {
-    STORE_AUTH = "STORE_AUTH"
+    STORE_AUTH = "STORE_AUTH",
+    STORE_PASSWORD = "STORE_PASSWORD"
 }
