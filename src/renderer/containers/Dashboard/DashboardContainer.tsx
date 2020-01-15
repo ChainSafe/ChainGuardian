@@ -7,8 +7,6 @@ import {Dropdown} from "../../components/Dropdown/Dropdown";
 import {exportKeystore} from "./export";
 import {Notification} from "../../components/Notification/Notification";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
-import database from "../../services/db/api/database";
-import {DEFAULT_ACCOUNT} from "../../constants/account";
 import {connect} from "react-redux";
 import {IRootState} from "../../reducers/index";
 import {RouteComponentProps} from "react-router";
@@ -77,23 +75,22 @@ const Dashboard: React.FunctionComponent<IOwnProps &  Pick<IRootState, "auth">> 
     };
 
     const getValidators = async (): Promise<void> => {
-        const validatorArray = [];
+        const validatorArray: Array<IValidator> = [];
 
-        const validatorsData = await database.account.get(DEFAULT_ACCOUNT);
+        const validatorsData = props.auth.auth;
+        
         if(validatorsData){
-            await validatorsData.unlock(props.auth.password); /** Password from redux */
-            const x =validatorsData.getValidators();
-            
-            for (let i = 0; i < x.length; i++) {
+            const validators =validatorsData.getValidators();
+            validators.map((v, index)=>{
                 validatorArray.push({
-                    name: "TODO name",
+                    name: validatorsData.name,
                     status: "TODO status",
-                    publicKey: x[i].publicKey.toHexString(),
+                    publicKey: v.publicKey.toHexString(),
                     deposit: 30,
-                    network: `${i%2===0 ? "NetworkA" : "NetworkB"}`, /** TEMP */
-                    privateKey: x[i].privateKey.toHexString(),
+                    network: `${index%2===0 ? "NetworkA" : "NetworkB"}`,
+                    privateKey: v.privateKey.toHexString(),
                 });
-            }
+            });
         }
         setValidators(validatorArray);
     };

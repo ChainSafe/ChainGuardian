@@ -16,7 +16,7 @@ export const PrivateKeyField: React.FunctionComponent<IInputFormProps> = (props:
     const handlePromptSubmit = async (promptPassword: string): Promise<ISubmitStatus> => {
 
         const accounts = await database.account.get(DEFAULT_ACCOUNT);
-        if(accounts!=null){
+        if(accounts != null){
             const isCorrectValue = await accounts.isCorrectPassword(promptPassword);
             if(isCorrectValue){
                 setTimeoutStatus(true);
