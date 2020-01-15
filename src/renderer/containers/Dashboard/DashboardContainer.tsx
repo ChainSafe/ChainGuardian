@@ -10,9 +10,15 @@ import {Horizontal, Level, Vertical} from "../../components/Notification/Notific
 import {connect} from "react-redux";
 import {IRootState} from "../../reducers/index";
 import {RouteComponentProps} from "react-router";
-import {Routes} from "../../constants/routes";
+import {Routes, OnBoardingRoutes} from "../../constants/routes";
+import {bindActionCreators, Dispatch} from "redux";
+import {storeAddValidatorAction} from "../../actions/addValidator";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
+
+interface IInjectedProps{
+    storeAddValidator: typeof storeAddValidatorAction;
+}
 
 interface INotificationState {
     title?: string;
@@ -29,7 +35,7 @@ export interface IValidator {
     privateKey: string;
 }
 
-const Dashboard: React.FunctionComponent<IOwnProps &  Pick<IRootState, "auth">> = (props) => {
+const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRootState, "auth">> = (props) => {
     
     // TODO - temporary object, import real network object
     const networksMock: {[id: number]: string} = {
@@ -48,6 +54,9 @@ const Dashboard: React.FunctionComponent<IOwnProps &  Pick<IRootState, "auth">> 
 
     const onAddNewValidator = (): void => {
         // TODO - implement
+
+        props.storeAddValidator(true);
+        props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
         // eslint-disable-next-line no-console
         console.log("Add new validator");
     };
@@ -154,7 +163,15 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
     auth: state.auth,
 });
 
+const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
+    bindActionCreators(
+        {
+            storeAddValidator: storeAddValidatorAction
+        },
+        dispatch
+    );
+
 export const DashboardContainer = connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 )(Dashboard);
