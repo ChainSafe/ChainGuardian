@@ -1,4 +1,4 @@
-import {setAuth,setPassword} from "../../../../src/renderer/actions/auth";
+import {setAuth} from "../../../../src/renderer/actions/auth";
 import {IAuthState, authReducer as reducer} from "../../../../src/renderer/reducers/auth";
 import {AuthActionTypes} from "../../../../src/renderer/constants/action-types";
 import {Action} from "redux";
@@ -9,10 +9,9 @@ const account = new CGAccount({
     directory: "/testdirectory/",
     sendStats: false
 });
-const mockPassword = "!Q1q1q";
+
 const initalState: IAuthState = {
     auth: null,
-    password: ""
 };
 
 describe("auth reducer", () => {
@@ -28,16 +27,6 @@ describe("auth reducer", () => {
         ).toEqual(
             {
                 auth: account
-            }
-        );
-    });
-
-    it("should handle setPassword", () => {
-        expect(
-            reducer({} as IAuthState, setPassword(mockPassword))
-        ).toEqual(
-            {
-                password: mockPassword
             }
         );
     });
