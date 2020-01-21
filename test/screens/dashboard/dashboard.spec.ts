@@ -25,7 +25,7 @@ describe("Dashboard simple screen", () => {
             expect(goButtonText).to.be.equal("ADD NEW VALIDATOR");
             expect(await client.isExisting(".validator-dropdown")).to.be.true;
         };
-        setTimeout(timeoutHandler, 5000);
+        setTimeout(timeoutHandler, 10000);
     });
 
 });
