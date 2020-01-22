@@ -13,6 +13,7 @@ import {RouteComponentProps} from "react-router";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {bindActionCreators, Dispatch} from "redux";
 import {storeAddValidatorAction} from "../../actions/addValidator";
+import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
@@ -53,20 +54,19 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
     const [notification, setNotification] = useState<INotificationState>(HiddenNotification);
 
     const onAddNewValidator = (): void => {
-        // TODO - implement
-
         props.storeAddValidator(true);
         props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
-        // eslint-disable-next-line no-console
-        console.log("Add new validator");
     };
 
-    const onRemoveValidator = (index: number): void => {
+    const onRemoveValidator = async (index: number): Promise<void> => {
+        // TODO - implement deleting keystore itself
+
+        
+
         // delete locally from array
         const v = [...validators];
         v.splice(index, 1);
         setValidators(v);
-        // TODO - implement deleting keystore itself
         // eslint-disable-next-line no-console
         console.log(`Remove validator ${index}`);
     };
