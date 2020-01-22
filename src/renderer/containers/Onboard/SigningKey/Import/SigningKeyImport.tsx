@@ -9,7 +9,7 @@ import {storeSigningKeyAction} from "../../../../actions";
 import {mnemonicSchema, privateKeySchema} from "./validation";
 import {ValidationResult} from "@hapi/joi";
 import {Eth2HDWallet} from "../../../../services/wallet";
-
+import {IRootState} from "../../../../reducers";
 
 /**
  * required own props
@@ -25,7 +25,7 @@ interface IInjectedProps {
     storeSigningKey: typeof storeSigningKeyAction;
 }
 
-class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
+class SigningKeyImport extends Component<IOwnProps & IInjectedProps & Pick<IRootState, "addValidator">, {}> {
     public render(): ReactElement {
         return (
             <KeyModalContent 
@@ -43,10 +43,20 @@ class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
     private handleSubmit= (input: string): void => {
         const signingKey = input.startsWith("0x") ? input : Eth2HDWallet.getKeypair(input).privateKey.toHexString();
         this.props.storeSigningKey(signingKey);
-        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
+
+        if(this.props.addValidator.addValidator) {
+            this.props.history.replace(Routes.CHECK_PASSWORD);
+        }
+        else {
+            this.props.history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
+        }
     };
 
 }
+
+const mapStateToProps = (state: IRootState): Pick<IRootState, "addValidator"> => ({
+    addValidator: state.addValidator
+});
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
@@ -57,6 +67,6 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     );
 
 export const SigningKeyImportContainer = connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(SigningKeyImport);

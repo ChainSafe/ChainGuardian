@@ -8,9 +8,11 @@ export interface IAddValidatorState {
 
 const initialState: IAddValidatorState = {
     addValidator: false
-}
+};
 
-export const addValidatorReducer = (state = initialState, action: Action<AddValidatorActionTypes>): IAddValidatorState => {
+export const addValidatorReducer = (
+    state = initialState, 
+    action: Action<AddValidatorActionTypes>): IAddValidatorState => {
     switch (action.type) {
         case AddValidatorActionTypes.ADD_VALIDATOR:
             return Object.assign({}, state, {
@@ -19,4 +21,4 @@ export const addValidatorReducer = (state = initialState, action: Action<AddVali
         default:
             return state;
     }
-}
+};

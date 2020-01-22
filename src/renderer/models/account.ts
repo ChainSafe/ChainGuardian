@@ -110,7 +110,7 @@ export class CGAccount implements IAccount {
     }
 
     public addValidator(validator: Keypair): void {
-            this.validators.push(validator);
+        this.validators.push(validator);
     }
 
     /**
