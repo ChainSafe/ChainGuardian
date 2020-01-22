@@ -15,7 +15,7 @@ storiesOf('Password prompt', module).add('Password input', () => {
     return <div>
         <PasswordPrompt
             display={visible}
-            onSubmit={(password: string): ISubmitStatus => {
+            onSubmit={async (password: string): Promise<ISubmitStatus> => {
                 if (password === "password") {
                     setVisible(false);
                     return {valid: true};

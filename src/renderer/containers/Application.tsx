@@ -5,7 +5,7 @@ import {ReactElement} from "react";
 import OnboardContainer from "../containers/Onboard/OnboardContainer";
 import {LoginContainer} from "../containers/Login/LoginContainer";
 import {Routes} from "../constants/routes";
-import DashboardContainer from "../containers/Dashboard/DashboardContainer";
+import {DashboardContainer} from "../containers/Dashboard/DashboardContainer";
 
 
 const Application = (): ReactElement => <Router>

@@ -1,4 +1,4 @@
-import {IStoreAuthAction} from "../actions";
+import {IStoreAuthAction} from "../actions/auth";
 import {AuthActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 import {CGAccount} from "../models/account";

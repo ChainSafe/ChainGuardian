@@ -7,7 +7,7 @@ export interface IInputPromptProps {
     title: string;
     placeholder?: string;
     inputType?: string;
-    onSubmit: (data: string) => ISubmitStatus;
+    onSubmit: (data: string) => Promise<ISubmitStatus>;
     onCancel: () => void;
     display: boolean;
 }
@@ -22,8 +22,8 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
     const [errorMessage, setErrorMessage] = useState<string | undefined>();
     const [valid, setValid] = useState<boolean | undefined>();
 
-    function onSubmitWrapper(): void {
-        const result = props.onSubmit(inputData);
+    async function onSubmitWrapper(): Promise<void> {
+        const result = await props.onSubmit(inputData);
         setValid(result.valid);
         if (!result.valid) {
             setErrorMessage(result.errorMessage);

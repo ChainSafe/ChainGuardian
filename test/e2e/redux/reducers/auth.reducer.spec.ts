@@ -1,4 +1,4 @@
-import {setAuth} from "../../../../src/renderer/actions";
+import {setAuth} from "../../../../src/renderer/actions/auth";
 import {IAuthState, authReducer as reducer} from "../../../../src/renderer/reducers/auth";
 import {AuthActionTypes} from "../../../../src/renderer/constants/action-types";
 import {Action} from "redux";

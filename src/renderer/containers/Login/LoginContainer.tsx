@@ -108,7 +108,7 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            storeAuth: storeAuthAction,
+            storeAuth: storeAuthAction
         },
         dispatch
     );
