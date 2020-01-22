@@ -18,11 +18,14 @@ describe("Dashboard simple screen", () => {
 
     it("has rendered properly", async function() {
         const {client} = app;
-        expect(await client.isExisting(".validators-display")).to.be.true;
-        expect((await client.elements(".validator-wrapper")).value.length).to.be.greaterThan(0);
-        const goButtonText = await client.getAttribute("#add-validator", "textContent");
-        expect(goButtonText).to.be.equal("ADD NEW VALIDATOR");
-        expect(await client.isExisting(".validator-dropdown")).to.be.true;
+        const timeoutHandler = async (): Promise<void> => {
+            expect(await client.isExisting(".validators-display")).to.be.true;
+            expect((await client.elements(".validator-wrapper")).value.length).to.be.greaterThan(0);
+            const goButtonText = client.getAttribute("#add-validator", "textContent");
+            expect(goButtonText).to.be.equal("ADD NEW VALIDATOR");
+            expect(await client.isExisting(".validator-dropdown")).to.be.true;
+        };
+        setTimeout(timeoutHandler, 10000);
     });
 
 });
