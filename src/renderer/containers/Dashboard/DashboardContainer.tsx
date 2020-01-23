@@ -14,6 +14,11 @@ import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {bindActionCreators, Dispatch} from "redux";
 import {storeAddValidatorAction} from "../../actions/addValidator";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
+import {V4Keystore} from "../../services/keystore";
+import {DEFAULT_ACCOUNT} from "../../constants/account";
+import * as path from "path";
+import {getConfig} from "../../../config/config";
+import {remote} from "electron";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
@@ -52,23 +57,33 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
     const [validators, setValidators] = useState<Array<IValidator>>([]);
     const [currentNetwork, setCurrentNetwork] = useState<number>(0);
     const [notification, setNotification] = useState<INotificationState>(HiddenNotification);
+    const [confirmModal, setConfirmModal] = useState<boolean>(false);
+    const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
 
     const onAddNewValidator = (): void => {
         props.storeAddValidator(true);
         props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
     };
 
-    const onRemoveValidator = async (index: number): Promise<void> => {
-        // TODO - implement deleting keystore itself
+    const onRemoveValidator = (index: number): void => {
+        setSelectedValidatorIndex(index);
+        setConfirmModal(true);
+    };
 
+    const onConfirmDelete = (): void => {
+        const validatorsData = props.auth.auth;
+        if(validatorsData){
+            const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
+            const validators =validatorsData.getValidators();
+            const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey.toHexString();
+            const selectedV4Keystore = new V4Keystore(path.join(accountDirectory,selectedValidatorPublicKey + ".json"));
+            selectedV4Keystore.destroy();
+        }
         
-
-        // delete locally from array
         const v = [...validators];
-        v.splice(index, 1);
+        v.splice(selectedValidatorIndex, 1);
         setValidators(v);
-        // eslint-disable-next-line no-console
-        console.log(`Remove validator ${index}`);
+        setConfirmModal(false);
     };
 
     const onExportValidator = (index: number): void => {
@@ -83,9 +98,8 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
         }
     };
 
-    const getValidators = async (): Promise<void> => {
+    const getValidators =  (): void => {
         const validatorArray: Array<IValidator> = [];
-
         const validatorsData = props.auth.auth;
         
         if(validatorsData){
@@ -154,6 +168,13 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
                 onClose={(): void => {
                     setNotification(HiddenNotification);
                 }}
+            />
+            <ConfirmModal
+                showModal={confirmModal}
+                question={"Are you sure?"}
+                subText={"Validator could still be active"}
+                onOKClick={onConfirmDelete}
+                onCancelClick={(): void => setConfirmModal(false)}
             />
         </Background>
     );

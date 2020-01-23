@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ButtonPrimary, ButtonDestructive } from "../Button/ButtonStandard";
+import {ButtonPrimary, ButtonDestructive} from "../Button/ButtonStandard";
 
 export interface IConfirmModalProps {
     showModal: boolean
@@ -12,20 +12,16 @@ export interface IConfirmModalProps {
 export const ConfirmModal: React.FunctionComponent<IConfirmModalProps> = (
     props: IConfirmModalProps) => {
 
-        const handleShowModal = (): string => {
-            return props.showModal ? "" : "none" ;
-        }
-
-        return (
-            <div className={`confirmModalContainer ${props.showModal ? "" : "none"}`}>
-                <div className="confirmModal">
-                    <h2>{props.question}</h2>
-                    <p>{props.subText}</p>
-                    <div className="confirmModalButtons">
-                        <ButtonPrimary>Ok</ButtonPrimary>
-                        <ButtonDestructive>Cancel</ButtonDestructive>
-                    </div>
+    return (
+        <div className={`confirmModalContainer ${props.showModal ? "" : "none"}`}>
+            <div className="confirmModal">
+                <h2>{props.question}</h2>
+                <p>{props.subText}</p>
+                <div className="confirmModalButtons">
+                    <ButtonPrimary onClick={props.onOKClick}>Ok</ButtonPrimary>
+                    <ButtonDestructive onClick={props.onCancelClick}>Cancel</ButtonDestructive>
                 </div>
             </div>
-        )
-    }
+        </div>
+    );
+};
