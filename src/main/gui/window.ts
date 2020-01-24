@@ -1,6 +1,9 @@
 import path from "path";
-import {BrowserWindow} from "electron";
+import {BrowserWindow, dialog} from "electron";
 import {iconExtensions, installExtensions} from "./utils";
+import store from "../../renderer/store";
+// import {app} from "electron";
+// app.showExitPrompt = true;
 
 let win: BrowserWindow | null;
 
@@ -52,6 +55,12 @@ export async function createWindow(): Promise<void> {
             win!.webContents.openDevTools();
         });
     }
+
+    win.on('close', (e) => {
+        e.preventDefault();
+        // store.dispatch(storeClosePressed(true));
+        // showClosePrompt();
+    })
 
     win.on("closed", function() {
         win = null;

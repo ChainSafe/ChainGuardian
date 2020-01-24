@@ -8,7 +8,6 @@ import {Routes} from "../constants/routes";
 import {DashboardContainer} from "../containers/Dashboard/DashboardContainer";
 import {CheckPasswordContainer} from "../containers/AddValidator/CheckPassword";
 
-
 const Application = (): ReactElement => <Router>
     <Switch>
         <Route path={Routes.ONBOARD_ROUTE} component={OnboardContainer}/>
