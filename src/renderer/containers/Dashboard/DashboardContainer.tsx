@@ -106,6 +106,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
 
     useEffect(()=>{
         if(!props.auth.auth) props.history.push(Routes.LOGIN_ROUTE);
+        console.log("loaded");
         getValidators();
     },[]);
 
