@@ -57,6 +57,15 @@ export async function createWindow(): Promise<void> {
     }
 
     win.on('close', (e) => {
+
+        let choise: number = require("electron").dialog.showMessageBox(this,{
+            type: 'question',
+            buttons: ['Yes', 'No'],
+            title: 'Confirm',
+            message: 'Are you sure you want to quit?'
+        });
+        if(choise===1)
+
         e.preventDefault();
         // store.dispatch(storeClosePressed(true));
         // showClosePrompt();
