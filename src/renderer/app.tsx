@@ -14,16 +14,27 @@ document.body.appendChild(mainElement);
 
 // Render components
 const render = (Component: () => JSX.Element): void => {
+    
 
-    const x = store.getState();
-    console.log(x);
 
+    const handleBeforeQuit = (): boolean => {
+        const x = store.getState();
+        if(x){
+            console.log(x.beforeQuit.beforeQuit);
+            
+            return x.beforeQuit.beforeQuit
+        }else{
+            return false
+        }
+    }
+    
+    
     ReactDOM.render(
         <AppContainer>
             <Provider store={store}>
                 <Component />
                 <ConfirmModal
-                    showModal={false}
+                    showModal={handleBeforeQuit()}
                     question="Are you sure?"
                     onOKClick={()=>{}}
                     onCancelClick={()=>{}}

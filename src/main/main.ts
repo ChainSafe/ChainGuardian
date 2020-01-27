@@ -5,7 +5,7 @@ import {DatabaseIpcHandler} from "./db/ipc";
 const db = new DatabaseIpcHandler();
 
 app.on("before-quit", db.stop.bind(db));
-// app.on("before-quit", (event)=>{
+// app.on("will-quit", (event)=>{
 //     event.preventDefault();
 // })
 app.on("activate", db.start.bind(db));

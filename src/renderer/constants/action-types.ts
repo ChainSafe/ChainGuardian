@@ -24,3 +24,7 @@ export enum AuthActionTypes {
 export enum AddValidatorActionTypes {
     ADD_VALIDATOR = "ADD_VALIDATOR"
 }
+
+export enum BeforeQuitActionTypes {
+    BEFORE_QUIT = "BEFORE_QUIT"
+}
