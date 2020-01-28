@@ -14,10 +14,6 @@ import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {generateDeposit, DepositTx} from "../../../../src/renderer/services/deposit";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
-<<<<<<< HEAD
-import {IAddValidatorState} from "../../../../src/renderer/reducers/addValidator";
-=======
->>>>>>> 0656e56a2c298bb662e5f22fa53ea967ff46f4bd
 
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 const publicKeyStr =

@@ -6,10 +6,6 @@ import {IRegisterState} from "../../../../src/renderer/reducers/register";
 import {IDepositState} from "../../../../src/renderer/reducers/deposit";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
 import {CGAccount} from "../../../../src/renderer/models/account";
-<<<<<<< HEAD
-import {IAddValidatorState} from "../../../../src/renderer/reducers/addValidator";
-=======
->>>>>>> 0656e56a2c298bb662e5f22fa53ea967ff46f4bd
 
 const account = new CGAccount({
     name: "TestName",

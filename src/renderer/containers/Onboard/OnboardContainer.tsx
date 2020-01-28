@@ -27,8 +27,12 @@ export default class OnboardContainer extends Component<IProps, {}> {
     private Steper = {
         [OnBoardingRoutes.SIGNING]: <SigningKey />,
         [OnBoardingRoutes.SIGNING_KEY_GENERATE]: <SigningKeyGenerateContainer history={this.props.history} />,
-        [OnBoardingRoutes.SIGNING_KEY_VALIDATE]: <SigningKeyVerifyContainer history={this.props.history} location={this.props.location}/>,
-        [OnBoardingRoutes.SIGNING_IMPORT]: <SigningKeyImportContainer history={this.props.history} location={this.props.location} />,
+        [OnBoardingRoutes.SIGNING_KEY_VALIDATE]: <SigningKeyVerifyContainer 
+            history={this.props.history} 
+            location={this.props.location}/>,
+        [OnBoardingRoutes.SIGNING_IMPORT]: <SigningKeyImportContainer 
+            history={this.props.history} 
+            location={this.props.location} />,
         [OnBoardingRoutes.WITHDRAWAL]: <WithdrawalKey />,
         [OnBoardingRoutes.WITHDRAWAL_KEY_GENERATE]: <WithdrawalKeyGenerateContainer history={this.props.history}/>,
         [OnBoardingRoutes.WITHDRAWAL_KEY_VALIDATE]: <WithdrawalKeyVerifyContainer history={this.props.history}/>,

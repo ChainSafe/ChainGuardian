@@ -13,10 +13,7 @@ import {RouteComponentProps} from "react-router";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
-import {DEFAULT_ACCOUNT} from "../../constants/account";
 import * as path from "path";
-import {getConfig} from "../../../config/config";
-import {remote} from "electron";
 
 type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
@@ -35,7 +32,7 @@ export interface IValidator {
     privateKey: string;
 }
 
-const Dashboard: React.FunctionComponent<IOwnProps &  Pick<IRootState, "auth">> = (props) => {
+const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> = (props) => {
     
     // TODO - temporary object, import real network object
     const networksMock: {[id: number]: string} = {
@@ -59,25 +56,24 @@ const Dashboard: React.FunctionComponent<IOwnProps &  Pick<IRootState, "auth">> 
         props.history.push({
             pathname: Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING),
             state: {addValidator: "inProgress"}
-          });
-        };
+        });
+    };
 
     const onRemoveValidator = (index: number): void => {
         setSelectedValidatorIndex(index);
         setConfirmModal(true);
     };
 
-    const onConfirmDelete = (): void => {
+    const onConfirmDelete = async (): Promise<void> => {
         const validatorsData = props.auth.auth;
         if(validatorsData){
-            const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
             const validators =validatorsData.getValidators();
             const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey.toHexString();
-            const selectedV4Keystore = new V4Keystore(path.join(accountDirectory,selectedValidatorPublicKey + ".json"));
+            const selectedV4Keystore = new V4Keystore(
+                path.join(validatorsData.directory,selectedValidatorPublicKey + ".json"));
             selectedV4Keystore.destroy();
         }
-        
-        const v = [...validators];
+        const v = validators;
         v.splice(selectedValidatorIndex, 1);
         setValidators(v);
         setConfirmModal(false);
@@ -112,15 +108,14 @@ const Dashboard: React.FunctionComponent<IOwnProps &  Pick<IRootState, "auth">> 
                 });
             });
         }
+
         setValidators(validatorArray);
     };
 
     useEffect(()=>{
-        console.log(props.location.state);
         if(!props.auth.auth) props.history.push(Routes.LOGIN_ROUTE);
-        console.log("loaded");
         getValidators();
-    },[selectedValidatorIndex]);
+    },[]);
 
     const topBar =
             <div className={"validator-top-bar"}>
