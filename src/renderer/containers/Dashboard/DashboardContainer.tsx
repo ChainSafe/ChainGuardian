@@ -11,14 +11,8 @@ import {connect} from "react-redux";
 import {IRootState} from "../../reducers/index";
 import {RouteComponentProps} from "react-router";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
-import {bindActionCreators, Dispatch} from "redux";
-import {storeAddValidatorAction} from "../../actions/addValidator";
 
-type IOwnProps = Pick<RouteComponentProps, "history">;
-
-interface IInjectedProps{
-    storeAddValidator: typeof storeAddValidatorAction;
-}
+type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
 interface INotificationState {
     title?: string;
@@ -35,7 +29,7 @@ export interface IValidator {
     privateKey: string;
 }
 
-const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRootState, "auth">> = (props) => {
+const Dashboard: React.FunctionComponent<IOwnProps &  Pick<IRootState, "auth">> = (props) => {
     
     // TODO - temporary object, import real network object
     const networksMock: {[id: number]: string} = {
@@ -53,13 +47,12 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
     const [notification, setNotification] = useState<INotificationState>(HiddenNotification);
 
     const onAddNewValidator = (): void => {
-        // TODO - implement
-
-        props.storeAddValidator(true);
-        props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
-        // eslint-disable-next-line no-console
-        console.log("Add new validator");
-    };
+        
+        props.history.push({
+            pathname: Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING),
+            state: {addValidator: "inProgress"}
+          });
+        };
 
     const onRemoveValidator = (index: number): void => {
         // delete locally from array
@@ -105,6 +98,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
     };
 
     useEffect(()=>{
+        console.log(props.location.state);
         if(!props.auth.auth) props.history.push(Routes.LOGIN_ROUTE);
         console.log("loaded");
         getValidators();
@@ -164,15 +158,7 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
     auth: state.auth,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
-    bindActionCreators(
-        {
-            storeAddValidator: storeAddValidatorAction
-        },
-        dispatch
-    );
-
 export const DashboardContainer = connect(
     mapStateToProps,
-    mapDispatchToProps
+    null
 )(Dashboard);

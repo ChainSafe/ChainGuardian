@@ -5,7 +5,6 @@ import {RouteComponentProps} from "react-router";
 import {Routes} from "../../constants/routes";
 import {bindActionCreators, Dispatch} from "redux";
 import {IRootState} from "../../reducers";
-import {storeAddValidatorAction} from "../../actions";
 import {Background} from "../../components/Background/Background";
 import {Modal} from "../../components/Modal/Modal";
 import {InputForm} from "../../components/Input/InputForm";
@@ -45,8 +44,10 @@ Pick<IRootState, "register" | "auth">> = (props) => {
                 props.afterPassword(input);
                 
                 setInputStatus(true);
-                props.storeAddValidator(false);
-                setTimeout(props.history.push,500,Routes.DASHBOARD_ROUTE);
+                setTimeout(props.history.push,500,{
+                    pathname: Routes.DASHBOARD_ROUTE,
+                    state: {}
+                  });
             }
             else {
                 setInputStatus(false);
@@ -56,8 +57,10 @@ Pick<IRootState, "register" | "auth">> = (props) => {
     };
 
     const handleCancel = (): void => {
-        props.storeAddValidator(false);
-        props.history.replace(Routes.DASHBOARD_ROUTE);
+        props.history.push({
+            pathname: Routes.DASHBOARD_ROUTE,
+            state: {}
+        });
     };
     useEffect(()=>{
         setInputStatus(undefined);
@@ -85,7 +88,6 @@ Pick<IRootState, "register" | "auth">> = (props) => {
 // redux
 
 interface IInjectedProps {
-    storeAddValidator: typeof storeAddValidatorAction;
     afterPassword: typeof afterPasswordAction;
 }
 
@@ -96,8 +98,7 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "register" | "auth
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators({
-        afterPassword: afterPasswordAction,
-        storeAddValidator: storeAddValidatorAction
+        afterPassword: afterPasswordAction
     }, dispatch);
 
 export const CheckPasswordContainer = connect(
