@@ -51,8 +51,8 @@ const Dashboard: React.FunctionComponent<IOwnProps &  Pick<IRootState, "auth">> 
         props.history.push({
             pathname: Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING),
             state: {addValidator: "inProgress"}
-          });
-        };
+        });
+    };
 
     const onRemoveValidator = (index: number): void => {
         // delete locally from array

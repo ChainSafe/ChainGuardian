@@ -47,7 +47,7 @@ Pick<IRootState, "register" | "auth">> = (props) => {
                 setTimeout(props.history.push,500,{
                     pathname: Routes.DASHBOARD_ROUTE,
                     state: {}
-                  });
+                });
             }
             else {
                 setInputStatus(false);
