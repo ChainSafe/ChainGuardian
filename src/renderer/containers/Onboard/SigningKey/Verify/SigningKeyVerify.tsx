@@ -10,12 +10,12 @@ import {storeSigningVerificationStatusAction,storeSigningKeyAction} from "../../
 import {Routes, OnBoardingRoutes} from "../../../../constants/routes";
 import {Eth2HDWallet} from "../../../../services/wallet";
 
-type IOwnProps = Pick<RouteComponentProps, "history">;
+type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
 const SigningMnemonicQuestion: React.FunctionComponent<
 IOwnProps & 
 IInjectedProps & 
-Pick<IRootState, "register" | "addValidator">> = (props) => {
+Pick<IRootState, "register">> = (props) => {
 
     const mnemonic = props.register.signingMnemonic.split(" ");
     const randArray = getRandomIntArray(12);
@@ -28,7 +28,7 @@ Pick<IRootState, "register" | "addValidator">> = (props) => {
         const signingKey = Eth2HDWallet.getKeypair(register.signingMnemonic).privateKey.toHexString();
         storeSigningKey(signingKey);
 
-        if(props.addValidator.addValidator) {
+        if(props.location.state) {
             history.replace(Routes.CHECK_PASSWORD);
         }
         else {
@@ -59,8 +59,7 @@ interface IInjectedProps {
     setVerificationStatus: typeof storeSigningVerificationStatusAction;
 }
 
-const mapStateToProps = (state: IRootState): Pick<IRootState, "register" | "addValidator"> => ({
-    addValidator: state.addValidator,
+const mapStateToProps = (state: IRootState): Pick<IRootState, "register"> => ({
     register: state.register
 });
 

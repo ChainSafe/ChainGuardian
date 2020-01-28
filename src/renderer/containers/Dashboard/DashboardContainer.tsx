@@ -11,8 +11,6 @@ import {connect} from "react-redux";
 import {IRootState} from "../../reducers/index";
 import {RouteComponentProps} from "react-router";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
-import {bindActionCreators, Dispatch} from "redux";
-import {storeAddValidatorAction} from "../../actions/addValidator";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
@@ -20,11 +18,7 @@ import * as path from "path";
 import {getConfig} from "../../../config/config";
 import {remote} from "electron";
 
-type IOwnProps = Pick<RouteComponentProps, "history">;
-
-interface IInjectedProps{
-    storeAddValidator: typeof storeAddValidatorAction;
-}
+type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
 interface INotificationState {
     title?: string;
@@ -41,7 +35,7 @@ export interface IValidator {
     privateKey: string;
 }
 
-const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRootState, "auth">> = (props) => {
+const Dashboard: React.FunctionComponent<IOwnProps &  Pick<IRootState, "auth">> = (props) => {
     
     // TODO - temporary object, import real network object
     const networksMock: {[id: number]: string} = {
@@ -61,9 +55,12 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
 
     const onAddNewValidator = (): void => {
-        props.storeAddValidator(true);
-        props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
-    };
+        
+        props.history.push({
+            pathname: Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING),
+            state: {addValidator: "inProgress"}
+          });
+        };
 
     const onRemoveValidator = (index: number): void => {
         setSelectedValidatorIndex(index);
@@ -119,9 +116,11 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
     };
 
     useEffect(()=>{
+        console.log(props.location.state);
         if(!props.auth.auth) props.history.push(Routes.LOGIN_ROUTE);
+        console.log("loaded");
         getValidators();
-    },[]);
+    },[selectedValidatorIndex]);
 
     const topBar =
             <div className={"validator-top-bar"}>
@@ -184,15 +183,7 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
     auth: state.auth,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
-    bindActionCreators(
-        {
-            storeAddValidator: storeAddValidatorAction
-        },
-        dispatch
-    );
-
 export const DashboardContainer = connect(
     mapStateToProps,
-    mapDispatchToProps
+    null
 )(Dashboard);

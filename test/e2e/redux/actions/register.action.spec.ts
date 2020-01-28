@@ -13,7 +13,10 @@ import {IRootState} from "../../../../src/renderer/reducers";
 import {IRegisterState} from "../../../../src/renderer/reducers/register";
 import {IDepositState} from "../../../../src/renderer/reducers/deposit";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
+<<<<<<< HEAD
 import {IAddValidatorState} from "../../../../src/renderer/reducers/addValidator";
+=======
+>>>>>>> 0656e56a2c298bb662e5f22fa53ea967ff46f4bd
 
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 const publicKeyStr =
@@ -25,8 +28,7 @@ const initialState: IRootState = {
         signingKey: privateKeyStr
     } as IRegisterState,
     deposit: {} as IDepositState,
-    auth: {} as IAuthState,
-    addValidator: {} as IAddValidatorState
+    auth: {} as IAuthState
 };
 
 
