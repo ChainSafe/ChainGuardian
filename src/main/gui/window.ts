@@ -54,21 +54,21 @@ export async function createWindow(): Promise<void> {
         });
     }
 
-    win.on('close', (e: Electron.Event) => {
+    win.on("close", (e: Electron.Event) => {
         // TODO / Validator status - check if there is validator with status ACTIVE/VALIDATING
         if (win!==null){
-            let choise = dialog.showMessageBoxSync(win,
+            const choise = dialog.showMessageBoxSync(win,
                 {
-                    type: 'question',
-                    buttons: ['Yes', 'No'],
-                    title: 'Confirm',
-                    message: 'Are you sure you want to quit?'  
+                    type: "question",
+                    buttons: ["Yes", "No"],
+                    title: "Confirm",
+                    message: "Are you sure you want to quit?"  
                 });
             if(choise === 1){
                 e.preventDefault();
             }
         }
-    })
+    });
 
     win.on("closed", function() {
         win = null;

@@ -9,13 +9,13 @@ import {DashboardContainer} from "../containers/Dashboard/DashboardContainer";
 import {CheckPasswordContainer} from "../containers/AddValidator/CheckPassword";
 
 const Application = (): ReactElement => 
-        <Router>
-            <Switch>
-                <Route path={Routes.ONBOARD_ROUTE} component={OnboardContainer}/>
-                <Route path={Routes.LOGIN_ROUTE} component={LoginContainer}/>
-                <Route path={Routes.DASHBOARD_ROUTE} component={DashboardContainer}/>
-                <Route path={Routes.CHECK_PASSWORD} component={CheckPasswordContainer}/>
-                <Redirect from="/" to={Routes.LOGIN_ROUTE}/>
-            </Switch>
-        </Router>;
+    <Router>
+        <Switch>
+            <Route path={Routes.ONBOARD_ROUTE} component={OnboardContainer}/>
+            <Route path={Routes.LOGIN_ROUTE} component={LoginContainer}/>
+            <Route path={Routes.DASHBOARD_ROUTE} component={DashboardContainer}/>
+            <Route path={Routes.CHECK_PASSWORD} component={CheckPasswordContainer}/>
+            <Redirect from="/" to={Routes.LOGIN_ROUTE}/>
+        </Switch>
+    </Router>;
 export default hot(Application);
