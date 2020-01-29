@@ -50,7 +50,7 @@ const Dashboard: React.FunctionComponent<IOwnProps &  Pick<IRootState, "auth">> 
         
         props.history.push({
             pathname: Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING),
-            state: {addValidator: "inProgress"}
+            state: {isRegisterFlow: true}
         });
     };
 
@@ -98,9 +98,7 @@ const Dashboard: React.FunctionComponent<IOwnProps &  Pick<IRootState, "auth">> 
     };
 
     useEffect(()=>{
-        console.log(props.location.state);
         if(!props.auth.auth) props.history.push(Routes.LOGIN_ROUTE);
-        console.log("loaded");
         getValidators();
     },[]);
 

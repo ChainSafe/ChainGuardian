@@ -20,7 +20,3 @@ export enum DepositActionTypes {
 export enum AuthActionTypes {
     STORE_AUTH = "STORE_AUTH"
 }
-
-export enum AddValidatorActionTypes {
-    ADD_VALIDATOR = "ADD_VALIDATOR"
-}
