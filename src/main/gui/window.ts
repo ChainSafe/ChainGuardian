@@ -1,10 +1,7 @@
 import path from "path";
 import {BrowserWindow} from "electron";
 import {iconExtensions, installExtensions} from "./utils";
-import store from "../../renderer/store";
-import {setBeforeQuit} from "../../renderer/actions/beforeQuit";
-// import {app} from "electron";
-// app.showExitPrompt = true;
+import {dialog} from "electron";
 
 let win: BrowserWindow | null;
 
@@ -57,19 +54,19 @@ export async function createWindow(): Promise<void> {
         });
     }
 
-    win.on('close', (e) => {
-
-        // let choise: number = require("electron").dialog.showMessageBox(this,{
-        //     type: 'question',
-        //     buttons: ['Yes', 'No'],
-        //     title: 'Confirm',
-        //     message: 'Are you sure you want to quit?'
-        // });
-        // if(choise===1)
-        store.dispatch(setBeforeQuit(true))
-        e.preventDefault();
-        // store.dispatch(storeClosePressed(true));
-        // showClosePrompt();
+    win.on('close', (e: Electron.Event) => {
+        if (win!==null){
+            let choise = dialog.showMessageBoxSync(win,
+                {
+                    type: 'question',
+                    buttons: ['Yes', 'No'],
+                    title: 'Confirm',
+                    message: 'Are you sure you want to quit?'  
+                });
+            if(choise === 1){
+                e.preventDefault();
+            }
+        }
     })
 
     win.on("closed", function() {
