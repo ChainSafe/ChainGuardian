@@ -11,7 +11,7 @@ storiesOf('Confirm Modal', module).add('Confirm Modal', () => {
             <ConfirmModal 
                 showModal={showModalValue}
                 question={questionValue}
-                subText={subTextValue}
+                description={subTextValue}
                 onOKClick={()=>{}}
                 onCancelClick={()=>{}}
             />

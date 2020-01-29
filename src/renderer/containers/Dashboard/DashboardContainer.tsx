@@ -70,13 +70,16 @@ const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> =
             const validators =validatorsData.getValidators();
             const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey.toHexString();
             const selectedV4Keystore = new V4Keystore(
-                path.join(validatorsData.directory,selectedValidatorPublicKey + ".json"));
+                path.join(validatorsData.directory,selectedValidatorPublicKey, ".json"));
             selectedV4Keystore.destroy();
         }
-        const v = validators;
-        v.splice(selectedValidatorIndex, 1);
-        setValidators(v);
+        setValidators(validators.splice(selectedValidatorIndex, 1));
         setConfirmModal(false);
+        setNotification({
+            title: "Validator deleted!",
+            level: Level.ERROR,
+            visible: true
+        });
     };
 
     const onExportValidator = (index: number): void => {
@@ -166,7 +169,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> =
             <ConfirmModal
                 showModal={confirmModal}
                 question={"Are you sure?"}
-                subText={"Validator could still be active"}
+                description={"Validator could still be active"}
                 onOKClick={onConfirmDelete}
                 onCancelClick={(): void => setConfirmModal(false)}
             />
