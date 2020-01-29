@@ -11,20 +11,11 @@ import {connect} from "react-redux";
 import {IRootState} from "../../reducers/index";
 import {RouteComponentProps} from "react-router";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
-import {bindActionCreators, Dispatch} from "redux";
-import {storeAddValidatorAction} from "../../actions/addValidator";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
-import {DEFAULT_ACCOUNT} from "../../constants/account";
 import * as path from "path";
-import {getConfig} from "../../../config/config";
-import {remote} from "electron";
 
-type IOwnProps = Pick<RouteComponentProps, "history">;
-
-interface IInjectedProps{
-    storeAddValidator: typeof storeAddValidatorAction;
-}
+type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
 interface INotificationState {
     title?: string;
@@ -41,7 +32,7 @@ export interface IValidator {
     privateKey: string;
 }
 
-const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRootState, "auth">> = (props) => {
+const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> = (props) => {
     
     // TODO - temporary object, import real network object
     const networksMock: {[id: number]: string} = {
@@ -61,8 +52,11 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
 
     const onAddNewValidator = (): void => {
-        props.storeAddValidator(true);
-        props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
+        
+        props.history.push({
+            pathname: Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING),
+            state: {isRegisterFlow: true}
+        });
     };
 
     const onRemoveValidator = (index: number): void => {
@@ -70,20 +64,22 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
         setConfirmModal(true);
     };
 
-    const onConfirmDelete = (): void => {
+    const onConfirmDelete = async (): Promise<void> => {
         const validatorsData = props.auth.auth;
         if(validatorsData){
-            const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
             const validators =validatorsData.getValidators();
             const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey.toHexString();
-            const selectedV4Keystore = new V4Keystore(path.join(accountDirectory,selectedValidatorPublicKey + ".json"));
+            const selectedV4Keystore = new V4Keystore(
+                path.join(validatorsData.directory,selectedValidatorPublicKey, ".json"));
             selectedV4Keystore.destroy();
         }
-        
-        const v = [...validators];
-        v.splice(selectedValidatorIndex, 1);
-        setValidators(v);
+        setValidators(validators.splice(selectedValidatorIndex, 1));
         setConfirmModal(false);
+        setNotification({
+            title: "Validator deleted!",
+            level: Level.ERROR,
+            visible: true
+        });
     };
 
     const onExportValidator = (index: number): void => {
@@ -115,6 +111,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
                 });
             });
         }
+
         setValidators(validatorArray);
     };
 
@@ -172,7 +169,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
             <ConfirmModal
                 showModal={confirmModal}
                 question={"Are you sure?"}
-                subText={"Validator could still be active"}
+                description={"Validator could still be active"}
                 onOKClick={onConfirmDelete}
                 onCancelClick={(): void => setConfirmModal(false)}
             />
@@ -184,15 +181,7 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
     auth: state.auth,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
-    bindActionCreators(
-        {
-            storeAddValidator: storeAddValidatorAction
-        },
-        dispatch
-    );
-
 export const DashboardContainer = connect(
     mapStateToProps,
-    mapDispatchToProps
+    null
 )(Dashboard);

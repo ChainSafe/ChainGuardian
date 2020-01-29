@@ -9,23 +9,10 @@ import {storeSigningKeyAction} from "../../../../actions";
 import {mnemonicSchema, privateKeySchema} from "./validation";
 import {ValidationResult} from "@hapi/joi";
 import {Eth2HDWallet} from "../../../../services/wallet";
-import {IRootState} from "../../../../reducers";
 
-/**
- * required own props
- */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface IOwnProps extends Pick<RouteComponentProps, "history"> {
-}
+type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
-/**
- * injected by redux
- */
-interface IInjectedProps {
-    storeSigningKey: typeof storeSigningKeyAction;
-}
-
-class SigningKeyImport extends Component<IOwnProps & IInjectedProps & Pick<IRootState, "addValidator">, {}> {
+class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
     public render(): ReactElement {
         return (
             <KeyModalContent 
@@ -44,7 +31,7 @@ class SigningKeyImport extends Component<IOwnProps & IInjectedProps & Pick<IRoot
         const signingKey = input.startsWith("0x") ? input : Eth2HDWallet.getKeypair(input).privateKey.toHexString();
         this.props.storeSigningKey(signingKey);
 
-        if(this.props.addValidator.addValidator) {
+        if(this.props.location.state) {
             this.props.history.replace(Routes.CHECK_PASSWORD);
         }
         else {
@@ -54,9 +41,11 @@ class SigningKeyImport extends Component<IOwnProps & IInjectedProps & Pick<IRoot
 
 }
 
-const mapStateToProps = (state: IRootState): Pick<IRootState, "addValidator"> => ({
-    addValidator: state.addValidator
-});
+// redux
+
+interface IInjectedProps {
+    storeSigningKey: typeof storeSigningKeyAction;
+}
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
@@ -67,6 +56,6 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     );
 
 export const SigningKeyImportContainer = connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps
 )(SigningKeyImport);
