@@ -6,11 +6,11 @@ import {IAuthState, authReducer} from "./auth";
 export interface IRootState {
     register: IRegisterState,
     deposit: IDepositState,
-    auth: IAuthState,
+    auth: IAuthState
 }
 
 export const rootReducer = combineReducers<IRootState>({
     register: registerReducer,
     deposit: depositReducer,
-    auth: authReducer,
+    auth: authReducer
 });
