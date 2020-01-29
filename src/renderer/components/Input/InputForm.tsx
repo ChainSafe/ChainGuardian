@@ -18,6 +18,7 @@ export interface IInputFormProps {
     inputId?: string;
     type?: string;
     eye?: boolean;
+    eyeSlash?: boolean;
     onEyeClick?: () => void;
 }
 
@@ -30,6 +31,14 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
             case false : return("error");
         }
     };
+
+    const handleEyeStyle = (eyeTrue: boolean | undefined, eyeSlashed: boolean | undefined): string => {
+
+        const value = eyeTrue ? "" : "none";
+        const eyeType = eyeSlashed ? "input-eye-slash" : "input-eye";
+        return eyeType + " " + value;
+    };
+
     return( 
         <form onSubmit={props.onSubmit}>
             <div className="label">{props.label}</div>
@@ -45,7 +54,7 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
                     type={props.type}
                 />
                 <div
-                    className={`input-eye ${props.eye? "" : "none"}`}
+                    className={handleEyeStyle(props.eye,props.eyeSlash)}
                     onClick={props.onEyeClick}
                 />
             </div>
