@@ -8,6 +8,7 @@ export interface IInputPromptProps {
     placeholder?: string;
     inputType?: string;
     onSubmit: (data: string) => Promise<ISubmitStatus>;
+    onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
     onCancel: () => void;
     display: boolean;
 }
@@ -37,6 +38,12 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
         setInputData("");
         props.onCancel();
     }
+
+    function handleOnChange(e: React.FormEvent<HTMLInputElement>): void {
+        setInputData(e.currentTarget.value);
+        if (props.onChange) props.onChange(e);
+    }
+
     return(
         <div className={`prompt-overlay ${props.display ? "prompt-show" : "prompt-hide"}`}>
             <div className={"prompt-modal"}>
@@ -47,7 +54,7 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
                     placeholder={props.placeholder}
                     errorMessage={errorMessage}
                     valid={valid}
-                    onChange={(i): void => { setInputData(i.currentTarget.value); }}
+                    onChange={handleOnChange}
                     onSubmit={(e): void => {e.preventDefault();}} /** Disable submit on enter **/
                     type={props.inputType}
                 />

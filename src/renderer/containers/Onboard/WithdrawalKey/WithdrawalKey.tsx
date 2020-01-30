@@ -10,7 +10,7 @@ export default function WithdrawalKey(): ReactElement {
             <p>In case your signing key gets compromised, 
                 all of your validator balance will be withdrawn to this wallet. 
                 Once a deposit is submitted, you cannot change this wallet. 
-                We suggest storing this separately fro the signing key.</p>
+                We suggest storing this separately from the signing key.</p>
             <div className="action-buttons">
                 <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL_IMPORT)}>
                     <ButtonSecondary buttonId="import" large>IMPORT</ButtonSecondary>

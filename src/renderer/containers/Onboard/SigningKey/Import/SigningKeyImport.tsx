@@ -10,20 +10,7 @@ import {mnemonicSchema, privateKeySchema} from "./validation";
 import {ValidationResult} from "@hapi/joi";
 import {Eth2HDWallet} from "../../../../services/wallet";
 
-
-/**
- * required own props
- */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface IOwnProps extends Pick<RouteComponentProps, "history"> {
-}
-
-/**
- * injected by redux
- */
-interface IInjectedProps {
-    storeSigningKey: typeof storeSigningKeyAction;
-}
+type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
 class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
     public render(): ReactElement {
@@ -43,9 +30,21 @@ class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
     private handleSubmit= (input: string): void => {
         const signingKey = input.startsWith("0x") ? input : Eth2HDWallet.getKeypair(input).privateKey.toHexString();
         this.props.storeSigningKey(signingKey);
-        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
+
+        if(this.props.location.state) {
+            this.props.history.replace(Routes.CHECK_PASSWORD);
+        }
+        else {
+            this.props.history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
+        }
     };
 
+}
+
+// redux
+
+interface IInjectedProps {
+    storeSigningKey: typeof storeSigningKeyAction;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>

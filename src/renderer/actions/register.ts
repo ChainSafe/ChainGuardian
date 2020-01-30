@@ -109,7 +109,7 @@ export const afterPasswordAction = (password: string) => {
         // 1. Save to keystore
         dispatch(startRegistrationSubmission());
         const signingKey = PrivateKey.fromBytes(
-            Buffer.from(getState().register.signingKey.slice(2), "hex")
+            Buffer.from(getState().register.signingKey.replace("0x",""), "hex")
         );
         const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
         await V4Keystore.create(

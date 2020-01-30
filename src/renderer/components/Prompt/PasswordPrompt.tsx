@@ -9,6 +9,7 @@ export interface IPasswordPromptProps {
      * @return ISubmitStatus - containing information on validation success and errorMessage if any.
      */
     onSubmit: (password: string) => Promise<ISubmitStatus>;
+    onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
     /**
      * Called on cancel password prompt.
      */
@@ -24,6 +25,7 @@ export const PasswordPrompt: React.FunctionComponent<IPasswordPromptProps> = (pr
         <InputPrompt
             onSubmit={props.onSubmit}
             onCancel={props.onCancel}
+            onChange={props.onChange}
             display={props.display}
             title={"Confirm password"}
             placeholder={"Please renter your password..."}
