@@ -8,7 +8,7 @@ export interface IRootState {
     register: IRegisterState,
     deposit: IDepositState,
     auth: IAuthState,
-    notificationArray: INotificationState
+    notificationArray: Array<INotificationState>
 }
 
 export const rootReducer = combineReducers<IRootState>({

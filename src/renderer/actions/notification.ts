@@ -3,17 +3,48 @@ import {Action, Dispatch} from "redux";
 import {INotificationState} from "../reducers/notification"
 import {Level, Horizontal, Vertical} from "../components/Notification/NotificationEnums"
 //Notification
-export const storeNotificationAction = (notification: INotificationState) =>
+export const storeNotificationAction = (
+    isVisible: boolean,
+    title: string,
+    content: string,
+    level: Level,
+    horizontalPosition: Horizontal,
+    verticalPosition: Vertical
+) =>
     (dispatch: Dispatch<IStoreNotificationAction>): void => {
-        dispatch(setNotification(notification));
+        dispatch(setNotification(
+            isVisible,
+            title,
+            content,
+            level,
+            horizontalPosition,
+            verticalPosition
+        ));
     };
-export const setNotification = (notification: INotificationState): IStoreNotificationAction => ({
+export const setNotification = (
+    isVisible: boolean,
+    title: string,
+    content: string,
+    level: Level,
+    horizontalPosition: Horizontal,
+    verticalPosition: Vertical
+): IStoreNotificationAction => ({
     type: NotificationActionTypes.ADD_NOTIFICATION, payload: {
-        notification
+        isVisible,
+        title,
+        content,
+        level,
+        horizontalPosition,
+        verticalPosition
     }
 });
 export interface IStoreNotificationPayload {
-    notification: INotificationState
+        isVisible: boolean,
+        title: string,
+        content: string,
+        level: Level,
+        horizontalPosition: Horizontal,
+        verticalPosition: Vertical
 }
 export interface IStoreNotificationAction extends Action<NotificationActionTypes> {
     payload: IStoreNotificationPayload;

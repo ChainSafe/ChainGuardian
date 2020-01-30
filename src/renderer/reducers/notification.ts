@@ -4,34 +4,27 @@ import {Action} from "redux";
 import {Level, Horizontal, Vertical} from "../components/Notification/NotificationEnums"
 
 export interface INotificationState {
-    notificationArray: Array<{
         isVisible: boolean,
         title: string,
         content: string,
         level: Level,
         horizontalPosition: Horizontal,
         verticalPosition: Vertical
-    }>
 }
 
-const initialState: INotificationState = {
-    notificationArray: []
-};
+const initialState: Array<INotificationState> = [];
 
 export const notificationReducer = (
     state = initialState, 
-    action: Action<NotificationActionTypes>): INotificationState => {
+    action: Action<NotificationActionTypes>): Array<INotificationState> => {
 
     switch (action.type) {
         case NotificationActionTypes.ADD_NOTIFICATION:
+            const actionProps = (action as IStoreNotificationAction).payload;
 
-            return Object.assign({}, state, {
-                notification: [...state.notificationArray, (action as IStoreNotificationAction).payload.notification]
-
-                // notification: (action as IStoreNotificationAction).payload.notification
-            });
-                
-            // return state.notificationArray.concat((action as IStoreNotificationAction).payload.notification);
+            let newArray = state.slice();
+            newArray.push(actionProps);
+            return newArray;
             
         default:
             return state;
