@@ -11,6 +11,8 @@ import {connect} from "react-redux";
 import {IRootState} from "../../reducers/index";
 import {RouteComponentProps} from "react-router";
 import {Routes} from "../../constants/routes";
+import {bindActionCreators, Dispatch} from "redux";
+import {storeNotificationAction} from "../../actions/notification";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
@@ -29,7 +31,7 @@ export interface IValidator {
     privateKey: string;
 }
 
-const Dashboard: React.FunctionComponent<IOwnProps &  Pick<IRootState, "auth">> = (props) => {
+const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRootState, "auth">> = (props) => {
     
     // TODO - temporary object, import real network object
     const networksMock: {[id: number]: string} = {
@@ -150,11 +152,23 @@ const Dashboard: React.FunctionComponent<IOwnProps &  Pick<IRootState, "auth">> 
     );
 };
 
+interface IInjectedProps {
+    notification: typeof storeNotificationAction
+}
+
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
     auth: state.auth,
 });
 
+const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
+    bindActionCreators(
+        {
+            notification: storeNotificationAction,
+        },
+        dispatch
+    );
+
 export const DashboardContainer = connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 )(Dashboard);

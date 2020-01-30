@@ -5,17 +5,21 @@ import {Horizontal, Level, Vertical} from "./components/Notification/Notificatio
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
 import {IRootState} from "./reducers/index";
+import {storeNotificationAction} from "./actions/notification";
 
-const NotificationRendererContainer: React.FunctionComponent<IInjectedProps> = (props) => {
+const NotificationRendererContainer: React.FunctionComponent<
+    IInjectedProps & Pick<IRootState, "notificationArray">> = (props) => {
 
+    console.log(props.notificationArray.notificationArray);
 
     return(
         <Notification
-        isVisible={true}
-        level={Level.INFO}
-        horizontalPosition={Horizontal.CENTER}
-        verticalPosition={Vertical.CENTER}
-        onClose={()=>{}}
+            title="Global notification"
+            isVisible={true}
+            level={Level.ERROR}
+            horizontalPosition={Horizontal.CENTER}
+            verticalPosition={Vertical.TOP}
+            onClose={()=>{}}
         >
             TEST
         </Notification>
@@ -23,18 +27,22 @@ const NotificationRendererContainer: React.FunctionComponent<IInjectedProps> = (
 }
 
 interface IInjectedProps {
-    // notification: typeof notificationAction
+    notification: typeof storeNotificationAction
 }
+
+const mapStateToProps = (state: IRootState): Pick<IRootState, "notificationArray"> => ({
+    notificationArray: state.notificationArray,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            // notification: notificationAction,
+            notification: storeNotificationAction,
         },
         dispatch
     );
 
 export const NotificationRenderer = connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(NotificationRendererContainer);
