@@ -178,6 +178,13 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
             <ButtonPrimitive
                 onClick={()=>{
                     props.notification(
+                        true, "Title", "Content", Level.INFO, Horizontal.RIGHT, Vertical.BOTTOM
+                    )
+                }}
+                >Dispatch notification</ButtonPrimitive>
+                <ButtonPrimitive
+                onClick={()=>{
+                    props.notification(
                         true, "Title", "Content", Level.INFO, Horizontal.CENTER, Vertical.CENTER
                     )
                 }}
