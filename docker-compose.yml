@@ -5,7 +5,20 @@ services:
     container_name: "cg_eth1_node"
     ports:
       - "8545:8545"
-    entrypoint: sh /opt/init.sh --dev
+    entrypoint: sh /opt/init.sh --rpc --rpcaddr 0.0.0.0 --rpcvhosts=* --rpcapi personal,db,eth,net,web3
     volumes:
       - "./eth1/init.sh:/opt/init.sh:ro"
       - "./eth1/genesis.json:/tmp/genesis.json:ro"
+
+  deployer:
+    image: gochain/web3:0.2.14
+    depends_on:
+      - eth1-node
+    restart: on-failure
+    container_name: "cg_eth1_deployer"
+    command: contract deploy /opt/deposit-contract.bin
+    volumes:
+      - "./eth1/deposit-contract.bin:/opt/deposit-contract.bin"
+    environment:
+      - "WEB3_PRIVATE_KEY=0xcd8ed955f2eab4faa99c5165a76aa89953c6da9438649fc9f3235fbd72da29e1"
+      - "WEB3_RPC_URL=http://eth1-node:8545"
