@@ -1,0 +1,11 @@
+version: "2"
+services:
+  eth1-node:
+    image: ethereum/client-go:v1.9.10
+    container_name: "cg_eth1_node"
+    ports:
+      - "8545:8545"
+    entrypoint: sh /opt/init.sh --dev
+    volumes:
+      - "./eth1/init.sh:/opt/init.sh:ro"
+      - "./eth1/genesis.json:/tmp/genesis.json:ro"
