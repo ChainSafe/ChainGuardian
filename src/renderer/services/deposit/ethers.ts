@@ -34,7 +34,7 @@ export class EthersNotifier {
             contract.on(filter, (pubkey, withdrawalCredentials, amount) => {
                 if (pubkey === this.signingKey.publicKey.toHexString()) {
                     const amountGwei = deserialize(
-                        Buffer.from(amount.slice(2), "hex"), this.networkConfig.config.types.Gwei
+                        Buffer.from(amount.slice(2), "hex"), this.networkConfig.eth2Config.types.Gwei
                     ) as Gwei;
                     clearTimeout(timer);
                     contract.removeAllListeners(DEPOSIT_EVENT);
@@ -69,7 +69,7 @@ export class EthersNotifier {
             if (validatorPubKey === this.signingKey.publicKey.toHexString()) {
                 const amount = deserialize(
                     Buffer.from(data[DATA_INDEX].slice(2), "hex"), 
-                    this.networkConfig.config.types.Gwei) as Gwei;
+                    this.networkConfig.eth2Config.types.Gwei) as Gwei;
                 amountSum.iadd(amount);
             }
         });

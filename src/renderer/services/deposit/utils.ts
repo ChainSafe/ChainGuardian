@@ -42,7 +42,9 @@ export function functionSignatureFromABI(rawAbi: (string | any)[] | string, func
  * @param depositAmount
  * @return instance of ${DepositData} defining deposit transaction.
  */
-export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey, depositAmount: string|number): DepositData {
+export function generateDeposit(
+    signingKey: KeyPair, withdrawalPubKey: BLSPubKey, depositAmount: string|number
+): DepositData {
     // signing public key
     const publicKey: Buffer = signingKey.publicKey.toBytesCompressed();
     // BLS_WITHDRAWAL_PREFIX + hash(withdrawal_pubkey)[1:]

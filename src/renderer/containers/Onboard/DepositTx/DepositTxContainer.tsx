@@ -7,7 +7,6 @@ import {RouteComponentProps} from "react-router";
 import {copyToClipboard} from "../../../services/utils/clipboard-utils";
 import {bindActionCreators, Dispatch} from "redux";
 import {generateDepositAction, verifyDepositAction} from "../../../actions";
-import {INetworkConfig} from "../../../services/interfaces";
 import {IRootState} from "../../../reducers";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {networks} from "../../../services/deposit/networks";
@@ -36,27 +35,13 @@ export default class DepositTxComponent extends
     };
 
     public componentDidMount(): void {
-        this.props.generateDepositTxData({
-            contract: {
-                address: networks[this.state.selectedNetworkIndex].address
-            },
-            config: networks[this.state.selectedNetworkIndex].beaconConfig
-        } as INetworkConfig,
-        networks[this.state.selectedNetworkIndex].depositAmount);
+        this.props.generateDepositTxData(networks[this.state.selectedNetworkIndex]);
     }
 
 
     public onNetworkChange = (selected: number): void => {
-
-        const newSelectedContractAddress = networks[selected].address;
         // Generate transaction data
-        this.props.generateDepositTxData({
-            contract: {
-                address: newSelectedContractAddress
-            },
-            config: networks[selected].beaconConfig
-        } as INetworkConfig,
-        networks[selected].depositAmount);
+        this.props.generateDepositTxData(networks[selected]);
 
         this.setState({
             selectedNetworkIndex: selected
@@ -82,8 +67,8 @@ export default class DepositTxComponent extends
                         options={networkOptions} />
                     <CopyField
                         label="Deposit contract"
-                        value={selectedContract.address}
-                        onCopy={(): void => copyToClipboard(selectedContract.address)} />
+                        value={selectedContract.contract.address}
+                        onCopy={(): void => copyToClipboard(selectedContract.contract.address)} />
                     <CopyField
                         label="Transaction data"
                         value={txData}
@@ -121,13 +106,7 @@ export default class DepositTxComponent extends
         //  - "ropsten"
         //  - "kovan"
         //  - "goerli"
-        this.props.verifyDeposit({
-            contract: {
-                address: networks[selectedNetworkIndex].address
-            },
-            config: networks[selectedNetworkIndex].beaconConfig,
-            networkId:networks[selectedNetworkIndex].networkId
-        } as INetworkConfig);
+        this.props.verifyDeposit(networks[selectedNetworkIndex]);
     };
 }
 

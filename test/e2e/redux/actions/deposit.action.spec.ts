@@ -13,6 +13,8 @@ import {IDepositState} from "../../../../src/renderer/reducers/deposit";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {generateDeposit, DepositTx} from "../../../../src/renderer/services/deposit";
+import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
+import {ethers} from "ethers";
 
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 const publicKeyStr =
@@ -47,23 +49,30 @@ describe("deposit actions", () => {
     });
 
     it("should dispatch generate deposit action", () => {
-        const networkConfig = {
-            config,
+        const networkConfig: INetworkConfig = {
+            eth2Config: config,
             networkId: 0,
+            networkName: "Test",
+            eth1Provider: ethers.getDefaultProvider(),
             contract: {
                 address: "0x0",
                 bytecode: "",
+                depositAmount: 32,
                 deployedAtBlock: 0
             }
         };
 
         const keyPair = new Keypair(PrivateKey.fromHexString(privateKeyStr));
         // Call deposit service and dispatch action
-        const depositData = generateDeposit(keyPair, Buffer.from(publicKeyStr, "hex"), DEPOSIT_AMOUNT);
+        const depositData = generateDeposit(
+            keyPair,
+            Buffer.from(publicKeyStr, "hex"),
+            networkConfig.contract.depositAmount
+        );
         const depositTx = DepositTx.generateDepositTx(
             depositData, 
             networkConfig.contract.address, 
-            networkConfig.config, 
+            networkConfig.eth2Config, 
             DEPOSIT_AMOUNT);
         const txData = `0x${depositTx.data.toString("hex")}`;
 
@@ -71,7 +80,7 @@ describe("deposit actions", () => {
             setDepositTransactionData(txData)
         ];
 
-        reduxStore.dispatch<any>(generateDepositAction(networkConfig, DEPOSIT_AMOUNT));
+        reduxStore.dispatch<any>(generateDepositAction(networkConfig));
 
         expect(reduxStore.getActions()).toEqual(expectedActions);
     });
