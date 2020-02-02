@@ -10,7 +10,7 @@ import {EthersNotifier} from "../services/deposit/ethers";
 import {eth1IdToEthersName} from "../services/utils/crypto-utils";
 
 // Generate deposit action
-export const generateDepositAction = (networkConfig: INetworkConfig, amount: string) => {
+export const generateDepositAction = (networkConfig: INetworkConfig, amount: string|number) => {
     return (dispatch: Dispatch<IGenerateDepositAction>, getState: () => IRootState): void => {
         const {signingKey, withdrawalKey} = getState().register;
         const keyPair = new Keypair(PrivateKey.fromHexString(signingKey));

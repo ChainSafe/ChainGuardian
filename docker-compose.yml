@@ -1,14 +1,16 @@
-version: "2"
+version: "3"
 services:
   eth1-node:
     image: ethereum/client-go:v1.9.10
     container_name: "cg_eth1_node"
     ports:
       - "8545:8545"
-    entrypoint: sh /opt/init.sh --rpc --rpcaddr 0.0.0.0 --rpcvhosts=* --rpcapi personal,db,eth,net,web3
+    entrypoint: sh /opt/init.sh --mine --networkid 999 --nodiscover --nousb --password "/tmp/passwd.txt" --allow-insecure-unlock  --unlock "0xBB5a971b06ba834E077Bae7f15C524bD493C5850"  --etherbase="0xBB5a971b06ba834E077Bae7f15C524bD493C5850" --rpc --rpcaddr 0.0.0.0 --rpcvhosts=* --rpcapi personal,db,eth,net,web3
     volumes:
       - "./eth1/init.sh:/opt/init.sh:ro"
       - "./eth1/genesis.json:/tmp/genesis.json:ro"
+      - "./eth1/signer.key:/tmp/signer.key:ro"
+      - "./eth1/passwd.txt:/tmp/passwd.txt:ro"
 
   deployer:
     image: gochain/web3:0.2.14
@@ -16,7 +18,7 @@ services:
       - eth1-node
     restart: on-failure
     container_name: "cg_eth1_deployer"
-    command: contract deploy /opt/deposit-contract.bin
+    command: contract deploy /opt/deposit-contract.bin --verify false
     volumes:
       - "./eth1/deposit-contract.bin:/opt/deposit-contract.bin"
     environment:
