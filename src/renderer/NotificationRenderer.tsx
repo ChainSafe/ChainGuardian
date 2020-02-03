@@ -10,8 +10,6 @@ import {removeNotificationAction} from "./actions/notification";
 const NotificationRendererContainer: React.FunctionComponent<
 IInjectedProps & Pick<IRootState, "notificationArray">> = (props) => {
 
-    console.log(props.notificationArray);
-
     const mapNotifications = (arrays: INotificationStateObject): React.ReactElement => {
         return(
             <>
