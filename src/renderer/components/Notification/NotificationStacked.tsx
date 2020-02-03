@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Level, Horizontal, Vertical} from "./NotificationEnums";
 import {INotificationProps} from "./Notification";
 
 export const NotificationStacked: React.FunctionComponent<React.PropsWithChildren<INotificationProps>> = (

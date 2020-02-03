@@ -1,69 +1,71 @@
 import * as React from "react";
-import {useState, useEffect} from "react";
 import {NotificationStacked} from "./components/Notification/NotificationStacked";
 import {Notification} from "./components/Notification/Notification";
-import {Horizontal, Level, Vertical} from "./components/Notification/NotificationEnums";
 import {connect} from "react-redux";
+import {bindActionCreators, Dispatch} from "redux";
 import {IRootState} from "./reducers/index";
-import {INotificationState} from "./reducers/notification";
+import {INotificationStateObject} from "./reducers/notification";
+import {removeNotificationAction} from "./actions/notification";
 
-const NotificationRendererContainer: React.FunctionComponent<Pick<IRootState, "notificationArray">> = (props) => {
-    
-    console.log("Notification array: ");
+const NotificationRendererContainer: React.FunctionComponent<
+IInjectedProps & Pick<IRootState, "notificationArray">> = (props) => {
+
     console.log(props.notificationArray);
 
-    const mapNotifications = (array: Array<INotificationState>, stacked?: boolean): React.ReactElement => {
-        if(stacked){
-            // New Component - stacked notifications from bottom up
-            return(
-                <div className={`notification-stacked-container right bottom`}>
-                {array.map((n, index)=>
-                    <NotificationStacked
-                        key={index}
-                        title={n.title}
-                        isVisible={n.isVisible}
-                        level={n.level}
-                        horizontalPosition={n.horizontalPosition}
-                        verticalPosition={n.verticalPosition}
-                        onClose={()=>{}}
-                    >
-                        {n.content}
-                    </NotificationStacked>)}
+    const mapNotifications = (arrays: INotificationStateObject): React.ReactElement => {
+        return(
+            <>
+                <div className={"notification-stacked-container right bottom"}>
+                    {arrays.stacked.map((n, index) =>
+                        <NotificationStacked
+                            key={index}
+                            title={n.title}
+                            isVisible={n.isVisible}
+                            level={n.level}
+                            horizontalPosition={n.horizontalPosition}
+                            verticalPosition={n.verticalPosition}
+                            onClose={(): void => {props.removeNotification(index, true);}}
+                        >
+                            {n.content}
+                        </NotificationStacked>)}
                 </div>
-            );
-        } else{
-            // Absolutly positioned Notifications - old Notification Component
-            return(
-                <>
-                {array.map((n, index)=>
-                    <Notification
-                        key={index}
-                        title={n.title}
-                        isVisible={n.isVisible}
-                        level={n.level}
-                        horizontalPosition={n.horizontalPosition}
-                        verticalPosition={n.verticalPosition}
-                        onClose={()=>{}}
-                    >
-                        {n.content}
-                    </Notification>)}
-                </>
-            );
-        }
-    }
-    return(
-        <>
-            {mapNotifications(props.notificationArray.stacked, true)}
-            {mapNotifications(props.notificationArray.other)}
-        </>
-    );
+                <div>
+                    {arrays.other.map((n, index) =>
+                        <Notification
+                            key={index}
+                            title={n.title}
+                            isVisible={n.isVisible}
+                            level={n.level}
+                            horizontalPosition={n.horizontalPosition}
+                            verticalPosition={n.verticalPosition}
+                            onClose={(): void => {props.removeNotification(index, false);}}
+                        >
+                            {n.content}
+                        </Notification>)}
+                </div>
+            </>
+        );
+    };
+    return mapNotifications(props.notificationArray);
+};
+
+interface IInjectedProps {
+    removeNotification: typeof removeNotificationAction
 }
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "notificationArray"> => ({
     notificationArray: state.notificationArray,
 });
 
+const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
+    bindActionCreators(
+        {
+            removeNotification: removeNotificationAction
+        },
+        dispatch
+    );
+
 export const NotificationRenderer = connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 )(NotificationRendererContainer);

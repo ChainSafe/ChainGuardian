@@ -2,7 +2,7 @@ import * as React from "react";
 import {useState, useEffect} from "react";
 import {ValidatorSimple} from "../../components/Validator/ValidatorSimple";
 import {Background} from "../../components/Background/Background";
-import {ButtonPrimary, ButtonPrimitive} from "../../components/Button/ButtonStandard";
+import {ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {Dropdown} from "../../components/Dropdown/Dropdown";
 import {exportKeystore} from "./export";
 import {Notification} from "../../components/Notification/Notification";
@@ -175,20 +175,6 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
                 onOKClick={onConfirmDelete}
                 onCancelClick={(): void => setConfirmModal(false)}
             />
-            <ButtonPrimitive
-                onClick={()=>{
-                    props.notification(
-                        true, "Title", "Content", Level.INFO, Horizontal.RIGHT, Vertical.BOTTOM
-                    )
-                }}
-                >Dispatch notification</ButtonPrimitive>
-                <ButtonPrimitive
-                onClick={()=>{
-                    props.notification(
-                        true, "Title", "Content", Level.INFO, Horizontal.CENTER, Vertical.CENTER
-                    )
-                }}
-                >Dispatch notification</ButtonPrimitive>
         </Background>
     );
 };

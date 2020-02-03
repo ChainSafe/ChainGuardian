@@ -2,7 +2,6 @@
     position: absolute;
     width: 640px;
     height: 100%;
-    background-color: rgba(172, 0, 0, 0.6);
     display: flex;
     flex-direction: column-reverse;
     pointer-events: none;
@@ -13,12 +12,42 @@
         bottom: 32px;
     }
 }
+.notification-stacked-container .notification-stacked{
+    pointer-events: auto;
+}
 .notification-stacked{
     border-radius: 8px;
     width: 576px;
     padding: 32px;
     margin-top: 10px;
     font-family: 'Palanquin', sans-serif;
+    z-index: 1000;
+    //level style-----------------------
+    &.info{
+        border-top: 4px solid $secondary-blue-400;
+    }
+    &.error{
+        border-top: 4px solid $system-error-500;
+    }
+    &.info .notification-title{
+        color: $secondary-blue-100;
+    }
+    &.error .notification-title{
+        color: $system-error-100;
+    }
+    &.info .notification-content{
+        color: $secondary-blue-200;
+    }
+    &.error .notification-content{
+        color: $system-error-200;
+    }
+    // status
+    &.visible{
+        display: block;
+    }
+    &.none{
+        display: none;
+    }
 }
 .notification-container{
     position: absolute;
@@ -26,7 +55,6 @@
     width: 576px;
     padding: 32px;
     font-family: 'Palanquin', sans-serif;
-
 
     &.visible{
         display: block;
