@@ -16,6 +16,7 @@ import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
 import * as path from "path";
+// import React from "react"
 
 type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
@@ -35,7 +36,9 @@ export interface IValidator {
 }
 
 const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRootState, "auth">> = (props) => {
-    
+
+    // const containerId = ReactDOM.findDOMNode().parentNode.getAttribute("id");
+
     // TODO - temporary object, import real network object
     const networksMock: {[id: number]: string} = {
         12: "NetworkA",
@@ -175,6 +178,48 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRoo
                 onOKClick={onConfirmDelete}
                 onCancelClick={(): void => setConfirmModal(false)}
             />
+            {/* // Testing buttons */}
+            <div style={{position: "absolute", left: "0px", bottom: "30px"}}>
+                <ButtonPrimary
+                    onClick={(): void => {
+                        props.notification({
+                            isVisible: true,
+                            title: "Title",
+                            content: "Content",
+                            level: Level.INFO,
+                            horizontalPosition: Horizontal.RIGHT,
+                            verticalPosition: Vertical.BOTTOM,
+                            
+                        });
+                    }}
+                >Dispatch Stacked</ButtonPrimary>
+                <ButtonPrimary
+                    onClick={(): void => {
+                        props.notification({
+                            isVisible: true,
+                            title: "Title",
+                            content: "Content",
+                            level: Level.ERROR,
+                            horizontalPosition: Horizontal.CENTER,
+                            verticalPosition: Vertical.CENTER,
+                            expireTime: 200
+                        });
+                    }}
+                >Dispatch Center</ButtonPrimary>
+                <ButtonPrimary
+                    onClick={(): void => {
+                        props.notification({
+                            isVisible: true,
+                            title: "Title expire",
+                            content: "Content expire",
+                            level: Level.INFO,
+                            horizontalPosition: Horizontal.RIGHT,
+                            verticalPosition: Vertical.BOTTOM,
+                            expireTime: 2
+                        });
+                    }}
+                >Dispatch Stacked Expire</ButtonPrimary>
+            </div>
         </Background>
     );
 };

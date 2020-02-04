@@ -4,7 +4,7 @@ import {Notification} from "./components/Notification/Notification";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
 import {IRootState} from "./reducers/index";
-import {INotificationStateObject} from "./reducers/notification";
+import {INotificationStateObject, INotificationState} from "./reducers/notification";
 import {removeNotificationAction} from "./actions/notification";
 
 const NotificationRendererContainer: React.FunctionComponent<

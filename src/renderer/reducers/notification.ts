@@ -3,13 +3,17 @@ import {NotificationActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 import {Level, Horizontal, Vertical} from "../components/Notification/NotificationEnums";
 
-export interface INotificationState {
+export interface INotificationProps {
     isVisible: boolean,
     title: string,
     content: string,
     level: Level,
     horizontalPosition: Horizontal,
-    verticalPosition: Vertical
+    verticalPosition: Vertical,
+    expireTime?: number
+}
+export interface INotificationState extends INotificationProps {
+    id: string
 }
 
 export interface INotificationStateObject {
