@@ -77,7 +77,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
             props.auth.auth.removeValidator(selectedValidatorIndex);
             props.storeAuth(props.auth.auth);
         }
-        getValidators();
+        loadValidators();
         setConfirmModal(false);
         setNotification({
             title: "Validator deleted!",
@@ -98,7 +98,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
         }
     };
 
-    const getValidators =  (): void => {
+    const loadValidators =  (): void => {
         const validatorArray: Array<IValidator> = [];
         const validatorsData = props.auth.auth;
         
@@ -121,7 +121,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
 
     useEffect(()=>{
         if(!props.auth.auth) props.history.push(Routes.LOGIN_ROUTE);
-        getValidators();
+        loadValidators();
     },[]);
 
     const topBar =
