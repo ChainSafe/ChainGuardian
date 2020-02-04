@@ -14,6 +14,8 @@ import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
 import * as path from "path";
+import {storeAuthAction} from "../../actions/auth";
+import {bindActionCreators, Dispatch} from "redux";
 
 type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
@@ -32,7 +34,7 @@ export interface IValidator {
     privateKey: string;
 }
 
-const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> = (props) => {
+const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRootState, "auth">> = (props) => {
     
     // TODO - temporary object, import real network object
     const networksMock: {[id: number]: string} = {
@@ -64,16 +66,18 @@ const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> =
         setConfirmModal(true);
     };
 
-    const onConfirmDelete = async (): Promise<void> => {
+    const onConfirmDelete = (): void => {
         const validatorsData = props.auth.auth;
-        if(validatorsData){
+        if(validatorsData && props.auth.auth){
             const validators =validatorsData.getValidators();
             const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey.toHexString();
             const selectedV4Keystore = new V4Keystore(
-                path.join(validatorsData.directory,selectedValidatorPublicKey, ".json"));
+                path.join(validatorsData.directory,selectedValidatorPublicKey + ".json"));
             selectedV4Keystore.destroy();
+            props.auth.auth.removeValidator(selectedValidatorIndex);
+            props.storeAuth(props.auth.auth);
         }
-        setValidators(validators.splice(selectedValidatorIndex, 1));
+        getValidators();
         setConfirmModal(false);
         setNotification({
             title: "Validator deleted!",
@@ -107,7 +111,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> =
                     publicKey: v.publicKey.toHexString(),
                     deposit: 30,
                     network: `${index%2===0 ? "NetworkA" : "NetworkB"}`,
-                    privateKey: v.privateKey.toHexString(),
+                    privateKey: v.privateKey.toHexString()
                 });
             });
         }
@@ -177,11 +181,23 @@ const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> =
     );
 };
 
+interface IInjectedProps{
+    storeAuth: typeof storeAuthAction;
+}
+
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
     auth: state.auth,
 });
 
+const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
+    bindActionCreators(
+        {
+            storeAuth: storeAuthAction
+        },
+        dispatch
+    );
+
 export const DashboardContainer = connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 )(Dashboard);
