@@ -15,7 +15,7 @@ export interface IDockerRunParams {
     // https://docs.docker.com/engine/reference/run/#expose-incoming-ports
     publishAllPorts?: boolean;
     // [ip:hostPort:containerPort | ip::containerPort | hostPort:containerPort | containerPort]
-    ports?: string;
+    ports?: string[];
 
     // IMAGE
     image: string;
