@@ -55,7 +55,7 @@ export const notificationReducer = (
             
         case NotificationActionTypes.REMOVE_NOTIFICATION: {
             const notificationId = (action as IRemoveNotificationAction).payload.id;
-            let arrayIndex: number = 0;
+            let arrayIndex = 0;
             let stacked: boolean | undefined;
                 
             state.stacked.forEach((n, i) => {
@@ -69,7 +69,7 @@ export const notificationReducer = (
                     arrayIndex = i;
                     stacked = false;
                 }
-            })
+            });
 
             if(stacked){
                 const newStackedArray = state.stacked.slice();
@@ -78,7 +78,7 @@ export const notificationReducer = (
                 return Object.assign({}, {
                     stacked: newStackedArray,
                     other: state.other
-                })
+                });
             } else {
                 const newOtherArray = state.other.slice();
                 newOtherArray.splice(arrayIndex,1);
@@ -86,7 +86,7 @@ export const notificationReducer = (
                 return Object.assign({}, {
                     stacked: state.stacked,
                     other: newOtherArray
-                })
+                });
             }
         }
             

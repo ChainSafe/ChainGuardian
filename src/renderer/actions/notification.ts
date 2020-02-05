@@ -22,14 +22,14 @@ export const storeNotificationAction = (notification: INotificationProps) =>
                 dispatch,
                 notification.expireTime*1000,
                 setRemoveNotification(notificationId)
-                )
+            )
             : null;
     };
 export const setNotification = (props: INotificationProps, notificiationId: string): IStoreNotificationAction => {
     return {
         type: NotificationActionTypes.ADD_NOTIFICATION, 
         payload: {...props, id: notificiationId}
-    }
+    };
 };
 export interface IStoreNotificationAction extends Action<NotificationActionTypes> {
     payload: INotificationState;

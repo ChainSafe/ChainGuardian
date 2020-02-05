@@ -6,4 +6,4 @@ export const createNotificationId = (notification: INotificationProps): string =
     return(
         `${notification.source}_${randNum}`
     );
-}
+};
