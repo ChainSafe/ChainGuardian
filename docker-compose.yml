@@ -2,8 +2,9 @@ version: "3"
 services:
   prysm-beacon-chain:
     image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
+    command: --datadir=/data --custom-genesis-delay=0 --bootstrap-node= --deposit-contract 0x4689a3C63CE249355C8a573B5974db21D2d1b8Ef --interop-num-validators 8 --interop-eth1data-votes
     ports:
      - "4000:4000"
      - "13000:13000"
     volumes:
-     - "./prysm:/data"
+     - ".prysm:/data"
