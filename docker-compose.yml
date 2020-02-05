@@ -1,0 +1,9 @@
+version: "3"
+services:
+  prysm-beacon-chain:
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
+    ports:
+     - "4000:4000"
+     - "13000:13000"
+    volumes:
+     - "./prysm:/data"
