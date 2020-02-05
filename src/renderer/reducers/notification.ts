@@ -2,25 +2,27 @@ import {IStoreNotificationAction, IRemoveNotificationAction} from "../actions/no
 import {NotificationActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 import {Level, Horizontal, Vertical} from "../components/Notification/NotificationEnums";
+import {isStackedNotification} from "../services/notification/isStackedNotification";
 
 export interface INotificationProps {
+    /** history.location.pathname */
+    source: string,
     isVisible: boolean,
     title: string,
     content: string,
     level: Level,
     horizontalPosition: Horizontal,
     verticalPosition: Vertical,
+    /** seconds */
     expireTime?: number
 }
 export interface INotificationState extends INotificationProps {
     id: string
 }
-
 export interface INotificationStateObject {
     stacked: Array<INotificationState>,
     other: Array<INotificationState>
 }
-
 const initialState: INotificationStateObject = {
     stacked: [],
     other: []
@@ -30,38 +32,62 @@ export const notificationReducer = (
     state = initialState, 
     action: Action<NotificationActionTypes>): INotificationStateObject => {
 
-    // Copy of current notification state arrays
-    const newStackedArray = state.stacked.slice();
-    const newOtherArray = state.other.slice();
-
     switch (action.type) {
         case NotificationActionTypes.ADD_NOTIFICATION: {
             const actionProps = (action as IStoreNotificationAction).payload;
 
-            if(actionProps.horizontalPosition===Horizontal.RIGHT && actionProps.verticalPosition===Vertical.BOTTOM) {
+            if(isStackedNotification(actionProps.horizontalPosition, actionProps.verticalPosition)) {
+                const newStackedArray = state.stacked.slice();
                 newStackedArray.push(actionProps);
+                return Object.assign({}, {
+                    stacked: newStackedArray,
+                    other: state.other
+                });
             } else {
+                const newOtherArray = state.other.slice();
                 newOtherArray.push(actionProps);
+                return Object.assign({}, {
+                    stacked: state.stacked,
+                    other: newOtherArray
+                });
             }
-
-            return Object.assign({}, {
-                stacked: newStackedArray,
-                other: newOtherArray
-            });
         }
             
         case NotificationActionTypes.REMOVE_NOTIFICATION: {
-            const actionProps = (action as IRemoveNotificationAction).payload;
-
-            if(actionProps.stackedArray) {
-                newStackedArray.splice(actionProps.index, 1);}
-            else {
-                newOtherArray.splice(actionProps.index, 1);}
-
-            return Object.assign({}, {
-                stacked: newStackedArray,
-                other: newOtherArray
+            const notificationId = (action as IRemoveNotificationAction).payload.id;
+            let arrayIndex: number = 0;
+            let stacked: boolean | undefined;
+                
+            state.stacked.forEach((n, i) => {
+                if(n.id===notificationId){
+                    arrayIndex = i;
+                    stacked = true;
+                }
             });
+            state.other.forEach((n, i) => {
+                if(n.id===notificationId) {
+                    arrayIndex = i;
+                    stacked = false;
+                }
+            })
+
+            if(stacked){
+                const newStackedArray = state.stacked.slice();
+                newStackedArray.splice(arrayIndex,1);
+                    
+                return Object.assign({}, {
+                    stacked: newStackedArray,
+                    other: state.other
+                })
+            } else {
+                const newOtherArray = state.other.slice();
+                newOtherArray.splice(arrayIndex,1);
+                    
+                return Object.assign({}, {
+                    stacked: state.stacked,
+                    other: newOtherArray
+                })
+            }
         }
             
         default:

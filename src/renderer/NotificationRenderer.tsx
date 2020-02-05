@@ -4,7 +4,7 @@ import {Notification} from "./components/Notification/Notification";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
 import {IRootState} from "./reducers/index";
-import {INotificationStateObject, INotificationState} from "./reducers/notification";
+import {INotificationStateObject} from "./reducers/notification";
 import {removeNotificationAction} from "./actions/notification";
 
 const NotificationRendererContainer: React.FunctionComponent<
@@ -22,7 +22,7 @@ IInjectedProps & Pick<IRootState, "notificationArray">> = (props) => {
                             level={n.level}
                             horizontalPosition={n.horizontalPosition}
                             verticalPosition={n.verticalPosition}
-                            onClose={(): void => {props.removeNotification(index, true);}}
+                            onClose={(): void => {props.removeNotification(n.id);}}
                         >
                             {n.content}
                         </NotificationStacked>)}
@@ -36,7 +36,7 @@ IInjectedProps & Pick<IRootState, "notificationArray">> = (props) => {
                             level={n.level}
                             horizontalPosition={n.horizontalPosition}
                             verticalPosition={n.verticalPosition}
-                            onClose={(): void => {props.removeNotification(index, false);}}
+                            onClose={(): void => {props.removeNotification(n.id);}}
                         >
                             {n.content}
                         </Notification>)}

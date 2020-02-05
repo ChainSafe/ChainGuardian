@@ -1,47 +1,34 @@
 import {NotificationActionTypes} from "../constants/action-types";
 import {Action, Dispatch} from "redux";
 import {INotificationState, INotificationProps} from "../reducers/notification";
-import {Horizontal, Vertical} from "../components/Notification/NotificationEnums";
-
-export const createNotificationId = (notification: INotificationProps): string => {
-    const level = notification.level.toUpperCase().slice(0,1);
-    const horizontal = notification.horizontalPosition.toUpperCase().slice(0,1);
-    const vertical = notification.verticalPosition.toUpperCase().slice(0,1);
-    const title = notification.title.toUpperCase().slice(0,2);
-    const content = notification.content.toUpperCase().slice(0,2);
-    let expireTime = 0;
-    if(notification.expireTime) expireTime = notification.expireTime;
-    const randNum = (Math.floor((Math.random()*90000))+10000);
-    return(
-        `${level}_${horizontal}_${vertical}_${expireTime}_${title+content}_${randNum}`
-    );
-}
+import {createNotificationId} from "../services/notification/createNotificationId";
 
 //Add Notification
-/** expireTime is in seconds */
+/** expireTime is in seconds
+ * / only bottom right notifications are stacked one above another
+ */
 export const storeNotificationAction = (notification: INotificationProps) =>
     (dispatch: Dispatch<IStoreNotificationAction>): void => {
-        let isStacked = false;
-        if(notification.horizontalPosition===Horizontal.RIGHT 
-            && notification.verticalPosition===Vertical.BOTTOM)
-            isStacked = true;
-        dispatch(setNotification( notification
+        
+        const notificationId = createNotificationId(notification);
+
+        dispatch(setNotification( 
+            notification,
+            notificationId
         ));
 
         notification.expireTime ? 
             setTimeout(
-                dispatch, 
-                notification.expireTime*1000, 
-                setRemoveNotification(0,isStacked)
-                ) 
+                dispatch,
+                notification.expireTime*1000,
+                setRemoveNotification(notificationId)
+                )
             : null;
     };
-export const setNotification = (props: INotificationProps
-): IStoreNotificationAction => {
-
+export const setNotification = (props: INotificationProps, notificiationId: string): IStoreNotificationAction => {
     return {
         type: NotificationActionTypes.ADD_NOTIFICATION, 
-        payload: {...props, id: createNotificationId(props)}
+        payload: {...props, id: notificiationId}
     }
 };
 export interface IStoreNotificationAction extends Action<NotificationActionTypes> {
@@ -49,28 +36,19 @@ export interface IStoreNotificationAction extends Action<NotificationActionTypes
 }
 
 //Remove Notification
-export const removeNotificationAction = (
-    index: number,
-    stackedArray: boolean
-) => 
+export const removeNotificationAction = (id: string) => 
     (dispatch: Dispatch<IRemoveNotificationAction>): void => {
         dispatch(setRemoveNotification(
-            index,
-            stackedArray
+            id
         ));
     };
-export const setRemoveNotification = (
-    index: number,
-    stackedArray: boolean
-): IRemoveNotificationAction => ({
+export const setRemoveNotification = (id: string): IRemoveNotificationAction => ({
     type: NotificationActionTypes.REMOVE_NOTIFICATION, payload: {
-        index,
-        stackedArray
+        id
     }
 });
 export interface IRemoveNotificationPayload {
-    index: number,
-    stackedArray: boolean
+    id: string
 }
 export interface IRemoveNotificationAction extends Action<NotificationActionTypes> {
     payload: IRemoveNotificationPayload
