@@ -1,11 +1,15 @@
 import { Container } from './container';
 
-export class ValidatorNetwork extends Container {
-    public static connectToPrysmNetwork() {
-        return new ValidatorNetwork({
-            image: "gcr.io/prysmaticlabs/prysm/validator:latest",
-            name: "PrysmValidator",
-            restart: "unless-stopped"
+export class BeaconChain extends Container {
+    public static startPrysmBeaconChain(): BeaconChain {
+        const bc = new BeaconChain({
+            image: "gcr.io/prysmaticlabs/prysm/beacon-chain:latest",
+            name: "Prysm-beacon-node",
+            restart: "unless-stopped",
+            ports: ["4000:4000", "13000:13000"],
+            // volume?
         });
+        // bc.run();
+        return bc;
     }
 }
