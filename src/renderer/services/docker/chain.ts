@@ -1,6 +1,6 @@
-import { Container } from './container';
+import {Container} from "./container";
 
-type LogType = 'info' | 'error'
+type LogType = "info" | "error";
 type LogCallbackFunc = (type: LogType, message: string) => void;
 
 export enum SupportedNetworks {
@@ -20,7 +20,7 @@ export class BeaconChain extends Container {
         });
         await bc.run();
         if (waitUntilReady) {
-            while (!(await bc.isRunning())) {}
+            while (!(await bc.isRunning())) { /* */ }
         }
         BeaconChain.instance = bc;
         return bc;
@@ -29,11 +29,11 @@ export class BeaconChain extends Container {
     public listenToLogs(callback: LogCallbackFunc): void {
         const logs = this.getLogs();
         if (!logs) {
-            throw new Error('Logs not found');
+            throw new Error("Logs not found");
         }
 
-        logs.stderr.on('data', function(message: string) {
-            const isInfo = message.substr(0, 40).includes('level=info');
+        logs.stderr.on("data", function(message: string) {
+            const isInfo = message.substr(0, 40).includes("level=info");
             const type = isInfo ? "info" : "error";
             callback(type, message);
         });

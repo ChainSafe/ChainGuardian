@@ -1,6 +1,6 @@
 import {IDockerRunParams} from "./type";
 import {Command} from "./command";
-import { ICmdRun, runCmd, runCmdAsync } from '../utils/cmd-utils';
+import {ICmdRun, runCmd, runCmdAsync} from "../utils/cmd-utils";
 import * as logger from "electron-log";
 import {Readable} from "stream";
 import {extractDockerVersion} from "./utils";
