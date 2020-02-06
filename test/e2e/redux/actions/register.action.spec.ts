@@ -13,6 +13,7 @@ import {IRootState} from "../../../../src/renderer/reducers";
 import {IRegisterState} from "../../../../src/renderer/reducers/register";
 import {IDepositState} from "../../../../src/renderer/reducers/deposit";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
+import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
 
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 const publicKeyStr =
@@ -24,7 +25,8 @@ const initialState: IRootState = {
         signingKey: privateKeyStr
     } as IRegisterState,
     deposit: {} as IDepositState,
-    auth: {} as IAuthState
+    auth: {} as IAuthState,
+    notificationArray: {} as INotificationStateObject
 };
 
 

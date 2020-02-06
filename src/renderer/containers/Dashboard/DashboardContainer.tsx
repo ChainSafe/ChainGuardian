@@ -10,6 +10,8 @@ import {Horizontal, Level, Vertical} from "../../components/Notification/Notific
 import {connect} from "react-redux";
 import {IRootState} from "../../reducers/index";
 import {RouteComponentProps} from "react-router";
+import {bindActionCreators, Dispatch} from "redux";
+import {storeNotificationAction} from "../../actions/notification";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
@@ -34,7 +36,9 @@ export interface IValidator {
     privateKey: string;
 }
 
+
 const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRootState, "auth">> = (props) => {
+
     
     // TODO - temporary object, import real network object
     const networksMock: {[id: number]: string} = {
@@ -181,8 +185,10 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
     );
 };
 
+
 interface IInjectedProps{
     storeAuth: typeof storeAuthAction;
+    notification: typeof storeNotificationAction;
 }
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
@@ -192,7 +198,8 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            storeAuth: storeAuthAction
+            storeAuth: storeAuthAction,
+            notification: storeNotificationAction,
         },
         dispatch
     );
