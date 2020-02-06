@@ -3,16 +3,26 @@ import { Container } from './container';
 type LogType = 'info' | 'error'
 type LogCallbackFunc = (type: LogType, message: string) => void;
 
+export enum SupportedNetworks {
+    PRYSM = "Prysm",
+}
+
 export class BeaconChain extends Container {
-    public static async startPrysmBeaconChain(): Promise<BeaconChain> {
+    public static instance: BeaconChain;
+
+    public static async startPrysmBeaconChain(waitUntilReady = false): Promise<BeaconChain> {
         const bc = new BeaconChain({
             image: "gcr.io/prysmaticlabs/prysm/beacon-chain:latest",
-            name: "Prysm-beacon-node",
+            name: `${SupportedNetworks.PRYSM}-beacon-node`,
             restart: "unless-stopped",
             ports: ["4000:4000", "13000:13000"],
             // volume?
         });
         await bc.run();
+        if (waitUntilReady) {
+            while (!(await bc.isRunning())) {}
+        }
+        BeaconChain.instance = bc;
         return bc;
     }
 
