@@ -29,10 +29,8 @@ function tests(): void {
      */
     it('should execute test case: run-check', async done => {
         if (await BeaconChain.isDockerInstalled()) {
-            beaconChain = BeaconChain.startPrysmBeaconChain();
+            beaconChain = await BeaconChain.startPrysmBeaconChain();
             // wait for docker instance to start
-            await beaconChain.run();
-
             while (!(await beaconChain.isRunning())) { /* */}
             done();
         }
@@ -41,22 +39,22 @@ function tests(): void {
     /**
      * TEST CASE: start Prysm chain and fetch logs
      * 1) run docker instance of prysm beacon chain
-     * 2) check if instance is running using cmdRun
+     * 2) check if logs are pipes to instance
+     * NOTE: All logs go to stderr
      */
-    it('should read logs (from stderr)', async done => {
+    it('should read logs using listenToLogs', async done => {
         if (await BeaconChain.isDockerInstalled()) {
-            beaconChain = BeaconChain.startPrysmBeaconChain();
+            beaconChain = await BeaconChain.startPrysmBeaconChain();
             // wait for docker instance to start
-            await beaconChain.run();
-
             while (!(await beaconChain.isRunning())) {}
             const logs = beaconChain.getLogs();
             if (!logs) {
                 return assert(false, 'Logs not found');
             }
 
-            logs.stderr.on('data', function(chunk: any) {
-                assert(chunk);
+            beaconChain.listenToLogs(function(type: string, message: string) {
+                assert(type === "info" || type === "error");
+                assert(message);
                 done();
             });
         }
