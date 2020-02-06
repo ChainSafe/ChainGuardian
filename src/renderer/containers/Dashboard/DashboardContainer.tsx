@@ -10,6 +10,8 @@ import {Horizontal, Level, Vertical} from "../../components/Notification/Notific
 import {connect} from "react-redux";
 import {IRootState} from "../../reducers/index";
 import {RouteComponentProps} from "react-router";
+import {bindActionCreators, Dispatch} from "redux";
+import {storeNotificationAction} from "../../actions/notification";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
@@ -32,7 +34,7 @@ export interface IValidator {
     privateKey: string;
 }
 
-const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> = (props) => {
+const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRootState, "auth">> = (props) => {
     
     // TODO - temporary object, import real network object
     const networksMock: {[id: number]: string} = {
@@ -70,7 +72,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> =
             const validators =validatorsData.getValidators();
             const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey.toHexString();
             const selectedV4Keystore = new V4Keystore(
-                path.join(validatorsData.directory,selectedValidatorPublicKey, ".json"));
+                path.join(validatorsData.directory,selectedValidatorPublicKey + ".json"));
             selectedV4Keystore.destroy();
         }
         setValidators(validators.splice(selectedValidatorIndex, 1));
@@ -177,11 +179,23 @@ const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> =
     );
 };
 
+interface IInjectedProps {
+    notification: typeof storeNotificationAction
+}
+
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
     auth: state.auth,
 });
 
+const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
+    bindActionCreators(
+        {
+            notification: storeNotificationAction,
+        },
+        dispatch
+    );
+
 export const DashboardContainer = connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 )(Dashboard);
