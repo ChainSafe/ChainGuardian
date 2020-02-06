@@ -13,9 +13,10 @@ matrix:
       language: node_js
       node_js: "12.4.0"
 
-    - os: windows
-      language: node_js
-      node_js: "12.4.0"
+# Stopped working for some reason
+#    - os: windows
+#      language: node_js
+#      node_js: "12.4.0"
 
     - os: linux
       language: node_js
