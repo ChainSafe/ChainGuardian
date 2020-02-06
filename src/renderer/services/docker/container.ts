@@ -1,6 +1,6 @@
 import {IDockerRunParams} from "./type";
 import {Command} from "./command";
-import {runCmd, runCmdAsync} from "../utils/cmd-utils";
+import { ICmdRun, runCmd, runCmdAsync } from '../utils/cmd-utils';
 import * as logger from "electron-log";
 import {Readable} from "stream";
 import {extractDockerVersion} from "./utils";
@@ -12,10 +12,6 @@ export interface IDocker {
     name: string;
     stdout?: Readable;
     stderr?: Readable;
-    logs?: {
-        stdout?: Readable;
-        stderr?: Readable;
-    };
 }
 
 /**
@@ -49,15 +45,23 @@ export abstract class Container {
         }
     }
 
+    public getLogs(): ICmdRun | undefined {
+        if (this.docker) {
+            return {
+                stdout: this.docker.stdout,
+                stderr: this.docker.stderr,
+            } as ICmdRun;
+        }
+    }
+
     /**
      * Runs docker instance defined trough constructor param.
      *
      * If docker instance already started this method will just reject promise.
      *
-     * @param getLogs: boolean - if true return value will contain streams with docker instance logs.
      * @return instance of @{docker}
      */
-    public async run(getLogs?: boolean): Promise<IDocker> {
+    public async run(): Promise<IDocker> {
         if (!this.docker) {
             if (!(await Container.isDockerInstalled())) {
                 throw new Error("Unable to run instance because docker not installed.");
@@ -66,14 +70,6 @@ export abstract class Container {
                 // start new docker instance
                 const run = runCmd(Command.run(this.params));
                 this.docker = {name: this.params.name, stdout: run.stdout, stderr: run.stderr};
-                if (getLogs) {
-                    // start tracking logs from docker instance
-                    const logResult = runCmd(Command.logs(this.params.name));
-                    this.docker.logs = {
-                        stdout: logResult.stdout,
-                        stderr: logResult.stderr
-                    };
-                }
                 logger.info(`Docker instance ${this.docker.name} started.`);
                 return this.docker;
             } catch (e) {
