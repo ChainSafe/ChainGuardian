@@ -5,7 +5,7 @@ import {StringSchema} from "@hapi/joi";
 
 export const PRIVATE_KEY_NOT_STRING_MESSAGE="Value must be non empty string";
 export const PRIVATE_KEY_WRONG_CHARACTERS_MESSAGE = "Private key must contain hex characters only";
-export const PRIVATE_KEY_WRONG_LENGTH_MESSAGE = `Private key should have ${SECRET_KEY_LENGTH} bytes`;
+export const PRIVATE_KEY_WRONG_LENGTH_MESSAGE = `Private key should have ${SECRET_KEY_LENGTH*2} characters`;
 
 export const privateKeySchema = Joi
     .crypto()
