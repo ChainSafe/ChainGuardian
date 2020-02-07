@@ -7,15 +7,20 @@ export enum SupportedNetworks {
     PRYSM = "Prysm",
 }
 
+
 export class BeaconChain extends Container {
     public static instance: BeaconChain;
+    public static DefaultPorts = ["4000:4000", "13000:13000"];
 
-    public static async startPrysmBeaconChain(waitUntilReady = false): Promise<BeaconChain> {
+    public static async startPrysmBeaconChain(
+        ports = BeaconChain.DefaultPorts,
+        waitUntilReady = false,
+    ): Promise<BeaconChain> {
         const bc = new BeaconChain({
             image: "gcr.io/prysmaticlabs/prysm/beacon-chain:latest",
             name: `${SupportedNetworks.PRYSM}-beacon-node`,
             restart: "unless-stopped",
-            ports: ["4000:4000", "13000:13000"],
+            ports,
             volume: `${SupportedNetworks.PRYSM}-chain-data:/data`,
         });
         BeaconChain.instance = bc;

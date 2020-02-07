@@ -1,13 +1,13 @@
 import {BeaconChain, SupportedNetworks} from "../services/docker/chain";
 
-export const startBeaconChainAction = (network = SupportedNetworks.PRYSM) => {
+export const startBeaconChainAction = (network = SupportedNetworks.PRYSM, ports?: string[]) => {
     return async (): Promise<void> => {
         switch(network) {
             case SupportedNetworks.PRYSM:
-                await BeaconChain.startPrysmBeaconChain();
+                await BeaconChain.startPrysmBeaconChain(ports);
                 break;
             default:
-                await BeaconChain.startPrysmBeaconChain();
+                await BeaconChain.startPrysmBeaconChain(ports);
         }
     };
 };
