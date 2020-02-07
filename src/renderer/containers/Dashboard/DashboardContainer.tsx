@@ -17,7 +17,6 @@ import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
 import * as path from "path";
 import {storeAuthAction} from "../../actions/auth";
-import {bindActionCreators, Dispatch} from "redux";
 
 type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
