@@ -1,4 +1,5 @@
 import {BeaconChain, SupportedNetworks} from "../services/docker/chain";
+import { DockerRegistry } from '../services/docker/docker-registry';
 
 export const startBeaconChainAction = (network = SupportedNetworks.PRYSM, ports?: string[]) => {
     return async (): Promise<void> => {
@@ -12,14 +13,20 @@ export const startBeaconChainAction = (network = SupportedNetworks.PRYSM, ports?
     };
 };
 
-export const stopBeaconChainAction = () => {
+export const stopBeaconChainAction = (network = SupportedNetworks.PRYSM) => {
     return async (): Promise<void> => {
-        await BeaconChain.instance.stop();
+        const container = DockerRegistry.getContainer(network);
+        if (container) {
+            await container.stop();
+        }
     };
 };
 
-export const restartBeaconChainAction = () => {
+export const restartBeaconChainAction = (network = SupportedNetworks.PRYSM) => {
     return async (): Promise<void> => {
-        await BeaconChain.instance.restart();
+        const container = DockerRegistry.getContainer(network);
+        if (container) {
+            await container.restart();
+        }
     };
 };

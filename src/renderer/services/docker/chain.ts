@@ -1,4 +1,5 @@
 import {Container} from "./container";
+import { DockerRegistry } from './docker-registry';
 
 type LogType = "info" | "error";
 type LogCallbackFunc = (type: LogType, message: string) => void;
@@ -7,9 +8,7 @@ export enum SupportedNetworks {
     PRYSM = "Prysm",
 }
 
-
 export class BeaconChain extends Container {
-    public static instance: BeaconChain;
     public static DefaultPorts = ["4000:4000", "13000:13000"];
 
     public static async startPrysmBeaconChain(
@@ -23,7 +22,7 @@ export class BeaconChain extends Container {
             ports,
             volume: `${SupportedNetworks.PRYSM}-chain-data:/data`,
         });
-        BeaconChain.instance = bc;
+        DockerRegistry.addContainer(SupportedNetworks.PRYSM, bc);
 
         await bc.run();
         if (waitUntilReady) {
