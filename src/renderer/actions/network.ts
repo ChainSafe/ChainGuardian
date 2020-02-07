@@ -4,7 +4,7 @@ export const startBeaconChainAction = (network = SupportedNetworks.PRYSM) => {
     return async (): Promise<void> => {
         switch(network) {
             case SupportedNetworks.PRYSM:
-                 await BeaconChain.startPrysmBeaconChain();
+                await BeaconChain.startPrysmBeaconChain();
                 break;
             default:
                 await BeaconChain.startPrysmBeaconChain();
