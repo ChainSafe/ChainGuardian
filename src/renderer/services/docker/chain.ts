@@ -18,11 +18,12 @@ export class BeaconChain extends Container {
             ports: ["4000:4000", "13000:13000"],
             volume: `${SupportedNetworks.PRYSM}-chain-data:/data`,
         });
+        BeaconChain.instance = bc;
+
         await bc.run();
         if (waitUntilReady) {
             while (!(await bc.isRunning())) { /* */ }
         }
-        BeaconChain.instance = bc;
         return bc;
     }
 
