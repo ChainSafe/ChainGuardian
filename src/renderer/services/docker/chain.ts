@@ -1,5 +1,5 @@
 import {Container} from "./container";
-import { DockerRegistry } from './docker-registry';
+import {DockerRegistry} from "./docker-registry";
 
 type LogType = "info" | "error";
 type LogCallbackFunc = (type: LogType, message: string) => void;

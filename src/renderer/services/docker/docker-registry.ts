@@ -1,7 +1,7 @@
-import { SupportedNetworks } from './chain';
-import { Container } from './container';
+import {SupportedNetworks} from "./chain";
+import {Container} from "./container";
 
-type Registry = { [network: string]: Container }
+type Registry = { [network: string]: Container };
 
 class DockerRegistryClass {
     private DockerRegistry: Registry = {};
