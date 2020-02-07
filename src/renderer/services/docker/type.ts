@@ -22,4 +22,7 @@ export interface IDockerRunParams {
 
     // COMMAND
     cmd?: string;
+
+    // volume-name:mount-point - https://docs.docker.com/storage/volumes/
+    volume?: string;
 }

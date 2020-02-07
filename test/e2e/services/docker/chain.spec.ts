@@ -19,6 +19,7 @@ function tests(): void {
                 await beaconChain.stop();
             }
             await runCmdAsync("docker rm Prysm-beacon-node").catch();
+            await runCmdAsync("docker volume rm Prysm-chain-data").catch();
         }
     }, 20000);
 

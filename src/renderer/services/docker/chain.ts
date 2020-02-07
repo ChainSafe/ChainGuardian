@@ -16,7 +16,7 @@ export class BeaconChain extends Container {
             name: `${SupportedNetworks.PRYSM}-beacon-node`,
             restart: "unless-stopped",
             ports: ["4000:4000", "13000:13000"],
-            // volume?
+            volume: `${SupportedNetworks.PRYSM}-chain-data:/data`,
         });
         await bc.run();
         if (waitUntilReady) {
