@@ -1,4 +1,4 @@
-import {BeaconChain} from "../../../../src/renderer/services/docker/chain";
+import { BeaconChain, SupportedNetworks } from '../../../../src/renderer/services/docker/chain';
 import {runCmdAsync} from "../../../../src/renderer/services/utils/cmd-utils";
 import {assert} from "chai";
 
@@ -18,8 +18,8 @@ function tests(): void {
             if (isRunning) {
                 await beaconChain.stop();
             }
-            await runCmdAsync("docker rm Prysm-beacon-node").catch();
-            await runCmdAsync("docker volume rm Prysm-chain-data").catch();
+            await runCmdAsync(`docker rm ${SupportedNetworks.PRYSM}`);
+            await runCmdAsync(`docker volume rm ${SupportedNetworks.PRYSM}-chain-data`);
         }
     }, 20000);
 
