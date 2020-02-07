@@ -5,7 +5,6 @@ import {Background} from "../../components/Background/Background";
 import {ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {Dropdown} from "../../components/Dropdown/Dropdown";
 import {exportKeystore} from "./export";
-import {Notification} from "../../components/Notification/Notification";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 import {connect} from "react-redux";
 import {IRootState} from "../../reducers/index";
@@ -19,12 +18,6 @@ import * as path from "path";
 import {storeAuthAction} from "../../actions/auth";
 
 type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
-
-interface INotificationState {
-    title?: string;
-    level: Level;
-    visible: boolean;
-}
 
 export interface IValidator {
     name: string;
@@ -47,12 +40,10 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
     };
 
     const networks: {[id: number]: string} = {...networksMock, 0: "All networks"};
-    const HiddenNotification: INotificationState = {level: Level.INFO, visible: false};
 
     // Component State
     const [validators, setValidators] = useState<Array<IValidator>>([]);
     const [currentNetwork, setCurrentNetwork] = useState<number>(0);
-    const [notification, setNotification] = useState<INotificationState>(HiddenNotification);
     const [confirmModal, setConfirmModal] = useState<boolean>(false);
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
 
@@ -82,10 +73,14 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
         }
         loadValidators();
         setConfirmModal(false);
-        setNotification({
-            title: "Validator deleted!",
+        props.notification({
+            source: props.history.location.pathname,
+            isVisible: true,
+            title: "Validator removed.",
+            horizontalPosition: Horizontal.RIGHT,
+            verticalPosition: Vertical.BOTTOM,
             level: Level.ERROR,
-            visible: true
+            expireTime: 10
         });
     };
 
@@ -93,10 +88,14 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
         const result = exportKeystore(validators[index]);
         // show notification only if success or error, not on cancel
         if(result) {
-            setNotification({
+            props.notification({
+                source: props.history.location.pathname,
+                isVisible: true,
                 title: result.message,
+                horizontalPosition: Horizontal.RIGHT,
+                verticalPosition: Vertical.BOTTOM,
                 level: result.level,
-                visible: true
+                expireTime: 10
             });
         }
     };
@@ -163,16 +162,6 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
                         </div>;
                     })}
             </div>
-            <Notification
-                isVisible={notification.visible}
-                level={notification.level}
-                title={notification.title}
-                horizontalPosition={Horizontal.RIGHT}
-                verticalPosition={Vertical.BOTTOM}
-                onClose={(): void => {
-                    setNotification(HiddenNotification);
-                }}
-            />
             <ConfirmModal
                 showModal={confirmModal}
                 question={"Are you sure?"}

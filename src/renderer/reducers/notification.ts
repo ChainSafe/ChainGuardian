@@ -9,7 +9,7 @@ export interface INotificationProps {
     source: string,
     isVisible: boolean,
     title: string,
-    content: string,
+    content?: string,
     level: Level,
     horizontalPosition: Horizontal,
     verticalPosition: Vertical,
