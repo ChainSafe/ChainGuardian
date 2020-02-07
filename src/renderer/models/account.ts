@@ -112,6 +112,9 @@ export class CGAccount implements IAccount {
     public addValidator(validator: Keypair): void {
         this.validators.push(validator);
     }
+    public removeValidator(index: number): void {
+        this.validators.splice(index, 1);
+    }
 
     /**
    * delete all unlocked keypairs from object
