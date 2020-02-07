@@ -20,3 +20,8 @@ export enum DepositActionTypes {
 export enum AuthActionTypes {
     STORE_AUTH = "STORE_AUTH"
 }
+
+export enum NotificationActionTypes {
+    ADD_NOTIFICATION = "ADD_NOTIFICATION",
+    REMOVE_NOTIFICATION = "REMOVE_NOTIFICATION"
+}

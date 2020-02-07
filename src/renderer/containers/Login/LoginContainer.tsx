@@ -7,49 +7,36 @@ import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStan
 import {Link} from "react-router-dom";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {RouteComponentProps} from "react-router";
-import {Notification} from "../../components/Notification/Notification";
 import {Level, Horizontal, Vertical} from "../../components/Notification/NotificationEnums";
-import {INotification} from "../../services/utils/notification-utils";
 import database from "../../services/db/api/database";
 import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
-import {storeAuthAction} from "../../actions/auth";
+import {storeAuthAction, storeNotificationAction} from "../../actions";
 import {IRootState} from "../../reducers";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
 
 interface IState {
     input: string;
-    notification: INotification | null;
 }
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
 interface IInjectedProps{
     storeAuth: typeof storeAuthAction;
+    notification: typeof storeNotificationAction;
 }
 
 class Login extends Component<
 IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
 
     public state: IState = {
-        input: "",
-        notification: null,
+        input: ""
     };
     
     public render(): ReactElement {
         return (
             <Background>
                 <Modal>
-                    <Notification
-                        title={this.state.notification ? this.state.notification.title : ""}
-                        isVisible={this.isNotificationVisible()}
-                        level={Level.ERROR}
-                        horizontalPosition={Horizontal.CENTER}
-                        verticalPosition={Vertical.TOP}
-                        onClose={(): void => {this.setState({notification: null});}}
-                    >
-                        {this.state.notification ? this.state.notification.message : ""}
-                    </Notification>
                     <h1>Welcome!</h1>
                     <p>Please enter your password or set up an account to get started.</p>
                     <div className="input-container">
@@ -73,9 +60,6 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
             </Background>
         );
     }
-    private isNotificationVisible = (): boolean => {
-        return this.state.notification!==null ? true : false ;
-    };
 
     private handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
         this.setState({input: e.currentTarget.value});
@@ -88,19 +72,30 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
             if(isCorrectValue){
                 await account.unlock(this.state.input);
                 this.props.storeAuth(account);
-                this.setState({notification: null});
                 this.props.history.push(Routes.DASHBOARD_ROUTE);
             } else {
-                this.setState({notification: {
+                this.props.notification({
+                    source: this.props.history.location.pathname,
+                    isVisible: true,
                     title: "Incorrect password",
-                    message: "Try again"
-                }});
+                    content: "Try again",
+                    horizontalPosition: Horizontal.CENTER,
+                    verticalPosition: Vertical.TOP,
+                    level: Level.ERROR,
+                    expireTime: 3
+                });
             }
         } else {
-            this.setState({notification: {
+            this.props.notification({
+                source: this.props.history.location.pathname,
+                isVisible: true,
                 title: "Account does not exist",
-                message: "Please register"
-            }});
+                content: "Please register",
+                horizontalPosition: Horizontal.CENTER,
+                verticalPosition: Vertical.TOP,
+                level: Level.ERROR,
+                expireTime: 3
+            });
         }
     };
 }
@@ -108,7 +103,8 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            storeAuth: storeAuthAction
+            storeAuth: storeAuthAction,
+            notification: storeNotificationAction,
         },
         dispatch
     );

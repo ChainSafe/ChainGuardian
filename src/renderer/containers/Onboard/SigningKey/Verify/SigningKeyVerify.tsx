@@ -22,9 +22,9 @@ Pick<IRootState, "register">> = (props) => {
     const correctAnswerIndex = randArray[getRandomInt(3)];
 
     const handleCorrectAnswer = async (): Promise<void> => {
+        props.setVerificationStatus(false);
         
         const {register, storeSigningKey, history} = props;
-
         const signingKey = Eth2HDWallet.getKeypair(register.signingMnemonic).privateKey.toHexString();
         storeSigningKey(signingKey);
 

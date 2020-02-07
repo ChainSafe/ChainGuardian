@@ -5,23 +5,18 @@ import {Background} from "../../components/Background/Background";
 import {ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {Dropdown} from "../../components/Dropdown/Dropdown";
 import {exportKeystore} from "./export";
-import {Notification} from "../../components/Notification/Notification";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 import {connect} from "react-redux";
 import {IRootState} from "../../reducers/index";
 import {RouteComponentProps} from "react-router";
+import {bindActionCreators, Dispatch} from "redux";
+import {storeNotificationAction} from "../../actions/notification";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
 import * as path from "path";
 
 type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
-
-interface INotificationState {
-    title?: string;
-    level: Level;
-    visible: boolean;
-}
 
 export interface IValidator {
     name: string;
@@ -32,7 +27,7 @@ export interface IValidator {
     privateKey: string;
 }
 
-const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> = (props) => {
+const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps &  Pick<IRootState, "auth">> = (props) => {
     
     // TODO - temporary object, import real network object
     const networksMock: {[id: number]: string} = {
@@ -42,12 +37,10 @@ const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> =
     };
 
     const networks: {[id: number]: string} = {...networksMock, 0: "All networks"};
-    const HiddenNotification: INotificationState = {level: Level.INFO, visible: false};
 
     // Component State
     const [validators, setValidators] = useState<Array<IValidator>>([]);
     const [currentNetwork, setCurrentNetwork] = useState<number>(0);
-    const [notification, setNotification] = useState<INotificationState>(HiddenNotification);
     const [confirmModal, setConfirmModal] = useState<boolean>(false);
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
 
@@ -70,15 +63,19 @@ const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> =
             const validators =validatorsData.getValidators();
             const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey.toHexString();
             const selectedV4Keystore = new V4Keystore(
-                path.join(validatorsData.directory,selectedValidatorPublicKey, ".json"));
+                path.join(validatorsData.directory,selectedValidatorPublicKey + ".json"));
             selectedV4Keystore.destroy();
         }
         setValidators(validators.splice(selectedValidatorIndex, 1));
         setConfirmModal(false);
-        setNotification({
-            title: "Validator deleted!",
+        props.notification({
+            source: props.history.location.pathname,
+            isVisible: true,
+            title: "Validator removed.",
+            horizontalPosition: Horizontal.RIGHT,
+            verticalPosition: Vertical.BOTTOM,
             level: Level.ERROR,
-            visible: true
+            expireTime: 10
         });
     };
 
@@ -86,10 +83,14 @@ const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> =
         const result = exportKeystore(validators[index]);
         // show notification only if success or error, not on cancel
         if(result) {
-            setNotification({
+            props.notification({
+                source: props.history.location.pathname,
+                isVisible: true,
                 title: result.message,
+                horizontalPosition: Horizontal.RIGHT,
+                verticalPosition: Vertical.BOTTOM,
                 level: result.level,
-                visible: true
+                expireTime: 10
             });
         }
     };
@@ -156,16 +157,6 @@ const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> =
                         </div>;
                     })}
             </div>
-            <Notification
-                isVisible={notification.visible}
-                level={notification.level}
-                title={notification.title}
-                horizontalPosition={Horizontal.RIGHT}
-                verticalPosition={Vertical.BOTTOM}
-                onClose={(): void => {
-                    setNotification(HiddenNotification);
-                }}
-            />
             <ConfirmModal
                 showModal={confirmModal}
                 question={"Are you sure?"}
@@ -177,11 +168,23 @@ const Dashboard: React.FunctionComponent<IOwnProps & Pick<IRootState, "auth">> =
     );
 };
 
+interface IInjectedProps {
+    notification: typeof storeNotificationAction
+}
+
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
     auth: state.auth,
 });
 
+const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
+    bindActionCreators(
+        {
+            notification: storeNotificationAction,
+        },
+        dispatch
+    );
+
 export const DashboardContainer = connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 )(Dashboard);

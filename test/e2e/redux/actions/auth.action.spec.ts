@@ -5,6 +5,7 @@ import {IRootState} from "../../../../src/renderer/reducers";
 import {IRegisterState} from "../../../../src/renderer/reducers/register";
 import {IDepositState} from "../../../../src/renderer/reducers/deposit";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
+import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
 import {CGAccount} from "../../../../src/renderer/models/account";
 
 const account = new CGAccount({
@@ -15,7 +16,8 @@ const account = new CGAccount({
 const initialState: IRootState = {
     register: {} as IRegisterState,
     deposit: {} as IDepositState,
-    auth: {} as IAuthState
+    auth: {} as IAuthState,
+    notificationArray: {} as INotificationStateObject
 };
 
 describe("auth actions", () => {
