@@ -1,4 +1,4 @@
-import { BeaconChain, SupportedNetworks } from '../../../../src/renderer/services/docker/chain';
+import {BeaconChain, SupportedNetworks} from "../../../../src/renderer/services/docker/chain";
 import {runCmdAsync} from "../../../../src/renderer/services/utils/cmd-utils";
 import {assert} from "chai";
 

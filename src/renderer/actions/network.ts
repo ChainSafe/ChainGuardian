@@ -1,5 +1,5 @@
 import {BeaconChain, SupportedNetworks} from "../services/docker/chain";
-import { DockerRegistry } from '../services/docker/docker-registry';
+import {DockerRegistry} from "../services/docker/docker-registry";
 
 export const startBeaconChainAction = (network = SupportedNetworks.PRYSM, ports?: string[]) => {
     return async (): Promise<void> => {
