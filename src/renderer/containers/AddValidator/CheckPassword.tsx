@@ -71,6 +71,7 @@ Pick<IRootState, "register" | "auth">> = (props) => {
             <Modal>
                 <h1 id="checkpassword-heading" >Confirm password</h1>
                 <InputForm
+                    focused
                     onChange={handleChange}
                     type="password"
                     valid={inputStatus}
