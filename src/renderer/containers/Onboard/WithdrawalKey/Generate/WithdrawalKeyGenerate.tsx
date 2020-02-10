@@ -6,9 +6,8 @@ import {Routes, OnBoardingRoutes} from "../../../../constants/routes";
 import {Eth2HDWallet} from "../../../../services/wallet";
 import {clipboard} from "electron";
 import {connect} from "react-redux";
-import {storeWithdrawalMnemonicAction,storeWithdrawalVerificationStatusAction} from "../../../../actions";
+import {storeWithdrawalMnemonicAction,storeNotificationAction} from "../../../../actions";
 import {bindActionCreators, Dispatch} from "redux";
-import {Notification} from "../../../../components/Notification/Notification";
 import {Level, Horizontal, Vertical} from "../../../../components/Notification/NotificationEnums";
 import {IRootState} from "../../../../reducers";
 
@@ -20,7 +19,7 @@ interface IOwnProps extends Pick<RouteComponentProps, "history"> {
 }
 interface IInjectedProps {
     storeMnemonic: typeof storeWithdrawalMnemonicAction;
-    setVerificationStatus: typeof storeWithdrawalVerificationStatusAction;
+    notification: typeof storeNotificationAction;
 }
 
 class WithdrawalKeyGenerate extends Component<IOwnProps & IInjectedProps &  Pick<IRootState, "register">, IState> {
@@ -29,20 +28,23 @@ class WithdrawalKeyGenerate extends Component<IOwnProps & IInjectedProps &  Pick
     };
 
     public render(): ReactElement {
+        if(this.props.register.withdrawalVerification) {
+            this.props.notification({
+                source: this.props.history.location.pathname,
+                isVisible: true,
+                title: "Oh no! That wasn’t the correct word.",
+                content: `Please make sure you have saved your unique mnemonic in a safe location
+                 that you can quickly refer to and try again.`,
+                horizontalPosition: Horizontal.CENTER,
+                verticalPosition: Vertical.TOP,
+                level: Level.ERROR,
+                expireTime: 10
+            });
+        }
+
         const {mnemonic} = this.state;
         return (
             <>
-                <Notification
-                    title="Oh no! That wasn’t the correct word."
-                    isVisible={this.props.register.withdrawalVerification}
-                    level={Level.ERROR}
-                    horizontalPosition={Horizontal.CENTER}
-                    verticalPosition={Vertical.TOP}
-                    onClose={(): void => {this.props.setVerificationStatus(false);}}
-                >
-                    Please make sure you have saved your unique mnemonic in a safe location 
-                    that you can quickly refer to and try again.
-                </Notification>
                 <h1>Here’s your special withdrawal key mnemonic </h1>
                 <p className="mnemonic-paragraph">
                     This is yours and yours only! Please store it somewhere safe, 
@@ -73,7 +75,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
             storeMnemonic: storeWithdrawalMnemonicAction,
-            setVerificationStatus: storeWithdrawalVerificationStatusAction,
+            notification: storeNotificationAction,
         },
         dispatch
     );
