@@ -1,14 +1,12 @@
-import React, { Component, ReactElement, useState } from 'react';
-import {RouteComponentProps} from 'react-router-dom';
-import {connect} from 'react-redux';
-import {bindActionCreators, Dispatch} from 'redux';
-import { startBeaconChainAction } from '../../../actions/network';
-import { ButtonPrimary, ButtonPrimitive, ButtonSecondary } from '../../../components/Button/ButtonStandard';
+import React, { useState } from 'react';
+import {RouteComponentProps, Link} from 'react-router-dom';
+import { ButtonPrimary, ButtonSecondary } from '../../../components/Button/ButtonStandard';
 import { InputForm } from '../../../components/Input/InputForm';
+import { OnBoardingRoutes, Routes } from '../../../constants/routes';
 
 type IOwnProps = Pick<RouteComponentProps, 'history'>;
 
-const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) => {
+export const ConfigureContainer: React.FunctionComponent<IOwnProps> = (props) => {
     const [beaconNodeInput, setBeaconNodeInput] = useState("");
 
     const onBeaconNodeInput = (e: React.FormEvent<HTMLInputElement>): void => {
@@ -34,26 +32,10 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
 
             <h5 className="input-or">OR</h5>
 
-            <ButtonPrimary>RUN OWN NODE</ButtonPrimary>
+            <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE)}>
+                <ButtonPrimary>RUN OWN NODE</ButtonPrimary>
+            </Link>
             <div className="skip-notes" >This requires a docker installed. We will run a dockerized beacon node on your device.</div>
         </>
     );
 };
-
-
-interface IInjectedProps {
-    startBeaconChain: typeof startBeaconChainAction;
-}
-
-const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
-    bindActionCreators(
-        {
-            startBeaconChain: startBeaconChainAction,
-        },
-        dispatch
-    );
-
-export const ConfigureContainer = connect(
-    null,
-    mapDispatchToProps
-)(Configure);
