@@ -13,6 +13,7 @@ document.body.appendChild(mainElement);
 
 // Render components
 const render = (Component: () => JSX.Element): void => {
+
     ReactDOM.render(
         <AppContainer>
             <Provider store={store}>

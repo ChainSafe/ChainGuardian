@@ -1,6 +1,7 @@
 import path from "path";
 import {BrowserWindow} from "electron";
 import {iconExtensions, installExtensions} from "./utils";
+import {dialog} from "electron";
 
 let win: BrowserWindow | null;
 
@@ -52,6 +53,22 @@ export async function createWindow(): Promise<void> {
             win!.webContents.openDevTools();
         });
     }
+
+    win.on("close", (e: Electron.Event) => {
+        // TODO / Validator status - check if there is validator with status ACTIVE/VALIDATING
+        if (!process.env.IS_TESTING && win !== null){
+            const choise = dialog.showMessageBoxSync(win,
+                {
+                    type: "question",
+                    buttons: ["Yes", "No"],
+                    title: "Confirm",
+                    message: "Are you sure you want to quit?"  
+                });
+            if(choise === 1){
+                e.preventDefault();
+            }
+        }
+    });
 
     win.on("closed", function() {
         win = null;
