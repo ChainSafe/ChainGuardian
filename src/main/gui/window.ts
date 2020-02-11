@@ -56,7 +56,7 @@ export async function createWindow(): Promise<void> {
 
     win.on("close", (e: Electron.Event) => {
         // TODO / Validator status - check if there is validator with status ACTIVE/VALIDATING
-        if (process.env.NODE_ENV === "production" && win !== null){
+        if (!process.env.IS_TESTING && win !== null){
             const choise = dialog.showMessageBoxSync(win,
                 {
                     type: "question",
