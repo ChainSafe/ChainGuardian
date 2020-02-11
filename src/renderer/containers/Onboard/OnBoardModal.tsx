@@ -8,7 +8,8 @@ const steps = [
     {stepId: 2, stepName: "Withdrawal key"},
     {stepId: 3, stepName: "Deposit"},
     {stepId: 4, stepName: "Password"},
-    {stepId: 5, stepName: "Consent"}
+    {stepId: 5, stepName: "Configure"},
+    {stepId: 6, stepName: "Consent"}
 ];
 
 
