@@ -2,8 +2,7 @@
 
 exports[`Notification renders centered notification 1`] = `
 <div
-  className="notification-container
-        visible center-horizontal center-vertical info "
+  className="notification visible center-horizontal center-vertical info"
 >
   <div
     className="notification-title"
@@ -26,8 +25,7 @@ exports[`Notification renders centered notification 1`] = `
 
 exports[`Notification renders error bottom right 1`] = `
 <div
-  className="notification-container
-        visible right bottom error "
+  className="notification-stacked visible right bottom error"
 >
   <div
     className="notification-title"
@@ -50,8 +48,7 @@ exports[`Notification renders error bottom right 1`] = `
 
 exports[`Notification renders hidden notification 1`] = `
 <div
-  className="notification-container
-        none right bottom info "
+  className="notification-stacked none right bottom info"
 >
   <div
     className="notification-title"
@@ -74,8 +71,7 @@ exports[`Notification renders hidden notification 1`] = `
 
 exports[`Notification renders info top left 1`] = `
 <div
-  className="notification-container
-        visible left top info "
+  className="notification visible left top info"
 >
   <div
     className="notification-title"

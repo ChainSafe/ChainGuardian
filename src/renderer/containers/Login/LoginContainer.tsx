@@ -1,25 +1,39 @@
 import * as React from "react";
-import {ReactNode} from "react";
+import {ReactElement, Component} from "react";
 import {Background} from "../../components/Background/Background";
 import {Modal} from "../../components/Modal/Modal";
 import {InputForm} from "../../components/Input/InputForm";
 import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
 import {Link} from "react-router-dom";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
+import {RouteComponentProps} from "react-router";
+import {Level, Horizontal, Vertical} from "../../components/Notification/NotificationEnums";
+import database from "../../services/db/api/database";
+import {bindActionCreators, Dispatch} from "redux";
+import {connect} from "react-redux";
+import {storeAuthAction, storeNotificationAction} from "../../actions";
+import {IRootState} from "../../reducers";
+import {DEFAULT_ACCOUNT} from "../../constants/account";
 
 interface IState {
     input: string;
 }
 
-export default class LoginContainer extends React.Component {
+type IOwnProps = Pick<RouteComponentProps, "history">;
+
+interface IInjectedProps{
+    storeAuth: typeof storeAuthAction;
+    notification: typeof storeNotificationAction;
+}
+
+class Login extends Component<
+IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
+
     public state: IState = {
         input: ""
     };
-    public handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
-        this.setState({input: e.currentTarget.value});
-    };
     
-    public render(): ReactNode {
+    public render(): ReactElement {
         return (
             <Background>
                 <Modal>
@@ -31,10 +45,12 @@ export default class LoginContainer extends React.Component {
                             focused onChange={this.handleChange} 
                             inputValue={this.state.input} 
                             placeholder="Enter password"
+                            onSubmit={(e): void => {e.preventDefault();}}
                         />
-                        <Link to={Routes.DASHBOARD_ROUTE}>
-                            <ButtonSecondary buttonId="go" >GO</ButtonSecondary>
-                        </Link>
+                        <ButtonSecondary
+                            buttonId="go"
+                            onClick={(): void => {this.handleSubmit();}}
+                        >GO</ButtonSecondary>
                     </div>
                     <h5 className="input-or">OR</h5>
                     <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING)}>
@@ -44,4 +60,56 @@ export default class LoginContainer extends React.Component {
             </Background>
         );
     }
+
+    private handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
+        this.setState({input: e.currentTarget.value});
+    };
+    
+    private handleSubmit = async (): Promise<void> => {
+        const account = await database.account.get(DEFAULT_ACCOUNT);
+        if(account!==null) {
+            const isCorrectValue = await account.isCorrectPassword(this.state.input);
+            if(isCorrectValue){
+                await account.unlock(this.state.input);
+                this.props.storeAuth(account);
+                this.props.history.push(Routes.DASHBOARD_ROUTE);
+            } else {
+                this.props.notification({
+                    source: this.props.history.location.pathname,
+                    isVisible: true,
+                    title: "Incorrect password",
+                    content: "Try again",
+                    horizontalPosition: Horizontal.CENTER,
+                    verticalPosition: Vertical.TOP,
+                    level: Level.ERROR,
+                    expireTime: 3
+                });
+            }
+        } else {
+            this.props.notification({
+                source: this.props.history.location.pathname,
+                isVisible: true,
+                title: "Account does not exist",
+                content: "Please register",
+                horizontalPosition: Horizontal.CENTER,
+                verticalPosition: Vertical.TOP,
+                level: Level.ERROR,
+                expireTime: 3
+            });
+        }
+    };
 }
+
+const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
+    bindActionCreators(
+        {
+            storeAuth: storeAuthAction,
+            notification: storeNotificationAction,
+        },
+        dispatch
+    );
+
+export const LoginContainer = connect(
+    null,
+    mapDispatchToProps
+)(Login);

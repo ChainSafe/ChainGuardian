@@ -1,24 +1,23 @@
 import * as React from "react";
-import {ReactNode} from "react";
+import {useState, useEffect} from "react";
 import {ValidatorSimple} from "../../components/Validator/ValidatorSimple";
 import {Background} from "../../components/Background/Background";
 import {ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {Dropdown} from "../../components/Dropdown/Dropdown";
 import {exportKeystore} from "./export";
-import {Notification} from "../../components/Notification/Notification";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
+import {connect} from "react-redux";
+import {IRootState} from "../../reducers/index";
+import {RouteComponentProps} from "react-router";
+import {bindActionCreators, Dispatch} from "redux";
+import {storeNotificationAction} from "../../actions/notification";
+import {Routes, OnBoardingRoutes} from "../../constants/routes";
+import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
+import {V4Keystore} from "../../services/keystore";
+import * as path from "path";
+import {storeAuthAction} from "../../actions/auth";
 
-interface IState {
-    validators: Array<IValidator>;
-    currentNetwork: number;
-    notification: INotificationState;
-}
-
-interface INotificationState {
-    title?: string;
-    level: Level;
-    visible: boolean;
-}
+type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
 export interface IValidator {
     name: string;
@@ -26,135 +25,174 @@ export interface IValidator {
     publicKey: string;
     deposit: number;
     network: string;
+    privateKey: string;
 }
 
-export default class DashboardContainer extends React.Component {
 
-    public HiddenNotification: INotificationState = {level: Level.INFO, visible: false};
+const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRootState, "auth">> = (props) => {
 
-    public state: IState = {
-        validators: [],
-        currentNetwork: 0,
-        notification: this.HiddenNotification
+    
+    // TODO - temporary object, import real network object
+    const networksMock: {[id: number]: string} = {
+        12: "NetworkA",
+        13: "NetworkB",
+        32: "NetworkC"
     };
 
-    private readonly networks: {[id: number]: string};
+    const networks: {[id: number]: string} = {...networksMock, 0: "All networks"};
 
-    public constructor(props: Readonly<{}>) {
-        super(props);
+    // Component State
+    const [validators, setValidators] = useState<Array<IValidator>>([]);
+    const [currentNetwork, setCurrentNetwork] = useState<number>(0);
+    const [confirmModal, setConfirmModal] = useState<boolean>(false);
+    const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
 
-        // TODO - temporary object, import real network object
-        const networksMock: {[id: number]: string} = {
-            12: "NetworkA",
-            13: "NetworkB",
-            32: "NetworkC"
-        };
+    const onAddNewValidator = (): void => {
+        
+        props.history.push({
+            pathname: Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING),
+            state: {isRegisterFlow: true}
+        });
+    };
 
-        this.state.validators = this.getValidators();
-        this.networks = {...networksMock, 0: "All networks"};
-    }
+    const onRemoveValidator = (index: number): void => {
+        setSelectedValidatorIndex(index);
+        setConfirmModal(true);
+    };
 
-    public render(): ReactNode {
-        const topBar =
+    const onConfirmDelete = (): void => {
+        const validatorsData = props.auth.auth;
+        if(validatorsData && props.auth.auth){
+            const validators =validatorsData.getValidators();
+            const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey.toHexString();
+            const selectedV4Keystore = new V4Keystore(
+                path.join(validatorsData.directory,selectedValidatorPublicKey + ".json"));
+            selectedV4Keystore.destroy();
+            props.auth.auth.removeValidator(selectedValidatorIndex);
+            props.storeAuth(props.auth.auth);
+        }
+        loadValidators();
+        setConfirmModal(false);
+        props.notification({
+            source: props.history.location.pathname,
+            isVisible: true,
+            title: "Validator removed.",
+            horizontalPosition: Horizontal.RIGHT,
+            verticalPosition: Vertical.BOTTOM,
+            level: Level.ERROR,
+            expireTime: 10
+        });
+    };
+
+    const onExportValidator = (index: number): void => {
+        const result = exportKeystore(validators[index]);
+        // show notification only if success or error, not on cancel
+        if(result) {
+            props.notification({
+                source: props.history.location.pathname,
+                isVisible: true,
+                title: result.message,
+                horizontalPosition: Horizontal.RIGHT,
+                verticalPosition: Vertical.BOTTOM,
+                level: result.level,
+                expireTime: 10
+            });
+        }
+    };
+
+    const loadValidators =  (): void => {
+        const validatorArray: Array<IValidator> = [];
+        const validatorsData = props.auth.auth;
+        
+        if(validatorsData){
+            const validators =validatorsData.getValidators();
+            validators.map((v, index)=>{
+                validatorArray.push({
+                    name: validatorsData.name,
+                    status: "TODO status",
+                    publicKey: v.publicKey.toHexString(),
+                    deposit: 30,
+                    network: `${index%2===0 ? "NetworkA" : "NetworkB"}`,
+                    privateKey: v.privateKey.toHexString()
+                });
+            });
+        }
+
+        setValidators(validatorArray);
+    };
+
+    useEffect(()=>{
+        if(!props.auth.auth) props.history.push(Routes.LOGIN_ROUTE);
+        loadValidators();
+    },[]);
+
+    const topBar =
             <div className={"validator-top-bar"}>
                 <div className={"validator-dropdown"}>
                     <Dropdown
-                        options={this.networks}
-                        current={this.state.currentNetwork}
-                        onChange={(selected): void => this.setState({currentNetwork: selected})}
+                        options={networks}
+                        current={currentNetwork}
+                        onChange={(selected): void => setCurrentNetwork(selected)}
                     />
                 </div>
-                <ButtonPrimary onClick={this.onAddNewValidator} buttonId={"add-validator"}>
+                <ButtonPrimary onClick={onAddNewValidator} buttonId={"add-validator"}>
                     ADD NEW VALIDATOR
                 </ButtonPrimary>
             </div>;
 
-        return (
-            <>
-                <Background topBar={topBar} scrollable={true}>
-                    <div className={"validators-display"}>
-                        {this.state.validators
-                            .filter(validator =>
-                                validator.network === this.networks[this.state.currentNetwork] ||
-                                this.state.currentNetwork === 0 // if all networks
-                            )
-                            .map((v, index) => {
-                                return <div key={index} className={"validator-wrapper"}>
-                                    <ValidatorSimple
-                                        name={v.name}
-                                        status={v.status}
-                                        publicKey={v.publicKey}
-                                        deposit={v.deposit}
-                                        onRemoveClick={(): void => {this.onRemoveValidator(index);}}
-                                        onExportClick={(): void => {this.onExportValidator(index);}}
-                                    />
-                                </div>;
-                            })}
-                    </div>
-                    <Notification
-                        isVisible={this.state.notification.visible}
-                        level={this.state.notification.level}
-                        title={this.state.notification.title}
-                        horizontalPosition={Horizontal.RIGHT}
-                        verticalPosition={Vertical.BOTTOM}
-                        onClose={(): void => {
-                            this.setState({notification: this.HiddenNotification});
-                        }}
-                    />
-                </Background>
-            </>
-        );
-    }
+    return (
+        <Background topBar={topBar} scrollable={true}>
+            <div className={"validators-display"}>
+                {validators
+                    .filter(validator =>
+                        validator.network === networks[currentNetwork] ||
+                            currentNetwork === 0 // if all networks
+                    )
+                    .map((v, index) => {
+                        return <div key={index} className={"validator-wrapper"}>
+                            <ValidatorSimple
+                                name={v.name}
+                                status={v.status}
+                                publicKey={v.publicKey}
+                                deposit={v.deposit}
+                                onRemoveClick={(): void => {onRemoveValidator(index);}}
+                                onExportClick={(): void => {onExportValidator(index);}}
+                                privateKey={v.privateKey}
+                            />
+                        </div>;
+                    })}
+            </div>
+            <ConfirmModal
+                showModal={confirmModal}
+                question={"Are you sure?"}
+                description={"Validator could still be active"}
+                onOKClick={onConfirmDelete}
+                onCancelClick={(): void => setConfirmModal(false)}
+            />
+        </Background>
+    );
+};
 
-    private onAddNewValidator = (): void => {
-        // TODO - implement
-        // eslint-disable-next-line no-console
-        console.log("Add new validator");
-    };
 
-    private onRemoveValidator = (index: number): void => {
-        // delete locally from array
-        const v = [...this.state.validators];
-        v.splice(index, 1);
-        this.setState({validators: v});
-        // TODO - implement deleting keystore itself
-        // eslint-disable-next-line no-console
-        console.log(`Remove validator ${index}`);
-    };
-
-    private onExportValidator = (index: number): void => {
-        const result = exportKeystore(this.state.validators[index]);
-        // show notification only if success or error, not on cancel
-        if(result) {
-            this.setState({
-                notification: {
-                    title: result.message,
-                    level: result.level,
-                    visible: true
-                }});
-        }
-    };
-
-    private getValidators(): Array<IValidator> {
-        // TODO - call real validator fetch
-        return [{
-            name: "V1",
-            status: "Working",
-            publicKey: "0x1233567822345564",
-            deposit: 30,
-            network: "NetworkA"
-        },{
-            name: "V2",
-            status: "Not Working",
-            publicKey: "0x1233567822345564",
-            deposit: 30,
-            network: "NetworkA"
-        },{
-            name: "V3",
-            status: "Not Working",
-            publicKey: "0x1d32a7822345564",
-            deposit: 30,
-            network: "NetworkB"
-        }];
-    }
+interface IInjectedProps{
+    storeAuth: typeof storeAuthAction;
+    notification: typeof storeNotificationAction;
 }
+
+const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
+    auth: state.auth,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
+    bindActionCreators(
+        {
+            storeAuth: storeAuthAction,
+            notification: storeNotificationAction,
+        },
+        dispatch
+    );
+
+export const DashboardContainer = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Dashboard);

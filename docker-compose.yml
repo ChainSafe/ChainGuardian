@@ -24,3 +24,19 @@ services:
     environment:
       - "WEB3_PRIVATE_KEY=0xcd8ed955f2eab4faa99c5165a76aa89953c6da9438649fc9f3235fbd72da29e1"
       - "WEB3_RPC_URL=http://eth1-node:8545"
+
+  prysm-beacon-chain:
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
+    container_name: "cg_prysm_beacon_chain"
+    command: --datadir=/data --custom-genesis-delay=0 --bootstrap-node= --deposit-contract 0x4689a3C63CE249355C8a573B5974db21D2d1b8Ef --interop-num-validators 64 --interop-eth1data-votes
+    ports:
+      - "4000:4000"
+      - "13000:13000"
+
+  prysm-validator:
+    image: gcr.io/prysmaticlabs/prysm/validator:latest
+    container_name: "cg_prysm_validator"
+    command: --keymanager=interop --keymanageropts='{"keys":64}' --beacon-rpc-provider prysm-beacon-chain:4000
+    restart: on-failure
+    depends_on:
+      - prysm-beacon-chain

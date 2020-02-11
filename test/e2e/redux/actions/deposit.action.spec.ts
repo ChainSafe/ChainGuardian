@@ -15,6 +15,8 @@ import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {generateDeposit, DepositTx} from "../../../../src/renderer/services/deposit";
 import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
 import {ethers} from "ethers";
+import {IAuthState} from "../../../../src/renderer/reducers/auth";
+import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
 
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 const publicKeyStr =
@@ -25,7 +27,9 @@ const initialState: IRootState = {
         signingKey: privateKeyStr,
         withdrawalKey: publicKeyStr
     } as IRegisterState,
-    deposit: {} as IDepositState
+    deposit: {} as IDepositState,
+    auth: {} as IAuthState,
+    notificationArray: {} as INotificationStateObject
 };
 
 
@@ -72,7 +76,7 @@ describe("deposit actions", () => {
         const depositTx = DepositTx.generateDepositTx(
             depositData, 
             networkConfig.contract.address, 
-            networkConfig.eth2Config, 
+            networkConfig.eth2Config,
             DEPOSIT_AMOUNT);
         const txData = `0x${depositTx.data.toString("hex")}`;
 

@@ -7,7 +7,8 @@ export interface IInputPromptProps {
     title: string;
     placeholder?: string;
     inputType?: string;
-    onSubmit: (data: string) => ISubmitStatus;
+    onSubmit: (data: string) => Promise<ISubmitStatus>;
+    onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
     onCancel: () => void;
     display: boolean;
 }
@@ -22,11 +23,25 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
     const [errorMessage, setErrorMessage] = useState<string | undefined>();
     const [valid, setValid] = useState<boolean | undefined>();
 
-    function onSubmitWrapper(): void {
-        const result = props.onSubmit(inputData);
+    async function onSubmitWrapper(): Promise<void> {
+        const result = await props.onSubmit(inputData);
         setValid(result.valid);
-        if (!result.valid)
+        if (!result.valid) {
             setErrorMessage(result.errorMessage);
+        }
+        else {
+            setTimeout(setInputData,500,""); /** Prompt reset */ 
+            setTimeout(setValid,500,undefined);
+        }
+    }
+    function onCancelWrapper(): void {
+        setInputData("");
+        props.onCancel();
+    }
+
+    function handleOnChange(e: React.FormEvent<HTMLInputElement>): void {
+        setInputData(e.currentTarget.value);
+        if (props.onChange) props.onChange(e);
     }
 
     return(
@@ -34,22 +49,23 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
             <div className={"prompt-modal"}>
                 <h2 className={"prompt-title"}>{props.title}</h2>
                 <InputForm
+                    inputValue={inputData}
                     inputId={"prompt-input"}
                     placeholder={props.placeholder}
                     errorMessage={errorMessage}
                     valid={valid}
-                    onChange={(i): void => { setInputData(i.currentTarget.value); }}
+                    onChange={handleOnChange}
                     onSubmit={(e): void => {e.preventDefault();}} /** Disable submit on enter **/
                     type={props.inputType}
                 />
                 <div className={"button-control"}>
                     <div className={"prompt-cancel-button"}>
-                        <ButtonDestructive onClick={props.onCancel}>
+                        <ButtonDestructive onClick={onCancelWrapper}>
                             Cancel
                         </ButtonDestructive>
                     </div>
                     <div className={"prompt-confirm-button"}>
-                        <ButtonPrimary onClick={(): void => onSubmitWrapper()}>
+                        <ButtonPrimary onClick={onSubmitWrapper}>
                             OK
                         </ButtonPrimary>
                     </div>

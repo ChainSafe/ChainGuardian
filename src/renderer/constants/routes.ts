@@ -2,6 +2,7 @@ export class Routes {
     public static DASHBOARD_ROUTE = "/dashboard";
     public static LOGIN_ROUTE = "/login";
     public static ONBOARD_ROUTE = "/onboard/:step";
+    public static CHECK_PASSWORD = "/checkpassword";
     public static ONBOARD_ROUTE_EVALUATE = (step: OnBoardingRoutes): string => `/onboard/${step}`;
 }
 

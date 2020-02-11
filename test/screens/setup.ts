@@ -25,7 +25,7 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
         waitTimeout: 15000,
         quitTimeout: 4000,
         connectionRetryCount: 3,
-        env: {NODE_ENV: "test", CG_DATABASE_LOCATION: dbLocation, CG_INITIAL_ROUTE: url},
+        env: {NODE_ENV: "test", IS_TESTING: true, CG_DATABASE_LOCATION: dbLocation, CG_INITIAL_ROUTE: url},
         startTimeout: 30000
     });
 

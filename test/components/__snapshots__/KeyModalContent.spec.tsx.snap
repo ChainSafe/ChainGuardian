@@ -12,14 +12,21 @@ Array [
       <div
         className="label"
       />
-      <input
-        autoFocus={true}
-        className="inputform "
-        id="inputKey"
-        onChange={[Function]}
-        placeholder="Test placeholder"
-        value=""
-      />
+      <div
+        className="inputform-container"
+      >
+        <input
+          autoFocus={true}
+          className="inputform "
+          id="inputKey"
+          onChange={[Function]}
+          placeholder="Test placeholder"
+          value=""
+        />
+        <div
+          className="input-eye none"
+        />
+      </div>
       <div
         className="error-message"
       />
@@ -59,14 +66,21 @@ Array [
       <div
         className="label"
       />
-      <input
-        autoFocus={true}
-        className="inputform "
-        id="inputKey"
-        onChange={[Function]}
-        placeholder="Test placeholder"
-        value=""
-      />
+      <div
+        className="inputform-container"
+      >
+        <input
+          autoFocus={true}
+          className="inputform "
+          id="inputKey"
+          onChange={[Function]}
+          placeholder="Test placeholder"
+          value=""
+        />
+        <div
+          className="input-eye none"
+        />
+      </div>
       <div
         className="error-message"
       />

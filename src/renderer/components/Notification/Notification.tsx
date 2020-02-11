@@ -1,5 +1,6 @@
 import * as React from "react";
 import {Level, Horizontal, Vertical} from "./NotificationEnums";
+import {isStackedNotification} from "../../services/notification/isStackedNotification";
 
 export interface INotificationProps{
     isVisible: boolean;
@@ -10,7 +11,6 @@ export interface INotificationProps{
     onClose: () => void;
 }
 
-
 export const Notification: React.FunctionComponent<React.PropsWithChildren<INotificationProps>> = (
     props: React.PropsWithChildren<INotificationProps>) => {
     
@@ -20,12 +20,11 @@ export const Notification: React.FunctionComponent<React.PropsWithChildren<INoti
             classes+= "visible ";
         } else {classes+= "none ";}
         classes+= props.horizontalPosition + " " + props.verticalPosition + " " + props.level; 
-        return classes;
+        return `notification${isStackedNotification(props.horizontalPosition, props.verticalPosition) ?
+            "-stacked" : ""} ${classes}`;
     }
-
     return(
-        <div className={`notification-container
-        ${getClasses(props)} `}>
+        <div className={getClasses(props)}>
             <div className="notification-title">
                 <div>{props.title}</div>
                 <div onClick={(): void => props.onClose()} className="close-icon" />
