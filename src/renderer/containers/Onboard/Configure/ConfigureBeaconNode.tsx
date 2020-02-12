@@ -5,7 +5,7 @@ import {bindActionCreators, Dispatch} from "redux";
 import {startBeaconChainAction} from "../../../actions/network";
 import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
 import {InputForm} from "../../../components/Input/InputForm";
-import {Routes} from "../../../constants/routes";
+import { OnBoardingRoutes, Routes } from '../../../constants/routes';
 import {IRootState} from "../../../reducers";
 
 type IOwnProps = Pick<RouteComponentProps, "history"> & Pick<IRootState, "network">;
@@ -20,7 +20,7 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
     const onSubmit = (): void => {
         if (props.network.selected) {
             props.startBeaconChain(props.network.selected, [`${rpcPort}:4000`, `${libp2pPort}:13000`]);
-            props.history.push(Routes.DASHBOARD_ROUTE);
+            props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
         }
     };
 
