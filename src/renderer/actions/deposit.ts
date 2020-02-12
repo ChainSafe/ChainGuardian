@@ -2,25 +2,27 @@ import {DepositActionTypes} from "../constants/action-types";
 import {Action, Dispatch} from "redux";
 import {IRootState} from "../reducers";
 import {INetworkConfig} from "../services/interfaces";
-import {ethers} from "ethers";
-import {generateDeposit, DepositTx} from "../services/deposit";
+import {DepositTx, generateDeposit} from "../services/deposit";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {EthersNotifier} from "../services/deposit/ethers";
-import {eth1IdToEthersName} from "../services/utils/crypto-utils";
 
 // Generate deposit action
-export const generateDepositAction = (networkConfig: INetworkConfig, amount: string) => {
+export const generateDepositAction = (networkConfig: INetworkConfig) => {
     return (dispatch: Dispatch<IGenerateDepositAction>, getState: () => IRootState): void => {
         const {signingKey, withdrawalKey} = getState().register;
         const keyPair = new Keypair(PrivateKey.fromHexString(signingKey));
         // Call deposit service and dispatch action
-        const depositData = generateDeposit(keyPair, Buffer.from(withdrawalKey, "hex"), amount);
+        const depositData = generateDeposit(
+            keyPair,
+            Buffer.from(withdrawalKey, "hex"),
+            networkConfig.contract.depositAmount
+        );
         const depositTx = DepositTx.generateDepositTx(
             depositData,
             networkConfig.contract.address,
-            networkConfig.config,
-            amount);
+            networkConfig.eth2Config,
+            networkConfig.contract.depositAmount);
         const txData = typeof depositTx.data === "object" ?
             `0x${depositTx.data.toString("hex")}` : `0x${depositTx.data}`;
 
@@ -33,8 +35,7 @@ export const verifyDepositAction = (networkConfig: INetworkConfig) => {
     return (dispatch: Dispatch<IVerifyDepositAction>, getState: () => IRootState): void => {
         const signingKey = getState().register.signingKey;
         const keyPair = new Keypair(PrivateKey.fromHexString(signingKey));
-        const ethersNetworkName = eth1IdToEthersName(networkConfig.networkId);
-        const provider = ethers.getDefaultProvider(ethersNetworkName);
+        const provider = networkConfig.eth1Provider;
         const ethersNotifier = new EthersNotifier(networkConfig, provider, keyPair);
 
         // Call deposit service and listen for event, when transaction is visible dispatch action

@@ -4,7 +4,7 @@ import {createHash} from "crypto";
 import {signingRoot} from "@chainsafe/ssz";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {DEPOSIT_DOMAIN} from "./constants";
-import {utils} from "ethers";
+import {ethers, utils} from "ethers";
 import BN from "bn.js";
 
 /**
@@ -33,15 +33,22 @@ export function functionSignatureFromABI(rawAbi: (string | any)[] | string, func
     return hasFunction ? `${functionName}(${inputs.join(",")})` : "";
 }
 
+export function etherToGwei(ether: string|number|BN): BN {
+    return new BN(ether).imul(new BN(ethers.utils.parseUnits("1", "gwei").toString()));
+}
+
 /**
  * Generate deposit params as instance of @{DepositData}.
  *
  * @param signingKey - signing @{KeyPair}.
  * @param withdrawalPubKey - withdrawal public key.
  *
+ * @param depositAmount
  * @return instance of ${DepositData} defining deposit transaction.
  */
-export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey, depositAmount: string): DepositData {
+export function generateDeposit(
+    signingKey: KeyPair, withdrawalPubKey: BLSPubKey, depositAmount: string|number
+): DepositData {
     // signing public key
     const publicKey: Buffer = signingKey.publicKey.toBytesCompressed();
     // BLS_WITHDRAWAL_PREFIX + hash(withdrawal_pubkey)[1:]
@@ -52,7 +59,7 @@ export function generateDeposit(signingKey: KeyPair, withdrawalPubKey: BLSPubKey
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const amount: BN = new BN(
         // remove decimal zeroes
-        utils.formatUnits(utils.parseEther(depositAmount), "gwei").split(".")[0]
+        utils.formatUnits(utils.parseEther(depositAmount.toString()), "gwei").split(".")[0]
     );
     // define DepositData
     const depositData: DepositData = {

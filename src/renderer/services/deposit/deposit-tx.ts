@@ -25,12 +25,14 @@ export class DepositTx implements ITx{
      *
      * @param depositParams - @{DepositData} object.
      * @param depositContractAddress - address of deployed deposit contract.
+     * @param config
+     * @param depositAmount
      */
     public static generateDepositTx(
         depositParams: DepositData, 
         depositContractAddress: string, 
         config: IBeaconConfig,
-        depositAmount: string): DepositTx {
+        depositAmount: string|number): DepositTx {
         // calculate root
         const depositDataRoot = hashTreeRoot(depositParams, config.types.DepositData);
         const depositFunctionEncoded = abi.simpleEncode(
@@ -44,7 +46,7 @@ export class DepositTx implements ITx{
         return new DepositTx(
             depositFunctionEncoded,
             depositContractAddress,
-            utils.parseEther(depositAmount).toHexString()
+            utils.parseEther(depositAmount.toString()).toHexString()
         );
     }
 
@@ -52,6 +54,7 @@ export class DepositTx implements ITx{
      * Sign this transaction using provided wallet.
      *
      * @param wallet - ethereumjs instance of wallet.
+     * @param nonce
      * @return - transaction signature.
      */
     public async sign(wallet: Wallet, nonce = 0): Promise<string> {

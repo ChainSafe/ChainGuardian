@@ -1,16 +1,15 @@
-import {ethers, utils, Contract} from "ethers";
-import {DEPOSIT_AMOUNT} from "./constants";
+import {Contract, ethers, utils} from "ethers";
 import {bool, Gwei} from "@chainsafe/eth2.0-types";
 import DepositContract from "./options";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {deserialize} from "@chainsafe/ssz";
 import BN from "bn.js";
 import {INetworkConfig} from "../interfaces";
-import {ParamType} from "ethers/utils";
+import {Arrayish, ParamType} from "ethers/utils";
+import {etherToGwei} from "./utils";
 
 const PUBKEY_INDEX = 0;
 const DATA_INDEX = 2;
-const DEPOSIT_AMOUNT_GWEI = new BN(DEPOSIT_AMOUNT).imul(new BN(ethers.utils.parseUnits("1", "gwei").toString()));
 const DEPOSIT_EVENT = "DepositEvent";
 export const DEPOSIT_EVENT_TIMEOUT_MESSAGE = "Timeout waiting for deposit event";
 
@@ -34,7 +33,7 @@ export class EthersNotifier {
             contract.on(filter, (pubkey, withdrawalCredentials, amount) => {
                 if (pubkey === this.signingKey.publicKey.toHexString()) {
                     const amountGwei = deserialize(
-                        Buffer.from(amount.slice(2), "hex"), this.networkConfig.config.types.Gwei
+                        Buffer.from(amount.slice(2), "hex"), this.networkConfig.eth2Config.types.Gwei
                     ) as Gwei;
                     clearTimeout(timer);
                     contract.removeAllListeners(DEPOSIT_EVENT);
@@ -58,7 +57,7 @@ export class EthersNotifier {
         const logs = await this.provider.getLogs(filter);
         const amountSum = new BN(0);
     
-        logs.forEach((log: any) => {
+        logs.forEach((log: {data: Arrayish}) => {
             const data = utils.defaultAbiCoder.decode(
                 DepositContract.abi[0].inputs.map((parameter: ParamType) => parameter.type),
                 log.data
@@ -69,11 +68,11 @@ export class EthersNotifier {
             if (validatorPubKey === this.signingKey.publicKey.toHexString()) {
                 const amount = deserialize(
                     Buffer.from(data[DATA_INDEX].slice(2), "hex"), 
-                    this.networkConfig.config.types.Gwei) as Gwei;
+                    this.networkConfig.eth2Config.types.Gwei) as Gwei;
                 amountSum.iadd(amount);
             }
         });
     
-        return amountSum.cmp(DEPOSIT_AMOUNT_GWEI) === 1;
+        return amountSum.cmp(etherToGwei(this.networkConfig.contract.depositAmount)) === 1;
     }
 }

@@ -48,11 +48,14 @@ describe("Deposit transaction service unit tests", () => {
         invalidWallet = invalidDepositWallet;
         depositContractAddress = await deployDepositContract(provider, toHexString(deployWallet.privateKey));
         networkConfig = {
-            config,
+            eth2Config: config,
+            networkName: "test",
+            eth1Provider: provider,
             networkId: 1,
             contract: {
                 address: depositContractAddress,
                 bytecode: DepositContract.bytecode,
+                depositAmount: 32,
                 deployedAtBlock: await provider.getBlockNumber()
             }
         };
