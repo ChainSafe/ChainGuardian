@@ -25,3 +25,7 @@ export enum NotificationActionTypes {
     ADD_NOTIFICATION = "ADD_NOTIFICATION",
     REMOVE_NOTIFICATION = "REMOVE_NOTIFICATION"
 }
+
+export enum NetworkActionTypes {
+    SELECT_NETWORK = "SELECT_NETWORK",
+}

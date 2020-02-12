@@ -10,6 +10,7 @@ import {generateDepositAction, verifyDepositAction} from "../../../actions";
 import {IRootState} from "../../../reducers";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {networks} from "../../../services/deposit/networks";
+import {saveSelectedNetworkAction} from "../../../actions/network";
 
 /**
  * required own props
@@ -24,6 +25,7 @@ interface IOwnProps extends Pick<RouteComponentProps, "history"> {
 interface IInjectedProps {
     generateDepositTxData: typeof generateDepositAction;
     verifyDeposit: typeof verifyDepositAction;
+    saveSelectedNetwork: typeof saveSelectedNetworkAction;
 }
 
 
@@ -42,6 +44,7 @@ export default class DepositTxComponent extends
     public onNetworkChange = (selected: number): void => {
         // Generate transaction data
         this.props.generateDepositTxData(networks[selected]);
+        this.props.saveSelectedNetwork(networks[selected].networkName);
 
         this.setState({
             selectedNetworkIndex: selected
@@ -118,7 +121,8 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
             generateDepositTxData: generateDepositAction,
-            verifyDeposit: verifyDepositAction
+            verifyDeposit: verifyDepositAction,
+            saveSelectedNetwork: saveSelectedNetworkAction,
         },
         dispatch
     );

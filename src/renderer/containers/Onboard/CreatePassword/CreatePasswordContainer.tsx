@@ -9,7 +9,7 @@ import {joiValidationToErrorMessages} from "../../../services/validation/util";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
 import {afterPasswordAction} from "../../../actions";
-import { OnBoardingRoutes, Routes } from '../../../constants/routes';
+import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 
 export interface IState {
     password: string;

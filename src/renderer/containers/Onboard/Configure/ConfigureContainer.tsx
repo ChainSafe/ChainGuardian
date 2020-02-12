@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import {RouteComponentProps, Link} from 'react-router-dom';
-import { ButtonPrimary, ButtonSecondary } from '../../../components/Button/ButtonStandard';
-import { InputForm } from '../../../components/Input/InputForm';
-import { OnBoardingRoutes, Routes } from '../../../constants/routes';
+import React, {useState} from "react";
+import {RouteComponentProps, Link} from "react-router-dom";
+import {ButtonPrimary, ButtonSecondary} from "../../../components/Button/ButtonStandard";
+import {InputForm} from "../../../components/Input/InputForm";
+import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 
-type IOwnProps = Pick<RouteComponentProps, 'history'>;
+type IOwnProps = Pick<RouteComponentProps, "history">;
 
 export const ConfigureContainer: React.FunctionComponent<IOwnProps> = (props) => {
     const [beaconNodeInput, setBeaconNodeInput] = useState("");

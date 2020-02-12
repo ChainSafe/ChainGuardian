@@ -13,8 +13,8 @@ import {CreatePasswordContainer} from "./CreatePassword/CreatePasswordContainer"
 import WithdrawalKey from "./WithdrawalKey/WithdrawalKey";
 import {WithdrawalKeyGenerateContainer} from "./WithdrawalKey/Generate/WithdrawalKeyGenerate";
 import {WithdrawalKeyVerifyContainer} from "./WithdrawalKey/Verify/WithdrawalKeyVerify";
-import {ConfigureContainer} from './Configure/ConfigureContainer';
-import {ConfigureBeaconNode} from './Configure/ConfigureBeaconNode';
+import {ConfigureContainer} from "./Configure/ConfigureContainer";
+import {ConfigureBeaconNode} from "./Configure/ConfigureBeaconNode";
 
 interface IOnboardStep {
     step: string

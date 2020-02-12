@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import {RouteComponentProps, Link} from 'react-router-dom';
-import {connect} from 'react-redux';
-import {bindActionCreators, Dispatch} from 'redux';
-import { startBeaconChainAction } from '../../../actions/network';
-import { ButtonPrimary} from '../../../components/Button/ButtonStandard';
-import { InputForm } from '../../../components/Input/InputForm';
-import { Routes } from '../../../constants/routes';
+import React, {useState} from "react";
+import {RouteComponentProps, Link} from "react-router-dom";
+import {connect} from "react-redux";
+import {bindActionCreators, Dispatch} from "redux";
+import {startBeaconChainAction} from "../../../actions/network";
+import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
+import {InputForm} from "../../../components/Input/InputForm";
+import {Routes} from "../../../constants/routes";
 
-type IOwnProps = Pick<RouteComponentProps, 'history'>;
+type IOwnProps = Pick<RouteComponentProps, "history">;
 
 const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) => {
     const [rpcPort, setRpcPort] = useState("4000");
