@@ -1,22 +1,17 @@
-import configureStore from "redux-mock-store";
-import thunk from "redux-thunk";
-import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
-import {
-    setDepositVisible, 
-    setDepositTransactionData, 
-    generateDepositAction
-} from "../../../../src/renderer/actions";
-import {DEPOSIT_AMOUNT} from "../../../../src/renderer/services/deposit/constants";
-import {IRootState} from "../../../../src/renderer/reducers";
-import {IRegisterState} from "../../../../src/renderer/reducers/register";
-import {IDepositState} from "../../../../src/renderer/reducers/deposit";
-import {Keypair} from "@chainsafe/bls/lib/keypair";
-import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
-import {generateDeposit, DepositTx} from "../../../../src/renderer/services/deposit";
-import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
-import {ethers} from "ethers";
-import {IAuthState} from "../../../../src/renderer/reducers/auth";
-import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { config } from '@chainsafe/eth2.0-config/lib/presets/mainnet';
+import { generateDepositAction, setDepositTransactionData, setDepositVisible } from '../../../../src/renderer/actions';
+import { IRootState } from '../../../../src/renderer/reducers';
+import { IRegisterState } from '../../../../src/renderer/reducers/register';
+import { IDepositState } from '../../../../src/renderer/reducers/deposit';
+import { Keypair } from '@chainsafe/bls/lib/keypair';
+import { PrivateKey } from '@chainsafe/bls/lib/privateKey';
+import { DepositTx, generateDeposit } from '../../../../src/renderer/services/deposit';
+import { INetworkConfig } from '../../../../src/renderer/services/interfaces';
+import { ethers } from 'ethers';
+import { IAuthState } from '../../../../src/renderer/reducers/auth';
+import { INotificationStateObject } from '../../../../src/renderer/reducers/notification';
 
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 const publicKeyStr =
@@ -77,7 +72,7 @@ describe("deposit actions", () => {
             depositData, 
             networkConfig.contract.address, 
             networkConfig.eth2Config,
-            DEPOSIT_AMOUNT);
+            networkConfig.contract.depositAmount);
         const txData = `0x${depositTx.data.toString("hex")}`;
 
         const expectedActions = [
