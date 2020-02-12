@@ -39,11 +39,11 @@ export default class OnboardContainer extends Component<IProps, {}> {
         [OnBoardingRoutes.WITHDRAWAL_KEY_GENERATE]: <WithdrawalKeyGenerateContainer history={this.props.history}/>,
         [OnBoardingRoutes.WITHDRAWAL_KEY_VALIDATE]: <WithdrawalKeyVerifyContainer history={this.props.history}/>,
         [OnBoardingRoutes.WITHDRAWAL_IMPORT]: <WithdrawalKeyImportContainer history={this.props.history} />,
-        [OnBoardingRoutes.PASSWORD]: <CreatePasswordContainer history={this.props.history}/>,
         [OnBoardingRoutes.CONFIGURE]: <ConfigureContainer history={this.props.history}/>,
         [OnBoardingRoutes.CONFIGURE_BEACON_NODE]: <ConfigureBeaconNode history={this.props.history}/>,
-        [OnBoardingRoutes.DEPOSIT_TX]: <DepositTxContainer history={this.props.history}/>
-    };
+        [OnBoardingRoutes.DEPOSIT_TX]: <DepositTxContainer history={this.props.history}/>,
+        [OnBoardingRoutes.PASSWORD]: <CreatePasswordContainer history={this.props.history}/>,
+};
 
     public render(): ReactElement {
         const {step} = this.props.match.params;

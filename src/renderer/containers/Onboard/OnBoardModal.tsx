@@ -6,9 +6,9 @@ import {History} from "history";
 const steps = [
     {stepId: 1, stepName: "Signing key"},
     {stepId: 2, stepName: "Withdrawal key"},
-    {stepId: 3, stepName: "Deposit"},
-    {stepId: 4, stepName: "Password"},
-    {stepId: 5, stepName: "Configure"},
+    {stepId: 3, stepName: "Configure"},
+    {stepId: 4, stepName: "Deposit"},
+    {stepId: 5, stepName: "Password"},
     {stepId: 6, stepName: "Consent"}
 ];
 
