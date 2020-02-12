@@ -29,9 +29,7 @@ interface IInjectedProps {
 }
 
 
-export default class DepositTxComponent extends
-    Component<IOwnProps & IInjectedProps & Pick<IRootState, "deposit">, {}> {
-
+class DepositTxComponent extends Component<IOwnProps & IInjectedProps & Pick<IRootState, "deposit">, {}> {
     public state = {
         selectedNetworkIndex: 0,
     };
