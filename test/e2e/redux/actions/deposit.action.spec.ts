@@ -12,6 +12,7 @@ import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
 import {ethers} from "ethers";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
 import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
+import {INetworkState} from "../../../../src/renderer/reducers/network";
 
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 const publicKeyStr =
@@ -24,7 +25,8 @@ const initialState: IRootState = {
     } as IRegisterState,
     deposit: {} as IDepositState,
     auth: {} as IAuthState,
-    notificationArray: {} as INotificationStateObject
+    notificationArray: {} as INotificationStateObject,
+    network: {} as INetworkState,
 };
 
 
