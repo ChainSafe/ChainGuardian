@@ -10,50 +10,30 @@ import {generateDepositAction, verifyDepositAction} from "../../../actions";
 import {IRootState} from "../../../reducers";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {networks} from "../../../services/deposit/networks";
-import {saveSelectedNetworkAction} from "../../../actions/network";
+import { INetworkConfig } from '../../../services/interfaces';
 
 /**
  * required own props
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface IOwnProps extends Pick<RouteComponentProps, "history"> {
+interface IOwnProps {
+    network: INetworkConfig;
+    deposit: IRootState["deposit"];
 }
-
-/**
- * injected by redux
- */
 interface IInjectedProps {
     generateDepositTxData: typeof generateDepositAction;
     verifyDeposit: typeof verifyDepositAction;
-    saveSelectedNetwork: typeof saveSelectedNetworkAction;
 }
 
-
-class DepositTxComponent extends Component<IOwnProps & IInjectedProps & Pick<IRootState, "deposit">, {}> {
-    public state = {
-        selectedNetworkIndex: 0,
-    };
-
+class DepositTxComponent extends Component<IOwnProps & IInjectedProps & Pick<RouteComponentProps, "history">> {
     public componentDidMount(): void {
-        this.props.generateDepositTxData(networks[this.state.selectedNetworkIndex]);
+        this.props.generateDepositTxData(this.props.network);
     }
-
-
-    public onNetworkChange = (selected: number): void => {
-        // Generate transaction data
-        this.props.generateDepositTxData(networks[selected]);
-        this.props.saveSelectedNetwork(networks[selected].networkName);
-
-        this.setState({
-            selectedNetworkIndex: selected
-        });
-    };
 
     // TODO Maybe add some loader becase generating transaction data takes some time
     // there is flag in redux "isDepositGenerated"
     public render(): ReactElement {
-        const networkOptions = networks.map((contract) => { return contract.networkName; });
-        const selectedContract = networks[this.state.selectedNetworkIndex];
+        const selectedContract = this.props.network;
         const {txData} = this.props.deposit;
 
         return (
@@ -63,9 +43,10 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps & Pick<IRo
                 <div className="deposit-details-container">
                     <Dropdown
                         label="Network"
-                        current={this.state.selectedNetworkIndex}
-                        onChange={this.onNetworkChange}
-                        options={networkOptions} />
+                        current={0}
+                        options={[selectedContract.networkName]}
+                    />
+
                     <CopyField
                         label="Deposit contract"
                         value={selectedContract.contract.address}
@@ -99,7 +80,6 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps & Pick<IRo
 
     // TODO there is a flag in redux "isDepositVisible" so component should wait until flag is set to true
     private handleVerify = (): void => {
-        const {selectedNetworkIndex} = this.state;
         // FIXME  pass network name from select but find names that ether.js supports
         // You can use any standard network name
         //  - "homestead"
@@ -107,20 +87,24 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps & Pick<IRo
         //  - "ropsten"
         //  - "kovan"
         //  - "goerli"
-        this.props.verifyDeposit(networks[selectedNetworkIndex]);
+        this.props.verifyDeposit(this.props.network);
     };
 }
 
-const mapStateToProps = (state: IRootState): Pick<IRootState, "deposit"> => ({
-    deposit: state.deposit
-});
+const mapStateToProps = (state: IRootState): IOwnProps => {
+    const networkIndex = state.network.selected ? networks.map(n => n.networkName).indexOf(state.network.selected) : 0;
+
+    return {
+        deposit: state.deposit,
+        network: networks[networkIndex],
+    };
+};
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
             generateDepositTxData: generateDepositAction,
             verifyDeposit: verifyDepositAction,
-            saveSelectedNetwork: saveSelectedNetworkAction,
         },
         dispatch
     );

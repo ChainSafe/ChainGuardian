@@ -5,7 +5,7 @@ export interface IDropdownProps {
     options: Array<string> | {[id: number]: string};
     current: number;
     label?: string;
-    onChange: (selected: number) => void;
+    onChange?: (selected: number) => void;
 }
 
 export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdownProps) => {
@@ -21,10 +21,18 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdo
         visible === "block" ? setVisible("none") : null;
     }
 
+    function onClick(key: number): void {
+        const { onChange } = props;
+        if (onChange) {
+            onChange(key);
+            showHide();
+        }
+    }
+
     function renderOption(key: number): any {
         return <div
             key={options[key]}
-            onClick={(): void => {props.onChange(key);showHide();}}
+            onClick={(): void => onClick(key)}
             className={
                 `dropdown-item
                 ${visible}
