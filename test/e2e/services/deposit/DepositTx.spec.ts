@@ -5,7 +5,6 @@ import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {toHexString} from "../../../../src/renderer/services/utils/crypto-utils";
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
-import {DEPOSIT_AMOUNT} from "../../../../src/renderer/services/deposit/constants";
 
 jest.setTimeout(30000);
 
@@ -37,8 +36,8 @@ describe("Deposit transaction service unit tests", () => {
 
     it("should send deposit transaction successfully", async () => {
         const keyPair = new KeyPair(PrivateKey.fromHexString(wallet.privateKey));
-        const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1,"hex"), DEPOSIT_AMOUNT);
-        const depositTx = DepositTx.generateDepositTx(depositData, depositContractAddress, config, DEPOSIT_AMOUNT);
+        const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1,"hex"), "32");
+        const depositTx = DepositTx.generateDepositTx(depositData, depositContractAddress, config, "32");
         const signedTx = await depositTx.sign(wallet);
         const transactionResponse = await provider.sendTransaction(toHexString(signedTx));
         expect(transactionResponse).toBeDefined();

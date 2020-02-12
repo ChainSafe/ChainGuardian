@@ -1,18 +1,15 @@
 import configureStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
-import {
-    setDepositVisible, 
-    setDepositTransactionData, 
-    generateDepositAction
-} from "../../../../src/renderer/actions";
-import {DEPOSIT_AMOUNT} from "../../../../src/renderer/services/deposit/constants";
+import {generateDepositAction, setDepositTransactionData, setDepositVisible} from "../../../../src/renderer/actions";
 import {IRootState} from "../../../../src/renderer/reducers";
 import {IRegisterState} from "../../../../src/renderer/reducers/register";
 import {IDepositState} from "../../../../src/renderer/reducers/deposit";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
-import {generateDeposit, DepositTx} from "../../../../src/renderer/services/deposit";
+import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
+import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
+import {ethers} from "ethers";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
 import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
 
@@ -51,31 +48,38 @@ describe("deposit actions", () => {
     });
 
     it("should dispatch generate deposit action", () => {
-        const networkConfig = {
-            config,
+        const networkConfig: INetworkConfig = {
+            eth2Config: config,
             networkId: 0,
+            networkName: "Test",
+            eth1Provider: ethers.getDefaultProvider(),
             contract: {
                 address: "0x0",
                 bytecode: "",
+                depositAmount: 32,
                 deployedAtBlock: 0
             }
         };
 
         const keyPair = new Keypair(PrivateKey.fromHexString(privateKeyStr));
         // Call deposit service and dispatch action
-        const depositData = generateDeposit(keyPair, Buffer.from(publicKeyStr, "hex"), DEPOSIT_AMOUNT);
+        const depositData = generateDeposit(
+            keyPair,
+            Buffer.from(publicKeyStr, "hex"),
+            networkConfig.contract.depositAmount
+        );
         const depositTx = DepositTx.generateDepositTx(
             depositData, 
             networkConfig.contract.address, 
-            networkConfig.config, 
-            DEPOSIT_AMOUNT);
+            networkConfig.eth2Config,
+            networkConfig.contract.depositAmount);
         const txData = `0x${depositTx.data.toString("hex")}`;
 
         const expectedActions = [
             setDepositTransactionData(txData)
         ];
 
-        reduxStore.dispatch<any>(generateDepositAction(networkConfig, DEPOSIT_AMOUNT));
+        reduxStore.dispatch<any>(generateDepositAction(networkConfig));
 
         expect(reduxStore.getActions()).toEqual(expectedActions);
     });
