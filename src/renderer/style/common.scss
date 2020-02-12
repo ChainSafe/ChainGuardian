@@ -2,6 +2,10 @@
   display: flex;
 }
 
+.align-left {
+  align-self: flex-start;
+}
+
 .flex-column {
   display: flex;;
   flex-direction: column;

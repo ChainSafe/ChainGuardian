@@ -5,7 +5,7 @@ import {bindActionCreators, Dispatch} from "redux";
 import {startBeaconChainAction} from "../../../actions/network";
 import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
 import {InputForm} from "../../../components/Input/InputForm";
-import { OnBoardingRoutes, Routes } from '../../../constants/routes';
+import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {IRootState} from "../../../reducers";
 
 type IOwnProps = Pick<RouteComponentProps, "history"> & Pick<IRootState, "network">;
@@ -35,7 +35,7 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
                     <p>(default: 4000)</p>
                 </div>
                 <InputForm
-                    onChange={(e):void => setRpcPort(e.currentTarget.value)}
+                    onChange={(e): void => setRpcPort(e.currentTarget.value)}
                     inputValue={rpcPort}
                 />
             </div>

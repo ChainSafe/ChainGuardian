@@ -43,7 +43,7 @@ export default class OnboardContainer extends Component<IProps, {}> {
         [OnBoardingRoutes.CONFIGURE_BEACON_NODE]: <ConfigureBeaconNode history={this.props.history}/>,
         [OnBoardingRoutes.DEPOSIT_TX]: <DepositTxContainer history={this.props.history}/>,
         [OnBoardingRoutes.PASSWORD]: <CreatePasswordContainer history={this.props.history}/>,
-};
+    };
 
     public render(): ReactElement {
         const {step} = this.props.match.params;

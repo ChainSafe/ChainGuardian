@@ -10,7 +10,7 @@ import {generateDepositAction, verifyDepositAction} from "../../../actions";
 import {IRootState} from "../../../reducers";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {networks} from "../../../services/deposit/networks";
-import { INetworkConfig } from '../../../services/interfaces';
+import {INetworkConfig} from "../../../services/interfaces";
 
 /**
  * required own props

@@ -1,13 +1,13 @@
 import React, {useState} from "react";
-import {RouteComponentProps, Link} from "react-router-dom";
+import {RouteComponentProps} from "react-router-dom";
 import {ButtonPrimary, ButtonSecondary} from "../../../components/Button/ButtonStandard";
 import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
-import { Dropdown } from '../../../components/Dropdown/Dropdown';
-import { networks } from '../../../services/deposit/networks';
-import { saveSelectedNetworkAction } from '../../../actions/network';
-import { bindActionCreators, Dispatch } from 'redux';
-import { connect } from 'react-redux';
+import {Dropdown} from "../../../components/Dropdown/Dropdown";
+import {networks} from "../../../services/deposit/networks";
+import {saveSelectedNetworkAction} from "../../../actions/network";
+import {bindActionCreators, Dispatch} from "redux";
+import {connect} from "react-redux";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 interface IInjectedProps {
@@ -34,12 +34,14 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
             <h1>Add your beacon node URL</h1>
             <p>Either add the URL or run a dockerized beacon node on your device.</p>
 
-            <Dropdown
-                label="Network"
-                current={selectedNetworkIndex}
-                onChange={setSelectedNetworkIndex}
-                options={networkOptions}
-            />
+            <div className="row align-left">
+                <Dropdown
+                    label="Network"
+                    current={selectedNetworkIndex}
+                    onChange={setSelectedNetworkIndex}
+                    options={networkOptions}
+                />
+            </div>
 
             <div className="action-buttons">
                 <InputForm
@@ -56,7 +58,9 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
 
             <ButtonPrimary onClick={onSubmit}>RUN OWN NODE</ButtonPrimary>
 
-            <div className="skip-notes" >This requires a docker installed. We will run a dockerized beacon node on your device.</div>
+            <div className="skip-notes">
+                This requires a docker installed. We will run a dockerized beacon node on your device.
+            </div>
         </>
     );
 };

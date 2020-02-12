@@ -22,7 +22,7 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdo
     }
 
     function onClick(key: number): void {
-        const { onChange } = props;
+        const {onChange} = props;
         if (onChange) {
             onChange(key);
             showHide();
