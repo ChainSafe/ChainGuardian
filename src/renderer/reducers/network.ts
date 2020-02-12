@@ -2,11 +2,11 @@ import {NetworkActionTypes} from "../constants/action-types";
 import {ISaveSelectedNetworkAction} from "../actions/network";
 
 export interface INetworkState {
-    network?: string;
+    selected?: string;
 }
 
 const initialState: INetworkState = {
-    network: undefined,
+    selected: undefined,
 };
 
 export const networkReducer = (
@@ -15,7 +15,7 @@ export const networkReducer = (
 
     switch (action.type) {
         case NetworkActionTypes.SELECT_NETWORK:
-            return {...state, network: action.payload};
+            return {...state, selected: action.payload};
         default:
             return state;
     }
