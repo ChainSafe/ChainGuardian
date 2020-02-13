@@ -38,6 +38,7 @@
     "lint": "eslint --color --ext .ts --ext .tsx src/ test/",
     "lint:fix": "yarn run lint --fix",
     "check-types": "tsc --noEmit",
+    "pretest": "yarn run build",
     "test": "yarn run test:unit && yarn run test:components && yarn run test:e2e && yarn run test:screens",
     "test:unit": "cross-env ELECTRON=1 yarn run jest --coverage \"test/unit\"",
     "test:e2e": "cross-env ELECTRON=1 yarn run jest \"test/e2e\"",
