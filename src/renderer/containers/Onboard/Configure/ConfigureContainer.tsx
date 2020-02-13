@@ -49,14 +49,15 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
                     onChange={onBeaconNodeInput}
                     inputValue={beaconNodeInput}
                     placeholder="Enter beacon node URL"
+                    inputId="beaconURL"
                 />
 
-                <ButtonSecondary>GO</ButtonSecondary>
+                <ButtonSecondary buttonId="go">GO</ButtonSecondary>
             </div>
 
             <h5 className="input-or">OR</h5>
 
-            <ButtonPrimary onClick={onSubmit}>RUN OWN NODE</ButtonPrimary>
+            <ButtonPrimary buttonId="run-node" onClick={onSubmit}>RUN OWN NODE</ButtonPrimary>
 
             <div className="skip-notes">
                 This requires a docker installed. We will run a dockerized beacon node on your device.

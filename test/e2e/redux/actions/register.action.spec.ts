@@ -14,7 +14,7 @@ import {IRegisterState} from "../../../../src/renderer/reducers/register";
 import {IDepositState} from "../../../../src/renderer/reducers/deposit";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
 import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
-import { INetworkState } from '../../../../src/renderer/reducers/network';
+import {INetworkState} from "../../../../src/renderer/reducers/network";
 
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 const publicKeyStr =

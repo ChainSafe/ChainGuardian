@@ -7,7 +7,7 @@ import {IDepositState} from "../../../../src/renderer/reducers/deposit";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
 import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
 import {CGAccount} from "../../../../src/renderer/models/account";
-import { INetworkState } from '../../../../src/renderer/reducers/network';
+import {INetworkState} from "../../../../src/renderer/reducers/network";
 
 const account = new CGAccount({
     name: "TestName",

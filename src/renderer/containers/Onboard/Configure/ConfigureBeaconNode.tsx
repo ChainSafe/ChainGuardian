@@ -8,16 +8,22 @@ import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {IRootState} from "../../../reducers";
 
-type IOwnProps = Pick<RouteComponentProps, "history"> & Pick<IRootState, "network">;
+type IStateProps =  & Pick<IRootState, "network"> & Pick<IRootState, "register">;
+type IOwnProps =  Pick<RouteComponentProps, "history">;
 interface IInjectedProps {
     startBeaconChain: typeof startBeaconChainAction;
 }
 
-const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) => {
+const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProps> = (props) => {
     const [rpcPort, setRpcPort] = useState("4000");
     const [libp2pPort, setLibp2pPort] = useState("13000");
 
     const onSubmit = (): void => {
+        // Skip deposit if withdrawal key is not provided
+        if (!props.register.withdrawalKey) {
+            return props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+        }
+        // Start beacon chain with selected network and redirect to deposit
         if (props.network.selected) {
             props.startBeaconChain(props.network.selected, [`${rpcPort}:4000`, `${libp2pPort}:13000`]);
             props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
@@ -60,8 +66,9 @@ interface IInjectedProps {
     startBeaconChain: typeof startBeaconChainAction;
 }
 
-const mapStateToProps = (state: IRootState): Pick<IRootState, "network"> => ({
+const mapStateToProps = (state: IRootState): IStateProps => ({
     network: state.network,
+    register: state.register,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
