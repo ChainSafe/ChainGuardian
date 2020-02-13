@@ -21,7 +21,7 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdo
         visible === "block" ? setVisible("none") : null;
     }
 
-    function onClick(key: number): void {
+    function onOptionClick(key: number): void {
         const {onChange} = props;
         if (onChange) {
             onChange(key);
@@ -32,7 +32,7 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdo
     function renderOption(key: number): any {
         return <div
             key={options[key]}
-            onClick={(): void => onClick(key)}
+            onClick={(): void => onOptionClick(key)}
             className={
                 `dropdown-item
                 ${visible}
@@ -46,7 +46,7 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdo
             {props.label && <h3>{props.label}</h3>}
             <div onClick={(): void=> hide()} className="dropdown-screen">
                 <div className="dropdown-container">
-                    <div onClick={(): void=> showHide()} className="dropdown-selected">
+                    <div onClick={(): void => props.onChange && showHide()} className="dropdown-selected">
                         <div>{props.options[props.current]}</div>
                     </div>
                     <div className="dropdown-items-container">
