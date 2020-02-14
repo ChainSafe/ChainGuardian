@@ -5,7 +5,6 @@ import {signingRoot} from "@chainsafe/ssz";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {DEPOSIT_DOMAIN} from "./constants";
 import {ethers, utils} from "ethers";
-import BN from "bn.js";
 
 /**
  * Generate function signature from ABI object.
@@ -33,8 +32,8 @@ export function functionSignatureFromABI(rawAbi: (string | any)[] | string, func
     return hasFunction ? `${functionName}(${inputs.join(",")})` : "";
 }
 
-export function etherToGwei(ether: string|number|BN): BN {
-    return new BN(ether).imul(new BN(ethers.utils.parseUnits("1", "gwei").toString()));
+export function etherToGwei(ether: string|number|bigint): bigint {
+    return BigInt(ether) * (BigInt(ethers.utils.parseUnits("1", "gwei").toString()));
 }
 
 /**
@@ -57,7 +56,7 @@ export function generateDeposit(
         createHash("sha256").update(withdrawalPubKey).digest().subarray(1)
     ]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const amount: BN = new BN(
+    const amount: bigint = BigInt(
         // remove decimal zeroes
         utils.formatUnits(utils.parseEther(depositAmount.toString()), "gwei").split(".")[0]
     );

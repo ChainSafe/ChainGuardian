@@ -3,7 +3,6 @@ import {
     BLSPubkey,
     Epoch,
     IndexedAttestation,
-    Shard,
     Slot,
     uint64,
     uint8,
@@ -25,7 +24,6 @@ import {IBeaconAPIClient, IBeaconApiClientOptions} from "./interface";
 import {Client} from "./http/client";
 import {EmptyUrl} from "./errors";
 import {getChainForkSSZType, IChainFork, ISyncing, SyncingSSZType, ValidatorDutySSZTyoe} from "./types";
-import BN from "bn.js";
 
 export class Eth2 implements IBeaconAPIClient {
     private options: IBeaconApiClientOptions;
@@ -44,7 +42,7 @@ export class Eth2 implements IBeaconAPIClient {
     }
 
     public async fetchGenesisTime(): Promise<uint64> {
-        return new BN(await this.httpClient.get<string>(FETCH_GENESIS_TIME));
+        return BigInt(await this.httpClient.get<string>(FETCH_GENESIS_TIME));
     }
 
     public async fetchNodeSyncing(): Promise<ISyncing> {
@@ -83,7 +81,7 @@ export class Eth2 implements IBeaconAPIClient {
         validatorPubkey: BLSPubkey,
         pocBit: uint8,
         slot: Slot,
-        shard: Shard
+        shard: number,
     ): Promise<IndexedAttestation> {
         const result = await this.httpClient.get<object>(
             PRODUCE_ATTESTATION(validatorPubkey, pocBit, slot, shard)

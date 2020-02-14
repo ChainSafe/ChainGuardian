@@ -7,7 +7,6 @@ import {toHexString} from "../../../../src/renderer/services/utils/crypto-utils"
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {EthersNotifier, DEPOSIT_EVENT_TIMEOUT_MESSAGE} from "../../../../src/renderer/services/deposit/ethers";
-import BN from "bn.js";
 import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
 
 jest.setTimeout(30000);
@@ -85,9 +84,9 @@ describe("Deposit transaction service unit tests", () => {
         const ethersNotifier = new EthersNotifier(networkConfig, provider, keyPair);
 
         ethersNotifier.depositEventListener(EVENT_TIMEOUT)
-            .then((amountGwei: BN) => {
-                const expectedAmount = new BN(ethers.utils.parseUnits("15", "gwei").toString());
-                expect(amountGwei.cmp(expectedAmount)).toEqual(0);
+            .then((amountGwei: bigint) => {
+                const expectedAmount = BigInt(ethers.utils.parseUnits("15", "gwei").toString());
+                expect(amountGwei === expectedAmount);
                 done();
             });
 

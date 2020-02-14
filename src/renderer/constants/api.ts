@@ -1,4 +1,4 @@
-import {Epoch, Slot, Shard, BLSPubkey, uint8} from "@chainsafe/eth2.0-types";
+import {Epoch, Slot, BLSPubkey, uint8} from "@chainsafe/eth2.0-types";
 
 /**
  * Minimal Beacon Node API for Validator
@@ -24,7 +24,7 @@ export const FETCH_VALIDATOR_BLOCK: Function = (slot: Slot, randaoReveal: string
     return `/validator/block?slot=${slot}&randao_reveal=${randaoReveal}`;
 };
 
-export const PRODUCE_ATTESTATION: Function = (validatorPubkey: BLSPubkey, pocBit: uint8, slot: Slot, shard: Shard) => {
+export const PRODUCE_ATTESTATION: Function = (validatorPubkey: BLSPubkey, pocBit: uint8, slot: Slot, shard: number) => {
     const hexPubKey = validatorPubkey.toString("hex");
     return `/validator/attestation?validator_pubkey=${hexPubKey}&poc_bit=${pocBit}&slot=${slot}&shard=${shard}`;
 };

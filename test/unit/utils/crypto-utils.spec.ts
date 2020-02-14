@@ -1,5 +1,4 @@
 import {toHexString} from "../../../src/renderer/services/utils/crypto-utils";
-import BN from "bn.js";
 
 describe("crypto utils unit tests", () => {
     it("should successfully prefix string to become hex string.", async () => {
@@ -11,6 +10,6 @@ describe("crypto utils unit tests", () => {
     });
 
     it("should successfully convert Buffer to become hex string.", async () => {
-        expect(toHexString(new BN(	3405697037))).toBe("0xcafed00d");
+        expect(toHexString(BigInt(3405697037))).toBe("0xcafed00d");
     });
 });

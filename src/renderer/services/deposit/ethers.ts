@@ -3,7 +3,6 @@ import {bool, Gwei} from "@chainsafe/eth2.0-types";
 import DepositContract from "./options";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {deserialize} from "@chainsafe/ssz";
-import BN from "bn.js";
 import {INetworkConfig} from "../interfaces";
 import {Arrayish, ParamType} from "ethers/utils";
 import {etherToGwei} from "./utils";
@@ -24,7 +23,7 @@ export class EthersNotifier {
         this.signingKey = signingKey;
     }
 
-    public depositEventListener(timeout: number): Promise<BN>{
+    public depositEventListener(timeout: number): Promise<bigint>{
         return new Promise((resolve, reject) => {
             const contract = new Contract(this.networkConfig.contract.address, DepositContract.abi, this.provider);
             const filter = contract.filters.DepositEvent(null);
@@ -55,7 +54,7 @@ export class EthersNotifier {
         };
     
         const logs = await this.provider.getLogs(filter);
-        const amountSum = new BN(0);
+        let amountSum = BigInt(0);
     
         logs.forEach((log: {data: Arrayish}) => {
             const data = utils.defaultAbiCoder.decode(
@@ -69,10 +68,10 @@ export class EthersNotifier {
                 const amount = deserialize(
                     Buffer.from(data[DATA_INDEX].slice(2), "hex"), 
                     this.networkConfig.eth2Config.types.Gwei) as Gwei;
-                amountSum.iadd(amount);
+                amountSum += amount;
             }
         });
     
-        return amountSum.cmp(etherToGwei(this.networkConfig.contract.depositAmount)) === 1;
+        return amountSum === etherToGwei(this.networkConfig.contract.depositAmount);
     }
 }

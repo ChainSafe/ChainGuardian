@@ -3,7 +3,6 @@ import {
     BLSPubkey,
     Epoch,
     IndexedAttestation,
-    Shard,
     Slot,
     uint64,
     uint8,
@@ -30,7 +29,7 @@ export interface IBeaconAPIClient {
         validatorPubkey: BLSPubkey,
         pocBit: uint8,
         slot: Slot,
-        shard: Shard
+        shard: number
     ): Promise<IndexedAttestation>;
     publishSignedAttestation(attestation: IndexedAttestation): Promise<void>;
 }

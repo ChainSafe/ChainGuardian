@@ -1,6 +1,6 @@
 /* eslint-disable */
 import {Eth2, IBeaconApiClientOptions} from "../../../src/renderer/services/api";
-import { BeaconBlock, BLSPubkey, bytes48, IndexedAttestation, Shard, Slot } from '@chainsafe/eth2.0-types';
+import { BeaconBlock, BLSPubkey, bytes48, IndexedAttestation, Slot } from '@chainsafe/eth2.0-types';
 import axios from "axios";
 import {
     FETCH_FORK_INFORMATION,
@@ -16,7 +16,6 @@ import {
 import axiosMockAdapter from "axios-mock-adapter";
 import { fromJson, toHex } from '@chainsafe/eth2.0-utils';
 import {config} from "@chainsafe/eth2.0-config/lib/presets/minimal";
-import BN from "bn.js";
 
 jest.setTimeout(10000);
 
@@ -86,7 +85,7 @@ const mockBeaconBlock = {
 };
 
 const mockPocBit = 1;
-const mockShard: Shard = 1;
+const mockShard = 1;
 
 /**
  * *******************
@@ -146,14 +145,14 @@ describe("Beacon API client methods", () => {
     it("should return genesis time", async () => {
         const genesisTime = await client.fetchGenesisTime();
 
-        expect(genesisTime).toStrictEqual(new BN(2));
+        expect(genesisTime).toStrictEqual(BigInt(2));
     });
 
     it("should return node syncing status", async () => {
         const syncingStatus = await client.fetchNodeSyncing();
 
         expect(syncingStatus.isSyncing).toStrictEqual(mockSyncing.is_syncing);
-        expect(syncingStatus.syncStatus.currentBlock).toStrictEqual(new BN(mockSyncing.sync_status.current_block));
+        expect(syncingStatus.syncStatus.currentBlock).toEqual(BigInt(mockSyncing.sync_status.current_block));
     });
 
     it("should return fork information", async () => {

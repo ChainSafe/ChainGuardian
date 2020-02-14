@@ -1,11 +1,10 @@
 // tslint:disable-next-line: import-name
-import BN from "bn.js";
 import {Bucket, encodeKey} from "../schema";
 import {ICGSerialization} from "../abstract";
 import {IDatabaseController} from "../../../../main/db/controller";
 import {AnySSZType} from "@chainsafe/ssz";
 
-export type Id = Buffer | string | number | BN;
+export type Id = Buffer | string | number | bigint;
 
 export abstract class Repository<T> {
 
