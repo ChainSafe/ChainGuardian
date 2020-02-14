@@ -7,6 +7,7 @@ import {deserialize} from "@chainsafe/ssz";
 import BN from "bn.js";
 import {INetworkConfig} from "../interfaces";
 import {ParamType} from "ethers/utils";
+import {warn} from "electron-log";
 
 const PUBKEY_INDEX = 0;
 const DATA_INDEX = 2;
@@ -50,30 +51,34 @@ export class EthersNotifier {
     }
 
     public async checkUserDepositAmount(): Promise<bool> {
-        const filter = {
-            fromBlock: this.networkConfig.contract.deployedAtBlock,
-            address: this.networkConfig.contract.address
-        };
-    
-        const logs = await this.provider.getLogs(filter);
-        const amountSum = new BN(0);
-    
-        logs.forEach((log: any) => {
-            const data = utils.defaultAbiCoder.decode(
-                DepositContract.abi[0].inputs.map((parameter: ParamType) => parameter.type),
-                log.data
-            );
-    
-            const validatorPubKey = data[PUBKEY_INDEX];
-    
-            if (validatorPubKey === this.signingKey.publicKey.toHexString()) {
-                const amount = deserialize(
-                    Buffer.from(data[DATA_INDEX].slice(2), "hex"), 
-                    this.networkConfig.eth2Config.types.Gwei) as Gwei;
-                amountSum.iadd(amount);
-            }
-        });
-    
-        return amountSum.cmp(DEPOSIT_AMOUNT_GWEI) === 1;
+        try {
+            const filter = {
+                fromBlock: this.networkConfig.contract.deployedAtBlock,
+                address: this.networkConfig.contract.address
+            };
+            const logs = await this.provider.getLogs(filter);
+            const amountSum = new BN(0);
+            logs.forEach((log: any) => {
+                const data = utils.defaultAbiCoder.decode(
+                    DepositContract.abi[0].inputs.map((parameter: ParamType) => parameter.type),
+                    log.data
+                );
+
+                const validatorPubKey = data[PUBKEY_INDEX];
+
+                if (validatorPubKey === this.signingKey.publicKey.toHexString()) {
+                    const amount = deserialize(
+                        Buffer.from(data[DATA_INDEX].slice(2), "hex"),
+                        this.networkConfig.eth2Config.types.Gwei) as Gwei;
+                    amountSum.iadd(amount);
+                }
+            });
+
+            return amountSum.gte(DEPOSIT_AMOUNT_GWEI);
+        } catch (e) {
+            warn("Failed to get eth1 deposit logs. Reason: " + e.message);
+            return false;
+        }
+
     }
 }
