@@ -12,7 +12,7 @@ import {IRegisterState} from "../../../../src/renderer/reducers/register";
 import {IDepositState} from "../../../../src/renderer/reducers/deposit";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
-import {generateDeposit, DepositTx} from "../../../../src/renderer/services/deposit";
+import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
 import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
 import {ethers} from "ethers";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
@@ -77,7 +77,7 @@ describe("deposit actions", () => {
             depositData, 
             networkConfig.contract.address, 
             networkConfig.eth2Config,
-            DEPOSIT_AMOUNT);
+            networkConfig.contract.depositAmount);
         const txData = `0x${depositTx.data.toString("hex")}`;
 
         const expectedActions = [

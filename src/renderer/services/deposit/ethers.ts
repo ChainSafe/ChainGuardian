@@ -1,17 +1,16 @@
-import {ethers, utils, Contract} from "ethers";
-import {DEPOSIT_AMOUNT} from "./constants";
+import {Contract, ethers, utils} from "ethers";
 import {bool, Gwei} from "@chainsafe/eth2.0-types";
 import DepositContract from "./options";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {deserialize} from "@chainsafe/ssz";
 import BN from "bn.js";
 import {INetworkConfig} from "../interfaces";
-import {ParamType} from "ethers/utils";
 import {warn} from "electron-log";
+import {Arrayish, ParamType} from "ethers/utils";
+import {etherToGwei} from "./utils";
 
 const PUBKEY_INDEX = 0;
 const DATA_INDEX = 2;
-const DEPOSIT_AMOUNT_GWEI = new BN(DEPOSIT_AMOUNT).imul(new BN(ethers.utils.parseUnits("1", "gwei").toString()));
 const DEPOSIT_EVENT = "DepositEvent";
 export const DEPOSIT_EVENT_TIMEOUT_MESSAGE = "Timeout waiting for deposit event";
 
@@ -58,7 +57,7 @@ export class EthersNotifier {
             };
             const logs = await this.provider.getLogs(filter);
             const amountSum = new BN(0);
-            logs.forEach((log: any) => {
+            logs.forEach((log: Arrayish) => {
                 const data = utils.defaultAbiCoder.decode(
                     DepositContract.abi[0].inputs.map((parameter: ParamType) => parameter.type),
                     log.data
@@ -74,7 +73,7 @@ export class EthersNotifier {
                 }
             });
 
-            return amountSum.gte(DEPOSIT_AMOUNT_GWEI);
+            return amountSum.gte(etherToGwei(this.networkConfig.contract.depositAmount));
         } catch (e) {
             warn("Failed to get eth1 deposit logs. Reason: " + e.message);
             return false;

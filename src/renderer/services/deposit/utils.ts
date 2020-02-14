@@ -4,7 +4,7 @@ import {createHash} from "crypto";
 import {signingRoot} from "@chainsafe/ssz";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {DEPOSIT_DOMAIN} from "./constants";
-import {utils} from "ethers";
+import {ethers, utils} from "ethers";
 import BN from "bn.js";
 
 /**
@@ -31,6 +31,10 @@ export function functionSignatureFromABI(rawAbi: (string | any)[] | string, func
         }
     }
     return hasFunction ? `${functionName}(${inputs.join(",")})` : "";
+}
+
+export function etherToGwei(ether: string|number|BN): BN {
+    return new BN(ether).imul(new BN(ethers.utils.parseUnits("1", "gwei").toString()));
 }
 
 /**
