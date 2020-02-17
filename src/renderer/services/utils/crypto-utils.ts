@@ -10,7 +10,7 @@ export function toHexString(data: string | Buffer | bigint): string {
     } else if (typeof data === "bigint") {
         hexString = data.toString(16);
     } else {
-        hexString = data.toString('hex');
+        hexString = data.toString("hex");
     }
     return hexString.startsWith("0x") ? hexString : `0x${hexString}`;
 }

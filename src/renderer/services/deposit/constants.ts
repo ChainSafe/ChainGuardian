@@ -1,5 +1,5 @@
 import {Domain} from "@chainsafe/eth2.0-types";
-import { toBufferLE } from 'bigint-buffer';
+import {toBufferLE} from "bigint-buffer";
 
 // domain_type + fork_version
 export const DEPOSIT_DOMAIN: Domain =

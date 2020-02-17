@@ -3,7 +3,7 @@
  */
 
 // Buckets are separate database namespaces
-import { toBufferLE } from 'bigint-buffer';
+import {toBufferLE} from "bigint-buffer";
 
 export enum Bucket {
     account

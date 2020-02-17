@@ -1,5 +1,5 @@
 // tslint:disable-next-line: import-name
-import {toBufferLE} from 'bigint-buffer';
+import {toBufferLE} from "bigint-buffer";
 
 import {encodeKey} from "../../../src/renderer/services/db/schema";
 

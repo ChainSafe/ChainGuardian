@@ -1,11 +1,11 @@
 import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
 import {BLSPubkey as BLSPubKey, DepositData} from "@chainsafe/eth2.0-types";
 import {createHash} from "crypto";
-import {hashTreeRoot} from '@chainsafe/ssz';
+import {hashTreeRoot} from "@chainsafe/ssz";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {DEPOSIT_DOMAIN} from "./constants";
 import {ethers, utils} from "ethers";
-import { DepositMessage } from '@chainsafe/eth2.0-types/lib/types/misc';
+import {DepositMessage} from "@chainsafe/eth2.0-types/lib/types/misc";
 
 /**
  * Generate function signature from ABI object.
@@ -57,7 +57,7 @@ export function generateDeposit(
         createHash("sha256").update(withdrawalPubKey).digest().subarray(1)
     ]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const amount: bigint = BigInt(
+    const amount = BigInt(
         // remove decimal zeroes
         utils.formatUnits(utils.parseEther(depositAmount.toString()), "gwei").split(".")[0]
     );

@@ -6,6 +6,9 @@ module.exports = {
         "node": true,
         "es6": true
     },
+    "globals": {
+        BigInt: true,
+    },
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaFeatures": {

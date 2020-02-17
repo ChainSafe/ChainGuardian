@@ -24,7 +24,7 @@ import {IBeaconAPIClient, IBeaconApiClientOptions} from "./interface";
 import {Client} from "./http/client";
 import {EmptyUrl} from "./errors";
 import {getChainForkSSZType, IChainFork, ISyncing, SyncingSSZType, ValidatorDutySSZTyoe} from "./types";
-import { AnyContainerType } from '@chainsafe/ssz';
+import {AnyContainerType} from "@chainsafe/ssz";
 
 export class Eth2 implements IBeaconAPIClient {
     private options: IBeaconApiClientOptions;
