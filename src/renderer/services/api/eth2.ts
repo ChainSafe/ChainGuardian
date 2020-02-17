@@ -24,6 +24,7 @@ import {IBeaconAPIClient, IBeaconApiClientOptions} from "./interface";
 import {Client} from "./http/client";
 import {EmptyUrl} from "./errors";
 import {getChainForkSSZType, IChainFork, ISyncing, SyncingSSZType, ValidatorDutySSZTyoe} from "./types";
+import { AnyContainerType } from '@chainsafe/ssz';
 
 export class Eth2 implements IBeaconAPIClient {
     private options: IBeaconApiClientOptions;
@@ -47,28 +48,28 @@ export class Eth2 implements IBeaconAPIClient {
 
     public async fetchNodeSyncing(): Promise<ISyncing> {
         return fromJson<ISyncing>(
-            await this.httpClient.get<object>(POLL_NODE_SYNCING),
+            await this.httpClient.get<AnyContainerType>(POLL_NODE_SYNCING),
             SyncingSSZType
         );
     }
 
     public async fetchForkInformation(): Promise<IChainFork> {
         return fromJson<IChainFork>(
-            await this.httpClient.get<object>(FETCH_FORK_INFORMATION),
+            await this.httpClient.get<AnyContainerType>(FETCH_FORK_INFORMATION),
             getChainForkSSZType(this.options.config)
         );
     }
 
     public async fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty> {
         return fromJson<ValidatorDuty>(
-            await this.httpClient.get<object>(FETCH_VALIDATOR_DUTIES(validatorPubkeys, epoch)),
+            await this.httpClient.get<AnyContainerType>(FETCH_VALIDATOR_DUTIES(validatorPubkeys, epoch)),
             ValidatorDutySSZTyoe
         );
     }
 
     public async fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock> {
         return fromJson<BeaconBlock>(
-            await this.httpClient.get<object>(FETCH_VALIDATOR_BLOCK(slot, randaoReveal)),
+            await this.httpClient.get<AnyContainerType>(FETCH_VALIDATOR_BLOCK(slot, randaoReveal)),
             this.options.config.types.BeaconBlock
         );
     }
@@ -83,7 +84,7 @@ export class Eth2 implements IBeaconAPIClient {
         slot: Slot,
         shard: number,
     ): Promise<IndexedAttestation> {
-        const result = await this.httpClient.get<object>(
+        const result = await this.httpClient.get<AnyContainerType>(
             PRODUCE_ATTESTATION(validatorPubkey, pocBit, slot, shard)
         );
         return fromJson(result, this.options.config.types.IndexedAttestation);

@@ -34,7 +34,7 @@ export class DepositTx implements ITx{
         config: IBeaconConfig,
         depositAmount: string|number): DepositTx {
         // calculate root
-        const depositDataRoot = hashTreeRoot(depositParams, config.types.DepositData);
+        const depositDataRoot = hashTreeRoot(config.types.DepositData, depositParams);
         const depositFunctionEncoded = abi.simpleEncode(
             functionSignatureFromABI(DepositContract.abi, "deposit"),
             depositParams.pubkey,

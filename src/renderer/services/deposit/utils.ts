@@ -1,10 +1,11 @@
 import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
 import {BLSPubkey as BLSPubKey, DepositData} from "@chainsafe/eth2.0-types";
 import {createHash} from "crypto";
-import {signingRoot} from "@chainsafe/ssz";
+import {hashTreeRoot} from '@chainsafe/ssz';
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {DEPOSIT_DOMAIN} from "./constants";
 import {ethers, utils} from "ethers";
+import { DepositMessage } from '@chainsafe/eth2.0-types/lib/types/misc';
 
 /**
  * Generate function signature from ABI object.
@@ -61,18 +62,20 @@ export function generateDeposit(
         utils.formatUnits(utils.parseEther(depositAmount.toString()), "gwei").split(".")[0]
     );
     // define DepositData
-    const depositData: DepositData = {
+    const depositMsg: DepositMessage = {
         pubkey: publicKey,
         withdrawalCredentials: withdrawalCredentials,
         amount: amount,
-        signature: Buffer.alloc(0)
     };
     // calculate root
-    const root = signingRoot(depositData, config.types.DepositData);
+    const root = hashTreeRoot(config.types.DepositMessage, depositMsg);
     // sign calculated root
-    depositData.signature = signingKey.privateKey.signMessage(
+    const signature = signingKey.privateKey.signMessage(
         root,
         DEPOSIT_DOMAIN
     ).toBytesCompressed();
-    return depositData;
+    return {
+        ...depositMsg,
+        signature,
+    } as DepositData;
 }

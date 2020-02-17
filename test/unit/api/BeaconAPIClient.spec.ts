@@ -81,7 +81,8 @@ const mockBeaconBlock = {
         voluntary_exits: [],
         transfers: [],
     },
-    signature: toHex(Buffer.alloc(96))
+    signature: toHex(Buffer.alloc(96)),
+    fields: [],
 };
 
 const mockPocBit = 1;
