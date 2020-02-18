@@ -1486,16 +1486,16 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@chainsafe/bit-utils@0.1.4", "@chainsafe/bit-utils@^0.1.2":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@chainsafe/bit-utils/-/bit-utils-0.1.4.tgz#c7fcc20f8ea916b7767b82ce6fad389db675bd4e"
-
 "@chainsafe/bit-utils@0.1.6":
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/@chainsafe/bit-utils/-/bit-utils-0.1.6.tgz#f643033340b45a1170c5473e4aab54a7a7b4b9dc"
   integrity sha512-OYmXKCeItGG52iWR+bqqqUfc1joubkUUCXh6+wACTejGn7qNAawsd9ZHKB9riZWPg1wrKulUn8vecXMe0dk36A==
   dependencies:
     assert "^2.0.0"
+
+"@chainsafe/bit-utils@^0.1.2":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@chainsafe/bit-utils/-/bit-utils-0.1.4.tgz#c7fcc20f8ea916b7767b82ce6fad389db675bd4e"
 
 "@chainsafe/bls-hd-key@^0.0.1":
   version "0.0.1"
@@ -1602,16 +1602,6 @@
   resolved "https://registry.yarnpkg.com/@chainsafe/milagro-crypto-js/-/milagro-crypto-js-0.1.3.tgz#0813b5991f53e9573174637ce9ec96576218a09b"
   integrity sha512-K0UrL+73E4Fblk9j+ZZDPXRKvriZExbtSgdel+zSSPqyhUW0OBeep2TJCVYq6RYhLgdSbGbTwiU5Ixku7jcPIg==
 
-"@chainsafe/ssz-type-schema@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@chainsafe/ssz-type-schema/-/ssz-type-schema-0.0.1.tgz#5b916df8e13dc7110440172e9309d22b44b20d79"
-  integrity sha512-UJh6u4n4UApz5WzZDAX7FX4ilDGzRmjX1wafbkGa5VxZKPaQaKB7e23XIKYKgY3PvoPUQ3uD+Ynw92nPR1xenQ==
-  dependencies:
-    "@chainsafe/bit-utils" "0.1.4"
-    "@types/bn.js" "^4.11.4"
-    assert "^2.0.0"
-    bn.js "^4.11.8"
-
 "@chainsafe/ssz-type-schema@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@chainsafe/ssz-type-schema/-/ssz-type-schema-0.0.2.tgz#795b12ca4fb67ddef0ee5c87d4af25e2fa349478"
@@ -1621,19 +1611,6 @@
     "@types/bn.js" "^4.11.5"
     assert "^2.0.0"
     bn.js "^4.11.8"
-
-"@chainsafe/ssz@0.5.3":
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/@chainsafe/ssz/-/ssz-0.5.3.tgz#d802301ff6063092f7a3d972accbe3c73fc909f7"
-  integrity sha512-gwjnl5uSz1g4K97Tg3Sah99eErU+PrzIWKiyl1R/80UglX6GwmGez5rbcgcEZol1qzSGdR4WjubgzjJCFqFjug==
-  dependencies:
-    "@chainsafe/bit-utils" "0.1.6"
-    "@chainsafe/ssz-type-schema" "^0.0.1"
-    "@types/bn.js" "^4.11.5"
-    assert "^1.4.1"
-    bcrypto "^4.1.0"
-    bigint-buffer "^1.1.5"
-    bn.js "^5.0.0"
 
 "@chainsafe/ssz@^0.5.4":
   version "0.5.4"
