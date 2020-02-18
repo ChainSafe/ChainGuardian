@@ -98,6 +98,7 @@ export class CGAccount implements IAccount {
             try {
                 return await keystore.decrypt(password);
             } catch (e) {
+                console.error(e);
                 return undefined;
             }
         });

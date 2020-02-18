@@ -1,5 +1,6 @@
 import sinon from "sinon";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
+import {initBLS} from "@chainsafe/bls";
 
 // Mock keystore, only address is important
 // eslint-disable-next-line max-len
@@ -30,6 +31,7 @@ jest.mock("fs", () => ({
 
 import {CGAccount} from "../../../src/renderer/models/account";
 import {V4KeystoreFactory} from "../../../src/renderer/services/keystore";
+
 // Passwords for keystores 1 & 2
 const PRIMARY_KEYSTORE_PASSWORD = "chainGuardianPass";
 
@@ -63,9 +65,14 @@ describe("CGAccount tests", () => {
             });
     });
 
+    beforeAll(async () => {
+        await initBLS();
+    });
+
     afterEach(() => {
         sandbox.restore();
     });
+
     it("should be able to get validator addresses from keystores", async () => {
         const account = createTestAccount();
         await account.unlock(PRIMARY_KEYSTORE_PASSWORD);
