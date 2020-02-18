@@ -22,7 +22,7 @@ const initalState: IRegisterState = {
     withdrawalMnemonic: "",
     withdrawalVerification: false,
     withdrawalKey: "",
-    network: "",
+    network: "Prysm",
 };
 
 describe("register reducer", () => {
