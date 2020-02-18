@@ -5,6 +5,7 @@ import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {toHexString} from "../../../../src/renderer/services/utils/crypto-utils";
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
+import { initBLS } from '@chainsafe/bls';
 
 jest.setTimeout(30000);
 
@@ -17,6 +18,7 @@ describe("Deposit transaction service unit tests", () => {
     let depositContractAddress: string;
 
     beforeAll(async () => {
+        await initBLS();
         // create accounts and deploy deposit contract
         const deployWallet = ethers.Wallet.createRandom();
         const accountWallet = ethers.Wallet.createRandom();

@@ -8,6 +8,7 @@ import {DepositTx, generateDeposit} from "../../../../src/renderer/services/depo
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {EthersNotifier, DEPOSIT_EVENT_TIMEOUT_MESSAGE} from "../../../../src/renderer/services/deposit/ethers";
 import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
+import { initBLS } from '@chainsafe/bls';
 
 jest.setTimeout(30000);
 
@@ -25,6 +26,7 @@ describe("Deposit transaction service unit tests", () => {
     let networkConfig: INetworkConfig;
 
     beforeAll(async () => {
+        await initBLS();
         // create accounts and deploy deposit contract
         const deployWallet = ethers.Wallet.createRandom();
         const accountWallet = ethers.Wallet.createRandom();
