@@ -20,20 +20,20 @@ describe("Deposit transaction service unit tests", () => {
     beforeAll(async () => {
         await initBLS();
         // create accounts and deploy deposit contract
-        const deployWallet = ethers.Wallet.createRandom();
-        const accountWallet = ethers.Wallet.createRandom();
+        const deployWallet = PrivateKey.random();
+        const accountWallet = PrivateKey.random();
         provider = new ethers.providers.Web3Provider(ganache.provider({
             accounts: [{
                 balance: "100000000000000000000",
-                secretKey: toHexString(accountWallet.privateKey),
+                secretKey: accountWallet.toHexString(),
             },
             {
                 balance: "100000000000000000000",
-                secretKey: toHexString(deployWallet.privateKey),
+                secretKey: deployWallet.toHexString(),
             }],
         }));
-        wallet = accountWallet;
-        depositContractAddress = await deployDepositContract(provider, toHexString(deployWallet.privateKey));
+        wallet = new ethers.Wallet(accountWallet.toHexString());
+        depositContractAddress = await deployDepositContract(provider, deployWallet.toHexString());
     });
 
     it("should send deposit transaction successfully", async () => {
