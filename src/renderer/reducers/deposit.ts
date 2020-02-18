@@ -1,33 +1,49 @@
-import {IGenerateDepositAction, IVerifyDepositAction} from "../actions";
+import {IGenerateDepositAction} from "../actions";
 import {DepositActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 
 export interface IDepositState {
-    isDepositGenerated: boolean;
-    isDepositVisible: boolean;
-    txData: string;
+    waitingForDeposit: boolean;
+    isDepositDetected: boolean;
+    depositTxData: string;
 }
 
 const initialState: IDepositState = {
-    isDepositGenerated: false,
-    isDepositVisible: false,
-    txData: ""
+    waitingForDeposit: false,
+    isDepositDetected: false,
+    depositTxData: ""
 };
 
 export const depositReducer = (state = initialState, action: Action<DepositActionTypes>): IDepositState => {
     switch (action.type) {
-        case DepositActionTypes.DEPOSIT_TRANSACTION: {
+        case DepositActionTypes.STORE_DEPOSIT_TX_DATA: {
             const txData = (action as IGenerateDepositAction).payload.txData;
-            return Object.assign({}, state, {
-                txData: txData,
-                isDepositGenerated: txData !== "" && txData !== null
-            });
+            return {
+                ...state,
+                depositTxData: txData,
+            };
         }
-
-        case DepositActionTypes.DEPOSIT_VISIBLE:
-            return Object.assign({}, state, {
-                isDepositVisible: (action as IVerifyDepositAction).payload.isDepositVisible
-            });
+        case DepositActionTypes.WAIT_FOR_DEPOSIT: {
+            return {
+                ...state,
+                waitingForDeposit: true
+            };
+        }
+        case DepositActionTypes.DEPOSIT_NOT_FOUND: {
+            return {
+                ...state,
+                waitingForDeposit: false,
+                isDepositDetected: false
+            };
+        }
+        case DepositActionTypes.DEPOSIT_DETECTED:
+            return {
+                ...state,
+                isDepositDetected: true,
+                waitingForDeposit: false
+            };
+        case DepositActionTypes.RESET:
+            return {...initialState};
         default:
             return state;
     }

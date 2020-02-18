@@ -11,7 +11,7 @@ const account = new CGAccount({
 });
 
 const initalState: IAuthState = {
-    auth: null,
+    account: null,
 };
 
 describe("auth reducer", () => {
@@ -26,7 +26,7 @@ describe("auth reducer", () => {
             reducer({} as IAuthState, setAuth(account))
         ).toEqual(
             {
-                auth: account
+                account
             }
         );
     });
