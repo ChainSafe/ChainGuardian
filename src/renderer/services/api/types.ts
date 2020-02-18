@@ -26,9 +26,9 @@ export const SyncingSSZType: AnyContainerType = {
         ["isSyncing", "bool"],
         ["syncStatus", {
             fields: [
-                ["startingBlock", "bigint"],
-                ["currentBlock", "bigint"],
-                ["highestBlock", "bigint"],
+                ["startingBlock", "bigint64"],
+                ["currentBlock", "bigint64"],
+                ["highestBlock", "bigint64"],
             ]
         }]
     ],
