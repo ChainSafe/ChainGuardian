@@ -31,45 +31,54 @@ export const generateDepositAction = (networkConfig: INetworkConfig) => {
 };
 
 // Verify deposit action
-export const verifyDepositAction = (networkConfig: INetworkConfig) => {
-    return (dispatch: Dispatch<IVerifyDepositAction>, getState: () => IRootState): void => {
+export const verifyDepositAction = (networkConfig: INetworkConfig, timeout = 30000) => {
+    return async (dispatch: Dispatch<Action<DepositActionTypes>>, getState: () => IRootState): Promise<void> => {
+        dispatch(setWaitingDeposit());
         const signingKey = getState().register.signingKey;
         const keyPair = new Keypair(PrivateKey.fromHexString(signingKey));
         const provider = networkConfig.eth1Provider;
         const ethersNotifier = new EthersNotifier(networkConfig, provider, keyPair);
-
         // Call deposit service and listen for event, when transaction is visible dispatch action
-        ethersNotifier.depositEventListener(5000)
+        ethersNotifier.depositEventListener(timeout)
             .then(() => {
-                dispatch(setDepositVisible(true));
+                dispatch(setDepositDetected());
             })
             .catch(() => {
-                dispatch(setDepositVisible(false));
+                dispatch(setDepositNotFound());
             });
+        const hasDeposited = await ethersNotifier.checkUserDepositAmount();
+        if(hasDeposited) {
+            dispatch(setDepositDetected());
+            return;
+        }
     };
 };
 
 export const setDepositTransactionData = (txData: string): IGenerateDepositAction => ({
-    type: DepositActionTypes.DEPOSIT_TRANSACTION, payload: {txData}
+    type: DepositActionTypes.STORE_DEPOSIT_TX_DATA, payload: {txData}
 });
 
 
-export const setDepositVisible = (isDepositVisible: boolean): IVerifyDepositAction => ({
-    type: DepositActionTypes.DEPOSIT_VISIBLE, payload: {isDepositVisible}
+export const setWaitingDeposit = (): Action<DepositActionTypes> => ({
+    type: DepositActionTypes.WAIT_FOR_DEPOSIT
+});
+export const setDepositDetected = (): Action<DepositActionTypes> => ({
+    type: DepositActionTypes.DEPOSIT_DETECTED
+});
+
+export const setDepositNotFound = (): Action<DepositActionTypes> => ({
+    type: DepositActionTypes.DEPOSIT_NOT_FOUND
+});
+
+export const resetDepositData = (): Action<DepositActionTypes> => ({
+    type: DepositActionTypes.RESET
 });
 
 export interface IGenerateDepositPayload {
-    txData?: string;
+    txData: string;
 }
 
 export interface IGenerateDepositAction extends Action<DepositActionTypes> {
     payload: IGenerateDepositPayload;
-}
-
-export interface IVerifyDepositPayload {
-    isDepositVisible: boolean;
-}
-export interface IVerifyDepositAction extends Action<DepositActionTypes> {
-    payload: IVerifyDepositPayload;
 }
 
