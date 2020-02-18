@@ -6,8 +6,9 @@ import {deserialize} from "@chainsafe/ssz";
 import BN from "bn.js";
 import {INetworkConfig} from "../interfaces";
 import {warn} from "electron-log";
-import {Arrayish, ParamType} from "ethers/utils";
+import {ParamType} from "ethers/utils";
 import {etherToGwei} from "./utils";
+import {Log} from "ethers/providers/abstract-provider";
 
 const PUBKEY_INDEX = 0;
 const DATA_INDEX = 2;
@@ -57,7 +58,7 @@ export class EthersNotifier {
             };
             const logs = await this.provider.getLogs(filter);
             const amountSum = new BN(0);
-            logs.forEach((log: Arrayish) => {
+            logs.forEach((log: Log) => {
                 const data = utils.defaultAbiCoder.decode(
                     DepositContract.abi[0].inputs.map((parameter: ParamType) => parameter.type),
                     log.data
