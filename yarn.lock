@@ -1529,44 +1529,44 @@
     js-sha256 "^0.9.0"
     secure-random "^1.1.1"
 
-"@chainsafe/bls@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@chainsafe/bls/-/bls-0.2.1.tgz#df5eb9c6269bffe4f4dc958b740aeb2f5b64169d"
-  integrity sha512-R3yhhGmJn0Zthvn5MGuSZSAV+AXRVk5fHRkYPrnCBfgnY6Os5N7VFMLZ+vU11qmxjnECqcKXsIvylWk0ngPWQA==
+"@chainsafe/bls@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@chainsafe/bls/-/bls-0.2.2.tgz#11d75329635a33ff837b6473d0f4853e55a37c89"
+  integrity sha512-12usgf/RMZHf7/ElhVP3yrnnUXLIbgSNTCM2ruF/b7fIuWwvRu2iWqGXKMF5Oww75or8mObVQEFpB75SAZm9GA==
   dependencies:
     "@chainsafe/bls-keygen" "^0.0.2"
-    "@chainsafe/eth2-bls-wasm" "^0.2.0"
-    "@chainsafe/eth2.0-types" "^0.2.0"
+    "@chainsafe/eth2-bls-wasm" "^0.2.1"
+    "@chainsafe/eth2.0-types" "^0.2.1"
     assert "^1.4.1"
 
-"@chainsafe/eth2-bls-wasm@^0.2.0":
+"@chainsafe/eth2-bls-wasm@^0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@chainsafe/eth2-bls-wasm/-/eth2-bls-wasm-0.2.1.tgz#82710c4b81676eb8a2940394efffc0e59216e731"
   integrity sha512-optSPu5Ez8tT0iEeCsLhjhMJYyXAZRyPFT2k4q+WrQxr82or5+IVQx4jHdy/uQwMvGB0rlvFYlwsyBrkioTCVw==
   dependencies:
     buffer "^5.4.3"
 
-"@chainsafe/eth2.0-config@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-config/-/eth2.0-config-0.2.0.tgz#01a60b029c693116bb8f795dc114347d0ebf484b"
-  integrity sha512-Nzps5QIVhVlYA9dKjA9sQC+61+bzrem9T+b2wAaVImjtwHiY2TYGYIMmJNoUj8xAbwU73UKMuVQnvLSoSo/03Q==
+"@chainsafe/eth2.0-config@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-config/-/eth2.0-config-0.2.1.tgz#274f69d78a4c9599effac41b9310d1c0b84709ca"
+  integrity sha512-BR3q7bE+q9KZhL/RE+YdE8ZzS3ufZpCJK+X/uW0yjcZXcK+0ubIOiZVhaX8vBRC0S5vpUbaAe3j/+7SnPCekEQ==
   dependencies:
-    "@chainsafe/eth2.0-params" "0.2.0"
-    "@chainsafe/eth2.0-types" "0.2.0"
+    "@chainsafe/eth2.0-params" "0.2.1"
+    "@chainsafe/eth2.0-types" "0.2.1"
 
-"@chainsafe/eth2.0-params@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-params/-/eth2.0-params-0.2.0.tgz#f6313c13749eba5640f06ad73493951571835634"
-  integrity sha512-4VyyO1NucwVA8eiuIr/qqGYhXGRf1sguxo/JhRQQzft9hcfZpHbf2Xc2cJNPB4FHzbqEM0e1bALBdLCLUG51+w==
+"@chainsafe/eth2.0-params@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-params/-/eth2.0-params-0.2.1.tgz#cffc39c116d99fd297b4f63b4a34e1d4688265e6"
+  integrity sha512-qzxvJxZtjsS6EFYIkcRbEyizXAHmqWwzaOHll8QlLZXMw1ioIWeC2vARSxivzCxrkwWUncEAwSbzjIQUCTBeKw==
 
-"@chainsafe/eth2.0-types@0.2.0", "@chainsafe/eth2.0-types@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-types/-/eth2.0-types-0.2.0.tgz#15d444854c4ca517cebc5290ef27a774f3ccfe2c"
-  integrity sha512-+SVJP2glF0C9eQ3+Yz0nqjwL2zvqOhQB2KVMTMX6c1YN4HmJlylkcfbgFnqh40SWDz9yXYwuw0r+/Botjp8j1g==
+"@chainsafe/eth2.0-types@0.2.1", "@chainsafe/eth2.0-types@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-types/-/eth2.0-types-0.2.1.tgz#b1746a104ee60877a88ed0dbab19a6395a8d3ee2"
+  integrity sha512-dAeGvEpCfex60aGOn4R2o1qOAR8yeIn6HBDgJzAouDXt9nY4+kobkjfepHXKfgeV0RrUq3ouZ1+L51Gu/5DoGg==
   dependencies:
     "@chainsafe/bit-utils" "0.1.6"
-    "@chainsafe/eth2.0-params" "0.2.0"
-    "@chainsafe/ssz-type-schema" "^0.0.1"
+    "@chainsafe/eth2.0-params" "0.2.1"
+    "@chainsafe/ssz-type-schema" "^0.0.2"
     "@types/bn.js" "^4.11.4"
     bn.js "^4.11.8"
 
@@ -1579,14 +1579,14 @@
     "@types/bn.js" "^4.11.4"
     bn.js "^4.11.8"
 
-"@chainsafe/eth2.0-utils@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-utils/-/eth2.0-utils-0.1.0.tgz#525ccb06084bc2846b9b647a8b366dd325980a52"
-  integrity sha512-deJcJwSjCXmh7/o+XnZhu/bnGQek0H0uch8XmNrZEaI9mMOgvRNqvkyRcqLidtqU0lTJoDhbwHBpgEV+xEqG8g==
+"@chainsafe/eth2.0-utils@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-utils/-/eth2.0-utils-0.1.1.tgz#fd3c39d58a49584ca078e4d6de47d52549b191f6"
+  integrity sha512-pSPGJ/Yr3HjZtdZoyVbnkB9zC4bz2MHrnZZFla5n2IGqFl14/rchBhrX0bD6idW+BTGAWFgLhxl/R2q4P+uc+w==
   dependencies:
     "@chainsafe/bit-utils" "0.1.6"
-    "@chainsafe/eth2.0-types" "^0.2.0"
-    "@chainsafe/ssz-type-schema" "^0.0.1"
+    "@chainsafe/eth2.0-types" "^0.2.1"
+    "@chainsafe/ssz-type-schema" "^0.0.2"
     "@types/bn.js" "^4.11.5"
     bcrypto "^4.2.6"
     bigint-buffer "^1.1.5"
@@ -1612,13 +1612,36 @@
     assert "^2.0.0"
     bn.js "^4.11.8"
 
-"@chainsafe/ssz@0.5.3", "@chainsafe/ssz@^0.5.3":
+"@chainsafe/ssz-type-schema@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@chainsafe/ssz-type-schema/-/ssz-type-schema-0.0.2.tgz#795b12ca4fb67ddef0ee5c87d4af25e2fa349478"
+  integrity sha512-aquV/jKRCRyAXs8+dGqM6w/OJdJi5OXRuHhCO+rCzwSGwcW6ETdzgbkvc0kjxyokTy1cl3aKhKE+I/m7bDV+NQ==
+  dependencies:
+    "@chainsafe/bit-utils" "0.1.6"
+    "@types/bn.js" "^4.11.5"
+    assert "^2.0.0"
+    bn.js "^4.11.8"
+
+"@chainsafe/ssz@0.5.3":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@chainsafe/ssz/-/ssz-0.5.3.tgz#d802301ff6063092f7a3d972accbe3c73fc909f7"
   integrity sha512-gwjnl5uSz1g4K97Tg3Sah99eErU+PrzIWKiyl1R/80UglX6GwmGez5rbcgcEZol1qzSGdR4WjubgzjJCFqFjug==
   dependencies:
     "@chainsafe/bit-utils" "0.1.6"
     "@chainsafe/ssz-type-schema" "^0.0.1"
+    "@types/bn.js" "^4.11.5"
+    assert "^1.4.1"
+    bcrypto "^4.1.0"
+    bigint-buffer "^1.1.5"
+    bn.js "^5.0.0"
+
+"@chainsafe/ssz@^0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@chainsafe/ssz/-/ssz-0.5.4.tgz#0a10e4ef35282aa43d1314f046cf661c0cd494cf"
+  integrity sha512-tFrknv+hw/eonPuZ5Tj8c7NhYCC0zfinph6glJlQYQ4ubjU6KbEDXRpoRZJPbQVI5RFv4M6fkNUXIUj76Dm6IQ==
+  dependencies:
+    "@chainsafe/bit-utils" "0.1.6"
+    "@chainsafe/ssz-type-schema" "^0.0.2"
     "@types/bn.js" "^4.11.5"
     assert "^1.4.1"
     bcrypto "^4.1.0"
