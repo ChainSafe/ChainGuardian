@@ -12,6 +12,12 @@ import {
     AddButton, 
     BackButton} from "../../src/renderer/components/Button/ButtonAction";
 
+jest.mock("../../src/renderer/services/mnemonic/utils/random", () => {
+    return {
+        getRandomInt: jest.fn(() => 1)
+    };
+});
+
 describe("ButtonPrimitive", () => {
     it("renders correctly", () => {
         const tree = renderer
