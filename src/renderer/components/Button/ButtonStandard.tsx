@@ -6,7 +6,7 @@ export interface IButtonProps {
     onClick?: () => void;
     large?: boolean;
     buttonId?: string;
-    dataField?: string | number;
+    datafield?: string | number;
 }
 export interface IBaseButtonProps extends IButtonProps{
     buttonType?: string;
