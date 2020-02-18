@@ -9,6 +9,7 @@ import {
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 import {ISetNetworkAction} from "../actions/register";
+import {networks} from "../services/deposit/networks";
 
 export interface IRegisterState {
     signingMnemonic: string,
@@ -27,7 +28,7 @@ const initialState: IRegisterState = {
     withdrawalMnemonic: "",
     withdrawalVerification: false,
     withdrawalKey: "",
-    network: "",
+    network: networks[0].networkName,
 };
 
 export const registerReducer = (state = initialState, action: Action<RegisterActionTypes>): IRegisterState => {
