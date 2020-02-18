@@ -8,7 +8,7 @@ import {DepositTx, generateDeposit} from "../../../../src/renderer/services/depo
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {EthersNotifier, DEPOSIT_EVENT_TIMEOUT_MESSAGE} from "../../../../src/renderer/services/deposit/ethers";
 import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
-import { initBLS } from '@chainsafe/bls';
+import {initBLS} from "@chainsafe/bls";
 
 jest.setTimeout(30000);
 

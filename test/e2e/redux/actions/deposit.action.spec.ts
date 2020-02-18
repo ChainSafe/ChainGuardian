@@ -16,7 +16,7 @@ import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
 import {ethers} from "ethers";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
 import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
-import { initBLS } from '@chainsafe/bls';
+import {initBLS} from "@chainsafe/bls";
 
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 const publicKeyStr =
