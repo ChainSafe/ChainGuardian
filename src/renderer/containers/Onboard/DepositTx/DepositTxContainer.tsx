@@ -6,35 +6,74 @@ import {connect} from "react-redux";
 import {RouteComponentProps} from "react-router";
 import {copyToClipboard} from "../../../services/utils/clipboard-utils";
 import {bindActionCreators, Dispatch} from "redux";
-import {generateDepositAction, verifyDepositAction} from "../../../actions";
+import {generateDepositAction, resetDepositData, verifyDepositAction} from "../../../actions";
 import {IRootState} from "../../../reducers";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {networks} from "../../../services/deposit/networks";
 import {INetworkConfig} from "../../../services/interfaces";
+import {Loading} from "../../../components/Loading/Loading";
 
 /**
  * required own props
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface IOwnProps {
-    network: INetworkConfig;
-    deposit: IRootState["deposit"];
-}
-interface IInjectedProps {
-    generateDepositTxData: typeof generateDepositAction;
-    verifyDeposit: typeof verifyDepositAction;
+interface IOwnProps extends Pick<RouteComponentProps, "history"> {
 }
 
-class DepositTxComponent extends Component<IOwnProps & IInjectedProps & Pick<RouteComponentProps, "history">> {
+interface IInjectedActions {
+    generateDepositTxData: typeof generateDepositAction;
+    verifyDeposit: typeof verifyDepositAction;
+    resetDepositState: typeof resetDepositData;
+}
+
+interface IInjectedState {
+    waitingForDeposit: boolean;
+    depositTxData: string;
+    isDepositGenerated: boolean;
+    isDepositDetected: boolean;
+    network: INetworkConfig;
+}
+
+/**
+ * injected by redux
+ */
+type IInjectedProps = IInjectedState & IInjectedActions;
+
+
+export default class DepositTxComponent extends Component<IOwnProps & IInjectedProps, {selectedNetworkIndex: number}> {
+
+    public state = {
+        selectedNetworkIndex: 0,
+    };
+
     public componentDidMount(): void {
-        this.props.generateDepositTxData(this.props.network);
+        this.props.generateDepositTxData(networks[this.state.selectedNetworkIndex]);
     }
+
+    public shouldComponentUpdate(nextProps: Readonly<IOwnProps & IInjectedProps>): boolean {
+        if(nextProps.isDepositDetected) {
+            this.props.resetDepositState();
+            this.onwards();
+            return false;
+        }
+        return true;
+    }
+
+
+    public onNetworkChange = (selected: number): void => {
+        // Generate transaction data
+        this.props.generateDepositTxData(networks[selected]);
+
+        this.setState({
+            selectedNetworkIndex: selected
+        });
+    };
 
     // TODO Maybe add some loader becase generating transaction data takes some time
     // there is flag in redux "isDepositGenerated"
     public render(): ReactElement {
-        const selectedContract = this.props.network;
-        const {txData} = this.props.deposit;
+        const networkOptions = networks.map((contract) => { return contract.networkName; });
+        const selectedContract = networks[this.state.selectedNetworkIndex];
 
         return (
             <>
@@ -53,13 +92,13 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps & Pick<Rou
                         onCopy={(): void => copyToClipboard(selectedContract.contract.address)} />
                     <CopyField
                         label="Transaction data"
-                        value={txData}
-                        onCopy={(): void => copyToClipboard(txData)} />
+                        value={this.props.depositTxData}
+                        onCopy={(): void => copyToClipboard(this.props.depositTxData)} />
                 </div>
                 <div className="deposit-action-buttons">
                     <ButtonSecondary
                         buttonId="skip"
-                        onClick={this.handleSkip}
+                        onClick={this.onwards}
                     >
                         SKIP
                     </ButtonSecondary>
@@ -70,41 +109,42 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps & Pick<Rou
                         Verify
                     </ButtonPrimary>
                 </div>
+
+                <Loading visible={!this.props.isDepositGenerated}/>
+                <Loading visible={this.props.waitingForDeposit} title="Waiting for eth1 deposit transaction"/>
             </>
         );
     }
 
-    private handleSkip = (): void => {
+    private onwards = (): void => {
         this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
     };
 
-    // TODO there is a flag in redux "isDepositVisible" so component should wait until flag is set to true
     private handleVerify = (): void => {
-        // FIXME  pass network name from select but find names that ether.js supports
-        // You can use any standard network name
-        //  - "homestead"
-        //  - "rinkeby"
-        //  - "ropsten"
-        //  - "kovan"
-        //  - "goerli"
-        this.props.verifyDeposit(this.props.network);
+        const {selectedNetworkIndex} = this.state;
+        this.props.verifyDeposit(networks[selectedNetworkIndex]);
     };
 }
 
-const mapStateToProps = (state: IRootState): IOwnProps => {
-    const networkIndex = state.register.network ? networks.map(n => n.networkName).indexOf(state.register.network) : 0;
+const mapStateToProps = (state: IRootState): IInjectedState => {
+    const {register, deposit} = state;
+    const networkIndex = register.network ? networks.map(n => n.networkName).indexOf(register.network) : 0;
 
     return {
-        deposit: state.deposit,
         network: networks[networkIndex],
+        waitingForDeposit: deposit.waitingForDeposit,
+        depositTxData: deposit.depositTxData,
+        isDepositGenerated: deposit.depositTxData !== null,
+        isDepositDetected: deposit.isDepositDetected
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
+const mapDispatchToProps = (dispatch: Dispatch): IInjectedActions =>
     bindActionCreators(
         {
             generateDepositTxData: generateDepositAction,
             verifyDeposit: verifyDepositAction,
+            resetDepositState: resetDepositData
         },
         dispatch
     );

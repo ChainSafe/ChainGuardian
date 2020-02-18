@@ -38,8 +38,8 @@ Pick<IRootState, "register" | "auth">> = (props) => {
                 const signingKey = PrivateKey.fromBytes(
                     Buffer.from(props.register.signingKey.replace("0x",""), "hex"));
 
-                if(props.auth.auth !== null)
-                    props.auth.auth.addValidator(new Keypair(signingKey));
+                if(props.auth.account !== null)
+                    props.auth.account.addValidator(new Keypair(signingKey));
                 
                 props.afterPassword(input);
                 

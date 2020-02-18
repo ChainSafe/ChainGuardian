@@ -1,7 +1,11 @@
 import configureStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
-import {generateDepositAction, setDepositTransactionData, setDepositVisible} from "../../../../src/renderer/actions";
+import {
+    setDepositDetected,
+    setDepositTransactionData, 
+    generateDepositAction
+} from "../../../../src/renderer/actions";
 import {IRootState} from "../../../../src/renderer/reducers";
 import {IRegisterState} from "../../../../src/renderer/reducers/register";
 import {IDepositState} from "../../../../src/renderer/reducers/deposit";
@@ -88,9 +92,9 @@ describe("deposit actions", () => {
 
     it("should dispatch visible action", () => {
         const expectedActions = [
-            setDepositVisible(true)
+            setDepositDetected()
         ];
-        reduxStore.dispatch<any>(setDepositVisible(true));
+        reduxStore.dispatch<any>(setDepositDetected());
 
         expect(reduxStore.getActions()).toEqual(expectedActions);
 
