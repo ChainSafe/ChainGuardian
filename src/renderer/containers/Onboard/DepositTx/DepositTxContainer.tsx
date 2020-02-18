@@ -10,7 +10,6 @@ import {generateDepositAction, resetDepositData, verifyDepositAction} from "../.
 import {IRootState} from "../../../reducers";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {networks} from "../../../services/deposit/networks";
-import {INetworkConfig} from "../../../services/interfaces";
 import {Loading} from "../../../components/Loading/Loading";
 
 /**
@@ -31,7 +30,7 @@ interface IInjectedState {
     depositTxData: string;
     isDepositGenerated: boolean;
     isDepositDetected: boolean;
-    network: INetworkConfig;
+    networkIndex: number;
 }
 
 /**
@@ -40,14 +39,9 @@ interface IInjectedState {
 type IInjectedProps = IInjectedState & IInjectedActions;
 
 
-export default class DepositTxComponent extends Component<IOwnProps & IInjectedProps, {selectedNetworkIndex: number}> {
-
-    public state = {
-        selectedNetworkIndex: 0,
-    };
-
+class DepositTxComponent extends Component<IOwnProps & IInjectedProps> {
     public componentDidMount(): void {
-        this.props.generateDepositTxData(networks[this.state.selectedNetworkIndex]);
+        this.props.generateDepositTxData(networks[this.props.networkIndex]);
     }
 
     public shouldComponentUpdate(nextProps: Readonly<IOwnProps & IInjectedProps>): boolean {
@@ -59,21 +53,10 @@ export default class DepositTxComponent extends Component<IOwnProps & IInjectedP
         return true;
     }
 
-
-    public onNetworkChange = (selected: number): void => {
-        // Generate transaction data
-        this.props.generateDepositTxData(networks[selected]);
-
-        this.setState({
-            selectedNetworkIndex: selected
-        });
-    };
-
     // TODO Maybe add some loader becase generating transaction data takes some time
     // there is flag in redux "isDepositGenerated"
     public render(): ReactElement {
-        const networkOptions = networks.map((contract) => { return contract.networkName; });
-        const selectedContract = networks[this.state.selectedNetworkIndex];
+        const selectedContract = networks[this.props.networkIndex];
 
         return (
             <>
@@ -121,8 +104,8 @@ export default class DepositTxComponent extends Component<IOwnProps & IInjectedP
     };
 
     private handleVerify = (): void => {
-        const {selectedNetworkIndex} = this.state;
-        this.props.verifyDeposit(networks[selectedNetworkIndex]);
+        const {networkIndex} = this.props;
+        this.props.verifyDeposit(networks[networkIndex]);
     };
 }
 
@@ -131,7 +114,7 @@ const mapStateToProps = (state: IRootState): IInjectedState => {
     const networkIndex = register.network ? networks.map(n => n.networkName).indexOf(register.network) : 0;
 
     return {
-        network: networks[networkIndex],
+        networkIndex,
         waitingForDeposit: deposit.waitingForDeposit,
         depositTxData: deposit.depositTxData,
         isDepositGenerated: deposit.depositTxData !== null,
