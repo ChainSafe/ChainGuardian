@@ -45,6 +45,7 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
                             focused onChange={this.handleChange} 
                             inputValue={this.state.input} 
                             placeholder="Enter password"
+                            type="password"
                             onSubmit={(e): void => {e.preventDefault();}}
                         />
                         <ButtonSecondary
