@@ -5,13 +5,13 @@ import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {Dropdown} from "../../../components/Dropdown/Dropdown";
 import {networks} from "../../../services/deposit/networks";
-import {saveSelectedNetworkAction} from "../../../actions/network";
 import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
+import {setNetworkAction} from "../../../actions";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 interface IInjectedProps {
-    saveSelectedNetwork: typeof saveSelectedNetworkAction;
+    setNetwork: typeof setNetworkAction;
 }
 
 const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) => {
@@ -22,17 +22,17 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
         setBeaconNodeInput(e.currentTarget.value);
         // TODO: Validate beacon node here
     };
-    const networkOptions = networks.map((contract) => { return contract.networkName; });
+    const networkOptions = networks.map((contract) => contract.networkName);
 
     const onSubmit = (): void => {
-        props.saveSelectedNetwork(networks[selectedNetworkIndex].networkName);
+        props.setNetwork(networks[selectedNetworkIndex].networkName);
         props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE));
     };
 
     return (
         <>
             <h1>Add your beacon node URL</h1>
-            <p>Either add the URL or run a dockerized beacon node on your device.</p>
+            <p>Either add the URL or run a Dockerized beacon node on your device.</p>
 
             <div className="row align-left">
                 <Dropdown
@@ -69,7 +69,7 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            saveSelectedNetwork: saveSelectedNetworkAction,
+            setNetwork: setNetworkAction,
         },
         dispatch
     );

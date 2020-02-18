@@ -141,3 +141,12 @@ export const startRegistrationSubmission = (): Action<RegisterActionTypes> => ({
 export const completeRegistrationSubmission = (): Action<RegisterActionTypes> => ({
     type: RegisterActionTypes.COMPLETED_REGISTRATION_SUBMISSION
 });
+
+export interface ISetNetworkAction {
+    type: typeof RegisterActionTypes.SET_NETWORK;
+    payload: string;
+}
+export const setNetworkAction = (network: string): ISetNetworkAction => ({
+    type: RegisterActionTypes.SET_NETWORK,
+    payload: network,
+});

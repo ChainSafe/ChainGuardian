@@ -8,7 +8,7 @@ import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {IRootState} from "../../../reducers";
 
-type IStateProps =  & Pick<IRootState, "network"> & Pick<IRootState, "register">;
+type IStateProps = Pick<IRootState, "register">;
 type IOwnProps =  Pick<RouteComponentProps, "history">;
 interface IInjectedProps {
     startBeaconChain: typeof startBeaconChainAction;
@@ -24,8 +24,8 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProp
             return props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
         }
         // Start beacon chain with selected network and redirect to deposit
-        if (props.network.selected) {
-            props.startBeaconChain(props.network.selected, [`${rpcPort}:4000`, `${libp2pPort}:13000`]);
+        if (props.register.network) {
+            props.startBeaconChain(props.register.network, [`${rpcPort}:4000`, `${libp2pPort}:13000`]);
             props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
         }
     };
@@ -67,7 +67,6 @@ interface IInjectedProps {
 }
 
 const mapStateToProps = (state: IRootState): IStateProps => ({
-    network: state.network,
     register: state.register,
 });
 

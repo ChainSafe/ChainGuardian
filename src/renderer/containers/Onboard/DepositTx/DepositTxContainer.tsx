@@ -92,7 +92,7 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps & Pick<Rou
 }
 
 const mapStateToProps = (state: IRootState): IOwnProps => {
-    const networkIndex = state.network.selected ? networks.map(n => n.networkName).indexOf(state.network.selected) : 0;
+    const networkIndex = state.register.network ? networks.map(n => n.networkName).indexOf(state.register.network) : 0;
 
     return {
         deposit: state.deposit,

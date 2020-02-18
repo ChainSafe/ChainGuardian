@@ -22,6 +22,7 @@ const initalState: IRegisterState = {
     withdrawalMnemonic: "",
     withdrawalVerification: false,
     withdrawalKey: "",
+    network: "",
 };
 
 describe("register reducer", () => {
