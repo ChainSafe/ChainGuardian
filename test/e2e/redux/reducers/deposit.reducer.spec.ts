@@ -1,15 +1,15 @@
 import {depositReducer as reducer, IDepositState} from "../../../../src/renderer/reducers/deposit";
 import {
-    setDepositVisible, 
+    setDepositDetected,
     setDepositTransactionData
 } from "../../../../src/renderer/actions";
 import {Action} from "redux";
 import {DepositActionTypes} from "../../../../src/renderer/constants/action-types";
 
 const initalState: IDepositState = {
-    isDepositGenerated: false,
-    isDepositVisible: false,
-    txData: ""
+    isDepositDetected: false,
+    depositTxData: "",
+    waitingForDeposit: false
 };
 
 describe("deposit reducer", () => {
@@ -22,10 +22,11 @@ describe("deposit reducer", () => {
 
     it("should handle setDepositVisible", () => {
         expect(
-            reducer({} as IDepositState, setDepositVisible(true))
+            reducer({} as IDepositState, setDepositDetected())
         ).toEqual(
             {
-                isDepositVisible: true
+                isDepositDetected: true,
+                waitingForDeposit: false
             }
         );
     });
@@ -35,8 +36,7 @@ describe("deposit reducer", () => {
             reducer({} as IDepositState, setDepositTransactionData("mock"))
         ).toEqual(
             {
-                txData: "mock",
-                isDepositGenerated: true
+                depositTxData: "mock"
             }
         );
     });

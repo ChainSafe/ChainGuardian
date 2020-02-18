@@ -61,15 +61,15 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
     };
 
     const onConfirmDelete = (): void => {
-        const validatorsData = props.auth.auth;
-        if(validatorsData && props.auth.auth){
+        const validatorsData = props.auth.account;
+        if(validatorsData && props.auth.account){
             const validators =validatorsData.getValidators();
             const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey.toHexString();
             const selectedV4Keystore = new V4Keystore(
                 path.join(validatorsData.directory,selectedValidatorPublicKey + ".json"));
             selectedV4Keystore.destroy();
-            props.auth.auth.removeValidator(selectedValidatorIndex);
-            props.storeAuth(props.auth.auth);
+            props.auth.account.removeValidator(selectedValidatorIndex);
+            props.storeAuth(props.auth.account);
         }
         loadValidators();
         setConfirmModal(false);
@@ -102,7 +102,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
 
     const loadValidators =  (): void => {
         const validatorArray: Array<IValidator> = [];
-        const validatorsData = props.auth.auth;
+        const validatorsData = props.auth.account;
         
         if(validatorsData){
             const validators =validatorsData.getValidators();
@@ -122,7 +122,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
     };
 
     useEffect(()=>{
-        if(!props.auth.auth) props.history.push(Routes.LOGIN_ROUTE);
+        if(!props.auth.account) props.history.push(Routes.LOGIN_ROUTE);
         loadValidators();
     },[]);
 
