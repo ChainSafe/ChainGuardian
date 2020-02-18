@@ -106,7 +106,6 @@
     "@storybook/addons": "5.2.8",
     "@storybook/react": "5.2.8",
     "@types/bech32": "1.1.1",
-    "@types/bn.js": "^4.11.5",
     "@types/chai": "^4.2.3",
     "@types/chai-as-promised": "^7.1.2",
     "@types/electron-devtools-installer": "^2.2.0",
