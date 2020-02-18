@@ -44,6 +44,15 @@ Just run `yarn storybook`
 
 Design is based on: https://www.figma.com/file/dt1Z45BJkDGOg63IdNYwbR
 
+### Development
+
+It's best to use local network. Local network is configured using `docker-compose.yml`.
+By typing `docker-compose up` in terminal, you will get:
+- geth eth1 node with private POA network
+- deposit contract deployed on that private eth1 network
+    - contract is always deployed on address `0x2F1598e74b146F5687174C13f8EDCF490B2492e3`
+- prysmatic eth2 private network
+
 ## Packaging
 We use [Electron builder](https://www.electron.build/) to build and package the application. By default you can run the following to package for your current platform:
 

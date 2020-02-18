@@ -105,7 +105,7 @@ export interface IWithdrawalKeyAction extends Action<RegisterActionTypes> {
 
 // After password action
 export const afterPasswordAction = (password: string) => {
-    return async (dispatch: Dispatch<Action<RegisterActionTypes>>, getState: () => IRootState): Promise<void> => {
+    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         // 1. Save to keystore
         dispatch(startRegistrationSubmission());
         const signingKey = PrivateKey.fromBytes(
@@ -127,8 +127,6 @@ export const afterPasswordAction = (password: string) => {
             DEFAULT_ACCOUNT,
             account
         );
-        
-        // 3. Delete keys from redux
         dispatch(completeRegistrationSubmission());
     };
 };
