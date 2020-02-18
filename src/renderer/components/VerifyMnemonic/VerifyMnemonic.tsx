@@ -54,7 +54,7 @@ export const VerifyMnemonic: React.FunctionComponent<IVerifyMnemonicProps> = (
                     } else{
                         return (
                             <ButtonInverted
-                                dataField={(answer === props.correctAnswer).toString()}
+                                datafield={(answer === props.correctAnswer).toString()}
                                 disabled={clicked}
                                 key={answer} 
                                 onClick={(): void => isCorrect(
