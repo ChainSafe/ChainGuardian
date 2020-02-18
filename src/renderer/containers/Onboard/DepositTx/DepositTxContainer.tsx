@@ -6,7 +6,7 @@ import {connect} from "react-redux";
 import {RouteComponentProps} from "react-router";
 import {copyToClipboard} from "../../../services/utils/clipboard-utils";
 import {bindActionCreators, Dispatch} from "redux";
-import { generateDepositAction, resetDepositData, verifyDepositAction } from '../../../actions';
+import {generateDepositAction, resetDepositData, verifyDepositAction} from "../../../actions";
 import {IRootState} from "../../../reducers";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {networks} from "../../../services/deposit/networks";

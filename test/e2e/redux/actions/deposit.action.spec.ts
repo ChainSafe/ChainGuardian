@@ -6,7 +6,6 @@ import {
     setDepositTransactionData, 
     generateDepositAction
 } from "../../../../src/renderer/actions";
-import {DEPOSIT_AMOUNT} from "../../../../src/renderer/services/deposit/constants";
 import {IRootState} from "../../../../src/renderer/reducers";
 import {IRegisterState} from "../../../../src/renderer/reducers/register";
 import {IDepositState} from "../../../../src/renderer/reducers/deposit";
