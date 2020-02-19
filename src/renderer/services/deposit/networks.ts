@@ -2,8 +2,6 @@ import {config as mainnetBeaconConfig} from "@chainsafe/eth2.0-config/lib/preset
 import {config as minimalBeaconConfig} from "@chainsafe/eth2.0-config/lib/presets/minimal";
 import {ethers} from "ethers";
 import {JsonRpcProvider} from "ethers/providers";
-import BN from "bn.js";
-
 import {INetworkConfig} from "../interfaces";
 import {SupportedNetworks} from "../docker/chain";
 
@@ -23,7 +21,7 @@ const networks: INetworkConfig[] = [
             ...mainnetBeaconConfig,
             params: {
                 ...mainnetBeaconConfig.params,
-                MAX_EFFECTIVE_BALANCE: new BN("3200000000000000000")
+                MAX_EFFECTIVE_BALANCE: 3200000000000000000n
             }
         },
         eth1Provider: ethers.getDefaultProvider("goerli")
