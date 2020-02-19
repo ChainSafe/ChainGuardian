@@ -44,7 +44,6 @@ script:
   yarn run lint;
   yarn run check-types;
   export {no_proxy,NO_PROXY}="127.0.0.1,localhost";
-  yarn run build;
   yarn test;
   if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then yarn run codecov; fi;
 

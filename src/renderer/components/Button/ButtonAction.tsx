@@ -1,8 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import arrow from "../../assets/img/buttons/Backtab.svg";
 import add from "../../assets/img/buttons/Add.svg";
 import copyDefault from "../../assets/img/buttons/CopyDefault.svg";
 import ReactTooltip from "react-tooltip";
+import {getRandomInt} from "../../services/mnemonic/utils/random";
 
 export interface IActionButtonProps {
     onClick?: () => void;
@@ -13,48 +14,62 @@ export interface ICopyButtonProps {
 }
 
 export const BackTab: React.FunctionComponent<IActionButtonProps> = ({onClick}) => {
-    return(<button 
-        className={"back-tab"} 
+    return (<button
+        className={"back-tab"}
         onClick={onClick}>
-        <img className={"icon"} src={arrow} />
+        <img className={"icon"} src={arrow}/>
     </button>);
 };
 
 export const CopyButton: React.FunctionComponent<ICopyButtonProps> = (props: ICopyButtonProps) => {
     const [clicked, setClicked] = useState(false);
+    const [timeoutId, setTimeoutId] = useState<number | null>(null);
 
     const handleClick = (): void => {
         props.onClick();
-        const handleTimeout= (): void => {
+        const handleTimeout = (): void => {
             setClicked(false);
         };
         setClicked(true);
-        setTimeout(handleTimeout,1000);
+        setTimeoutId(window.setTimeout(handleTimeout, 1000));
     };
 
-    return(<button
-        className={"copy-button"} 
+    useEffect(() => {
+        return function cleanup(): void {
+            if (timeoutId) {
+                window.clearTimeout(timeoutId);
+            }
+        };
+    });
+
+    const toolTipId = `cg-tooltip-${getRandomInt(10000)}`;
+
+    return (<button
+        className={"copy-button"}
         onClick={handleClick}>
-        <ReactTooltip effect="solid" place="right"
-            getContent={(): string =>{return clicked ? "Copied!" : "Copy All";}}
+        <ReactTooltip id={toolTipId} effect="solid" place="right"
+            getContent={(): string => {
+                return clicked ? "Copied!" : "Copy All";
+            }}
         />
-        <img data-tip="Copy all" data-place="top" className={"icon copy"} src={copyDefault} />
+        <img alt="copy-button-icon" data-for={toolTipId} data-tip="Copy all" data-place="top" className={"icon copy"}
+            src={copyDefault}/>
     </button>);
 };
 
 export const AddButton: React.FunctionComponent<IActionButtonProps> = ({onClick}) => {
-    return(<button 
-        className={"add-button"} 
+    return (<button
+        className={"add-button"}
         onClick={onClick}>
-        <img className={"icon"} src={add} />
+        <img className={"icon"} src={add}/>
     </button>);
 };
 
 export const BackButton: React.FunctionComponent<IActionButtonProps> = ({onClick}) => {
-    return(<button 
-        className={"back-button"} 
+    return (<button
+        className={"back-button"}
         onClick={onClick}>
-        <img className={"icon"} src={arrow} />
+        <img className={"icon"} src={arrow}/>
     </button>);
 };
 

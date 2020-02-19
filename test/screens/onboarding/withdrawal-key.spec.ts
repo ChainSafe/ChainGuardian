@@ -10,7 +10,7 @@ import {
 
 jest.setTimeout(TIMEOUT);
 
-const publicKeyStr =
+export const publicKeyStr =
     "0x92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff4990daa18";
 
 
@@ -25,11 +25,11 @@ describe("Onboarding withdrawal key initial screen", () => {
         await stopApp(app);
     });
 
-    it("skip button leads to password screen", async function () {
+    it("skip button leads to configure screen", async function () {
         const {client} = app;
         await client.$("button=SKIP").click();
         const url = await client.getUrl();
-        expect(url.endsWith(OnBoardingRoutes.PASSWORD)).to.be.true;
+        expect(url.endsWith(OnBoardingRoutes.CONFIGURE)).to.be.true;
     });
 
     it("import button leads to withdrawal key import screen", async function () {
@@ -55,7 +55,6 @@ describe("Onboarding withdrawal key import screen", () => {
         const {client} = app;
         expect(await client.isExisting(".back-tab")).to.be.true;
         expect(await client.isExisting("#inputKey")).to.be.true;
-        expect((await client.elements(".step")).value.length).to.be.equal(5);
         const placeholder = await client.getAttribute("#inputKey", "placeholder");
         expect(placeholder).to.be.equal(IMPORT_WITHDRAWAL_KEY_PLACEHOLDER);
         const currentStep: [] = await client.getAttribute(".step.current", "textContent");

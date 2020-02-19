@@ -25,11 +25,14 @@ Array [
       <div
         className="__react_component_tooltip place-right type-dark "
         data-id="tooltip"
+        id="cg-tooltip-1"
       >
         Copy All
       </div>
       <img
+        alt="copy-button-icon"
         className="icon copy"
+        data-for="cg-tooltip-1"
         data-place="top"
         data-tip="Copy all"
         src="test-file-stub"
@@ -64,11 +67,14 @@ Array [
       <div
         className="__react_component_tooltip place-right type-dark "
         data-id="tooltip"
+        id="cg-tooltip-1"
       >
         Copy All
       </div>
       <img
+        alt="copy-button-icon"
         className="icon copy"
+        data-for="cg-tooltip-1"
         data-place="top"
         data-tip="Copy all"
         src="test-file-stub"

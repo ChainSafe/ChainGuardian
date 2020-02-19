@@ -30,7 +30,6 @@ describe("Onboarding signing key import screen", () => {
         const {client} = app;
         expect(await client.isExisting(".back-tab")).to.be.true;
         expect(await client.isExisting("#inputKey")).to.be.true;
-        expect((await client.elements(".step")).value.length).to.be.equal(5);
         const placeholder = await client.getAttribute("#inputKey", "placeholder");
         expect(placeholder).to.be.equal(IMPORT_SIGNING_KEY_PLACEHOLDER);
         const currentStep = await client.getAttribute(".step.current", "textContent");

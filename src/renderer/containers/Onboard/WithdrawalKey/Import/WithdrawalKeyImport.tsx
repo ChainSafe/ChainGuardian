@@ -45,7 +45,7 @@ class WithdrawalKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
 
     private handleSubmit= (input: string): void => {
         this.props.storeWithdrawalKey(input);
-        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
+        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
     };
 }
 

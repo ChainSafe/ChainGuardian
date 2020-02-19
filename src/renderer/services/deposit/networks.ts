@@ -1,23 +1,32 @@
 import {config as mainnetBeaconConfig} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {config as minimalBeaconConfig} from "@chainsafe/eth2.0-config/lib/presets/minimal";
-import {INetworkConfig} from "../interfaces";
 import {ethers} from "ethers";
 import {JsonRpcProvider} from "ethers/providers";
+import BN from "bn.js";
+
+import {INetworkConfig} from "../interfaces";
+import {SupportedNetworks} from "../docker/chain";
 
 const isLocal = process.env.NODE_ENV !== "production";
 
 const networks: INetworkConfig[] = [
     {
-        networkName: "Dummy",
-        networkId: 0,
+        networkName: SupportedNetworks.PRYSM,
+        networkId: 5,
         contract: {
-            address: "0x00000000000001",
-            depositAmount: 32,
+            address: "0xD775140349E6A5D12524C6ccc3d6A1d4519D4029",
+            depositAmount: 3.2,
             bytecode: "0x",
-            deployedAtBlock: 0
+            deployedAtBlock: 1259282
         },
-        eth2Config: mainnetBeaconConfig,
-        eth1Provider: ethers.getDefaultProvider()
+        eth2Config: {
+            ...mainnetBeaconConfig,
+            params: {
+                ...mainnetBeaconConfig.params,
+                MAX_EFFECTIVE_BALANCE: new BN("3200000000000000000")
+            }
+        },
+        eth1Provider: ethers.getDefaultProvider("goerli")
     },
 ];
 

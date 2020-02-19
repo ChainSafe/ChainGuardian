@@ -17,6 +17,7 @@ import {ethers} from "ethers";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
 import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
 import {initBLS} from "@chainsafe/bls";
+import {INetworkState} from "../../../../src/renderer/reducers/network";
 
 const privateKeyStr = "0x6e4a0f1fabccb26b99fbac820be46c29ff5d294544282ad133c5463f2aa5f885";
 const publicKeyStr =
@@ -29,7 +30,8 @@ const initialState: IRootState = {
     } as IRegisterState,
     deposit: {} as IDepositState,
     auth: {} as IAuthState,
-    notificationArray: {} as INotificationStateObject
+    notificationArray: {} as INotificationStateObject,
+    network: {} as INetworkState,
 };
 
 

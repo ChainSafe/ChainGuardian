@@ -1,7 +1,8 @@
 import {BeaconChain, SupportedNetworks} from "../services/docker/chain";
 import {DockerRegistry} from "../services/docker/docker-registry";
+import {NetworkActionTypes} from "../constants/action-types";
 
-export const startBeaconChainAction = (network = SupportedNetworks.PRYSM, ports?: string[]) => {
+export const startBeaconChainAction = (network: string, ports?: string[]) => {
     return async (): Promise<void> => {
         switch(network) {
             case SupportedNetworks.PRYSM:
@@ -30,3 +31,12 @@ export const restartBeaconChainAction = (network = SupportedNetworks.PRYSM) => {
         }
     };
 };
+
+export interface ISaveSelectedNetworkAction {
+    type: typeof NetworkActionTypes.SELECT_NETWORK;
+    payload: string;
+}
+export const saveSelectedNetworkAction = (network: string): ISaveSelectedNetworkAction => ({
+    type: NetworkActionTypes.SELECT_NETWORK,
+    payload: network,
+});
