@@ -21,13 +21,12 @@ describe("Onboarding password setup screen", () => {
         expect(await client.isExisting(".back-tab")).to.be.true;
         expect(await client.isExisting("#password")).to.be.true;
         expect(await client.isExisting("#confirm")).to.be.true;
-        expect((await client.elements(".step")).value.length).to.be.equal(5);
         const inputPlaceholder = await client.getAttribute("#password", "placeholder");
         expect(inputPlaceholder).to.be.equal("Enter password");
         const confirmPlaceholder = await client.getAttribute("#confirm", "placeholder");
         expect(confirmPlaceholder).to.be.equal("Confirm password");
         const currentStep: [] = await client.getAttribute(".step.current", "textContent");
-        expect(currentStep.length).to.be.equal(4);
+        expect(currentStep.length).to.be.equal(5);
     });
 
     it("should fail invalid inputs", async () => {

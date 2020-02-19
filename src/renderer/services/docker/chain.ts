@@ -15,6 +15,11 @@ export class BeaconChain extends Container {
         ports = BeaconChain.DefaultPorts,
         waitUntilReady = false,
     ): Promise<BeaconChain> {
+        const existingBC = DockerRegistry.getContainer(SupportedNetworks.PRYSM);
+        if (existingBC) {
+            return existingBC as BeaconChain;
+        }
+
         const bc = new BeaconChain({
             image: "gcr.io/prysmaticlabs/prysm/beacon-chain:latest",
             name: `${SupportedNetworks.PRYSM}-beacon-node`,

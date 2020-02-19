@@ -8,6 +8,8 @@ import {
 } from "../actions";
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action} from "redux";
+import {ISetNetworkAction} from "../actions/register";
+import {networks} from "../services/deposit/networks";
 
 export interface IRegisterState {
     signingMnemonic: string,
@@ -16,6 +18,7 @@ export interface IRegisterState {
     withdrawalMnemonic: string,
     withdrawalVerification: boolean,
     withdrawalKey: string,
+    network: string;
 }
 
 const initialState: IRegisterState = {
@@ -25,6 +28,7 @@ const initialState: IRegisterState = {
     withdrawalMnemonic: "",
     withdrawalVerification: false,
     withdrawalKey: "",
+    network: networks[0].networkName,
 };
 
 export const registerReducer = (state = initialState, action: Action<RegisterActionTypes>): IRegisterState => {
@@ -54,6 +58,11 @@ export const registerReducer = (state = initialState, action: Action<RegisterAct
         case RegisterActionTypes.STORE_WITHDRAWAL_KEY:
             return Object.assign({}, state, {
                 withdrawalKey: (action as IWithdrawalKeyAction).payload.withdrawalKey
+            });
+
+        case RegisterActionTypes.SET_NETWORK:
+            return Object.assign({}, state, {
+                network: (action as ISetNetworkAction).payload,
             });
 
         case RegisterActionTypes.COMPLETED_REGISTRATION_SUBMISSION:

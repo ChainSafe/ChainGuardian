@@ -41,7 +41,7 @@ class WithdrawalMnemonicQuestion extends Component<IOwnProps & IInjectedProps & 
     
     private handleCorrectAnswer= (): void => {
         this.props.setVerificationStatus(false);
-        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
+        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
     };
 }
 
