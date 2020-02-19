@@ -1493,10 +1493,6 @@
   dependencies:
     assert "^2.0.0"
 
-"@chainsafe/bit-utils@^0.1.2":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@chainsafe/bit-utils/-/bit-utils-0.1.4.tgz#c7fcc20f8ea916b7767b82ce6fad389db675bd4e"
-
 "@chainsafe/bls-hd-key@^0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@chainsafe/bls-hd-key/-/bls-hd-key-0.0.1.tgz#143ff16d2dcc2ec7a0b51e211d6cadabdd65f2df"
@@ -1518,18 +1514,7 @@
     bip39 "^3.0.2"
     buffer "^5.4.3"
 
-"@chainsafe/bls@^0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@chainsafe/bls/-/bls-0.1.7.tgz#de3e5a4220f6a5051e09d696d6654b12aa9fa967"
-  integrity sha512-AMd7gHT9Fl1Qv29zLKxlZqHFsyUn/YeKXNvGPhhpbNG8kCh+BnbQtXyxWo/ReiEKM5DzG9sLKDJgDgMqKp7KwA==
-  dependencies:
-    "@chainsafe/eth2.0-types" "^0.1.0"
-    "@chainsafe/milagro-crypto-js" "0.1.3"
-    assert "^1.4.1"
-    js-sha256 "^0.9.0"
-    secure-random "^1.1.1"
-
-"@chainsafe/bls@^0.2.2":
+"@chainsafe/bls@0.2.2", "@chainsafe/bls@^0.1.7", "@chainsafe/bls@^0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@chainsafe/bls/-/bls-0.2.2.tgz#11d75329635a33ff837b6473d0f4853e55a37c89"
   integrity sha512-12usgf/RMZHf7/ElhVP3yrnnUXLIbgSNTCM2ruF/b7fIuWwvRu2iWqGXKMF5Oww75or8mObVQEFpB75SAZm9GA==
@@ -1570,15 +1555,6 @@
     "@types/bn.js" "^4.11.4"
     bn.js "^4.11.8"
 
-"@chainsafe/eth2.0-types@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-types/-/eth2.0-types-0.1.0.tgz#0864e9e52570fdb40be9f34b6063b29d83ed4923"
-  integrity sha512-SV8+/cLiFQrZeu9J6r3rzxB4s8ZR/QtVhMzPRtob1J+yeft5NcaDwygjUiIc4TYESr2IU/e7OvuYiEq0y/6dpw==
-  dependencies:
-    "@chainsafe/bit-utils" "^0.1.2"
-    "@types/bn.js" "^4.11.4"
-    bn.js "^4.11.8"
-
 "@chainsafe/eth2.0-utils@^0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-utils/-/eth2.0-utils-0.1.1.tgz#fd3c39d58a49584ca078e4d6de47d52549b191f6"
@@ -1596,11 +1572,6 @@
     js-yaml "^3.13.1"
     snake-case "^2.1.0"
     winston "^3.2.1"
-
-"@chainsafe/milagro-crypto-js@0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@chainsafe/milagro-crypto-js/-/milagro-crypto-js-0.1.3.tgz#0813b5991f53e9573174637ce9ec96576218a09b"
-  integrity sha512-K0UrL+73E4Fblk9j+ZZDPXRKvriZExbtSgdel+zSSPqyhUW0OBeep2TJCVYq6RYhLgdSbGbTwiU5Ixku7jcPIg==
 
 "@chainsafe/ssz-type-schema@^0.0.2":
   version "0.0.2"
@@ -8700,11 +8671,6 @@ js-levenshtein@^1.1.3:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/js-levenshtein/-/js-levenshtein-1.1.6.tgz#c6cee58eb3550372df8deb85fad5ce66ce01d59d"
 
-js-sha256@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/js-sha256/-/js-sha256-0.9.0.tgz#0b89ac166583e91ef9123644bd3c5334ce9d0966"
-  integrity sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==
-
 js-sha3@0.5.7:
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.5.7.tgz#0d4ffd8002d5333aabaf4a23eed2f6374c9f28e7"
@@ -11908,11 +11874,6 @@ secp256k1@^3.0.1:
     elliptic "^6.4.1"
     nan "^2.14.0"
     safe-buffer "^5.1.2"
-
-secure-random@^1.1.1:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/secure-random/-/secure-random-1.1.2.tgz#ed103b460a851632d420d46448b2a900a41e7f7c"
-  integrity sha512-H2bdSKERKdBV1SwoqYm6C0y+9EA94v6SUBOWO8kDndc4NoUih7Dv6Tsgma7zO1lv27wIvjlD0ZpMQk7um5dheQ==
 
 seek-bzip@^1.0.5:
   version "1.0.5"

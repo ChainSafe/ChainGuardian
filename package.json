@@ -203,6 +203,7 @@
   },
   "resolutions": {
     "bcrypto": "4.2.9",
+    "@chainsafe/bls": "0.2.2",
     "serialize-javascript": "2.1.1"
   }
 }

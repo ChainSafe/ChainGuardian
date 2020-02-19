@@ -2,6 +2,7 @@ import {Application} from "spectron";
 import path from "path";
 import {Routes} from "../../src/renderer/constants/routes";
 import {rmdirSync, unlinkSync, existsSync, readdirSync, lstatSync} from "fs";
+import {initBLS} from "@chainsafe/bls";
 
 export const TIMEOUT = 120000;
 
@@ -31,6 +32,7 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
 
 
     try {
+        await initBLS();
         await app.start();
     } catch (e) {
         console.warn(e);
