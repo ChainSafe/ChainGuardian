@@ -25,14 +25,14 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
         args: [path.join(__dirname, "..", "../dist/main.js")],
         waitTimeout: 15000,
         quitTimeout: 4000,
+        // chromeDriverLogPath: path.join(__dirname, "chrome.log"),
         connectionRetryCount: 3,
         env: {NODE_ENV: "test", IS_TESTING: true, CG_DATABASE_LOCATION: dbLocation, CG_INITIAL_ROUTE: url},
-        startTimeout: 30000
     });
 
 
     try {
-        await initBLS();
+        // await initBLS();
         await app.start();
     } catch (e) {
         console.warn(e);
