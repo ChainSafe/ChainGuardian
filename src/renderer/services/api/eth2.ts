@@ -3,7 +3,6 @@ import {
     BLSPubkey,
     Epoch,
     IndexedAttestation,
-    Shard,
     Slot,
     uint64,
     uint8,
@@ -25,7 +24,6 @@ import {IBeaconAPIClient, IBeaconApiClientOptions} from "./interface";
 import {Client} from "./http/client";
 import {EmptyUrl} from "./errors";
 import {getChainForkSSZType, IChainFork, ISyncing, SyncingSSZType, ValidatorDutySSZTyoe} from "./types";
-import BN from "bn.js";
 
 export class Eth2 implements IBeaconAPIClient {
     private options: IBeaconApiClientOptions;
@@ -44,34 +42,34 @@ export class Eth2 implements IBeaconAPIClient {
     }
 
     public async fetchGenesisTime(): Promise<uint64> {
-        return new BN(await this.httpClient.get<string>(FETCH_GENESIS_TIME));
+        return BigInt(await this.httpClient.get<string>(FETCH_GENESIS_TIME));
     }
 
     public async fetchNodeSyncing(): Promise<ISyncing> {
         return fromJson<ISyncing>(
+            SyncingSSZType,
             await this.httpClient.get<object>(POLL_NODE_SYNCING),
-            SyncingSSZType
         );
     }
 
     public async fetchForkInformation(): Promise<IChainFork> {
         return fromJson<IChainFork>(
+            getChainForkSSZType(this.options.config),
             await this.httpClient.get<object>(FETCH_FORK_INFORMATION),
-            getChainForkSSZType(this.options.config)
         );
     }
 
     public async fetchValidatorDuties(validatorPubkeys: BLSPubkey[], epoch: Epoch): Promise<ValidatorDuty> {
         return fromJson<ValidatorDuty>(
+            ValidatorDutySSZTyoe,
             await this.httpClient.get<object>(FETCH_VALIDATOR_DUTIES(validatorPubkeys, epoch)),
-            ValidatorDutySSZTyoe
         );
     }
 
     public async fetchValidatorBlock(slot: Slot, randaoReveal: string): Promise<BeaconBlock> {
         return fromJson<BeaconBlock>(
+            this.options.config.types.BeaconBlock,
             await this.httpClient.get<object>(FETCH_VALIDATOR_BLOCK(slot, randaoReveal)),
-            this.options.config.types.BeaconBlock
         );
     }
 
@@ -83,12 +81,12 @@ export class Eth2 implements IBeaconAPIClient {
         validatorPubkey: BLSPubkey,
         pocBit: uint8,
         slot: Slot,
-        shard: Shard
+        shard: number,
     ): Promise<IndexedAttestation> {
         const result = await this.httpClient.get<object>(
             PRODUCE_ATTESTATION(validatorPubkey, pocBit, slot, shard)
         );
-        return fromJson(result, this.options.config.types.IndexedAttestation);
+        return fromJson(this.options.config.types.IndexedAttestation, result);
     }
 
     public async publishSignedAttestation(attestation: IndexedAttestation): Promise<void> {

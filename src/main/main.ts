@@ -1,4 +1,6 @@
 import {app} from "electron";
+import {initBLS} from "@chainsafe/bls";
+
 import {createWindow} from "./gui/window";
 import {DatabaseIpcHandler} from "./db/ipc";
 
@@ -9,6 +11,7 @@ app.on("before-quit", db.stop.bind(db));
 app.on("activate", db.start.bind(db));
 
 app.on("ready", async function() {
+    await initBLS();
     await Promise.all([
         db.start(),
         createWindow(),

@@ -7,8 +7,8 @@ import {toHexString} from "../../../../src/renderer/services/utils/crypto-utils"
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {EthersNotifier, DEPOSIT_EVENT_TIMEOUT_MESSAGE} from "../../../../src/renderer/services/deposit/ethers";
-import BN from "bn.js";
 import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
+import {initBLS} from "@chainsafe/bls";
 
 jest.setTimeout(30000);
 
@@ -26,26 +26,27 @@ describe("Deposit transaction service unit tests", () => {
     let networkConfig: INetworkConfig;
 
     beforeAll(async () => {
+        await initBLS();
         // create accounts and deploy deposit contract
         const deployWallet = ethers.Wallet.createRandom();
-        const accountWallet = ethers.Wallet.createRandom();
-        const invalidDepositWallet = ethers.Wallet.createRandom();
+        const accountWallet = PrivateKey.random();
+        const invalidDepositWallet = PrivateKey.random();
         provider = new ethers.providers.Web3Provider(ganache.provider({
             accounts: [{
                 balance: "100000000000000000000",
-                secretKey: toHexString(accountWallet.privateKey),
+                secretKey: accountWallet.toHexString(),
             },
             {
                 balance: "100000000000000000000",
-                secretKey: toHexString(invalidDepositWallet.privateKey),
+                secretKey: invalidDepositWallet.toHexString(),
             },
             {
                 balance: "100000000000000000000",
                 secretKey: toHexString(deployWallet.privateKey),
             }],
         }));
-        wallet = accountWallet;
-        invalidWallet = invalidDepositWallet;
+        wallet = new ethers.Wallet(accountWallet.toHexString());
+        invalidWallet = new ethers.Wallet(invalidDepositWallet.toHexString());
         depositContractAddress = await deployDepositContract(provider, toHexString(deployWallet.privateKey));
         networkConfig = {
             eth2Config: config,
@@ -85,9 +86,9 @@ describe("Deposit transaction service unit tests", () => {
         const ethersNotifier = new EthersNotifier(networkConfig, provider, keyPair);
 
         ethersNotifier.depositEventListener(EVENT_TIMEOUT)
-            .then((amountGwei: BN) => {
-                const expectedAmount = new BN(ethers.utils.parseUnits("15", "gwei").toString());
-                expect(amountGwei.cmp(expectedAmount)).toEqual(0);
+            .then((amountGwei: bigint) => {
+                const expectedAmount = BigInt(ethers.utils.parseUnits("15", "gwei").toString());
+                expect(amountGwei === expectedAmount);
                 done();
             });
 

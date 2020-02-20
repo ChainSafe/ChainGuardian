@@ -4,11 +4,10 @@ import {AddButton} from "../Button/ButtonAction";
 import {ValidatorStat} from "../Cards/ValidatorStat";
 import {NodeCard} from "../Cards/NodeCard";
 import {useState} from "react";
-import BN from "bn.js";
 
 export interface IStatsType{
     roi: number;
-    balance: BN | number;
+    balance: bigint | number;
     uptime: number;
 }
 export interface IBeaconNode{

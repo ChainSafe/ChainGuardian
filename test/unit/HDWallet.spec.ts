@@ -1,4 +1,5 @@
 import {Eth2HDWallet} from "../../src/renderer/services/wallet";
+import {initBLS} from "@chainsafe/bls";
 const entropy = Buffer.from("69248c25e98665aac3fe2fc05ee4a1d3", "hex");
 const expectedMnemonic = "hard caught annual spread green step avocado shine scare warm chronic pond";
 
@@ -7,6 +8,10 @@ const publicKeyStr =
     "0x95c259ecefa8e60edb099a6568887dd9ba35afa75062d01a12fcc5a40d402eca57afcdc1cff7e34fbcd84dfea0848bb9";
 
 describe(".generate()", () => {
+    beforeAll(async () => {
+        await initBLS();
+    });
+
     it("should work", () => {
         const mnemonic = Eth2HDWallet.generate(entropy);
         expect(mnemonic).toEqual(expectedMnemonic);

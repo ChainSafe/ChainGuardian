@@ -6,6 +6,7 @@ import {NotificationRenderer} from "./NotificationRenderer";
 import Application from "./containers/Application";
 import store from "./store";
 import "./style/index.scss";
+import {initBLS} from "@chainsafe/bls";
 
 // Create main element
 const mainElement = document.createElement("div");
@@ -13,16 +14,20 @@ document.body.appendChild(mainElement);
 
 // Render components
 const render = (Component: () => JSX.Element): void => {
-
+    
     ReactDOM.render(
-        <AppContainer>
+        <AppContainer >
             <Provider store={store}>
                 <Component />
                 <NotificationRenderer />
             </Provider>
-        </AppContainer>,
+        </AppContainer >,
         mainElement
     );
 };
 
-render(Application);
+initBLS().then(() => {
+    render(Application);
+});
+
+

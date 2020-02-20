@@ -1,10 +1,9 @@
 import * as React from "react";
-import BN from "bn.js";
 
 export interface IValidatorStatProps {
     title: string;
     type: string;
-    value: BN | number;
+    value: bigint | number;
 }
 const renderROI = (props: IValidatorStatProps): React.ReactElement => {
     return(

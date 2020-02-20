@@ -16,11 +16,12 @@ import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
 import {ethers} from "ethers";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
 import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
+import {initBLS} from "@chainsafe/bls";
 import {INetworkState} from "../../../../src/renderer/reducers/network";
 
-const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
+const privateKeyStr = "0x6e4a0f1fabccb26b99fbac820be46c29ff5d294544282ad133c5463f2aa5f885";
 const publicKeyStr =
-    "0x92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff4990daa18";
+    "0xb344b69e942792b305fe5e00ffa8f14ee171ac7c4e84b368b7df431f1afcafb7fb029ad7570245263d2d8f9d33aba50b";
 
 const initialState: IRootState = {
     register: {
@@ -38,6 +39,10 @@ describe("deposit actions", () => {
     const middlewares = [thunk];
     const mockStore = configureStore(middlewares);
     const reduxStore = mockStore(initialState);
+
+    beforeAll(async() => {
+        await initBLS();
+    });
 
     beforeEach(() => {
         reduxStore.clearActions();

@@ -1,5 +1,6 @@
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
+import {init, destroy} from "@chainsafe/bls/lib/context";
 import fs from "fs";
 import sinon from "sinon";
 import {ICGKeystore, V4Keystore} from "../../../src/renderer/services/keystore";
@@ -34,6 +35,7 @@ describe("V4Keystore", () => {
     });
 
     beforeEach(async () => {
+        await init();
         const priv = PrivateKey.fromHexString(privateKey);
         const keypair = new Keypair(priv);
 
@@ -42,6 +44,7 @@ describe("V4Keystore", () => {
 
     afterAll(() => {
         sandbox.restore();
+        destroy();
     });
 
 

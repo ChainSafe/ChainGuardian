@@ -107,7 +107,6 @@
     "@storybook/addons": "5.2.8",
     "@storybook/react": "5.2.8",
     "@types/bech32": "1.1.1",
-    "@types/bn.js": "^4.11.5",
     "@types/chai": "^4.2.3",
     "@types/chai-as-promised": "^7.1.2",
     "@types/electron-devtools-installer": "^2.2.0",
@@ -148,7 +147,7 @@
     "eslint-config-react": "^1.1.7",
     "eslint-plugin-react": "^7.14.3",
     "file-loader": "^3.0.1",
-    "fork-ts-checker-webpack-plugin": "^1.3.4",
+    "fork-ts-checker-webpack-plugin": "^1.6.0",
     "ganache-cli": "^6.7.0",
     "html-webpack-plugin": "^3.2.0",
     "image-webpack-loader": "^4.6.0",
@@ -172,18 +171,18 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@chainsafe/bls": "0.1.6",
+    "@chainsafe/bls": "^0.2.2",
     "@chainsafe/bls-keygen": "^0.0.2",
-    "@chainsafe/eth2.0-config": "0.1.1",
-    "@chainsafe/eth2.0-types": "0.1.1",
-    "@chainsafe/eth2.0-utils": "0.0.2",
-    "@chainsafe/ssz": "^0.5.1",
+    "@chainsafe/eth2.0-config": "^0.2.1",
+    "@chainsafe/eth2.0-types": "^0.2.1",
+    "@chainsafe/eth2.0-utils": "^0.1.1",
+    "@chainsafe/ssz": "^0.5.4",
     "@hapi/joi": "^16.1.7",
     "@nodefactory/bls-keystore": "^1.0.0-beta7",
     "axios": "0.19.0",
     "bech32": "1.1.3",
+    "bigint-buffer": "^1.1.5",
     "bip39": "3.0.2",
-    "bn.js": "^5.0.0",
     "deepmerge": "^4.0.0",
     "electron-log": "^3.0.8",
     "ethereumjs-abi": "^0.6.8",
@@ -204,7 +203,9 @@
     "uuid": "^3.3.3"
   },
   "resolutions": {
+    "terser": "4.6.3",
     "bcrypto": "4.2.9",
+    "@chainsafe/bls": "0.2.2",
     "serialize-javascript": "2.1.1"
   }
 }
