@@ -1,12 +1,12 @@
 import {IBeaconClientOptions, IValidatorBeaconClient} from "./interface";
-import {Client} from "../../api/http/client";
+import {HttpClient} from "../../api/http/httpClient";
 import {EmptyUrl} from "../../api/errors";
 import {ApiClientOverRest} from "@chainsafe/lodestar-validator/lib/api/impl/rest/apiClient";
 import {ApiLogger} from "./logger";
 
 export class StandardValidatorBeaconClient extends ApiClientOverRest implements IValidatorBeaconClient {
     private options: IBeaconClientOptions;
-    private httpClient: Client;
+    private httpClient: HttpClient;
 
     public constructor(options: IBeaconClientOptions) {
         if (!options.urlPrefix) {
@@ -14,7 +14,7 @@ export class StandardValidatorBeaconClient extends ApiClientOverRest implements 
         }
         super(options.config, options.urlPrefix, new ApiLogger());
         this.options = options;
-        this.httpClient = new Client(options.urlPrefix);
+        this.httpClient = new HttpClient(options.urlPrefix);
     }
     
     public async getVersion(): Promise<string> {
