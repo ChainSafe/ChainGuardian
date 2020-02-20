@@ -1,6 +1,13 @@
+import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
+
 import {BeaconChain, SupportedNetworks} from "../services/docker/chain";
 import {DockerRegistry} from "../services/docker/docker-registry";
 import {NetworkActionTypes} from "../constants/action-types";
+import {Action, Dispatch} from "redux";
+import {IRootState} from "../reducers";
+import {BeaconNode} from "../models/beaconNode";
+import database from "../services/db/api/database";
+import {DEFAULT_ACCOUNT} from "../constants/account";
 
 export const startBeaconChainAction = (network: string, ports?: string[]) => {
     return async (): Promise<void> => {
@@ -40,3 +47,21 @@ export const saveSelectedNetworkAction = (network: string): ISaveSelectedNetwork
     type: NetworkActionTypes.SELECT_NETWORK,
     payload: network,
 });
+
+export const saveBeaconNode = (url: string) => {
+    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+        const signingKey = PrivateKey.fromBytes(
+            Buffer.from(getState().register.signingKey.replace("0x",""), "hex")
+        );
+        const validatorAddress = signingKey.toPublicKey().toHexString();
+        const beaconNode = new BeaconNode({
+            url,
+            validatorAddress,
+        });
+
+        await database.beaconNode.set(
+            DEFAULT_ACCOUNT,
+            beaconNode,
+        );
+    };
+};
