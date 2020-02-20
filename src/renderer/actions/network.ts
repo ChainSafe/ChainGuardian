@@ -48,7 +48,7 @@ export const saveSelectedNetworkAction = (network: string): ISaveSelectedNetwork
     payload: network,
 });
 
-export const saveBeaconNode = (url: string) => {
+export const saveBeaconNodeAction = (url: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const signingKey = PrivateKey.fromBytes(
             Buffer.from(getState().register.signingKey.replace("0x",""), "hex")

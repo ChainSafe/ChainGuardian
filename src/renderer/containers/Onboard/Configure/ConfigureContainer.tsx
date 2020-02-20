@@ -8,10 +8,12 @@ import {networks} from "../../../services/deposit/networks";
 import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
 import {setNetworkAction} from "../../../actions";
+import {saveBeaconNodeAction} from "../../../actions/network";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 interface IInjectedProps {
     setNetwork: typeof setNetworkAction;
+    saveBeaconNode: typeof saveBeaconNodeAction;
 }
 
 const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) => {
@@ -24,9 +26,18 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
     };
     const networkOptions = networks.map((contract) => contract.networkName);
 
-    const onSubmit = (): void => {
+    const handleSubmit = (nodeUrl: string): void => {
         props.setNetwork(networks[selectedNetworkIndex].networkName);
+        props.saveBeaconNode(nodeUrl);
         props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE));
+    };
+
+    const onRunNodeSubmit = (): void => {
+        handleSubmit("localhost");
+    };
+
+    const onGoSubmit = (): void => {
+        handleSubmit(beaconNodeInput);
     };
 
     return (
@@ -52,12 +63,12 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
                     inputId="beaconURL"
                 />
 
-                <ButtonSecondary buttonId="go">GO</ButtonSecondary>
+                <ButtonSecondary onClick={onGoSubmit} buttonId="go">GO</ButtonSecondary>
             </div>
 
             <h5 className="input-or">OR</h5>
 
-            <ButtonPrimary buttonId="run-node" onClick={onSubmit}>RUN OWN NODE</ButtonPrimary>
+            <ButtonPrimary buttonId="run-node" onClick={onRunNodeSubmit}>RUN OWN NODE</ButtonPrimary>
 
             <div className="skip-notes">
                 This requires a docker installed. We will run a dockerized beacon node on your device.
@@ -70,6 +81,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
             setNetwork: setNetworkAction,
+            saveBeaconNode: saveBeaconNodeAction,
         },
         dispatch
     );
