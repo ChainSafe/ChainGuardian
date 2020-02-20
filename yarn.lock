@@ -1531,7 +1531,7 @@
   dependencies:
     buffer "^5.4.3"
 
-"@chainsafe/eth2.0-config@^0.2.1":
+"@chainsafe/eth2.0-config@0.2.1", "@chainsafe/eth2.0-config@^0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-config/-/eth2.0-config-0.2.1.tgz#274f69d78a4c9599effac41b9310d1c0b84709ca"
   integrity sha512-BR3q7bE+q9KZhL/RE+YdE8ZzS3ufZpCJK+X/uW0yjcZXcK+0ubIOiZVhaX8vBRC0S5vpUbaAe3j/+7SnPCekEQ==
@@ -1544,6 +1544,20 @@
   resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-params/-/eth2.0-params-0.2.1.tgz#cffc39c116d99fd297b4f63b4a34e1d4688265e6"
   integrity sha512-qzxvJxZtjsS6EFYIkcRbEyizXAHmqWwzaOHll8QlLZXMw1ioIWeC2vARSxivzCxrkwWUncEAwSbzjIQUCTBeKw==
 
+"@chainsafe/eth2.0-state-transition@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-state-transition/-/eth2.0-state-transition-0.2.1.tgz#8e727163e45341fe27a196d8f3ced2585b91d84b"
+  integrity sha512-CiN9vVw5NhyqiLJ91Udjpr6+vE3tVjOQCB7cM7+DzuDoZVAkAKUGrSqlZ2Q16EzM9Xm0LZqjjrK0NKZH63MCoA==
+  dependencies:
+    "@chainsafe/bit-utils" "0.1.6"
+    "@chainsafe/bls" "0.2.2"
+    "@chainsafe/eth2.0-config" "0.2.1"
+    "@chainsafe/eth2.0-utils" "0.1.1"
+    "@chainsafe/ssz" "^0.5.4"
+    bigint-buffer "^1.1.5"
+    bn.js "^5.0.0"
+    buffer-xor "^2.0.2"
+
 "@chainsafe/eth2.0-types@0.2.1", "@chainsafe/eth2.0-types@^0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-types/-/eth2.0-types-0.2.1.tgz#b1746a104ee60877a88ed0dbab19a6395a8d3ee2"
@@ -1555,7 +1569,7 @@
     "@types/bn.js" "^4.11.4"
     bn.js "^4.11.8"
 
-"@chainsafe/eth2.0-utils@^0.1.1":
+"@chainsafe/eth2.0-utils@0.1.1", "@chainsafe/eth2.0-utils@^0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@chainsafe/eth2.0-utils/-/eth2.0-utils-0.1.1.tgz#fd3c39d58a49584ca078e4d6de47d52549b191f6"
   integrity sha512-pSPGJ/Yr3HjZtdZoyVbnkB9zC4bz2MHrnZZFla5n2IGqFl14/rchBhrX0bD6idW+BTGAWFgLhxl/R2q4P+uc+w==
@@ -1572,6 +1586,22 @@
     js-yaml "^3.13.1"
     snake-case "^2.1.0"
     winston "^3.2.1"
+
+"@chainsafe/lodestar-validator@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-validator/-/lodestar-validator-0.2.1.tgz#36b331e08d39a2945a2eb0c11209678b0647861e"
+  integrity sha512-Cqd1lkt+5Ae2V1nmwOOwr7yX0y0uvWXbNDUZcY3390ZtVzmPIUBcaDW5OTkokiV/OssOwqPYqLt22e4+WvqvVg==
+  dependencies:
+    "@chainsafe/bls" "0.2.2"
+    "@chainsafe/eth2.0-config" "0.2.1"
+    "@chainsafe/eth2.0-params" "0.2.1"
+    "@chainsafe/eth2.0-state-transition" "0.2.1"
+    "@chainsafe/eth2.0-utils" "0.1.1"
+    "@chainsafe/ssz" "^0.5.4"
+    axios "^0.19.0"
+    axios-mock-adapter "^1.17.0"
+    deepmerge "^4.0.0"
+    strict-event-emitter-types "^2.0.0"
 
 "@chainsafe/ssz-type-schema@^0.0.2":
   version "0.0.2"
@@ -3473,7 +3503,7 @@ aws4@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.8.0.tgz#f0e003d9ca9e7f59c7a508945d7b2ef9a04a542f"
 
-axios-mock-adapter@1.17.0:
+axios-mock-adapter@1.17.0, axios-mock-adapter@^1.17.0:
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/axios-mock-adapter/-/axios-mock-adapter-1.17.0.tgz#0dbee43c606d4aaba5a43d88d96d6661a7cc3c04"
   dependencies:
@@ -3485,6 +3515,13 @@ axios@0.19.0:
   dependencies:
     follow-redirects "1.5.10"
     is-buffer "^2.0.2"
+
+axios@^0.19.0:
+  version "0.19.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
+  integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
+  dependencies:
+    follow-redirects "1.5.10"
 
 babel-code-frame@^6.22.0:
   version "6.26.0"
@@ -4192,6 +4229,13 @@ buffer-indexof@^1.0.0:
 buffer-xor@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/buffer-xor/-/buffer-xor-1.0.3.tgz#26e61ed1422fb70dd42e6e36729ed51d855fe8d9"
+
+buffer-xor@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/buffer-xor/-/buffer-xor-2.0.2.tgz#34f7c64f04c777a1f8aac5e661273bb9dd320289"
+  integrity sha512-eHslX0bin3GB+Lx2p7lEYRShRewuNZL3fUl4qlVJGGiwoPGftmt8JQgk2Y9Ji5/01TnVDo33E5b5O3vUB1HdqQ==
+  dependencies:
+    safe-buffer "^5.1.1"
 
 buffer@^4.3.0:
   version "4.9.1"
@@ -12484,6 +12528,11 @@ stream-mock@^2.0.5:
 stream-shift@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/stream-shift/-/stream-shift-1.0.0.tgz#d5c752825e5367e786f78e18e445ea223a155952"
+
+strict-event-emitter-types@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/strict-event-emitter-types/-/strict-event-emitter-types-2.0.0.tgz#05e15549cb4da1694478a53543e4e2f4abcf277f"
+  integrity sha512-Nk/brWYpD85WlOgzw5h173aci0Teyv8YdIAEtV+N88nDB0dLlazZyJMIsN6eo1/AR61l+p6CJTG1JIyFaoNEEA==
 
 strict-uri-encode@^1.0.0:
   version "1.1.0"
