@@ -7,3 +7,10 @@ export const Account: AnyContainerType = {
         ["sendStats", "bool"],
     ],
 };
+
+export const BeaconNode: AnyContainerType = {
+    fields: [
+        ["url", "bytes512"],
+        ["validatorAddress", "bytes512"],
+    ],
+};
