@@ -21,7 +21,7 @@ const networks: INetworkConfig[] = [
             ...mainnetBeaconConfig,
             params: {
                 ...mainnetBeaconConfig.params,
-                MAX_EFFECTIVE_BALANCE: 3200000000000000000n
+                MAX_EFFECTIVE_BALANCE: BigInt(3200000000000000000)
             }
         },
         eth1Provider: ethers.getDefaultProvider("goerli")
