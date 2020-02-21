@@ -5,6 +5,13 @@ import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {HttpClient} from "../../../api";
 import {computeEpochAtSlot, getCurrentSlot} from "@chainsafe/lodestar-validator/lib/util";
 
+export enum PrysmBeaconRoutes {
+    VERSION = "/node/version",
+    DOMAIN = "/validator/domain",
+    GENESIS = "/node/genesis",
+    SYNCING = "/node/syncing"
+}
+
 export class PrysmBeaconApiClient implements IBeaconApi {
 
     private client: HttpClient;
@@ -16,7 +23,7 @@ export class PrysmBeaconApiClient implements IBeaconApi {
     }
     
     public async getClientVersion(): Promise<bytes32> {
-        const response = await this.client.get<{version: string, metadata: string}>("/node/version");
+        const response = await this.client.get<{version: string, metadata: string}>(PrysmBeaconRoutes.VERSION);
         return Buffer.from(response.version, "ascii");
     }
 
@@ -24,7 +31,7 @@ export class PrysmBeaconApiClient implements IBeaconApi {
         //TODO; move when epoch param is introduced
         const epoch = computeEpochAtSlot(this.config, getCurrentSlot(this.config, await this.getGenesisTime()));
         const response = await this.client.get<{signatureDomain: string}>(
-            "/validator/domain",
+            PrysmBeaconRoutes.DOMAIN,
             {params: {epoch, domain: "00000000"}}
         );
         //first 4 bytes are domain type
@@ -40,12 +47,12 @@ export class PrysmBeaconApiClient implements IBeaconApi {
     }
 
     public async getGenesisTime(): Promise<number64> {
-        const response = await this.client.get<{genesisTime: string}>("/node/genesis");
+        const response = await this.client.get<{genesisTime: string}>(PrysmBeaconRoutes.GENESIS);
         return Math.floor(Date.parse(response.genesisTime) / 1000);
     }
 
     public async getSyncingStatus(): Promise<boolean | SyncingStatus> {
-        const response = await this.client.get<{syncing: boolean}>("/node/syncing");
+        const response = await this.client.get<{syncing: boolean}>(PrysmBeaconRoutes.SYNCING);
         return response.syncing;
     }
 
