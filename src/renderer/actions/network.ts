@@ -2,12 +2,12 @@ import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 
 import {BeaconChain, SupportedNetworks} from "../services/docker/chain";
 import {DockerRegistry} from "../services/docker/docker-registry";
-import {NetworkActionTypes} from "../constants/action-types";
+import { AuthActionTypes, NetworkActionTypes } from '../constants/action-types';
 import {Action, Dispatch} from "redux";
 import {IRootState} from "../reducers";
 import {BeaconNode} from "../models/beaconNode";
 import database from "../services/db/api/database";
-import {DEFAULT_ACCOUNT} from "../constants/account";
+import { CGAccount } from '../models/account';
 
 export const startBeaconChainAction = (network: string, ports?: string[]) => {
     return async (): Promise<void> => {
@@ -53,15 +53,35 @@ export const saveBeaconNodeAction = (url: string) => {
         const signingKey = PrivateKey.fromBytes(
             Buffer.from(getState().register.signingKey.replace("0x",""), "hex")
         );
+        const beaconNode = new BeaconNode(url);
         const validatorAddress = signingKey.toPublicKey().toHexString();
-        const beaconNode = new BeaconNode({
-            url,
+        await database.beaconNodes.set(
             validatorAddress,
-        });
-
-        await database.beaconNode.set(
-            DEFAULT_ACCOUNT,
             beaconNode,
         );
     };
 };
+
+export const loadedBeaconNode = (node: BeaconNode | null, validatorAddress: string): ILoadBeaconNodeAction => ({
+    type: NetworkActionTypes.LOAD_BEACON_NODE,
+    payload: {
+        beaconNode: node,
+        validatorAddress,
+    },
+});
+
+export const loadBeaconNodesAction = (validatorAddress: string) => {
+    return async (dispatch: Dispatch<Action<unknown>>): Promise<void> => {
+        const node = await database.beaconNodes.get(validatorAddress);
+        dispatch(loadedBeaconNode(node, validatorAddress));
+    };
+};
+
+export interface IBeaconNodePayload {
+    beaconNode: BeaconNode | null;
+    validatorAddress: string;
+}
+export interface ILoadBeaconNodeAction extends Action<NetworkActionTypes> {
+    payload: IBeaconNodePayload;
+}
+

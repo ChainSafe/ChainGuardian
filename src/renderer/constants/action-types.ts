@@ -32,4 +32,5 @@ export enum NotificationActionTypes {
 
 export enum NetworkActionTypes {
     SELECT_NETWORK = "SELECT_NETWORK",
+    LOAD_BEACON_NODE = "LOAD_BEACON_NODE",
 }

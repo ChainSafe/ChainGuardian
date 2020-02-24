@@ -6,12 +6,12 @@ import {BeaconNodeRepository} from "./repositories/beaconNode";
 export class CGDatabase extends DatabaseService {
 
     public account: AccountRepository;
-    public beaconNode: BeaconNodeRepository;
+    public beaconNodes: BeaconNodeRepository;
 
     public constructor(opts: IDatabaseApiOptions) {
         super(opts);
         this.account = new AccountRepository(this.db);
-        this.beaconNode = new BeaconNodeRepository(this.db);
+        this.beaconNodes = new BeaconNodeRepository(this.db);
     }
 
 }

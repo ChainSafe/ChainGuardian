@@ -16,6 +16,7 @@ import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
 import * as path from "path";
 import {storeAuthAction} from "../../actions/auth";
+import { loadBeaconNodesAction } from '../../actions/network';
 
 type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
@@ -107,6 +108,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
         if(validatorsData){
             const validators =validatorsData.getValidators();
             validators.map((v, index)=>{
+                props.loadBeaconNodes(v.publicKey.toHexString());
                 validatorArray.push({
                     name: validatorsData.name,
                     status: "TODO status",
@@ -177,6 +179,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
 interface IInjectedProps{
     storeAuth: typeof storeAuthAction;
     notification: typeof storeNotificationAction;
+    loadBeaconNodes: typeof loadBeaconNodesAction;
 }
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
@@ -188,6 +191,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
         {
             storeAuth: storeAuthAction,
             notification: storeNotificationAction,
+            loadBeaconNodes: loadBeaconNodesAction,
         },
         dispatch
     );

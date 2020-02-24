@@ -7,7 +7,7 @@ import {toBufferLE} from "bigint-buffer";
 
 export enum Bucket {
     account,
-    beaconNode
+    beaconNode,
 }
 
 export enum Key {}
