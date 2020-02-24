@@ -16,7 +16,7 @@ import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
 import * as path from "path";
 import {storeAuthAction} from "../../actions/auth";
-import { loadBeaconNodesAction } from '../../actions/network';
+import {loadBeaconNodesAction} from "../../actions/network";
 
 type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 

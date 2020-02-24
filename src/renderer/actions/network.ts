@@ -2,12 +2,11 @@ import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 
 import {BeaconChain, SupportedNetworks} from "../services/docker/chain";
 import {DockerRegistry} from "../services/docker/docker-registry";
-import { AuthActionTypes, NetworkActionTypes } from '../constants/action-types';
+import {NetworkActionTypes} from "../constants/action-types";
 import {Action, Dispatch} from "redux";
 import {IRootState} from "../reducers";
 import {BeaconNode} from "../models/beaconNode";
 import database from "../services/db/api/database";
-import { CGAccount } from '../models/account';
 
 export const startBeaconChainAction = (network: string, ports?: string[]) => {
     return async (): Promise<void> => {

@@ -1,10 +1,10 @@
-import {Repository} from '../repository';
+import {Repository} from "../repository";
 import {BeaconNode} from "../../../../models/beaconNode";
-import { Bucket } from '../../schema';
+import {Bucket} from "../../schema";
 import {BeaconNode as BeaconNodeType} from "../../../../models/ssz/types";
 import {IDatabaseController} from "../../../../../main/db/controller";
 import {JSONSerializer} from "../../serializers/json";
-import { DEFAULT_ACCOUNT } from '../../../../constants/account';
+import {DEFAULT_ACCOUNT} from "../../../../constants/account";
 
 export class BeaconNodeRepository extends Repository<BeaconNode> {
     public constructor(db: IDatabaseController) {
@@ -31,7 +31,7 @@ export class BeaconNodeRepository extends Repository<BeaconNode> {
         await super.delete(key);
     }
 
-    private getKeyName(validatorAddress: string) {
+    private getKeyName(validatorAddress: string): string {
         return `${DEFAULT_ACCOUNT}-${validatorAddress}`;
     }
 }
