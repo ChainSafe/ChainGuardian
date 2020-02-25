@@ -48,7 +48,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
 
     const onAddNewValidator = (): void => {
-        
+
         props.history.push({
             pathname: Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING),
             state: {isRegisterFlow: true}
@@ -121,8 +121,11 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
         setValidators(validatorArray);
     };
 
-    useEffect(()=>{
-        if(!props.auth.account) props.history.push(Routes.LOGIN_ROUTE);
+    useEffect(()=> {
+        if (!props.auth.account) {
+            return props.history.push(Routes.LOGIN_ROUTE);
+        }
+
         loadValidators();
     },[]);
 
@@ -158,6 +161,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
                                 onRemoveClick={(): void => {onRemoveValidator(index);}}
                                 onExportClick={(): void => {onExportValidator(index);}}
                                 privateKey={v.privateKey}
+                                nodes={props.auth.account!.getValidatorBeaconNodes(v.publicKey)}
                             />
                         </div>;
                     })}

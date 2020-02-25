@@ -3,6 +3,8 @@ import {ButtonSecondary, ButtonDestructive} from "../Button/ButtonStandard";
 import {ValidatorStat} from "../Cards/ValidatorStat";
 import {PrivateKeyField} from "../PrivateKeyField/PrivateKeyField";
 import {InputForm} from "../Input/InputForm";
+import {BeaconNode} from '../../models/beaconNode';
+import { NodeCard } from '../Cards/NodeCard';
 
 export interface IValidatorSimpleProps {
     name: string,
@@ -12,25 +14,49 @@ export interface IValidatorSimpleProps {
     onRemoveClick: () => void;
     onExportClick: () => void;
     privateKey: string;
+    nodes: BeaconNode[];
 }
 
 export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
     props: IValidatorSimpleProps) => {
 
+    const renderBeaconNodes = () => (
+        <div className="validator-nodes">
+            <div className="node-container">
+                <div className="node-grid-container" >
+                    {props.nodes.map(node => (
+                        <NodeCard
+                            key={node.url}
+                            onClick={(): void=>{}}
+                            title="Beacon node"
+                            url={node.url}
+                            value="N/A"
+                        />
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+
     return(
         <div className="validator-simple-container">
             <div className="validator-simple-keys">
                 <h2>{props.name}</h2>
-                <PrivateKeyField
-                    label="PRIVATE KEY"
-                    inputValue={props.privateKey}
-                />
+                {renderBeaconNodes()}
+
+                <br />
+
                 <InputForm
                     label="PUBLIC KEY"
                     focused={false}
                     inputValue={props.publicKey}
                     readOnly={true}
                     type="text"
+                />
+
+                <PrivateKeyField
+                    label="PRIVATE KEY"
+                    inputValue={props.privateKey}
                 />
             </div>
             <div className="validator-simple-status">
