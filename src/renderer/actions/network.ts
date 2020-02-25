@@ -5,7 +5,7 @@ import {DockerRegistry} from "../services/docker/docker-registry";
 import {NetworkActionTypes} from "../constants/action-types";
 import {Action, Dispatch} from "redux";
 import {IRootState} from "../reducers";
-import {BeaconNode} from "../models/beaconNode";
+import {BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
 
 export const startBeaconChainAction = (network: string, ports?: string[]) => {
@@ -52,7 +52,7 @@ export const saveBeaconNodeAction = (url: string) => {
         const signingKey = PrivateKey.fromBytes(
             Buffer.from(getState().register.signingKey.replace("0x",""), "hex")
         );
-        const beaconNode = new BeaconNode(url);
+        const beaconNode = new BeaconNodes(url);
         const validatorAddress = signingKey.toPublicKey().toHexString();
         await database.beaconNodes.set(
             validatorAddress,
@@ -60,27 +60,3 @@ export const saveBeaconNodeAction = (url: string) => {
         );
     };
 };
-
-export const loadedBeaconNode = (node: BeaconNode | null, validatorAddress: string): ILoadBeaconNodeAction => ({
-    type: NetworkActionTypes.LOAD_BEACON_NODE,
-    payload: {
-        beaconNode: node,
-        validatorAddress,
-    },
-});
-
-export const loadBeaconNodesAction = (validatorAddress: string) => {
-    return async (dispatch: Dispatch<Action<unknown>>): Promise<void> => {
-        const node = await database.beaconNodes.get(validatorAddress);
-        dispatch(loadedBeaconNode(node, validatorAddress));
-    };
-};
-
-export interface IBeaconNodePayload {
-    beaconNode: BeaconNode | null;
-    validatorAddress: string;
-}
-export interface ILoadBeaconNodeAction extends Action<NetworkActionTypes> {
-    payload: IBeaconNodePayload;
-}
-

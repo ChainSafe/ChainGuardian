@@ -1,17 +1,17 @@
 import {Repository} from "../repository";
-import {BeaconNode} from "../../../../models/beaconNode";
+import {BeaconNodes} from "../../../../models/beaconNode";
 import {Bucket} from "../../schema";
 import {BeaconNode as BeaconNodeType} from "../../../../models/ssz/types";
 import {IDatabaseController} from "../../../../../main/db/controller";
 import {JSONSerializer} from "../../serializers/json";
 import {DEFAULT_ACCOUNT} from "../../../../constants/account";
 
-export class BeaconNodeRepository extends Repository<BeaconNode> {
+export class BeaconNodeRepository extends Repository<BeaconNodes> {
     public constructor(db: IDatabaseController) {
-        super(db, JSONSerializer, Bucket.beaconNode, BeaconNodeType);
+        super(db, JSONSerializer, Bucket.beaconNodes, BeaconNodeType);
     }
 
-    public async get(id: string): Promise<BeaconNode | null> {
+    public async get(id: string): Promise<BeaconNodes | null> {
         const key = this.getKeyName(id);
         return super.get(key);
     }
@@ -21,7 +21,7 @@ export class BeaconNodeRepository extends Repository<BeaconNode> {
         return super.has(key);
     }
 
-    public async set(id: string, value: BeaconNode): Promise<void> {
+    public async set(id: string, value: BeaconNodes): Promise<void> {
         const key = this.getKeyName(id);
         await super.set(key, value);
     }
