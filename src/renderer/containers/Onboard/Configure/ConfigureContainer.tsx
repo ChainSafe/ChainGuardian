@@ -22,7 +22,6 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
 
     const onBeaconNodeInput = (e: React.FormEvent<HTMLInputElement>): void => {
         setBeaconNodeInput(e.currentTarget.value);
-        // TODO: Validate beacon node here
     };
     const networkOptions = networks.map((contract) => contract.networkName);
 
@@ -36,6 +35,7 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
     };
 
     const onGoSubmit = (): void => {
+        // TODO: Validate beacon node here
         props.saveBeaconNode(beaconNodeInput);
         handleSubmit();
         props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));

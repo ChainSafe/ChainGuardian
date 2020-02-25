@@ -19,10 +19,6 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProp
     const [libp2pPort, setLibp2pPort] = useState("13000");
 
     const onSubmit = (): void => {
-        // Skip deposit if withdrawal key is not provided
-        if (!props.register.withdrawalKey) {
-            return props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
-        }
         // Start beacon chain with selected network and redirect to deposit
         if (props.register.network) {
             props.startBeaconChain(props.register.network, [`${rpcPort}:4000`, `${libp2pPort}:13000`]);
