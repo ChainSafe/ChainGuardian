@@ -3,8 +3,8 @@ import {ButtonSecondary, ButtonDestructive} from "../Button/ButtonStandard";
 import {ValidatorStat} from "../Cards/ValidatorStat";
 import {PrivateKeyField} from "../PrivateKeyField/PrivateKeyField";
 import {InputForm} from "../Input/InputForm";
-import {BeaconNode} from '../../models/beaconNode';
-import { NodeCard } from '../Cards/NodeCard';
+import {BeaconNode} from "../../models/beaconNode";
+import {NodeCard} from "../Cards/NodeCard";
 
 export interface IValidatorSimpleProps {
     name: string,
@@ -20,7 +20,7 @@ export interface IValidatorSimpleProps {
 export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
     props: IValidatorSimpleProps) => {
 
-    const renderBeaconNodes = () => (
+    const renderBeaconNodes = (): React.ReactElement => (
         <div className="validator-nodes">
             <div className="node-container">
                 <div className="node-grid-container" >

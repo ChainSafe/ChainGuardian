@@ -1,8 +1,8 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {readdirSync} from "fs";
 import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/keystore";
-import { BeaconNode, BeaconNodes, IValidatorBeaconNodes } from './beaconNode';
-import database from '../services/db/api/database';
+import {BeaconNode, IValidatorBeaconNodes} from "./beaconNode";
+import database from "../services/db/api/database";
 
 export interface IAccount {
     name: string;
