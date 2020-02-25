@@ -8,9 +8,18 @@ export const Account: AnyContainerType = {
     ],
 };
 
-export const BeaconNode: AnyContainerType = {
+const BeaconNode: AnyContainerType = {
     fields: [
-        ["url", "bytes512"],
-        ["validatorAddress", "bytes512"],
+        ["url", "string"],
+        ["isLocalNetwork", "bool"],
+    ],
+};
+
+export const ValidatorBeaconNode: AnyContainerType = {
+    fields: [
+        ["nodes", {
+            elementType: BeaconNode,
+            maxLength: 4, // TODO: move constant
+        }],
     ],
 };
