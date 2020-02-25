@@ -10,13 +10,16 @@ import database from "../services/db/api/database";
 
 export const startBeaconChainAction = (network: string, ports?: string[]) => {
     return async (): Promise<void> => {
+        let bc: BeaconChain;
         switch(network) {
             case SupportedNetworks.PRYSM:
-                await BeaconChain.startPrysmBeaconChain(ports);
+                bc = await BeaconChain.startPrysmBeaconChain(ports);
                 break;
             default:
-                await BeaconChain.startPrysmBeaconChain(ports);
+                bc = await BeaconChain.startPrysmBeaconChain(ports);
         }
+        const name = bc.getName();
+        await saveBeaconNodeAction("localhost", name);
     };
 };
 
@@ -47,12 +50,12 @@ export const saveSelectedNetworkAction = (network: string): ISaveSelectedNetwork
     payload: network,
 });
 
-export const saveBeaconNodeAction = (url: string) => {
+export const saveBeaconNodeAction = (url: string, localDockerId?: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const signingKey = PrivateKey.fromBytes(
             Buffer.from(getState().register.signingKey.replace("0x",""), "hex")
         );
-        const beaconNode = new BeaconNodes(url);
+        const beaconNode = new BeaconNodes(url, localDockerId);
         const validatorAddress = signingKey.toPublicKey().toHexString();
         await database.beaconNodes.set(
             validatorAddress,

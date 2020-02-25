@@ -12,7 +12,7 @@ export const Account: AnyContainerType = {
 const BeaconNode: AnyContainerType = {
     fields: [
         ["url", "string"],
-        ["isLocalNetwork", "bool"],
+        ["localDockerId", "string"],
     ],
 };
 

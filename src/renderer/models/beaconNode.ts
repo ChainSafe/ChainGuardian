@@ -1,6 +1,6 @@
 export type BeaconNode = {
     url: string;
-    isLocalNetwork: boolean;
+    localDockerId: string;
 };
 
 interface IBeaconNodes {
@@ -14,11 +14,11 @@ export interface IValidatorBeaconNodes {
 export class BeaconNodes implements IBeaconNodes {
     public nodes: BeaconNode[] = [];
 
-    public constructor(url: string, isLocalNetwork = false) {
-        this.nodes.push({url, isLocalNetwork});
+    public constructor(url: string, localDockerId = "") {
+        this.nodes.push({url, localDockerId});
     }
 
-    public addNode(url: string, isLocalNetwork = false): void {
-        this.nodes.push({url, isLocalNetwork});
+    public addNode(url: string, localDockerId = ""): void {
+        this.nodes.push({url, localDockerId});
     }
 }

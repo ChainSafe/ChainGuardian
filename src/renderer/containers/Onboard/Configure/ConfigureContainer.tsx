@@ -26,18 +26,19 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
     };
     const networkOptions = networks.map((contract) => contract.networkName);
 
-    const handleSubmit = (nodeUrl: string): void => {
+    const handleSubmit = (): void => {
         props.setNetwork(networks[selectedNetworkIndex].networkName);
-        props.saveBeaconNode(nodeUrl);
-        props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE));
     };
 
     const onRunNodeSubmit = (): void => {
-        handleSubmit("localhost");
+        handleSubmit();
+        props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE));
     };
 
     const onGoSubmit = (): void => {
-        handleSubmit(beaconNodeInput);
+        props.saveBeaconNode(beaconNodeInput);
+        handleSubmit();
+        props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
     };
 
     return (
