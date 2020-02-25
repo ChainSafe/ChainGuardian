@@ -54,8 +54,9 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps> {
         return true;
     }
 
-    public componentWillMount(): void {
-        const {canDeposit, history} = this.props
+    // eslint-disable-next-line camelcase
+    public UNSAFE_componentWillMount(): void {
+        const {canDeposit, history} = this.props;
         if (!canDeposit) {
             return history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
         }

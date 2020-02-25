@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {RouteComponentProps} from "react-router-dom";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
-import {startBeaconChainAction} from "../../../actions/network";
+import {startBeaconChainAction, saveBeaconNodeAction} from "../../../actions/network";
 import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
 import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
@@ -12,6 +12,7 @@ type IStateProps = Pick<IRootState, "register">;
 type IOwnProps =  Pick<RouteComponentProps, "history">;
 interface IInjectedProps {
     startBeaconChain: typeof startBeaconChainAction;
+    saveBeaconNode: typeof saveBeaconNodeAction;
 }
 
 const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProps> = (props) => {
@@ -22,6 +23,7 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProp
         // Start beacon chain with selected network and redirect to deposit
         if (props.register.network) {
             props.startBeaconChain(props.register.network, [`${rpcPort}:4000`, `${libp2pPort}:13000`]);
+            props.saveBeaconNode("localhost", props.register.network);
             props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
         }
     };
@@ -70,6 +72,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
             startBeaconChain: startBeaconChainAction,
+            saveBeaconNode: saveBeaconNodeAction,
         },
         dispatch
     );
