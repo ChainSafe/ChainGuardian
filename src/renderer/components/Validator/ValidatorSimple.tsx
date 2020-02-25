@@ -42,7 +42,10 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
         <div className="validator-simple-container">
             <div className="validator-simple-keys">
                 <h2>{props.name}</h2>
-                {renderBeaconNodes()}
+                <h3>Status: {props.status}</h3>
+                <br />
+
+                <ValidatorStat title="Deposit" type="ETH" value={props.deposit}/>
 
                 <br />
 
@@ -60,8 +63,7 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
                 />
             </div>
             <div className="validator-simple-status">
-                <h2>Status: {props.status}</h2>
-                <ValidatorStat title="Deposit" type="ETH" value={props.deposit}/>
+                {renderBeaconNodes()}
                 <div className="validator-simple-buttons">
                     <ButtonDestructive onClick={props.onRemoveClick}>REMOVE</ButtonDestructive>
                     <ButtonSecondary onClick={props.onExportClick}>EXPORT</ButtonSecondary>
