@@ -1,4 +1,5 @@
 import {AnyContainerType} from "@chainsafe/ssz";
+import {MAX_VALIDATOR_BEACON_NODES} from "../../constants/account";
 
 export const Account: AnyContainerType = {
     fields: [
@@ -19,7 +20,7 @@ export const ValidatorBeaconNode: AnyContainerType = {
     fields: [
         ["nodes", {
             elementType: BeaconNode,
-            maxLength: 4, // TODO: move constant
+            maxLength: MAX_VALIDATOR_BEACON_NODES,
         }],
     ],
 };
