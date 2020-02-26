@@ -28,7 +28,7 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
                         <NodeCard
                             key={node.url}
                             onClick={(): void=>{}}
-                            title="Beacon node"
+                            title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
                             url={node.url}
                             value="N/A"
                         />
