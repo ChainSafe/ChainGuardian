@@ -22,7 +22,7 @@ export class BeaconChain extends Container {
 
         const bc = new BeaconChain({
             image: "gcr.io/prysmaticlabs/prysm/beacon-chain:latest",
-            name: `${SupportedNetworks.PRYSM}-beacon-node`,
+            name: BeaconChain.getContainerName(SupportedNetworks.PRYSM),
             restart: "unless-stopped",
             ports,
             volume: `${SupportedNetworks.PRYSM}-chain-data:/data`,
@@ -34,6 +34,10 @@ export class BeaconChain extends Container {
             while (!(await bc.isRunning())) { /* */ }
         }
         return bc;
+    }
+
+    public static getContainerName(network: string): string {
+        return `${network}-beacon-node`;
     }
 
     public listenToLogs(callback: LogCallbackFunc): void {

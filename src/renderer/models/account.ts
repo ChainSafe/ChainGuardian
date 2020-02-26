@@ -1,6 +1,8 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {readdirSync} from "fs";
 import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/keystore";
+import {BeaconNode, IValidatorBeaconNodes} from "./beaconNode";
+import database from "../services/db/api/database";
 
 export interface IAccount {
     name: string;
@@ -15,6 +17,7 @@ export class CGAccount implements IAccount {
 
     private validators: Keypair[] = [];
     private keystoreTarget: ICGKeystoreFactory;
+    private validatorsBeaconNodes: IValidatorBeaconNodes = {};
 
     public constructor(
         account: IAccount,
@@ -50,6 +53,13 @@ export class CGAccount implements IAccount {
             throw new Error("Keystore locked.");
         }
         return this.validators;
+    }
+
+    /**
+     * Returns array of beacon nodes that validator uses.
+     */
+    public getValidatorBeaconNodes(validatorAddress: string): BeaconNode[] {
+        return this.validatorsBeaconNodes[validatorAddress];
     }
 
     /**
@@ -104,6 +114,7 @@ export class CGAccount implements IAccount {
         for (const validatorIdx in validators) {
             const validator = await validators[validatorIdx];
             if (validator !== undefined) {
+                await this.loadValidatorBeaconNodes(validator);
                 this.validators.push(validator);
             }
         }
@@ -122,6 +133,7 @@ export class CGAccount implements IAccount {
     public lock(): void {
         // Clear validator Keypairs
         this.validators = [];
+        this.validatorsBeaconNodes = {};
     }
 
     private isUnlocked(): boolean {
@@ -151,5 +163,15 @@ export class CGAccount implements IAccount {
                 }
             })
             .filter((keystore): keystore is ICGKeystore => keystore !== null);
+    }
+
+    private async loadValidatorBeaconNodes(validator: Keypair): Promise<void> {
+        const validatorAddress = validator.publicKey.toHexString();
+        const loadedNodes = await database.beaconNodes.get(validatorAddress);
+        if (loadedNodes) {
+            this.validatorsBeaconNodes[validatorAddress] = loadedNodes.nodes;
+        } else {
+            this.validatorsBeaconNodes[validatorAddress] = [];
+        }
     }
 }

@@ -84,7 +84,7 @@ exports[`Validator renders correctly, 2 nodes 1`] = `
           </span>
           <h2>
             21
-            ms
+             ms
           </h2>
           <span
             className="node-text time"
@@ -106,7 +106,7 @@ exports[`Validator renders correctly, 2 nodes 1`] = `
           </span>
           <h2>
             22
-            ms
+             ms
           </h2>
           <span
             className="node-text time"
@@ -245,7 +245,7 @@ exports[`Validator renders correctly, 4 nodes 1`] = `
           </span>
           <h2>
             21
-            ms
+             ms
           </h2>
           <span
             className="node-text time"
@@ -267,7 +267,7 @@ exports[`Validator renders correctly, 4 nodes 1`] = `
           </span>
           <h2>
             22
-            ms
+             ms
           </h2>
           <span
             className="node-text time"

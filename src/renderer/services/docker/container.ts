@@ -45,6 +45,13 @@ export abstract class Container {
         }
     }
 
+    public getName(): string | undefined {
+        if (this.docker) {
+            return this.docker.name;
+        }
+        return undefined;
+    }
+
     public getLogs(): ICmdRun | undefined {
         if (this.docker) {
             return {

@@ -21,7 +21,7 @@ const publicKeyStr =
     "0x92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff4990daa18";
 const expectedMnemonic = "hard caught annual spread green step avocado shine scare warm chronic pond";
 
-const initialState: IRootState = {
+export const initialState: IRootState = {
     register: {
         signingKey: privateKeyStr
     } as IRegisterState,

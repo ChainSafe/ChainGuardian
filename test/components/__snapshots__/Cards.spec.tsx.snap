@@ -15,7 +15,7 @@ exports[`Cards renders correctly, NodeCard 1`] = `
   </span>
   <h2>
     21
-    ms
+     ms
   </h2>
   <span
     className="node-text time"

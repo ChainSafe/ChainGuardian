@@ -31,6 +31,7 @@ interface IInjectedState {
     isDepositGenerated: boolean;
     isDepositDetected: boolean;
     networkIndex: number;
+    canDeposit: boolean;
 }
 
 /**
@@ -51,6 +52,14 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps> {
             return false;
         }
         return true;
+    }
+
+    // eslint-disable-next-line camelcase
+    public UNSAFE_componentWillMount(): void {
+        const {canDeposit, history} = this.props;
+        if (!canDeposit) {
+            return history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+        }
     }
 
     // TODO Maybe add some loader becase generating transaction data takes some time
@@ -118,7 +127,8 @@ const mapStateToProps = (state: IRootState): IInjectedState => {
         waitingForDeposit: deposit.waitingForDeposit,
         depositTxData: deposit.depositTxData,
         isDepositGenerated: deposit.depositTxData !== null,
-        isDepositDetected: deposit.isDepositDetected
+        isDepositDetected: deposit.isDepositDetected,
+        canDeposit: !!register.withdrawalKey,
     };
 };
 
