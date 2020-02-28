@@ -2,7 +2,7 @@ import {PrysmBeaconApiClient, PrysmBeaconRoutes} from "../../../../../src/render
 import {networks} from "../../../../../src/renderer/services/deposit/networks";
 import {SupportedNetworks} from "../../../../../src/renderer/services/docker/chain";
 import axios from "axios";
-import MockAxiosAdapter from "axios-mock-adapter";
+import MockAxiosAdapter from "@nodefactory/axios-mock-adapter";
 import {base64Encode, fromHex} from "../../../../../src/renderer/services/utils/bytes";
 
 const httpMock = new MockAxiosAdapter(axios);
@@ -24,6 +24,7 @@ describe("prysm beacon client", function() {
     });
 
     it("get fork", async function() {
+        console.log(base64Encode(fromHex("00000000")))
         jest.spyOn(Date, "now").mockImplementation(() => Date.UTC(2020, 1, 1, 0, 0, 0));
         httpMock.onGet(PrysmBeaconRoutes.DOMAIN, {epoch: 0, domain: base64Encode(fromHex("00000000"))}).reply(200, {
             signatureDomain: base64Encode(fromHex("0000000000000004")),

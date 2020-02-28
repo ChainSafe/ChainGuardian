@@ -4,6 +4,7 @@ import {IBeaconClientOptions} from "../interface";
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {HttpClient} from "../../../api";
 import {computeEpochAtSlot, getCurrentSlot} from "@chainsafe/lodestar-validator/lib/util";
+import {base64Decode, base64Encode, fromHex} from "../../../utils/bytes";
 
 export enum PrysmBeaconRoutes {
     VERSION = "/node/version",
@@ -32,10 +33,10 @@ export class PrysmBeaconApiClient implements IBeaconApi {
         const epoch = computeEpochAtSlot(this.config, getCurrentSlot(this.config, await this.getGenesisTime()));
         const response = await this.client.get<{signatureDomain: string}>(
             PrysmBeaconRoutes.DOMAIN,
-            {params: {epoch, domain: "00000000"}}
+            {params: {epoch, domain: base64Encode(fromHex("00000000"))}}
         );
         //first 4 bytes are domain type
-        const version = Buffer.from(response.signatureDomain, "hex").slice(4, 8);
+        const version = base64Decode(response.signatureDomain).slice(4, 8);
         return {
             fork: {
                 currentVersion: version,

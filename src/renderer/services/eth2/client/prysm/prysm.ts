@@ -1,10 +1,10 @@
-import {IValidatorBeaconClient} from "./interface";
 import {AbstractApiClient} from "@chainsafe/lodestar-validator/lib/api/abstract";
-import {IBeaconClientOptions} from "../interface";
+import {IBeaconClientOptions, IValidatorBeaconClient} from "../interface";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
 import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
-import { PrysmBeaconApiClient } from './beacon';
+import {PrysmBeaconApiClient} from "./beacon";
+import {PrysmValidatorApiClient} from "./validator";
 
 export class PrysmBeaconClient extends AbstractApiClient implements IValidatorBeaconClient {
 
@@ -19,6 +19,7 @@ export class PrysmBeaconClient extends AbstractApiClient implements IValidatorBe
         this.url = options.urlPrefix;
         this.config = options.config;
         this.beacon = new PrysmBeaconApiClient(options);
+        this.validator = new PrysmValidatorApiClient(options);
     }
     
     public async getVersion(): Promise<string> {

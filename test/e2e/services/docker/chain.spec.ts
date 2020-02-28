@@ -1,5 +1,5 @@
 import {BeaconChain, SupportedNetworks} from "../../../../src/renderer/services/docker/chain";
-import {runCmdAsync} from "../../../../src/renderer/services/utils/cmd-utils";
+import {runCmdAsync} from "../../../../src/renderer/services/utils/cmd";
 import {assert} from "chai";
 
 // run docker e2e test suit if env variable set
