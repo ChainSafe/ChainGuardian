@@ -3,7 +3,24 @@ import {parseType} from "@chainsafe/ssz";
 import {BitList, BitVector} from "@chainsafe/bit-utils";
 import {base64Decode, base64Encode} from "../../../utils/bytes";
 
-export function toPrysmaticJson(value: unknown): unknown {
+export function toPrysmaticJson(value: object): unknown {
+    // eslint-disable-next-line no-param-reassign
+    value = {...value};
+    for (const key in value) {
+        // eslint-disable-next-line no-prototype-builtins
+        if(value.hasOwnProperty(key)) {
+            // @ts-ignore
+            value[key] = value[key] !== null ? toJson(value[key]) : null;
+        }
+    }
+    return value;
+}
+
+export function fromPrysmaticJson<T>(type: AnyContainerType<T>, data: object): T {
+    return fromJson(parseType(type), data) as T;
+}
+
+function toJson(value: unknown): unknown {
     if (Buffer.isBuffer(value)) {
         return base64Encode(value);
     }
@@ -20,13 +37,9 @@ export function toPrysmaticJson(value: unknown): unknown {
         return value.map(toPrysmaticJson);
     }
     if (typeof value === "object") {
-        return toPrysmaticJson(value);
+        return toPrysmaticJson(value as object);
     }
     return value;
-}
-
-export function fromPrysmaticJson<T>(type: AnyContainerType<T>, data: object): T {
-    return fromJson(parseType(type), data) as T;
 }
 
 

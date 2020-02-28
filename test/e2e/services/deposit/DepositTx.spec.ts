@@ -1,7 +1,7 @@
 import {ethers, Wallet} from "ethers";
 import {deployDepositContract} from "./deposit-test-util";
 import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
-import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
+import {PrivateKey} from "@chainsafe/bls";
 import {toHexString} from "../../../../src/renderer/services/utils/crypto";
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";

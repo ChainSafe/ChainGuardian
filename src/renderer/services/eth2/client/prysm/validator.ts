@@ -23,12 +23,10 @@ import {fromPrysmaticJson, toPrysmaticJson} from "./converter";
 
 export enum PrysmValidatorRoutes {
     DUTIES = "/validator/duties",
-    PRODUCE_ATTESTATION = "/validator/attestation",
-    VALIDATOR_INDEX = "/validator/attestation",
-    PRODUCE_BLOCK = "/validator/block",
-    AGGREGATE_ATTESTATIONS = "/validator/aggregate",
-    PUBLISH_ATTESTATION = "/validator/attestation",
-    PUBLISH_BLOCK = "/validator/block",
+    ATTESTATION = "/validator/attestation",
+    VALIDATOR_INDEX = "/validator/index",
+    BLOCK = "/validator/block",
+    AGGREGATE_ATTESTATIONS = "/validator/aggregate"
 }
 
 export class PrysmValidatorApiClient implements IValidatorApi {
@@ -101,7 +99,7 @@ export class PrysmValidatorApiClient implements IValidatorApi {
         validatorPubKey: BLSPubkey, pocBit: boolean, index: CommitteeIndex, slot: Slot
     ): Promise<Attestation> {
         const attestationDataResponse = await this.client.get<PrysmAttestationData>(
-            PrysmValidatorRoutes.PRODUCE_ATTESTATION,
+            PrysmValidatorRoutes.ATTESTATION,
             {params: {
                 slot,
                 committeeIndex: index
@@ -111,15 +109,21 @@ export class PrysmValidatorApiClient implements IValidatorApi {
         if(!committee) {
             throw new Error("Missing committee");
         }
-        const indexInCommittee = committee.indexOf(await this.getValidatorIndex(validatorPubKey));
+        const validatorIndex = await this.getValidatorIndex(validatorPubKey);
+        const indexInCommittee = committee.indexOf(validatorIndex);
         const aggregationBits = BitList.fromBitfield(
             Buffer.alloc(intDiv(committee.length + 7, 8)),
             committee.length
         );
         aggregationBits.setBit(indexInCommittee, true);
+        const attestationData = fromPrysmaticJson<AttestationData>(
+            this.config.types.AttestationData,
+            attestationDataResponse
+        );
+        attestationData.index = index;
         return {
             aggregationBits,
-            data: fromPrysmaticJson<AttestationData>(this.config.types.AttestationData, attestationDataResponse)
+            data: attestationData
         } as Attestation;
     }
 
@@ -127,7 +131,7 @@ export class PrysmValidatorApiClient implements IValidatorApi {
         return fromPrysmaticJson<BeaconBlock>(
             this.config.types.BeaconBlock,
             await this.client.get<object>(
-                PrysmValidatorRoutes.PRODUCE_BLOCK,
+                PrysmValidatorRoutes.BLOCK,
                 {params: {slot, randaoReveal: base64Encode(randaoReveal)}}
             )
         );
@@ -151,14 +155,14 @@ export class PrysmValidatorApiClient implements IValidatorApi {
 
     public async publishAttestation(attestation: Attestation): Promise<void> {
         return await this.client.post(
-            PrysmValidatorRoutes.PUBLISH_ATTESTATION,
+            PrysmValidatorRoutes.ATTESTATION,
             toPrysmaticJson(attestation)
         );
     }
 
     public async publishBlock(signedBlock: SignedBeaconBlock): Promise<void> {
         return await this.client.post(
-            PrysmValidatorRoutes.PUBLISH_BLOCK,
+            PrysmValidatorRoutes.BLOCK,
             toPrysmaticJson(signedBlock)
         );
     }
@@ -168,11 +172,12 @@ export class PrysmValidatorApiClient implements IValidatorApi {
     }
 
     private async getValidatorIndex(pubKey: BLSPubkey): Promise<number> {
+        const response = (await this.client.get<{index: string}>(
+            PrysmValidatorRoutes.VALIDATOR_INDEX,
+            {params: {publicKey: base64Encode(pubKey)}}
+        ));
         return Number(
-            (await this.client.get<{index: string}>(
-                PrysmValidatorRoutes.VALIDATOR_INDEX,
-                {params: {publicKey: base64Encode(pubKey)}}
-            )).index
+            response.index
         );
     }
 
