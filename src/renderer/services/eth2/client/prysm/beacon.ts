@@ -43,7 +43,7 @@ export class PrysmBeaconApiClient implements IBeaconApi {
                 previousVersion: version,
                 epoch
             },
-            chainId: 0n
+            chainId: BigInt(0)
         };
     }
 
