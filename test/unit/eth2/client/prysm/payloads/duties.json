@@ -1,0 +1,36 @@
+{
+  "duties": [
+    {
+      "attesterSlot": "356216",
+      "committeeIndex": "3",
+      "committee": [
+        "10",
+        "23",
+        "44",
+        "9"
+      ],
+      "publicKey": "wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "proposerSlot": "7",
+      "status": "ACTIVE",
+      "validatorIndex": "9"
+    },
+    {
+      "attesterSlot": "4",
+      "committeeIndex": "3",
+      "committee": [],
+      "publicKey": "wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+      "proposerSlot": "8",
+      "status": "ACTIVE",
+      "validatorIndex": "12"
+    },
+    {
+      "attesterSlot": "",
+      "committeeIndex": "3",
+      "committee": [],
+      "publicKey": "l/HTpzGX15QmlWOMT6msD8NojE+XdLkFoU46PxcbrFhsVeg/+Xoa7/s68ArbIsa7",
+      "proposerSlot": "8",
+      "status": "ACTIVE",
+      "validatorIndex": "12"
+    }
+  ]
+}

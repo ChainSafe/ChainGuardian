@@ -1,0 +1,37 @@
+{
+  "slot": "356216",
+  "parentRoot": "crgYd0brr5bLlRphiUzN+C2Oa5+qoM6q9L9A70pAh+8=",
+  "stateRoot": "I873LtDBSR98VTlOVqz0ew/sT9qhDlozNR88Kg8bADA=",
+  "body": {
+    "randaoReveal": "AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE=",
+    "eth1Data": {
+      "depositRoot": "Hom2g95efFlBSQ1UVI8+Jru2raUcXLWMWE32iygTAN4=",
+      "depositCount": "46198",
+      "blockHash": "am/B1OXgP1s7aw7IiEJqYvB62btiZJx9hA6q9dMWF3k="
+    },
+    "graffiti": "AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE=",
+    "proposerSlashings": [],
+    "attesterSlashings": [],
+    "attestations": [
+      {
+        "aggregationBits": "o2JIObIjHQqAoQFBFtBpwHAZ",
+        "data": {
+          "slot": "356215",
+          "committeeIndex": "1",
+          "beaconBlockRoot": "Xv2qCAo6ZaGmmdOzUeSDPH61dvSQM7sSYf0Exdy2pJk=",
+          "source": {
+            "epoch": "11130",
+            "root": "hnEEk9luy+AuX908jouH/7Wq70e6SjiP0EwmNjb/pcA="
+          },
+          "target": {
+            "epoch": "11131",
+            "root": "870c4Jo+E67na0WE4WhOqCc4nZH7NUS/S8OS87udNXU="
+          }
+        },
+        "signature": "hLIhvhZT10AX/A5t70YxNKd/HRhfBTW7FO65PsV/sihFlaTffeSJdTudQc4QmgO0Faj0wXNE0CPoEwwTOLErTrqWh6UTBKRtvYJaRJSTrqoIl3F1rM/4G+yGwubtkHQX"
+      }
+    ],
+    "deposits": [],
+    "voluntaryExits": []
+  }
+}

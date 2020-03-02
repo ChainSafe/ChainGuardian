@@ -1,5 +1,5 @@
 import {Container} from "../../../../src/renderer/services/docker/container";
-import * as cmdUtils from "../../../../src/renderer/services/utils/cmd-utils";
+import * as cmdUtils from "../../../../src/renderer/services/utils/cmd";
 import * as sinon from "sinon";
 
 describe("docker container isDockerInstalled method unit tests", () => {

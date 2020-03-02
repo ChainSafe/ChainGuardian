@@ -63,6 +63,9 @@
       "json",
       "node"
     ],
+    "moduleDirectories": [
+      "node_modules"
+    ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
       "\\.(s?css|sass)$": "<rootDir>/mocks/styleMock.js"
@@ -100,6 +103,7 @@
     "@babel/preset-typescript": "^7.3.3",
     "@hot-loader/react-dom": "^16.8.6",
     "@machinomy/types-ethereumjs-wallet": "^0.0.12",
+    "@nodefactory/axios-mock-adapter": "1.17.1",
     "@storybook/addon-actions": "5.2.8",
     "@storybook/addon-backgrounds": "5.2.8",
     "@storybook/addon-knobs": "5.2.8",
@@ -133,7 +137,6 @@
     "@types/webpack-env": "^1.13.3",
     "@typescript-eslint/eslint-plugin": "^2.3.1",
     "@typescript-eslint/parser": "^2.3.1",
-    "axios-mock-adapter": "1.17.0",
     "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
@@ -151,7 +154,7 @@
     "ganache-cli": "^6.7.0",
     "html-webpack-plugin": "^3.2.0",
     "image-webpack-loader": "^4.6.0",
-    "jest": "^24.8.0",
+    "jest": "25.1.0",
     "node-sass": "^4.12.0",
     "react-hot-loader": "^4.8.8",
     "react-test-renderer": "^16.8.6",
@@ -163,7 +166,7 @@
     "spectron": "9.0.0",
     "stream-mock": "^2.0.5",
     "style-loader": "^0.23.1",
-    "ts-jest": "^24.0.2",
+    "ts-jest": "25.2.1",
     "typescript": "^3.4.5",
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2",
@@ -174,6 +177,7 @@
     "@chainsafe/bls": "^0.2.2",
     "@chainsafe/bls-keygen": "^0.0.2",
     "@chainsafe/eth2.0-config": "^0.2.1",
+    "@chainsafe/eth2.0-state-transition": "^0.2.1",
     "@chainsafe/eth2.0-types": "^0.2.1",
     "@chainsafe/eth2.0-utils": "^0.1.1",
     "@chainsafe/lodestar-validator": "^0.2.1",

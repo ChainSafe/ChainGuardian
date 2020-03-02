@@ -1,6 +1,6 @@
-import axios, {AxiosError, AxiosInstance, AxiosResponse} from "axios";
+import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
 
-export class Client {
+export class HttpClient {
     private client: AxiosInstance;
 
     public constructor(baseURL: string) {
@@ -12,10 +12,11 @@ export class Client {
     /**
      * Method that handles GET
      * @param url endpoint url
+     * @param config
      */
-    public async get<T>(url: string): Promise<T> {
+    public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
         try {
-            const result: AxiosResponse<T> = await this.client.get<T>(url);
+            const result: AxiosResponse<T> = await this.client.get<T>(url, config);
             return result.data;
         } catch (reason) {
             throw handleError(reason);

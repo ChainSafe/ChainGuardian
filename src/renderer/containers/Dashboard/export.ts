@@ -1,7 +1,7 @@
 import {IValidator} from "./DashboardContainer";
 import {remote} from "electron";
 import {Level} from "../../components/Notification/NotificationEnums";
-import {copyFile} from "../../services/utils/file-utils";
+import {copyFile} from "../../services/utils/file";
 import * as path from "path";
 import {getConfig} from "../../../config/config";
 import {DEFAULT_ACCOUNT} from "../../constants/account";

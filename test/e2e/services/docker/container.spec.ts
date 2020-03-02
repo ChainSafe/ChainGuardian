@@ -1,5 +1,5 @@
 import {Container} from "../../../../src/renderer/services/docker/container";
-import {runCmdAsync} from "../../../../src/renderer/services/utils/cmd-utils";
+import {runCmdAsync} from "../../../../src/renderer/services/utils/cmd";
 
 class SimpleDockerContainer extends Container {
     public constructor() {

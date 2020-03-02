@@ -1,4 +1,4 @@
-import {isPlatform, streamToString} from "../../../src/renderer/services/utils/cmd-utils";
+import {isPlatform, streamToString} from "../../../src/renderer/services/utils/cmd";
 import {ObjectReadableMock} from "stream-mock";
 
 describe("cmd utils unit tests", () => {

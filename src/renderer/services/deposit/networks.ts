@@ -21,7 +21,9 @@ const networks: INetworkConfig[] = [
             ...mainnetBeaconConfig,
             params: {
                 ...mainnetBeaconConfig.params,
-                MAX_EFFECTIVE_BALANCE: BigInt(3200000000000000000)
+                MAX_EFFECTIVE_BALANCE: BigInt(3200000000000000000),
+                GENESIS_FORK_VERSION: Buffer.from([0, 0, 0, 4]),
+                EJECTION_BALANCE: BigInt(1600000000000000000)
             }
         },
         eth1Provider: ethers.getDefaultProvider("goerli")
