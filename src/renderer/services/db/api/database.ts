@@ -2,7 +2,7 @@ import {DatabaseService, IDatabaseApiOptions} from "./abstract";
 import {AccountRepository} from "./repositories/account";
 import {IpcDatabaseController} from "../controller/ipc";
 import {BeaconNodeRepository} from "./repositories/beaconNode";
-import {AttestationsRepository} from './repositories/attestations';
+import {AttestationsRepository} from "./repositories/attestations";
 
 export class CGDatabase extends DatabaseService {
 

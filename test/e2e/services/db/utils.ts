@@ -1,7 +1,7 @@
 // @ts-ignore
 import level from "level";
-import { LevelDbController } from '../../../../src/main/db/controller';
-import leveldown from 'leveldown';
+import {LevelDbController} from "../../../../src/main/db/controller";
+import leveldown from "leveldown";
 import {promisify} from "util";
 
 const dbLocation = "./.__testdb";

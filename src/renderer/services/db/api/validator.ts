@@ -1,7 +1,7 @@
-import { IAttestationSearchOptions, IValidatorDB } from '@chainsafe/lodestar-validator/lib/db/interface';
-import { Attestation, BLSPubkey, SignedBeaconBlock } from '@chainsafe/eth2.0-types';
+import {IAttestationSearchOptions, IValidatorDB} from "@chainsafe/lodestar-validator/lib/db/interface";
+import {Attestation, BLSPubkey, SignedBeaconBlock} from "@chainsafe/eth2.0-types";
 import {CGDatabase} from "./database";
-import { IpcDatabaseController } from '../controller/ipc';
+import {IpcDatabaseController} from "../controller/ipc";
 
 
 export class ValidatorDB implements IValidatorDB {

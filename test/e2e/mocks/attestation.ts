@@ -4,9 +4,9 @@ import {
     CommitteeIndex,
     Epoch,
     Slot
-} from '@chainsafe/eth2.0-types';
-import crypto from 'crypto';
-import {BitList} from '@chainsafe/bit-utils';
+} from "@chainsafe/eth2.0-types";
+import crypto from "crypto";
+import {BitList} from "@chainsafe/bit-utils";
 
 /**
  * Generates a fake attestation data for test purposes.
@@ -17,7 +17,12 @@ import {BitList} from '@chainsafe/bit-utils';
  * @param slot
  */
 
-export function generateAttestationData(sourceEpoch: Epoch, targetEpoch: Epoch, index: CommitteeIndex = 1, slot: Slot = 1): AttestationData {
+export function generateAttestationData(
+    sourceEpoch: Epoch,
+    targetEpoch: Epoch,
+    index: CommitteeIndex = 1,
+    slot: Slot = 1
+): AttestationData {
     return {
         slot: slot,
         index: index,

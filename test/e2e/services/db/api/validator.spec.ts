@@ -1,12 +1,9 @@
-import { ValidatorDB } from '../../../../../src/renderer/services/db/api/validator';
-import { initBLS, PrivateKey } from '@chainsafe/bls';
-import { generateAttestation, generateEmptyAttestation } from '../../../mocks/attestation';
-import { BLSPubkey } from '@chainsafe/eth2.0-types';
-import { CGDatabase } from '../../../../../src/renderer/services/db/api';
-import { destroyDb, getLevelDbController } from '../utils';
-import { LevelDbController } from '../../../../../src/main/db/controller';
-import leveldown from 'leveldown';
-import {promisify} from "util";
+import {ValidatorDB} from "../../../../../src/renderer/services/db/api/validator";
+import {initBLS, PrivateKey} from "@chainsafe/bls";
+import {generateAttestation,} from "../../../mocks/attestation";
+import {CGDatabase} from "../../../../../src/renderer/services/db/api";
+import {destroyDb, getLevelDbController} from "../utils";
+import {LevelDbController} from "../../../../../src/main/db/controller";
 
 describe("IValidatorDB Implementation Test", () => {
     let database: CGDatabase;
@@ -42,7 +39,7 @@ describe("IValidatorDB Implementation Test", () => {
         await validatorDB.setAttestation(validators[0], mockAttestation);
 
         result = await validatorDB.getAttestations(validators[0]);
-        // expect(result).toEqual([mockAttestation]);
+        expect(result).toEqual([mockAttestation]);
     });
 
     it("should save and load multiple validators attestation", async () => {
@@ -63,8 +60,7 @@ describe("IValidatorDB Implementation Test", () => {
 
         result = await validatorDB.getAttestations(validators[0]);
         expect(result.length).toEqual(2);
-        // expect(result).toEqual(mockAttestation);
-        // expect(result[1]).toEqual(mockAttestation2);
-
+        expect(result).toEqual(mockAttestation);
+        expect(result[1]).toEqual(mockAttestation2);
     });
 });

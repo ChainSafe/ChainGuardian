@@ -1,6 +1,6 @@
 import {CGDatabase} from "../../../../src/renderer/services/db/api";
 import {CGAccount} from "../../../../src/renderer/models/account";
-import { destroyDb, getLevelDbController } from './utils';
+import {destroyDb, getLevelDbController} from "./utils";
 
 describe("Account Repository Test", () => {
     let database: CGDatabase, controller;
