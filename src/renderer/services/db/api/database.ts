@@ -2,16 +2,19 @@ import {DatabaseService, IDatabaseApiOptions} from "./abstract";
 import {AccountRepository} from "./repositories/account";
 import {IpcDatabaseController} from "../controller/ipc";
 import {BeaconNodeRepository} from "./repositories/beaconNode";
+import {AttestationsRepository} from './repositories/attestations';
 
 export class CGDatabase extends DatabaseService {
 
     public account: AccountRepository;
     public beaconNodes: BeaconNodeRepository;
+    public attestations: AttestationsRepository;
 
     public constructor(opts: IDatabaseApiOptions) {
         super(opts);
         this.account = new AccountRepository(this.db);
         this.beaconNodes = new BeaconNodeRepository(this.db);
+        this.attestations = new AttestationsRepository(this.db);
     }
 
 }
