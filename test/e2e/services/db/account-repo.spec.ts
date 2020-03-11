@@ -1,20 +1,11 @@
 import {CGDatabase} from "../../../../src/renderer/services/db/api";
 import {CGAccount} from "../../../../src/renderer/models/account";
-// @ts-ignore
-import level from "level";
-import {promisify} from "util";
-import leveldown from "leveldown";
-import {LevelDbController} from "../../../../src/main/db/controller";
+import { destroyDb, getLevelDbController } from './utils';
 
 describe("Account Repository Test", () => {
     let database: CGDatabase, controller;
 
-    const dbLocation = "./.__testdb";
-    const testDb = level(dbLocation, {
-        keyEncoding: "binary",
-        valueEncoding: "binary"
-    });
-    const db = new LevelDbController({db: testDb, location: dbLocation});
+    const db = getLevelDbController();
     const testId = "id";
 
     beforeAll(async () => {
@@ -23,7 +14,7 @@ describe("Account Repository Test", () => {
 
     afterAll(async () => {
         await db.stop();
-        await promisify(new leveldown(dbLocation).destroy)(dbLocation);
+        await destroyDb();
     });
 
     beforeEach(() => {

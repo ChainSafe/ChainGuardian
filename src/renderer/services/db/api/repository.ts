@@ -58,8 +58,18 @@ export abstract class Repository<T> {
 export abstract class BulkRepository<T> extends Repository<T> {
     public async getAll(id = Buffer.alloc(0)): Promise<T[]> {
         const key = encodeKey(this.bucket, id);
+        const lt = encodeKey(this.bucket, Buffer.concat([id, Buffer.alloc(96).fill(Buffer.from("z"))]));
+
         const data = await this.db.search({
-            gt: key,
+            gte: key,
+            lt,
+        });
+        return (data || []).map(data => this.serializer.deserialize(data as Buffer, this.type));
+    }
+
+    public async getAllFromBucket(): Promise<T[]> {
+        const data = await this.db.search({
+            gt: encodeKey(this.bucket, Buffer.alloc(0)),
             lt: encodeKey(this.bucket + 1, Buffer.alloc(0))
         });
         return (data || []).map(data => this.serializer.deserialize(data as Buffer, this.type));

@@ -3,8 +3,10 @@
  */
 
 export interface ISearchOptions {
-    gt: unknown;
-    lt: unknown;
+    gte?: unknown;
+    gt?: unknown;
+    lt?: unknown;
+    lte?: unknown;
 }
 
 export interface IDatabaseController {

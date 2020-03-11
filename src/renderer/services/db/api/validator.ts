@@ -1,14 +1,21 @@
 import { IAttestationSearchOptions, IValidatorDB } from '@chainsafe/lodestar-validator/lib/db/interface';
 import { Attestation, BLSPubkey, SignedBeaconBlock } from '@chainsafe/eth2.0-types';
-import database from "./database";
+import {CGDatabase} from "./database";
+import { IpcDatabaseController } from '../controller/ipc';
 
 
 export class ValidatorDB implements IValidatorDB {
+    private db: CGDatabase;
+
+    constructor(database?: CGDatabase) {
+        this.db = database || new CGDatabase({controller: new IpcDatabaseController()});
+    }
     /**
      * Stores attestation proposed by validator with given index
      */
     async setAttestation(pubKey: BLSPubkey, attestation: Attestation): Promise<void> {
-        await database.attestations.set(pubKey, attestation);
+        const key = Buffer.concat([pubKey, attestation.signature]);
+        await this.db.attestations.set(key, attestation);
     }
 
     async deleteAttestations(pubKey: BLSPubkey, attestation: Attestation[]): Promise<void> {
@@ -21,7 +28,7 @@ export class ValidatorDB implements IValidatorDB {
      */
     async getAttestations(pubKey: BLSPubkey, options?: IAttestationSearchOptions): Promise<Attestation[]> {
         // TODO: consider options
-        return await database.attestations.getAll(pubKey);
+        return await this.db.attestations.getAll(pubKey);
     }
 
     /**
