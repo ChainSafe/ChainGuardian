@@ -1,9 +1,11 @@
 import {ValidatorDB} from "../../../../../src/renderer/services/db/api/validator";
 import {initBLS, PrivateKey} from "@chainsafe/bls";
-import {generateAttestation,} from "../../../mocks/attestation";
+import {generateAttestation} from "../../../mocks/attestation";
 import {CGDatabase} from "../../../../../src/renderer/services/db/api";
 import {destroyDb, getLevelDbController} from "../utils";
 import {LevelDbController} from "../../../../../src/main/db/controller";
+import {equals} from "@chainsafe/ssz";
+import {types as mainnetTypes} from "@chainsafe/eth2.0-types/lib/ssz/presets/mainnet";
 
 describe("IValidatorDB Implementation Test", () => {
     let database: CGDatabase;
@@ -39,7 +41,8 @@ describe("IValidatorDB Implementation Test", () => {
         await validatorDB.setAttestation(validators[0], mockAttestation);
 
         result = await validatorDB.getAttestations(validators[0]);
-        expect(result).toEqual([mockAttestation]);
+        expect(result.length).toEqual(1);
+        expect(equals(mainnetTypes.Attestation, result[0], mockAttestation)).toEqual(true);
     });
 
     it("should save and load multiple validators attestation", async () => {
