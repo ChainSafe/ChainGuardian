@@ -1,3 +1,4 @@
+import {BLSPubkey} from "@chainsafe/eth2.0-types";
 import {ValidatorDB} from "../../../../../src/renderer/services/db/api/validator";
 import {initBLS, PrivateKey} from "@chainsafe/bls";
 import {generateAttestation} from "../../../mocks/attestation";
@@ -91,12 +92,12 @@ describe("IValidatorDB Implementation Test", () => {
         expect(result.length).toEqual(1);
     });
 
-    it("should fetch attestations with epoch options", async () => {
+    const fillAttestations = async(): Promise<BLSPubkey[]> => {
         const validators = [
             PrivateKey.random().toPublicKey().toBytesCompressed(),
             PrivateKey.random().toPublicKey().toBytesCompressed()
         ];
-        let result = await validatorDB.getAttestations(validators[0]);
+        const result = await validatorDB.getAttestations(validators[0]);
         expect(result.length).toEqual(0);
 
         const mockAttestation = generateAttestation();
@@ -109,12 +110,27 @@ describe("IValidatorDB Implementation Test", () => {
         await validatorDB.setAttestation(validators[1], generateAttestation());
         await validatorDB.setAttestation(validators[0], mockAttestation2);
 
-        result = await validatorDB.getAttestations(validators[0], {
+        return validators;
+    };
+
+    it("should fetch attestations with epoch options within range", async () => {
+        const validators = await fillAttestations();
+        const result = await validatorDB.getAttestations(validators[0], {
             gt: 2,
             lt: 6
         });
         expect(result.length).toEqual(1);
         // expect(result[0]).toEqual(mockAttestation);
+    });
+
+    it("should fetch no attestations with epoch options outside range", async () => {
+        const validators = await fillAttestations();
+
+        const result = await validatorDB.getAttestations(validators[0], {
+            gt: 3,
+            lt: 6
+        });
+        expect(result.length).toEqual(0);
     });
 
     it("should save and load saved block", async () => {

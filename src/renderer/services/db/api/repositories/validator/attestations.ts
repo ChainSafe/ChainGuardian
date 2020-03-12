@@ -32,11 +32,11 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
 
         const searchFilters: ISearchOptions = {};
         if (options.lt) {
-            const search = Buffer.concat([this.getEpoch(options.lt), this.getFilledFilter(96)]);
+            const search = Buffer.concat([pubKey, this.getEpochBuffer(options.lt)]);
             searchFilters.lt = encodeKey(this.bucket, search);
         }
         if (options.gt) {
-            const search = Buffer.concat([this.getEpoch(options.gt), this.getFilledFilter(96)]);
+            const search = Buffer.concat([pubKey, this.getEpochBuffer(options.gt), this.getFilledFilter(96)]);
             searchFilters.gt = encodeKey(this.bucket, search);
         }
 
@@ -44,11 +44,11 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
     }
 
     private getAttestationKey(pubKey: BLSPubkey, attestation: Attestation): Buffer {
-        const epoch = this.getEpoch(attestation.data.target.epoch);
+        const epoch = this.getEpochBuffer(attestation.data.target.epoch);
         return Buffer.concat([pubKey, epoch, attestation.signature]);
     }
 
-    private getEpoch(epoch: number): Buffer {
+    private getEpochBuffer(epoch: number): Buffer {
         const epochBuffer = Buffer.alloc(2);
         epochBuffer.writeUInt16LE(epoch, 0);
         return epochBuffer;

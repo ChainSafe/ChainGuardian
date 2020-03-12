@@ -41,7 +41,7 @@
     "pretest": "yarn run build",
     "test": "yarn run test:unit && yarn run test:components && yarn run test:e2e && yarn run test:screens",
     "test:unit": "cross-env ELECTRON=1 yarn run jest --coverage \"test/unit\"",
-    "test:e2e": "cross-env ELECTRON=1 yarn run jest \"test/e2e/services/db/api\"",
+    "test:e2e": "cross-env ELECTRON=1 yarn run jest \"test/e2e\"",
     "test:components": "yarn run jest --ci \"test/components\"",
     "test:screens": "cross-env ELECTRON=1 yarn run jest --runInBand \"test/screens\"",
     "jest": "jest --verbose --colors",
