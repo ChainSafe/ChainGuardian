@@ -7,6 +7,8 @@ export interface ISearchOptions {
     gt?: unknown;
     lt?: unknown;
     lte?: unknown;
+    reverse?: boolean;
+    limit?: number;
 }
 
 export interface IDatabaseController {
