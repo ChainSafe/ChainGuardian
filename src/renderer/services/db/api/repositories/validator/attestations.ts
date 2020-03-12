@@ -1,6 +1,6 @@
-import {BulkRepository} from "../../repository";
+import {BulkRepository, Id} from '../../repository';
 import {IDatabaseController} from "../../../../../../main/db/controller";
-import {Bucket} from "../../../schema";
+import {Bucket, encodeKey} from '../../../schema';
 import {JSONSerializer} from "../../../serializers/json";
 import {types as mainnetTypes} from "@chainsafe/eth2.0-types/lib/ssz/presets/mainnet";
 import {Attestation, BLSPubkey} from "@chainsafe/eth2.0-types";
@@ -13,5 +13,14 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
     public async set(pubKey: BLSPubkey, attestation: Attestation): Promise<void> {
         const key = Buffer.concat([pubKey, attestation.signature]);
         await super.set(key, attestation);
+    }
+
+    public async deleteMany(pubKey: BLSPubkey, attestations: Attestation[]): Promise<void> {
+        const promises = [];
+        for (let i = 0; i < attestations.length; i++) {
+            const key = Buffer.concat([pubKey, attestations[i].signature]);
+            promises.push(super.delete(key));
+        }
+        await Promise.all(promises);
     }
 }

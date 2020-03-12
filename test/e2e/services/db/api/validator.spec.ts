@@ -68,6 +68,29 @@ describe("IValidatorDB Implementation Test", () => {
         // expect(result[1]).toEqual(mockAttestation2);
     });
 
+    it("should delete attestations", async () => {
+        const validators = [
+            PrivateKey.random().toPublicKey().toBytesCompressed(),
+            PrivateKey.random().toPublicKey().toBytesCompressed()
+        ];
+        let result = await validatorDB.getAttestations(validators[0]);
+        expect(result.length).toEqual(0);
+
+        const mockAttestation = generateAttestation();
+        mockAttestation.signature = Buffer.alloc(96).fill("cc");
+        const mockAttestation2 = generateAttestation();
+        mockAttestation2.signature = Buffer.alloc(96).fill("3");
+        await validatorDB.setAttestation(validators[0], mockAttestation);
+        await validatorDB.setAttestation(validators[1], generateAttestation());
+        await validatorDB.setAttestation(validators[0], mockAttestation2);
+
+        await validatorDB.deleteAttestations(validators[0], [mockAttestation, mockAttestation2]);
+        result = await validatorDB.getAttestations(validators[0]);
+        expect(result.length).toEqual(0);
+        result = await validatorDB.getAttestations(validators[1]);
+        expect(result.length).toEqual(1);
+    });
+
     it("should save and load saved block", async () => {
         const validator = PrivateKey.random().toPublicKey().toBytesCompressed();
         let result = await validatorDB.getBlock(validator);

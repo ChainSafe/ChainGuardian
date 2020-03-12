@@ -17,7 +17,8 @@ export class ValidatorDB implements IValidatorDB {
         await this.db.validator.attestations.set(pubKey, attestation);
     }
 
-    async deleteAttestations(pubKey: BLSPubkey, attestation: Attestation[]): Promise<void> {
+    async deleteAttestations(pubKey: BLSPubkey, attestations: Attestation[]): Promise<void> {
+        await this.db.validator.attestations.deleteMany(pubKey, attestations);
     }
 
     /**
