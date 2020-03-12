@@ -4,8 +4,8 @@ import {generateAttestation} from "../../../mocks/attestation";
 import {CGDatabase} from "../../../../../src/renderer/services/db/api";
 import {destroyDb, getLevelDbController} from "../utils";
 import {LevelDbController} from "../../../../../src/main/db/controller";
-import {equals} from "@chainsafe/ssz";
-import {types as mainnetTypes} from "@chainsafe/eth2.0-types/lib/ssz/presets/mainnet";
+// import {equals} from "@chainsafe/ssz";
+// import {types as mainnetTypes} from "@chainsafe/eth2.0-types/lib/ssz/presets/mainnet";
 
 describe("IValidatorDB Implementation Test", () => {
     let database: CGDatabase;
