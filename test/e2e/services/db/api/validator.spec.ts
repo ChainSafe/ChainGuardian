@@ -2,7 +2,7 @@ import {ValidatorDB} from "../../../../../src/renderer/services/db/api/validator
 import {initBLS, PrivateKey} from "@chainsafe/bls";
 import {generateAttestation} from "../../../mocks/attestation";
 import {CGDatabase} from "../../../../../src/renderer/services/db/api";
-import {generateEmptySignedBlock} from '../../../mocks/block';
+import {generateEmptySignedBlock} from "../../../mocks/block";
 import {destroyDb, getLevelDbController} from "../utils";
 import {LevelDbController} from "../../../../../src/main/db/controller";
 // import {equals} from "@chainsafe/ssz";

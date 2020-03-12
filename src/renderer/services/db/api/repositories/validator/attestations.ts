@@ -1,7 +1,7 @@
-import {IAttestationSearchOptions} from '@chainsafe/lodestar-validator/lib/db/interface';
-import {BulkRepository, Id} from '../../repository';
-import {IDatabaseController, ISearchOptions} from '../../../../../../main/db/controller';
-import {Bucket, encodeKey} from '../../../schema';
+import {IAttestationSearchOptions} from "@chainsafe/lodestar-validator/lib/db/interface";
+import {BulkRepository} from "../../repository";
+import {IDatabaseController, ISearchOptions} from "../../../../../../main/db/controller";
+import {Bucket, encodeKey} from "../../../schema";
 import {JSONSerializer} from "../../../serializers/json";
 import {types as mainnetTypes} from "@chainsafe/eth2.0-types/lib/ssz/presets/mainnet";
 import {Attestation, BLSPubkey} from "@chainsafe/eth2.0-types";
@@ -30,12 +30,12 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
             return await super.getAll(pubKey);
         }
 
-        let searchFilters: ISearchOptions = {};
-        if (options && options.lt) {
+        const searchFilters: ISearchOptions = {};
+        if (options.lt) {
             const search = Buffer.concat([this.getEpoch(options.lt), this.getFilledFilter(96)]);
             searchFilters.lt = encodeKey(this.bucket, search);
         }
-        if (options && options.gt) {
+        if (options.gt) {
             const search = Buffer.concat([this.getEpoch(options.gt), this.getFilledFilter(96)]);
             searchFilters.gt = encodeKey(this.bucket, search);
         }

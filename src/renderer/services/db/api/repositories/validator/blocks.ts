@@ -1,4 +1,4 @@
-import {Repository} from '../../repository';
+import {Repository} from "../../repository";
 import {IDatabaseController} from "../../../../../../main/db/controller";
 import {Bucket} from "../../../schema";
 import {JSONSerializer} from "../../../serializers/json";

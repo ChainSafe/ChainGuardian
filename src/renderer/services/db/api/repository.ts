@@ -1,7 +1,7 @@
 // tslint:disable-next-line: import-name
 import {Bucket, encodeKey} from "../schema";
 import {ICGSerialization} from "../abstract";
-import {IDatabaseController, ISearchOptions} from '../../../../main/db/controller';
+import {IDatabaseController, ISearchOptions} from "../../../../main/db/controller";
 import {AnySSZType} from "@chainsafe/ssz";
 
 export type Id = Buffer | string | number | bigint;
@@ -63,9 +63,9 @@ export abstract class BulkRepository<T> extends Repository<T> {
         } else {
             const key = encodeKey(this.bucket, id);
             searchFilter = {
-                lt: encodeKey(this.bucket, Buffer.concat([id, this.getFilledFilter(96)])),
+                lt: encodeKey(this.bucket, Buffer.concat([id, this.getFilledFilter(100)])),
                 gte: key,
-            }
+            };
         }
 
         const data = await this.db.search(searchFilter);
