@@ -31,17 +31,16 @@ export class ValidatorDB implements IValidatorDB {
     }
 
     /**
-     * Obtains last proposed beacon block
-     * by validator with given index
-     */
-    async getBlock(pubKey: BLSPubkey): Promise<SignedBeaconBlock | null> {
-        return null;
-    }
-
-    /**
      * Stores beacon block proposed by validator with given index
      */
     async setBlock(pubKey: BLSPubkey, block: SignedBeaconBlock): Promise<void> {
+        await this.db.validator.blocks.set(pubKey, block);
     }
 
+    /**
+     * Obtains last proposed beacon block by validator with given index
+     */
+    async getBlock(pubKey: BLSPubkey): Promise<SignedBeaconBlock | null> {
+        return await this.db.validator.blocks.get(pubKey);
+    }
 }
