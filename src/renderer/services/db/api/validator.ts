@@ -27,8 +27,7 @@ export class ValidatorDB implements IValidatorDB {
      * @param options object contains lower and higher target epoch to search
      */
     async getAttestations(pubKey: BLSPubkey, options?: IAttestationSearchOptions): Promise<Attestation[]> {
-        // TODO: consider options
-        return await this.db.validator.attestations.getAll(pubKey);
+        return await this.db.validator.attestations.getAll(pubKey, options);
     }
 
     /**

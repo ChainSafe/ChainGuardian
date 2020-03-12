@@ -1,5 +1,6 @@
+import {IAttestationSearchOptions} from '@chainsafe/lodestar-validator/lib/db/interface';
 import {BulkRepository, Id} from '../../repository';
-import {IDatabaseController} from "../../../../../../main/db/controller";
+import {IDatabaseController, ISearchOptions} from '../../../../../../main/db/controller';
 import {Bucket, encodeKey} from '../../../schema';
 import {JSONSerializer} from "../../../serializers/json";
 import {types as mainnetTypes} from "@chainsafe/eth2.0-types/lib/ssz/presets/mainnet";
@@ -11,16 +12,45 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
     }
 
     public async set(pubKey: BLSPubkey, attestation: Attestation): Promise<void> {
-        const key = Buffer.concat([pubKey, attestation.signature]);
+        const key = this.getAttestationKey(pubKey, attestation);
         await super.set(key, attestation);
     }
 
     public async deleteMany(pubKey: BLSPubkey, attestations: Attestation[]): Promise<void> {
         const promises = [];
         for (let i = 0; i < attestations.length; i++) {
-            const key = Buffer.concat([pubKey, attestations[i].signature]);
+            const key = this.getAttestationKey(pubKey, attestations[i]);
             promises.push(super.delete(key));
         }
         await Promise.all(promises);
+    }
+
+    public async getAll(pubKey: BLSPubkey, options?: IAttestationSearchOptions): Promise<Attestation[]> {
+        if (!options) {
+            return await super.getAll(pubKey);
+        }
+
+        let searchFilters: ISearchOptions = {};
+        if (options && options.lt) {
+            const search = Buffer.concat([this.getEpoch(options.lt), this.getFilledFilter(96)]);
+            searchFilters.lt = encodeKey(this.bucket, search);
+        }
+        if (options && options.gt) {
+            const search = Buffer.concat([this.getEpoch(options.gt), this.getFilledFilter(96)]);
+            searchFilters.gt = encodeKey(this.bucket, search);
+        }
+
+        return await super.getAll(pubKey, searchFilters);
+    }
+
+    private getAttestationKey(pubKey: BLSPubkey, attestation: Attestation): Buffer {
+        const epoch = this.getEpoch(attestation.data.target.epoch);
+        return Buffer.concat([pubKey, epoch, attestation.signature]);
+    }
+
+    private getEpoch(epoch: number): Buffer {
+        const epochBuffer = Buffer.alloc(2);
+        epochBuffer.writeUInt16LE(epoch, 0);
+        return epochBuffer;
     }
 }

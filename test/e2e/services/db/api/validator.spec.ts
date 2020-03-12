@@ -91,6 +91,32 @@ describe("IValidatorDB Implementation Test", () => {
         expect(result.length).toEqual(1);
     });
 
+    it("should fetch attestations with epoch options", async () => {
+        const validators = [
+            PrivateKey.random().toPublicKey().toBytesCompressed(),
+            PrivateKey.random().toPublicKey().toBytesCompressed()
+        ];
+        let result = await validatorDB.getAttestations(validators[0]);
+        expect(result.length).toEqual(0);
+
+        const mockAttestation = generateAttestation();
+        mockAttestation.data.target.epoch = 3;
+        mockAttestation.signature = Buffer.alloc(96).fill("dd");
+        const mockAttestation2 = generateAttestation();
+        mockAttestation2.signature = Buffer.alloc(96).fill("4");
+        mockAttestation2.data.target.epoch = 6;
+        await validatorDB.setAttestation(validators[0], mockAttestation);
+        await validatorDB.setAttestation(validators[1], generateAttestation());
+        await validatorDB.setAttestation(validators[0], mockAttestation2);
+
+        result = await validatorDB.getAttestations(validators[0], {
+            gt: 2,
+            lt: 6
+        });
+        expect(result.length).toEqual(1);
+        // expect(result[0]).toEqual(mockAttestation);
+    });
+
     it("should save and load saved block", async () => {
         const validator = PrivateKey.random().toPublicKey().toBytesCompressed();
         let result = await validatorDB.getBlock(validator);
