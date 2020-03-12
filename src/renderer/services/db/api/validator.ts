@@ -14,8 +14,7 @@ export class ValidatorDB implements IValidatorDB {
      * Stores attestation proposed by validator with given index
      */
     async setAttestation(pubKey: BLSPubkey, attestation: Attestation): Promise<void> {
-        const key = Buffer.concat([pubKey, attestation.signature]);
-        await this.db.validatorAttestations.set(key, attestation);
+        await this.db.validator.attestations.set(pubKey, attestation);
     }
 
     async deleteAttestations(pubKey: BLSPubkey, attestation: Attestation[]): Promise<void> {
@@ -28,7 +27,7 @@ export class ValidatorDB implements IValidatorDB {
      */
     async getAttestations(pubKey: BLSPubkey, options?: IAttestationSearchOptions): Promise<Attestation[]> {
         // TODO: consider options
-        return await this.db.validatorAttestations.getAll(pubKey);
+        return await this.db.validator.attestations.getAll(pubKey);
     }
 
     /**
