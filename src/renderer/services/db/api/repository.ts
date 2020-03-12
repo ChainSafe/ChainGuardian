@@ -58,7 +58,9 @@ export abstract class Repository<T> {
 export abstract class BulkRepository<T> extends Repository<T> {
     public async getAll(id = Buffer.alloc(0)): Promise<T[]> {
         const key = encodeKey(this.bucket, id);
-        const lt = encodeKey(this.bucket, Buffer.concat([id, Buffer.alloc(96).fill(Buffer.from("z"))]));
+        const maxInteger = Buffer.alloc(1);
+        maxInteger.writeUInt8(255, 0);
+        const lt = encodeKey(this.bucket, Buffer.concat([id, Buffer.alloc(96).fill(maxInteger)]));
 
         const data = await this.db.search({
             gte: key,
