@@ -11,7 +11,7 @@ import {InputForm} from "../../components/Input/InputForm";
 import {ButtonPrimary, ButtonDestructive} from "../../components/Button/ButtonStandard";
 import database from "../../services/db/api/database";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
-import {addNewValidatorAction, afterPasswordAction} from '../../actions';
+import {addNewValidatorAction, afterPasswordAction} from "../../actions";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 

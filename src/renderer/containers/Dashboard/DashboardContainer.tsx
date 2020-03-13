@@ -7,15 +7,15 @@ import {Dropdown} from "../../components/Dropdown/Dropdown";
 import {exportKeystore} from "./export";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 import {connect} from "react-redux";
-import {IRootState} from '../../reducers';
+import {IRootState} from "../../reducers";
 import {RouteComponentProps} from "react-router";
 import {bindActionCreators, Dispatch} from "redux";
-import {storeNotificationAction} from '../../actions';
+import {storeNotificationAction} from "../../actions";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
 import * as path from "path";
-import {storeAuthAction, startAddingNewValidator as startAddingNewValidatorAction} from '../../actions';
+import {storeAuthAction, startAddingNewValidator as startAddingNewValidatorAction} from "../../actions";
 
 type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
