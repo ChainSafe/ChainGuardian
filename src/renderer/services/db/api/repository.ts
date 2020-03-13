@@ -63,7 +63,7 @@ export abstract class BulkRepository<T> extends Repository<T> {
         } else {
             const key = encodeKey(this.bucket, id);
             searchFilter = {
-                lt: encodeKey(this.bucket, Buffer.concat([id, this.getFilledFilter(100)])),
+                lt: encodeKey(this.bucket, Buffer.concat([id, this.fillBufferWithOnes(100)])),
                 gte: key,
             };
         }
@@ -80,7 +80,7 @@ export abstract class BulkRepository<T> extends Repository<T> {
         return (data || []).map(data => this.serializer.deserialize(data as Buffer, this.type));
     }
 
-    protected getFilledFilter(size: number): Buffer {
+    protected fillBufferWithOnes(size: number): Buffer {
         const maxInteger = Buffer.alloc(1);
         maxInteger.writeUInt8(255, 0);
 

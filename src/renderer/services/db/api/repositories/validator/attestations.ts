@@ -39,7 +39,7 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
         }
         if (options.gt) {
             const epoch = intToBytes(options.gt, 2);
-            const search = Buffer.concat([pubKey, epoch, this.getFilledFilter(96)]);
+            const search = Buffer.concat([pubKey, epoch, this.fillBufferWithOnes(96)]);
             searchFilters.gt = encodeKey(this.bucket, search);
         }
 
