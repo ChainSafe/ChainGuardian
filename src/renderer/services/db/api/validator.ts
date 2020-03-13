@@ -7,18 +7,18 @@ import {IpcDatabaseController} from "../controller/ipc";
 export class ValidatorDB implements IValidatorDB {
     private db: CGDatabase;
 
-    constructor(database?: CGDatabase) {
+    public constructor(database?: CGDatabase) {
         this.db = database || new CGDatabase({controller: new IpcDatabaseController()});
     }
     /**
      * Stores attestation proposed by validator with given index
      */
-    async setAttestation(pubKey: BLSPubkey, attestation: Attestation): Promise<void> {
-        const key = Buffer.concat([pubKey, attestation.signature]);
-        await this.db.attestations.set(key, attestation);
+    public async setAttestation(pubKey: BLSPubkey, attestation: Attestation): Promise<void> {
+        await this.db.validator.attestations.set(pubKey, attestation);
     }
 
-    async deleteAttestations(pubKey: BLSPubkey, attestation: Attestation[]): Promise<void> {
+    public async deleteAttestations(pubKey: BLSPubkey, attestations: Attestation[]): Promise<void> {
+        await this.db.validator.attestations.deleteMany(pubKey, attestations);
     }
 
     /**
@@ -26,23 +26,21 @@ export class ValidatorDB implements IValidatorDB {
      * @param pubKey validator signing pubkey
      * @param options object contains lower and higher target epoch to search
      */
-    async getAttestations(pubKey: BLSPubkey, options?: IAttestationSearchOptions): Promise<Attestation[]> {
-        // TODO: consider options
-        return await this.db.attestations.getAll(pubKey);
-    }
-
-    /**
-     * Obtains last proposed beacon block
-     * by validator with given index
-     */
-    async getBlock(pubKey: BLSPubkey): Promise<SignedBeaconBlock | null> {
-        return null;
+    public async getAttestations(pubKey: BLSPubkey, options?: IAttestationSearchOptions): Promise<Attestation[]> {
+        return await this.db.validator.attestations.getAll(pubKey, options);
     }
 
     /**
      * Stores beacon block proposed by validator with given index
      */
-    async setBlock(pubKey: BLSPubkey, block: SignedBeaconBlock): Promise<void> {
+    public async setBlock(pubKey: BLSPubkey, block: SignedBeaconBlock): Promise<void> {
+        await this.db.validator.blocks.set(pubKey, block);
     }
 
+    /**
+     * Obtains last proposed beacon block by validator with given index
+     */
+    public async getBlock(pubKey: BLSPubkey): Promise<SignedBeaconBlock | null> {
+        return await this.db.validator.blocks.get(pubKey);
+    }
 }
