@@ -128,7 +128,7 @@ const mapStateToProps = (state: IRootState): IInjectedState => {
         depositTxData: deposit.depositTxData,
         isDepositGenerated: deposit.depositTxData !== null,
         isDepositDetected: deposit.isDepositDetected,
-        canDeposit: !!register.withdrawalKey,
+        canDeposit: !!register.withdrawalKey || !!register.withdrawalMnemonic,
     };
 };
 
