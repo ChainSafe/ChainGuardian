@@ -1,7 +1,7 @@
 // tslint:disable-next-line: import-name
 import {Bucket, encodeKey} from "../schema";
 import {ICGSerialization} from "../abstract";
-import {IDatabaseController} from "../../../../main/db/controller";
+import {IDatabaseController, ISearchOptions} from "../../../../main/db/controller";
 import {AnySSZType} from "@chainsafe/ssz";
 
 export type Id = Buffer | string | number | bigint;
@@ -56,12 +56,35 @@ export abstract class Repository<T> {
 }
 
 export abstract class BulkRepository<T> extends Repository<T> {
-    public async getAll(): Promise<T[]> {
+    public async getAll(id = Buffer.alloc(0), options?: ISearchOptions): Promise<T[]> {
+        let searchFilter: ISearchOptions;
+        if (options) {
+            searchFilter = options;
+        } else {
+            const key = encodeKey(this.bucket, id);
+            searchFilter = {
+                lt: encodeKey(this.bucket, Buffer.concat([id, this.fillBufferWithOnes(100)])),
+                gte: key,
+            };
+        }
+
+        const data = await this.db.search(searchFilter);
+        return (data || []).map(data => this.serializer.deserialize(data as Buffer, this.type));
+    }
+
+    public async getAllFromBucket(): Promise<T[]> {
         const data = await this.db.search({
             gt: encodeKey(this.bucket, Buffer.alloc(0)),
             lt: encodeKey(this.bucket + 1, Buffer.alloc(0))
         });
         return (data || []).map(data => this.serializer.deserialize(data as Buffer, this.type));
+    }
+
+    protected fillBufferWithOnes(size: number): Buffer {
+        const maxInteger = Buffer.alloc(1);
+        maxInteger.writeUInt8(255, 0);
+
+        return Buffer.alloc(size).fill(maxInteger);
     }
 
     // public async deleteMany(ids: Id[]): Promise<void> {

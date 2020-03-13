@@ -81,10 +81,7 @@ export class LevelDbController extends EventEmitter implements IDatabaseControll
         return new Promise(resolve => {
             const searchData: Buffer[] = [];
             this.db
-                .createValueStream({
-                    gt: opts.gt,
-                    lt: opts.lt
-                })
+                .createValueStream(opts)
                 .on("data", data => {
                     searchData.push(data);
                 })
