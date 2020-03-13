@@ -1,11 +1,11 @@
-import {IAttestationSearchOptions} from '@chainsafe/lodestar-validator/lib/db/interface';
-import {BulkRepository} from '../../repository';
-import {IDatabaseController, ISearchOptions} from '../../../../../../main/db/controller';
-import {Bucket, encodeKey} from '../../../schema';
-import {JSONSerializer} from '../../../serializers/json';
-import {types as mainnetTypes} from '@chainsafe/eth2.0-types/lib/ssz/presets/mainnet';
-import {Attestation, BLSPubkey} from '@chainsafe/eth2.0-types';
-import {intToBytes} from '@chainsafe/eth2.0-utils';
+import {IAttestationSearchOptions} from "@chainsafe/lodestar-validator/lib/db/interface";
+import {BulkRepository} from "../../repository";
+import {IDatabaseController, ISearchOptions} from "../../../../../../main/db/controller";
+import {Bucket, encodeKey} from "../../../schema";
+import {JSONSerializer} from "../../../serializers/json";
+import {types as mainnetTypes} from "@chainsafe/eth2.0-types/lib/ssz/presets/mainnet";
+import {Attestation, BLSPubkey} from "@chainsafe/eth2.0-types";
+import {intToBytes} from "@chainsafe/eth2.0-utils";
 
 export class ValidatorAttestationsRepository extends BulkRepository<Attestation> {
     public constructor(db: IDatabaseController) {
