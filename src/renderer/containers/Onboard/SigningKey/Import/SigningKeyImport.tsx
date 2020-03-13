@@ -10,7 +10,7 @@ import {mnemonicSchema, privateKeySchema} from "./validation";
 import {ValidationResult} from "@hapi/joi";
 import {Eth2HDWallet} from "../../../../services/wallet";
 
-type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
+type IOwnProps = Pick<RouteComponentProps, "history">;
 
 class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
     public render(): ReactElement {
@@ -31,12 +31,7 @@ class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
         const signingKey = input.startsWith("0x") ? input : Eth2HDWallet.getKeypair(input).privateKey.toHexString();
         this.props.storeSigningKey(signingKey);
 
-        if(this.props.location.state) {
-            this.props.history.replace(Routes.CHECK_PASSWORD);
-        }
-        else {
-            this.props.history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
-        }
+        this.props.history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
     };
 
 }

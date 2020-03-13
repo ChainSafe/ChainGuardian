@@ -10,7 +10,7 @@ import {storeSigningVerificationStatusAction,storeSigningKeyAction} from "../../
 import {Routes, OnBoardingRoutes} from "../../../../constants/routes";
 import {Eth2HDWallet} from "../../../../services/wallet";
 
-type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
+type IOwnProps = Pick<RouteComponentProps, "history">;
 
 const SigningMnemonicQuestion: React.FunctionComponent<
 IOwnProps & 
@@ -28,12 +28,7 @@ Pick<IRootState, "register">> = (props) => {
         const signingKey = Eth2HDWallet.getKeypair(register.signingMnemonic).privateKey.toHexString();
         storeSigningKey(signingKey);
 
-        if(props.location.state) {
-            history.replace(Routes.CHECK_PASSWORD);
-        }
-        else {
-            history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
-        }
+        history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
     };
 
     const handleInvalidAnswer = (): void => {
