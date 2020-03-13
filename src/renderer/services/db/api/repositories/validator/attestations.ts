@@ -1,10 +1,11 @@
-import {IAttestationSearchOptions} from "@chainsafe/lodestar-validator/lib/db/interface";
-import {BulkRepository} from "../../repository";
-import {IDatabaseController, ISearchOptions} from "../../../../../../main/db/controller";
-import {Bucket, encodeKey} from "../../../schema";
-import {JSONSerializer} from "../../../serializers/json";
-import {types as mainnetTypes} from "@chainsafe/eth2.0-types/lib/ssz/presets/mainnet";
-import {Attestation, BLSPubkey} from "@chainsafe/eth2.0-types";
+import {IAttestationSearchOptions} from '@chainsafe/lodestar-validator/lib/db/interface';
+import {BulkRepository} from '../../repository';
+import {IDatabaseController, ISearchOptions} from '../../../../../../main/db/controller';
+import {Bucket, encodeKey} from '../../../schema';
+import {JSONSerializer} from '../../../serializers/json';
+import {types as mainnetTypes} from '@chainsafe/eth2.0-types/lib/ssz/presets/mainnet';
+import {Attestation, BLSPubkey} from '@chainsafe/eth2.0-types';
+import {intToBytes} from '@chainsafe/eth2.0-utils';
 
 export class ValidatorAttestationsRepository extends BulkRepository<Attestation> {
     public constructor(db: IDatabaseController) {
@@ -32,11 +33,13 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
 
         const searchFilters: ISearchOptions = {};
         if (options.lt) {
-            const search = Buffer.concat([pubKey, this.getEpochBuffer(options.lt)]);
+            const epoch = intToBytes(options.lt, 2);
+            const search = Buffer.concat([pubKey, epoch]);
             searchFilters.lt = encodeKey(this.bucket, search);
         }
         if (options.gt) {
-            const search = Buffer.concat([pubKey, this.getEpochBuffer(options.gt), this.getFilledFilter(96)]);
+            const epoch = intToBytes(options.gt, 2);
+            const search = Buffer.concat([pubKey, epoch, this.getFilledFilter(96)]);
             searchFilters.gt = encodeKey(this.bucket, search);
         }
 
@@ -44,13 +47,7 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
     }
 
     private getAttestationKey(pubKey: BLSPubkey, attestation: Attestation): Buffer {
-        const epoch = this.getEpochBuffer(attestation.data.target.epoch);
+        const epoch = intToBytes(attestation.data.target.epoch, 2);
         return Buffer.concat([pubKey, epoch, attestation.signature]);
-    }
-
-    private getEpochBuffer(epoch: number): Buffer {
-        const epochBuffer = Buffer.alloc(2);
-        epochBuffer.writeUInt16LE(epoch, 0);
-        return epochBuffer;
     }
 }
