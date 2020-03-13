@@ -102,6 +102,7 @@ export class CGAccount implements IAccount {
    * @param password decryption password of the keystore
    */
     public async unlock(password: string): Promise<void> {
+        this.validators = [];
         const keystoreFiles = this.getKeystoreFiles();
 
         const validators: Promise<Keypair | undefined>[] = keystoreFiles.map(async keystore => {

@@ -32,6 +32,7 @@ interface IInjectedState {
     isDepositDetected: boolean;
     networkIndex: number;
     canDeposit: boolean;
+    addingNewValidator: boolean;
 }
 
 /**
@@ -56,9 +57,8 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps> {
 
     // eslint-disable-next-line camelcase
     public UNSAFE_componentWillMount(): void {
-        const {canDeposit, history} = this.props;
-        if (!canDeposit) {
-            return history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+        if (!this.props.canDeposit) {
+            this.onwards();
         }
     }
 
@@ -109,7 +109,12 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps> {
     }
 
     private onwards = (): void => {
-        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+        const {addingNewValidator, history} = this.props;
+        if (addingNewValidator) {
+            return history.push(Routes.CHECK_PASSWORD);
+        } else {
+            return history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+        }
     };
 
     private handleVerify = (): void => {
@@ -129,6 +134,7 @@ const mapStateToProps = (state: IRootState): IInjectedState => {
         isDepositGenerated: deposit.depositTxData !== null,
         isDepositDetected: deposit.isDepositDetected,
         canDeposit: !!register.withdrawalKey || !!register.withdrawalMnemonic,
+        addingNewValidator: register.addingNewValidator,
     };
 };
 

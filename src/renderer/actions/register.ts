@@ -11,6 +11,7 @@ import * as path from "path";
 import {PublicKey} from "@chainsafe/bls/lib/publicKey";
 import {DEFAULT_ACCOUNT} from "../constants/account";
 import {remote} from "electron";
+import {storeAuthAction} from './auth';
 
 //Signing actions
 // Signing Mnemonic action
@@ -103,19 +104,26 @@ export interface IWithdrawalKeyAction extends Action<RegisterActionTypes> {
     payload: IStoreWithdrawalKeyPayload;
 }
 
+const saveKeystore = async(state: IRootState, password: string): Promise<string> => {
+    const signingKey = PrivateKey.fromBytes(
+        Buffer.from(state.register.signingKey.replace("0x",""), "hex")
+    );
+    const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
+    await V4Keystore.create(
+        path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
+        password, new Keypair(signingKey)
+    );
+
+    return accountDirectory;
+};
+
 // After password action
 export const afterPasswordAction = (password: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         // 1. Save to keystore
         dispatch(startRegistrationSubmission());
-        const signingKey = PrivateKey.fromBytes(
-            Buffer.from(getState().register.signingKey.replace("0x",""), "hex")
-        );
-        const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
-        await V4Keystore.create(
-            path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
-            password, new Keypair(signingKey)
-        );
+        const accountDirectory = await saveKeystore(getState(), password);
+
         // 2. Save account to db
         const account = new CGAccount({
             name: "Default",
@@ -138,6 +146,30 @@ export const startRegistrationSubmission = (): Action<RegisterActionTypes> => ({
 
 export const completeRegistrationSubmission = (): Action<RegisterActionTypes> => ({
     type: RegisterActionTypes.COMPLETED_REGISTRATION_SUBMISSION
+});
+
+export const addNewValidatorAction = (password: string) => {
+    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+        await saveKeystore(getState(), password);
+
+        const account = getState().auth.account;
+        if (account !== null) {
+            // Reload validators and beacon nodes
+            await account.unlock(password);
+            storeAuthAction(account)(dispatch);
+        }
+
+        dispatch(completeAddingNewValidator());
+    };
+};
+
+
+export const startAddingNewValidator = (): Action<RegisterActionTypes> => ({
+    type: RegisterActionTypes.START_ADDING_NEW_VALIDATOR
+});
+
+export const completeAddingNewValidator = (): Action<RegisterActionTypes> => ({
+    type: RegisterActionTypes.COMPLETE_ADDING_NEW_VALIDATOR
 });
 
 export interface ISetNetworkAction {

@@ -11,7 +11,7 @@ import {InputForm} from "../../components/Input/InputForm";
 import {ButtonPrimary, ButtonDestructive} from "../../components/Button/ButtonStandard";
 import database from "../../services/db/api/database";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
-import {afterPasswordAction} from "../../actions";
+import {addNewValidatorAction, afterPasswordAction} from '../../actions';
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 
@@ -31,36 +31,22 @@ Pick<IRootState, "register" | "auth">> = (props) => {
     
     const handleSubmit = async (): Promise<void> => {
         const accounts = await database.account.get(DEFAULT_ACCOUNT);
-        if(accounts!=null){
+        if (accounts != null){
             const isCorrectValue = await accounts.isCorrectPassword(input);
-            if(isCorrectValue) {
-
-                const signingKey = PrivateKey.fromBytes(
-                    Buffer.from(props.register.signingKey.replace("0x",""), "hex"));
-
-                if(props.auth.account !== null)
-                    props.auth.account.addValidator(new Keypair(signingKey));
-                
-                props.afterPassword(input);
+            if (isCorrectValue) {
+                props.addNewValidator(input);
                 
                 setInputStatus(true);
-                setTimeout(props.history.push,500,{
-                    pathname: Routes.DASHBOARD_ROUTE,
-                    state: {}
-                });
+                setTimeout(props.history.push,500, Routes.DASHBOARD_ROUTE);
             }
             else {
                 setInputStatus(false);
             }
-        
         }
     };
 
     const handleCancel = (): void => {
-        props.history.push({
-            pathname: Routes.DASHBOARD_ROUTE,
-            state: {}
-        });
+        props.history.push(Routes.DASHBOARD_ROUTE);
     };
     useEffect(()=>{
         setInputStatus(undefined);
@@ -89,7 +75,7 @@ Pick<IRootState, "register" | "auth">> = (props) => {
 // redux
 
 interface IInjectedProps {
-    afterPassword: typeof afterPasswordAction;
+    addNewValidator: typeof addNewValidatorAction;
 }
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "register" | "auth"> => ({
@@ -99,7 +85,7 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "register" | "auth
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators({
-        afterPassword: afterPasswordAction
+        addNewValidator: addNewValidatorAction,
     }, dispatch);
 
 export const CheckPasswordContainer = connect(

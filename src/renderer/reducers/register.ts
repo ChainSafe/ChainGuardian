@@ -19,6 +19,7 @@ export interface IRegisterState {
     withdrawalVerification: boolean,
     withdrawalKey: string,
     network: string;
+    addingNewValidator: boolean;
 }
 
 const initialState: IRegisterState = {
@@ -29,6 +30,7 @@ const initialState: IRegisterState = {
     withdrawalVerification: false,
     withdrawalKey: "",
     network: networks[0].networkName,
+    addingNewValidator: false,
 };
 
 export const registerReducer = (state = initialState, action: Action<RegisterActionTypes>): IRegisterState => {
@@ -65,7 +67,12 @@ export const registerReducer = (state = initialState, action: Action<RegisterAct
                 network: (action as ISetNetworkAction).payload,
             });
 
-        case RegisterActionTypes.COMPLETED_REGISTRATION_SUBMISSION:
+        case RegisterActionTypes.START_ADDING_NEW_VALIDATOR:
+            return Object.assign({}, state, {
+                addingNewValidator: true,
+            });
+
+        case RegisterActionTypes.COMPLETED_REGISTRATION_SUBMISSION || RegisterActionTypes.COMPLETE_ADDING_NEW_VALIDATOR:
             return Object.assign({}, state, initialState);
         default:
             return state;
