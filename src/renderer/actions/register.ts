@@ -11,6 +11,7 @@ import * as path from "path";
 import {PublicKey} from "@chainsafe/bls/lib/publicKey";
 import {DEFAULT_ACCOUNT} from "../constants/account";
 import {remote} from "electron";
+import {fromHex} from '../services/utils/bytes';
 import {storeAuthAction} from "./auth";
 
 //Signing actions
@@ -105,9 +106,7 @@ export interface IWithdrawalKeyAction extends Action<RegisterActionTypes> {
 }
 
 const saveKeystore = async(state: IRootState, password: string): Promise<string> => {
-    const signingKey = PrivateKey.fromBytes(
-        Buffer.from(state.register.signingKey.replace("0x",""), "hex")
-    );
+    const signingKey = PrivateKey.fromBytes(fromHex(state.register.signingKey.replace("0x","")));
     const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
     await V4Keystore.create(
         path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
