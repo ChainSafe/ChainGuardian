@@ -14,7 +14,6 @@ export class CGAccount implements IAccount {
     public name: string;
     public directory: string;
     public sendStats: boolean | null;
-    public numberOfValidators = 0;
 
     private validators: Keypair[] = [];
     private keystoreTarget: ICGKeystoreFactory;
@@ -120,16 +119,13 @@ export class CGAccount implements IAccount {
                 this.validators.push(validator);
             }
         }
-        this.numberOfValidators = this.validators.length;
     }
 
     public addValidator(validator: Keypair): void {
         this.validators.push(validator);
-        this.numberOfValidators++;
     }
     public removeValidator(index: number): void {
         this.validators.splice(index, 1);
-        this.numberOfValidators--;
     }
 
     /**
@@ -138,7 +134,6 @@ export class CGAccount implements IAccount {
     public lock(): void {
         // Clear validator Keypairs
         this.validators = [];
-        this.numberOfValidators = 0;
         this.validatorsBeaconNodes = {};
     }
 

@@ -116,7 +116,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
         }
 
         loadValidators();
-    },[props.auth.account && props.auth.account.numberOfValidators]);
+    },[props.auth.account && props.auth.account.getValidators().length]);
 
     const topBar =
             <div className={"validator-top-bar"}>
