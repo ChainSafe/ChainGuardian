@@ -8,8 +8,10 @@ import {
 } from "../actions";
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action} from "redux";
-import {ISetNetworkAction} from "../actions/register";
+import {ISetNetworkAction} from "../actions";
 import {networks} from "../services/deposit/networks";
+
+export enum RegisterType { ONBOARDING, ADD }
 
 export interface IRegisterState {
     signingMnemonic: string,
@@ -19,7 +21,7 @@ export interface IRegisterState {
     withdrawalVerification: boolean,
     withdrawalKey: string,
     network: string;
-    addingNewValidator: boolean;
+    registerType: RegisterType | null;
 }
 
 const initialState: IRegisterState = {
@@ -30,11 +32,15 @@ const initialState: IRegisterState = {
     withdrawalVerification: false,
     withdrawalKey: "",
     network: networks[0].networkName,
-    addingNewValidator: false,
+    registerType: null,
 };
 
 export const registerReducer = (state = initialState, action: Action<RegisterActionTypes>): IRegisterState => {
     switch (action.type) {
+        case RegisterActionTypes.START_REGISTRATION_SUBMISSION:
+            return Object.assign({}, state, {
+                registerType: RegisterType.ONBOARDING,
+            });
 
         case RegisterActionTypes.STORE_SIGNING_MNEMONIC:
             return Object.assign({}, state, {
@@ -69,7 +75,7 @@ export const registerReducer = (state = initialState, action: Action<RegisterAct
 
         case RegisterActionTypes.START_ADDING_NEW_VALIDATOR:
             return Object.assign({}, state, {
-                addingNewValidator: true,
+                registerType: RegisterType.ADD,
             });
 
         case RegisterActionTypes.COMPLETED_REGISTRATION_SUBMISSION || RegisterActionTypes.COMPLETE_ADDING_NEW_VALIDATOR:

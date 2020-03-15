@@ -11,7 +11,7 @@ import * as path from "path";
 import {PublicKey} from "@chainsafe/bls/lib/publicKey";
 import {DEFAULT_ACCOUNT} from "../constants/account";
 import {remote} from "electron";
-import {fromHex} from '../services/utils/bytes';
+import {fromHex} from "../services/utils/bytes";
 import {storeAuthAction} from "./auth";
 
 //Signing actions

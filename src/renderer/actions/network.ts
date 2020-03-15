@@ -7,7 +7,7 @@ import {Action, Dispatch} from "redux";
 import {IRootState} from "../reducers";
 import {BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
-import {fromHex} from '../services/utils/bytes';
+import {fromHex} from "../services/utils/bytes";
 
 export const startBeaconChainAction = (network: string, ports?: string[]) => {
     return async (): Promise<void> => {
