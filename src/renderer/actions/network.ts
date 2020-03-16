@@ -51,7 +51,7 @@ export const saveSelectedNetworkAction = (network: string): ISaveSelectedNetwork
 export const saveBeaconNodeAction = (url: string, network?: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const localDockerName = network ? BeaconChain.getContainerName(network) : undefined;
-        const signingKey = PrivateKey.fromBytes(fromHex(getState().register.signingKey.replace("0x","")));
+        const signingKey = PrivateKey.fromBytes(fromHex(getState().register.signingKey));
         const beaconNode = new BeaconNodes(url, localDockerName);
         const validatorAddress = signingKey.toPublicKey().toHexString();
         await database.beaconNodes.set(
