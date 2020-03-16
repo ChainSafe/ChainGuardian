@@ -24,6 +24,7 @@ const initalState: IRegisterState = {
     withdrawalVerification: false,
     withdrawalKey: "",
     network: SupportedNetworks.PRYSM,
+    registerType: null,
 };
 
 describe("register reducer", () => {

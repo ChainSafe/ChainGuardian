@@ -7,15 +7,15 @@ import {Dropdown} from "../../components/Dropdown/Dropdown";
 import {exportKeystore} from "./export";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 import {connect} from "react-redux";
-import {IRootState} from "../../reducers/index";
+import {IRootState} from "../../reducers";
 import {RouteComponentProps} from "react-router";
 import {bindActionCreators, Dispatch} from "redux";
-import {storeNotificationAction} from "../../actions/notification";
+import {storeNotificationAction} from "../../actions";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
 import * as path from "path";
-import {storeAuthAction} from "../../actions/auth";
+import {storeAuthAction, startAddingNewValidator as startAddingNewValidatorAction} from "../../actions";
 
 type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
 
@@ -30,8 +30,6 @@ export interface IValidator {
 
 
 const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRootState, "auth">> = (props) => {
-
-    
     // TODO - temporary object, import real network object
     const networksMock: {[id: number]: string} = {
         12: "NetworkA",
@@ -48,11 +46,8 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
 
     const onAddNewValidator = (): void => {
-
-        props.history.push({
-            pathname: Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING),
-            state: {isRegisterFlow: true}
-        });
+        props.startAddingNewValidator();
+        props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
     };
 
     const onRemoveValidator = (index: number): void => {
@@ -101,24 +96,18 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
     };
 
     const loadValidators =  (): void => {
-        const validatorArray: Array<IValidator> = [];
-        const validatorsData = props.auth.account;
-        
-        if(validatorsData){
-            const validators =validatorsData.getValidators();
-            validators.map((v, index)=>{
-                validatorArray.push({
-                    name: validatorsData.name,
-                    status: "TODO status",
-                    publicKey: v.publicKey.toHexString(),
-                    deposit: 30,
-                    network: `${index%2===0 ? "NetworkA" : "NetworkB"}`,
-                    privateKey: v.privateKey.toHexString()
-                });
-            });
+        if(props.auth && props.auth.account){
+            const validators = props.auth.account.getValidators();
+            const validatorArray = validators.map((v, index) => ({
+                name: props.auth.account!.name,
+                status: "TODO status",
+                publicKey: v.publicKey.toHexString(),
+                deposit: 30,
+                network: `${index%2===0 ? "NetworkA" : "NetworkB"}`,
+                privateKey: v.privateKey.toHexString()
+            }));
+            setValidators(validatorArray);
         }
-
-        setValidators(validatorArray);
     };
 
     useEffect(()=> {
@@ -127,7 +116,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
         }
 
         loadValidators();
-    },[]);
+    },[props.auth.account && props.auth.account.getValidators().length]);
 
     const topBar =
             <div className={"validator-top-bar"}>
@@ -181,6 +170,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
 interface IInjectedProps{
     storeAuth: typeof storeAuthAction;
     notification: typeof storeNotificationAction;
+    startAddingNewValidator: typeof startAddingNewValidatorAction;
 }
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
@@ -192,6 +182,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
         {
             storeAuth: storeAuthAction,
             notification: storeNotificationAction,
+            startAddingNewValidator: startAddingNewValidatorAction,
         },
         dispatch
     );

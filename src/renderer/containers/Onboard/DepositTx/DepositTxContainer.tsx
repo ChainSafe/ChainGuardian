@@ -4,6 +4,7 @@ import {CopyField} from "../../../components/CopyField/CopyField";
 import {Dropdown} from "../../../components/Dropdown/Dropdown";
 import {connect} from "react-redux";
 import {RouteComponentProps} from "react-router";
+import {RegisterType} from "../../../reducers/register";
 import {copyToClipboard} from "../../../services/utils/clipboard";
 import {bindActionCreators, Dispatch} from "redux";
 import {generateDepositAction, resetDepositData, verifyDepositAction} from "../../../actions";
@@ -32,6 +33,7 @@ interface IInjectedState {
     isDepositDetected: boolean;
     networkIndex: number;
     canDeposit: boolean;
+    isAddingNewValidator: boolean;
 }
 
 /**
@@ -56,9 +58,8 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps> {
 
     // eslint-disable-next-line camelcase
     public UNSAFE_componentWillMount(): void {
-        const {canDeposit, history} = this.props;
-        if (!canDeposit) {
-            return history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+        if (!this.props.canDeposit) {
+            this.onwards();
         }
     }
 
@@ -109,7 +110,12 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps> {
     }
 
     private onwards = (): void => {
-        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+        const {isAddingNewValidator, history} = this.props;
+        if (isAddingNewValidator) {
+            return history.push(Routes.CHECK_PASSWORD);
+        } else {
+            return history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+        }
     };
 
     private handleVerify = (): void => {
@@ -128,7 +134,8 @@ const mapStateToProps = (state: IRootState): IInjectedState => {
         depositTxData: deposit.depositTxData,
         isDepositGenerated: deposit.depositTxData !== null,
         isDepositDetected: deposit.isDepositDetected,
-        canDeposit: !!register.withdrawalKey,
+        canDeposit: !!register.withdrawalKey || !!register.withdrawalMnemonic,
+        isAddingNewValidator: register.registerType === RegisterType.ADD,
     };
 };
 
