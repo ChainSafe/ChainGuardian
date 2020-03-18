@@ -32,7 +32,7 @@ const networks: INetworkConfig[] = [
 
 if(isLocal) {
     networks.push({
-        networkName: "Local",
+        networkName: "localhost",
         networkId: 999,
         contract: {
             address: "0x2F1598e74b146F5687174C13f8EDCF490B2492e3",

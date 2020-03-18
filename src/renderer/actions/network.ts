@@ -68,23 +68,22 @@ export interface IBeaconNodeStatus {
     isSyncing: boolean;
     currentSlot: string;
 }
-export const getBeaconNodeStatus = (url: string) => {
-    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<IBeaconNodeStatus> => {
-        const currentNetwork = getState().network.selected;
+export const reloadBeaconNodeStatus = (validator: string, url: string) => {
+    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+        const currentNetwork = getState().network.selected || "Prysm";
         const beaconNode = PrysmBeaconClient.getPrysmBeaconClient(url, currentNetwork!);
         if (!beaconNode) {
-            return {
-                isSyncing: false,
-                currentSlot: "0",
-            };
+            return;
         }
 
         const isSyncing = await beaconNode.isSyncing();
         const currentSlot = await beaconNode.getChainHeight();
 
-        return {
+        console.log("isSyncing: ", isSyncing);
+        console.log("currentSlot: ", currentSlot);
+        getState().auth.account!.addBeaconNodeStatus(validator, url, {
             isSyncing,
-            currentSlot,
-        };
+            currentSlot
+        });
     };
 };

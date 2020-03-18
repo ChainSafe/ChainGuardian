@@ -50,4 +50,4 @@ export type ChainHead = {
     previousJustifiedSlot: string,
     previousJustifiedEpoch: string,
     previousJustifiedBlockRoot: string
-}};};
+};

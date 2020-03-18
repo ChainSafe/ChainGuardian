@@ -7,7 +7,7 @@ import {IBeaconApiClient} from "../types";
 import {PrysmBeaconApiClient} from "./beacon";
 import {PrysmValidatorApiClient} from "./validator";
 
-export class PrysmBeaconClient extends AbstractApiClient implements IValidatorBeaconClient {
+export class PrysmBeaconClient /* extends AbstractApiClient implements IValidatorBeaconClient */ {
 
     public url: string;
     public beacon: IBeaconApiClient;
@@ -16,7 +16,6 @@ export class PrysmBeaconClient extends AbstractApiClient implements IValidatorBe
     protected config: IBeaconConfig;
 
     public constructor(options: IBeaconClientOptions) {
-        super();
         this.url = options.urlPrefix;
         this.config = options.config;
         this.beacon = new PrysmBeaconApiClient(options);
@@ -25,6 +24,8 @@ export class PrysmBeaconClient extends AbstractApiClient implements IValidatorBe
 
     public static getPrysmBeaconClient(url: string, network: string): PrysmBeaconClient | null {
         const networkConfig = getNetworkConfig(network);
+        console.log("network: ", network)
+        console.log("networkConfig: ", networkConfig)
         if (!networkConfig) {
             return null;
         }
