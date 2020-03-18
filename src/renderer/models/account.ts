@@ -1,5 +1,6 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {readdirSync} from "fs";
+import {IBeaconNodeStatus} from "../actions/network";
 import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/keystore";
 import {BeaconNode, IValidatorBeaconNodes} from "./beaconNode";
 import database from "../services/db/api/database";
@@ -135,6 +136,19 @@ export class CGAccount implements IAccount {
         // Clear validator Keypairs
         this.validators = [];
         this.validatorsBeaconNodes = {};
+    }
+
+    public addBeaconNodeStatus(validatorAddress: string, beaconNodeUrl: string, status: IBeaconNodeStatus): void {
+        const beaconNodes = this.validatorsBeaconNodes[validatorAddress];
+        for (let i = 0; i < beaconNodes.length; i++) {
+            if (beaconNodes[i].url === beaconNodeUrl) {
+                this.validatorsBeaconNodes[validatorAddress][i] = {
+                    ...this.validatorsBeaconNodes[validatorAddress][i],
+                    ...status,
+                };
+                return;
+            }
+        }
     }
 
     private isUnlocked(): boolean {

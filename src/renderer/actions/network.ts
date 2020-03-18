@@ -7,6 +7,7 @@ import {Action, Dispatch} from "redux";
 import {IRootState} from "../reducers";
 import {BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
+import {PrysmBeaconClient} from "../services/eth2/client/prysm/prysm";
 import {fromHex} from "../services/utils/bytes";
 
 export interface ISaveSelectedNetworkAction {
@@ -60,5 +61,30 @@ export const saveBeaconNodeAction = (url: string, network?: string) => {
             validatorAddress,
             beaconNode,
         );
+    };
+};
+
+export interface IBeaconNodeStatus {
+    isSyncing: boolean;
+    currentSlot: string;
+}
+export const getBeaconNodeStatus = (url: string) => {
+    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<IBeaconNodeStatus> => {
+        const currentNetwork = getState().network.selected;
+        const beaconNode = PrysmBeaconClient.getPrysmBeaconClient(url, currentNetwork!);
+        if (!beaconNode) {
+            return {
+                isSyncing: false,
+                currentSlot: "0",
+            };
+        }
+
+        const isSyncing = await beaconNode.isSyncing();
+        const currentSlot = await beaconNode.getChainHeight();
+
+        return {
+            isSyncing,
+            currentSlot,
+        };
     };
 };

@@ -1,6 +1,8 @@
 import {Fork, number64, SyncingStatus} from "@chainsafe/eth2.0-types";
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {AnyContainerType} from "@chainsafe/ssz";
+import {ChainHead} from "./prysm/types";
 
 export interface IChainFork {
     chainId: number64,
@@ -41,3 +43,8 @@ export const ValidatorDutySSZTyoe: AnyContainerType = {
         ["attestationSlot", "number64"],
     ]
 };
+
+// Required until lodestar implements all methods
+export interface IBeaconApiClient extends IBeaconApi {
+    getChainHead(): Promise<ChainHead>
+}

@@ -1,6 +1,8 @@
 export type BeaconNode = {
     url: string;
     localDockerId: string;
+    isSyncing?: boolean;
+    currentSlot?: string;
 };
 
 interface IBeaconNodes {

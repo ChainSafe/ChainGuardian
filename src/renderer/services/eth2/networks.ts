@@ -46,4 +46,12 @@ if(isLocal) {
     });
 }
 
-export {networks};
+const getNetworkConfig = (name: string): null | INetworkConfig => {
+    const result = networks.filter((network) => network.networkName === name);
+    return (result.length === 0) ? null : result[0];
+};
+
+export {
+    networks,
+    getNetworkConfig,
+};

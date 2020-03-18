@@ -1,11 +1,11 @@
-import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {bytes32, Fork, number64, SyncingStatus, uint64} from "@chainsafe/eth2.0-types";
 import {IBeaconClientOptions} from "../interface";
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {HttpClient} from "../../../api";
 import {computeEpochAtSlot, getCurrentSlot} from "@chainsafe/lodestar-validator/lib/util";
 import {base64Decode, base64Encode, fromHex} from "../../../utils/bytes";
-import {ChainHead} from './types';
+import {IBeaconApiClient} from "../types";
+import {ChainHead} from "./types";
 
 export enum PrysmBeaconRoutes {
     VERSION = "/node/version",
@@ -15,7 +15,7 @@ export enum PrysmBeaconRoutes {
     CHAINHEAD = "beacon/chainhead",
 }
 
-export class PrysmBeaconApiClient implements IBeaconApi {
+export class PrysmBeaconApiClient implements IBeaconApiClient {
 
     private client: HttpClient;
     private config: IBeaconConfig;
