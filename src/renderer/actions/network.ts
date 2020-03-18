@@ -39,6 +39,7 @@ export const restartBeaconChainAction = (network = SupportedNetworks.PRYSM) => {
     };
 };
 
+// User selected network in dashboard dropdown
 export interface ISaveSelectedNetworkAction {
     type: typeof NetworkActionTypes.SELECT_NETWORK;
     payload: string;
