@@ -5,12 +5,14 @@ import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {HttpClient} from "../../../api";
 import {computeEpochAtSlot, getCurrentSlot} from "@chainsafe/lodestar-validator/lib/util";
 import {base64Decode, base64Encode, fromHex} from "../../../utils/bytes";
+import {ChainHead} from './types';
 
 export enum PrysmBeaconRoutes {
     VERSION = "/node/version",
     DOMAIN = "/validator/domain",
     GENESIS = "/node/genesis",
-    SYNCING = "/node/syncing"
+    SYNCING = "/node/syncing",
+    CHAINHEAD = "beacon/chainhead",
 }
 
 export class PrysmBeaconApiClient implements IBeaconApi {
@@ -57,4 +59,7 @@ export class PrysmBeaconApiClient implements IBeaconApi {
         return response.syncing;
     }
 
+    public async getChainHead(): Promise<ChainHead> {
+        return await this.client.get<ChainHead>(PrysmBeaconRoutes.CHAINHEAD);
+    }
 }

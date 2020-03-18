@@ -36,3 +36,18 @@ export enum PrysmValidatorStatus {
     SLASHING = "SLASHING",
     EXITED = "EXITED"
 }
+
+export type ChainHead = {
+    headSlot: string,
+    headEpoch: string,
+    headBlockRoot: string,
+    finalizedSlot: string,
+    finalizedEpoch: string,
+    finalizedBlockRoot: string,
+    justifiedSlot: string,
+    justifiedEpoch: string,
+    justifiedBlockRoot: string,
+    previousJustifiedSlot: string,
+    previousJustifiedEpoch: string,
+    previousJustifiedBlockRoot: string
+}
