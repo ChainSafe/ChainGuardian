@@ -10,7 +10,7 @@ import {bindActionCreators, Dispatch} from "redux";
 import {generateDepositAction, resetDepositData, verifyDepositAction} from "../../../actions";
 import {IRootState} from "../../../reducers";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
-import {networks} from "../../../services/deposit/networks";
+import {networks} from "../../../services/eth2/networks";
 import {Loading} from "../../../components/Loading/Loading";
 
 /**

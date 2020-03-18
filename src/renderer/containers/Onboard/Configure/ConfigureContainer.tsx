@@ -4,7 +4,7 @@ import {ButtonPrimary, ButtonSecondary} from "../../../components/Button/ButtonS
 import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {Dropdown} from "../../../components/Dropdown/Dropdown";
-import {networks} from "../../../services/deposit/networks";
+import {networks} from "../../../services/eth2/networks";
 import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
 import {setNetworkAction} from "../../../actions";

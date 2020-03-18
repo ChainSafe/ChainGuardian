@@ -1,4 +1,4 @@
-import {networks} from "../../../../../src/renderer/services/deposit/networks";
+import {networks} from "../../../../../src/renderer/services/eth2/networks";
 import {SupportedNetworks} from "../../../../../src/renderer/services/docker/chain";
 import axios from "axios";
 import MockAxiosAdapter from "@nodefactory/axios-mock-adapter";

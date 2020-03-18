@@ -9,6 +9,17 @@ import {BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
 import {fromHex} from "../services/utils/bytes";
 
+export interface ISaveSelectedNetworkAction {
+    type: typeof NetworkActionTypes.SELECT_NETWORK;
+    payload: string;
+}
+export const saveSelectedNetworkAction = (network: string): ISaveSelectedNetworkAction => ({
+    type: NetworkActionTypes.SELECT_NETWORK,
+    payload: network,
+});
+
+// Beacon chain
+
 export const startBeaconChainAction = (network: string, ports?: string[]) => {
     return async (): Promise<void> => {
         switch(network) {
@@ -38,15 +49,6 @@ export const restartBeaconChainAction = (network = SupportedNetworks.PRYSM) => {
         }
     };
 };
-
-export interface ISaveSelectedNetworkAction {
-    type: typeof NetworkActionTypes.SELECT_NETWORK;
-    payload: string;
-}
-export const saveSelectedNetworkAction = (network: string): ISaveSelectedNetworkAction => ({
-    type: NetworkActionTypes.SELECT_NETWORK,
-    payload: network,
-});
 
 export const saveBeaconNodeAction = (url: string, network?: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
