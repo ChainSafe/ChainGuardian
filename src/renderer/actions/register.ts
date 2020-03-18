@@ -1,5 +1,6 @@
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action, Dispatch} from "redux";
+import {ValidatorNetwork} from '../models/network';
 import {IRootState} from "../reducers";
 import {V4Keystore} from "../services/keystore";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
@@ -116,6 +117,15 @@ const saveKeystore = async(state: IRootState, password: string): Promise<string>
     return accountDirectory;
 };
 
+const saveNetwork = async(state: IRootState): Promise<void> => {
+    const networkName = state.network.selected;
+    if (networkName) {
+        const network = new ValidatorNetwork(networkName);
+        const validatorAddress = PublicKey.fromBytes(fromHex(state.register.signingKey)).toHexString();
+        await database.validator.network.set(validatorAddress, network);
+    }
+};
+
 // After password action
 export const afterPasswordAction = (password: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
@@ -134,6 +144,10 @@ export const afterPasswordAction = (password: string) => {
             DEFAULT_ACCOUNT,
             account
         );
+
+        // 3. Save network
+        await saveNetwork(getState());
+
         dispatch(completeRegistrationSubmission());
     };
 };
@@ -149,7 +163,12 @@ export const completeRegistrationSubmission = (): Action<RegisterActionTypes> =>
 
 export const addNewValidatorAction = (password: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
-        await saveKeystore(getState(), password);
+        await Promise.all([
+            // Add new validator to database
+            saveKeystore(getState(), password),
+            // Save validator's network
+            saveNetwork(getState())
+        ]);
 
         const account = getState().auth.account;
         if (account !== null) {

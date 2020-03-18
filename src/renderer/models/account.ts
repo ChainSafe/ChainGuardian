@@ -3,6 +3,7 @@ import {readdirSync} from "fs";
 import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/keystore";
 import {BeaconNode, IValidatorBeaconNodes} from "./beaconNode";
 import database from "../services/db/api/database";
+import {IValidatorNetwork} from './network';
 
 export interface IAccount {
     name: string;
@@ -18,6 +19,7 @@ export class CGAccount implements IAccount {
     private validators: Keypair[] = [];
     private keystoreTarget: ICGKeystoreFactory;
     private validatorsBeaconNodes: IValidatorBeaconNodes = {};
+    private validatorsNetwork: IValidatorNetwork = {};
 
     public constructor(
         account: IAccount,

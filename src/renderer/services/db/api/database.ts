@@ -4,10 +4,12 @@ import {IpcDatabaseController} from "../controller/ipc";
 import {BeaconNodeRepository} from "./repositories/beaconNode";
 import {ValidatorAttestationsRepository} from "./repositories/validator/attestations";
 import {ValidatorBlocksRepository} from "./repositories/validator/blocks";
+import {ValidatorNetworkRepository} from "./repositories/validator/network";
 
 interface IValidatorDB {
     attestations: ValidatorAttestationsRepository;
     blocks: ValidatorBlocksRepository;
+    network: ValidatorNetworkRepository;
 }
 
 export class CGDatabase extends DatabaseService {
@@ -21,7 +23,8 @@ export class CGDatabase extends DatabaseService {
         this.beaconNodes = new BeaconNodeRepository(this.db);
         this.validator = {
             attestations: new ValidatorAttestationsRepository(this.db),
-            blocks: new ValidatorBlocksRepository(this.db)
+            blocks: new ValidatorBlocksRepository(this.db),
+            network: new ValidatorNetworkRepository(this.db)
         };
     }
 
