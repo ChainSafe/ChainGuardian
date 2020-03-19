@@ -100,10 +100,7 @@ export abstract class Container {
     public async isRunning(): Promise<boolean> {
         if (this.docker && this.docker.name) {
             try {
-                const cmdResult = await runCmdAsync(Command.ps(this.docker.name, "running"));
-                // first line of output is header line, second line is definition of found docker instance
-                const runningInstance = cmdResult.stdout.split("\n")[1];
-                return runningInstance !== "";
+                return Container.isContainerRunning(this.docker.name);
             } catch (e) {
                 logger.error(`Failed to check if docker is running because ${e.message}.`);
             }
@@ -179,5 +176,18 @@ export abstract class Container {
             }
         }
         return false;
+    }
+
+    public static async startStoppedContainer(name: string) {
+        if (!(await Container.isContainerRunning(name))) {
+            runCmd(Command.start(name));
+        }
+    }
+
+    public static async isContainerRunning(name: string): Promise<boolean> {
+        const cmdResult = await runCmdAsync(Command.ps(name, "running"));
+        // first line of output is header line, second line is definition of found docker instance
+        const runningInstance = cmdResult.stdout.split("\n")[1];
+        return runningInstance !== "";
     }
 }
