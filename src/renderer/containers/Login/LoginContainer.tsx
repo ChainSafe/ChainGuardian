@@ -14,6 +14,7 @@ import {connect} from "react-redux";
 import {storeAuthAction, storeNotificationAction} from "../../actions";
 import {IRootState} from "../../reducers";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
+import {BeaconChain} from '../../services/docker/chain';
 
 interface IState {
     input: string;
@@ -32,6 +33,10 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
     public state: IState = {
         input: ""
     };
+
+    public async componentDidMount(): Promise<void> {
+        await BeaconChain.startAllLocalBeaconNodes();
+    }
     
     public render(): ReactElement {
         return (
