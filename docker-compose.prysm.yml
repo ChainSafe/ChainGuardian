@@ -27,18 +27,23 @@ services:
     logging:
       driver: "none"
 
-  eth2-bn:
-    image: sigp/lighthouse:latest
-    container_name: "lighthouse_beacon_node"
-    command: 'lighthouse beacon --eth1 --eth1-endpoint http://eth1-node:8545 --http --http-address 0.0.0.0 --maxpeers 0 testnet -s minimal -r recent -m 0 8'
+  prysm-beacon-chain:
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
+    container_name: "cg_prysm_beacon_chain"
+    command: --datadir=/data --custom-genesis-delay=0 --grpc-gateway-port 4001 --http-web3provider "http://eth1-node:8545" --web3provider=ws://eth1-node:8546/ --bootstrap-node=. --no-discovery --contract-deployment-block 0 --deposit-contract 0x2F1598e74b146F5687174C13f8EDCF490B2492e3 --interop-num-validators 64 --interop-eth1data-votes
     depends_on:
       - eth1-node
     ports:
-      - "5052:5052"
+      - "4001:4001"
+      - "4000:4000"
+      - "13000:13000"
 
-  eth2-validators:
-    image: sigp/lighthouse:latest
-    container_name: "lighthouse_validators"
-    command: 'lighthouse vc --server http://eth2-bn:5052 --spec minimal testnet insecure 0 8'
+  prysm-validator:
+    image: gcr.io/prysmaticlabs/prysm/validator:latest
+    container_name: "cg_prysm_validator"
+    command: --keymanager=interop --keymanageropts='{"keys":64}' --beacon-rpc-provider prysm-beacon-chain:4000
+    restart: on-failure
     depends_on:
-      - eth2-bn
+      - prysm-beacon-chain
+    logging:
+      driver: "none"
