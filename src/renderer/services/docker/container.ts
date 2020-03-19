@@ -1,6 +1,6 @@
 import {IDockerRunParams} from "./type";
 import {Command} from "./command";
-import {ICmdRun, runCmd, runCmdAsync, runDetached} from '../utils/cmd';
+import {ICmdRun, runCmd, runCmdAsync, runDetached} from "../utils/cmd";
 import * as logger from "electron-log";
 import {Readable} from "stream";
 import {extractDockerVersion} from "./utils";
@@ -43,6 +43,19 @@ export abstract class Container {
             logger.error(e);
             return false;
         }
+    }
+
+    public static async startStoppedContainer(name: string): Promise<void> {
+        if (!(await Container.isContainerRunning(name))) {
+            runCmd(Command.start(name));
+        }
+    }
+
+    public static async isContainerRunning(name: string): Promise<boolean> {
+        const cmdResult = await runCmdAsync(Command.ps(name, "running"));
+        // first line of output is header line, second line is definition of found docker instance
+        const runningInstance = cmdResult.stdout.split("\n")[1];
+        return runningInstance !== "";
     }
 
     public getName(): string | undefined {
@@ -176,18 +189,5 @@ export abstract class Container {
             }
         }
         return false;
-    }
-
-    public static async startStoppedContainer(name: string) {
-        if (!(await Container.isContainerRunning(name))) {
-            runCmd(Command.start(name));
-        }
-    }
-
-    public static async isContainerRunning(name: string): Promise<boolean> {
-        const cmdResult = await runCmdAsync(Command.ps(name, "running"));
-        // first line of output is header line, second line is definition of found docker instance
-        const runningInstance = cmdResult.stdout.split("\n")[1];
-        return runningInstance !== "";
     }
 }

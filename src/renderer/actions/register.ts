@@ -1,6 +1,6 @@
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action, Dispatch} from "redux";
-import {ValidatorNetwork} from '../models/network';
+import {ValidatorNetwork} from "../models/network";
 import {IRootState} from "../reducers";
 import {V4Keystore} from "../services/keystore";
 import {Keypair} from "@chainsafe/bls/lib/keypair";

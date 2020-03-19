@@ -1,6 +1,6 @@
 import * as logger from "electron-log";
 
-import database from '../db/api/database';
+import database from "../db/api/database";
 import {Container} from "./container";
 import {DockerRegistry} from "./docker-registry";
 
@@ -45,7 +45,7 @@ export class BeaconChain extends Container {
         const promises: any = [];
         for (let i = 0; i < savedNodes.length; i++) {
             savedNodes[i].nodes.map((node) => {
-                if (!!node.localDockerId) {
+                if (node.localDockerId) {
                     promises.push(Container.startStoppedContainer(node.localDockerId));
                 }
             });

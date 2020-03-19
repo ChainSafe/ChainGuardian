@@ -1,5 +1,5 @@
 import {BeaconChain, SupportedNetworks} from "../../../../src/renderer/services/docker/chain";
-import {DockerRegistry} from '../../../../src/renderer/services/docker/docker-registry';
+import {DockerRegistry} from "../../../../src/renderer/services/docker/docker-registry";
 import {runCmdAsync} from "../../../../src/renderer/services/utils/cmd";
 import {assert} from "chai";
 
