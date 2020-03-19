@@ -1,6 +1,6 @@
 import {Repository} from "../repository";
 import {BeaconNodes} from "../../../../models/beaconNode";
-import {Bucket} from "../../schema";
+import {Bucket, encodeKey} from '../../schema';
 import {ValidatorBeaconNode} from "../../../../models/ssz/types";
 import {IDatabaseController} from "../../../../../main/db/controller";
 import {JSONSerializer} from "../../serializers/json";
