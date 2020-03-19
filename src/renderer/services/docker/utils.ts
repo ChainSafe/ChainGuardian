@@ -8,7 +8,7 @@ export function generateRunCommand(params: IDockerRunParams): string {
     }${params.ipc ? ` --ipc="${params.ipc}"` : ""}${params.restart ? ` --restart=${
         params.restart}` : ""}${ports}${params.volume ? ` -v ${params.volume}` : ""}`;
 
-    return `${options} ${params.image} ${params.cmd ? params.cmd : ""}`;
+    return `${options} ${params.image} ${params.cmd ? params.cmd : ""}`.trim();
 }
 
 export function extractDockerVersion(dockerLog: string): string | null {

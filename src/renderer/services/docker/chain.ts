@@ -46,7 +46,8 @@ export class BeaconChain extends Container {
             throw new Error("Logs not found");
         }
 
-        logs.stderr.on("data", function(message: string) {
+        logs.stderr.on("data", function(output: Buffer) {
+            const message = output.toString();
             const isInfo = message.substr(0, 40).includes("level=info");
             const type = isInfo ? "info" : "error";
             callback(type, message);

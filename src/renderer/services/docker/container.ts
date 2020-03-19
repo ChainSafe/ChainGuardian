@@ -1,6 +1,6 @@
 import {IDockerRunParams} from "./type";
 import {Command} from "./command";
-import {ICmdRun, runCmd, runCmdAsync} from "../utils/cmd";
+import {ICmdRun, runCmd, runCmdAsync, runDetached} from '../utils/cmd';
 import * as logger from "electron-log";
 import {Readable} from "stream";
 import {extractDockerVersion} from "./utils";
@@ -75,7 +75,7 @@ export abstract class Container {
             }
             try {
                 // start new docker instance
-                const run = runCmd(Command.run(this.params));
+                const run = runDetached(Command.run(this.params));
                 this.docker = {name: this.params.name, stdout: run.stdout, stderr: run.stderr};
                 logger.info(`Docker instance ${this.docker.name} started.`);
                 return this.docker;
