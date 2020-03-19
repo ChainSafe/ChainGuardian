@@ -118,8 +118,8 @@ const saveKeystore = async(signingKey: PrivateKey, password: string): Promise<st
 
 const saveNetwork = async(signingKey: PrivateKey, networkName: string): Promise<void> => {
     const network = new ValidatorNetwork(networkName);
-    const validatorAddress = signingKey.toPublicKey().toHexString();
-    await database.validator.network.set(validatorAddress, network);
+    const validatorPubKey = signingKey.toPublicKey().toHexString();
+    await database.validator.network.set(validatorPubKey, network);
 };
 
 // After password action
@@ -163,12 +163,10 @@ export const addNewValidatorAction = (password: string) => {
         const signingKey = PrivateKey.fromBytes(fromHex(getState().register.signingKey));
         const state = getState();
 
-        await Promise.all([
-            // Add new validator to database
-            saveKeystore(signingKey, password),
-            // Save validator's network
-            saveNetwork(signingKey, state.register.network)
-        ]);
+        // Add new validator to database
+        await saveKeystore(signingKey, password),
+        // Save validator's network
+        await saveNetwork(signingKey, state.register.network)
 
         const account = state.auth.account;
         if (account !== null) {
