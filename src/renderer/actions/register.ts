@@ -164,9 +164,9 @@ export const addNewValidatorAction = (password: string) => {
         const state = getState();
 
         // Add new validator to database
-        await saveKeystore(signingKey, password),
+        await saveKeystore(signingKey, password);
         // Save validator's network
-        await saveNetwork(signingKey, state.register.network)
+        await saveNetwork(signingKey, state.register.network);
 
         const account = state.auth.account;
         if (account !== null) {
