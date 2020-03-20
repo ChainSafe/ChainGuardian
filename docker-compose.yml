@@ -11,6 +11,8 @@ services:
       - "./eth1/genesis.json:/tmp/genesis.json:ro"
       - "./eth1/signer.key:/tmp/signer.key:ro"
       - "./eth1/passwd.txt:/tmp/passwd.txt:ro"
+    logging:
+      driver: "none"
 
   deployer:
     image: gochain/web3:0.2.14
@@ -30,15 +32,13 @@ services:
   eth2-bn:
     image: sigp/lighthouse:latest
     container_name: "lighthouse_beacon_node"
-    command: 'lighthouse beacon --eth1 --eth1-endpoint http://eth1-node:8545 --http --http-address 0.0.0.0 --maxpeers 0 testnet -s minimal -r recent -m 0 8'
+    command: 'lighthouse bn --spec minimal --datadir /opt/datadir'
+    volumes:
+      - "./testnet-dir:/opt/datadir"
+      - "./.lighthouse/cg-testnet:/opt/testnet-dir"
     depends_on:
       - eth1-node
     ports:
       - "5052:5052"
 
-  eth2-validators:
-    image: sigp/lighthouse:latest
-    container_name: "lighthouse_validators"
-    command: 'lighthouse vc --server http://eth2-bn:5052 --spec minimal testnet insecure 0 8'
-    depends_on:
-      - eth2-bn
+
