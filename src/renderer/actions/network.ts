@@ -71,8 +71,13 @@ export interface IBeaconNodeStatus {
 }
 export const reloadBeaconNodeStatus = (validator: string, url: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
-        const currentNetwork = getState().network.selected || "Prysm";
-        const beaconNode = PrysmBeaconClient.getPrysmBeaconClient(url, currentNetwork!);
+        const currentNetwork = await database.validator.network.get(validator);
+        if (!currentNetwork) {
+            // TODO: Save some error type
+            return;
+        }
+
+        const beaconNode = PrysmBeaconClient.getPrysmBeaconClient(url, currentNetwork.name);
         if (!beaconNode) {
             return;
         }
