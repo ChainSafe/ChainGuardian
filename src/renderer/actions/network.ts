@@ -10,6 +10,7 @@ import database from "../services/db/api/database";
 import {PrysmBeaconClient} from "../services/eth2/client/prysm/prysm";
 import {fromHex} from "../services/utils/bytes";
 
+// User selected network in dashboard dropdown
 export interface ISaveSelectedNetworkAction {
     type: typeof NetworkActionTypes.SELECT_NETWORK;
     payload: string;
