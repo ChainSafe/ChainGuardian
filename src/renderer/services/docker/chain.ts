@@ -12,7 +12,7 @@ export enum SupportedNetworks {
 }
 
 export class BeaconChain extends Container {
-    public static DefaultPorts = ["4000:4000", "13000:13000"];
+    public static DefaultPorts = ["4000:4001", "13000:13000"];
 
     public static async startPrysmBeaconChain(
         ports = BeaconChain.DefaultPorts,
@@ -29,6 +29,7 @@ export class BeaconChain extends Container {
             restart: "unless-stopped",
             ports,
             volume: `${SupportedNetworks.PRYSM}-chain-data:/data`,
+            cmd: "--datadir=/data --grpc-gateway-port 4001"
         });
         DockerRegistry.addContainer(SupportedNetworks.PRYSM, bc);
 
