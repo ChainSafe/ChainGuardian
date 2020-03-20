@@ -1,19 +1,22 @@
 import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
-import {bytes32, Fork, number64, SyncingStatus, uint64} from "@chainsafe/eth2.0-types";
-import {IBeaconClientOptions} from "../interface";
+import {BLSPubkey, bytes32, Fork, number64, SyncingStatus, uint64, Validator} from "@chainsafe/eth2.0-types";
+import {IBeaconClientOptions, IEth2BeaconApi} from "../interface";
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {HttpClient} from "../../../api";
 import {computeEpochAtSlot, getCurrentSlot} from "@chainsafe/lodestar-validator/lib/util";
 import {base64Decode, base64Encode, fromHex} from "../../../utils/bytes";
+import {PrysmValidator} from "./types";
+import {fromPrysmaticJson} from "./converter";
 
 export enum PrysmBeaconRoutes {
     VERSION = "/node/version",
+    VALIDATOR = "/validator",
     DOMAIN = "/validator/domain",
     GENESIS = "/node/genesis",
     SYNCING = "/node/syncing"
 }
 
-export class PrysmBeaconApiClient implements IBeaconApi {
+export class PrysmBeaconApiClient implements IEth2BeaconApi {
 
     private client: HttpClient;
     private config: IBeaconConfig;
@@ -26,6 +29,17 @@ export class PrysmBeaconApiClient implements IBeaconApi {
     public async getClientVersion(): Promise<bytes32> {
         const response = await this.client.get<{version: string, metadata: string}>(PrysmBeaconRoutes.VERSION);
         return Buffer.from(response.version, "ascii");
+    }
+    
+    public async getValidator(pubkey: BLSPubkey): Promise<Validator> {
+        const response = await this.client.get<PrysmValidator>(
+            PrysmBeaconRoutes.VALIDATOR,
+            {
+                params: {
+                    publicKey: base64Encode(pubkey)
+                }
+            });
+        return fromPrysmaticJson<Validator>(this.config.types.Validator, {...response, pubkey: response.publicKey});
     }
 
     public async getFork(): Promise<{ fork: Fork; chainId: uint64 }> {

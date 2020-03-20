@@ -1,0 +1,10 @@
+{
+  "publicKey": "oKCzRAfDP9/VtNKn6jCotdaLeGH42YnDc+Na50kgXDx4sOEXt3R8xNBHyMxw7UsB",
+  "withdrawalCredentials": "AI3iR7higS3MciM6GOumQWSG3SxVTJyYzeRKVibD48w=",
+  "effectiveBalance": "3100000000",
+  "slashed": false,
+  "activationEligibilityEpoch": "0",
+  "activationEpoch": "0",
+  "exitEpoch": "18446744073709551615",
+  "withdrawableEpoch": "18446744073709551615"
+}

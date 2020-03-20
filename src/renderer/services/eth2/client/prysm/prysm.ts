@@ -1,18 +1,21 @@
 import {AbstractApiClient} from "@chainsafe/lodestar-validator/lib/api/abstract";
-import {IBeaconClientOptions, IValidatorBeaconClient} from "../interface";
-import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
-import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
+import {
+    IBeaconClientOptions,
+    IEth2BeaconApi,
+    IEth2ValidatorApi,
+    IGenericEth2Client,
+    IValidatorBeaconClient
+} from "../interface";
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {PrysmBeaconApiClient} from "./beacon";
 import {PrysmValidatorApiClient} from "./validator";
 
-export class PrysmBeaconClient extends AbstractApiClient implements IValidatorBeaconClient {
+export class PrysmBeaconClient extends AbstractApiClient implements IValidatorBeaconClient, IGenericEth2Client {
 
     public url: string;
-    public beacon: IBeaconApi;
-    public validator: IValidatorApi;
-    
-    protected config: IBeaconConfig;
+    public beacon: IEth2BeaconApi;
+    public validator: IEth2ValidatorApi;
+    public config: IBeaconConfig;
 
     public constructor(options: IBeaconClientOptions) {
         super();

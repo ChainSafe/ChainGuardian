@@ -4,6 +4,9 @@ import {SupportedNetworks} from "../../../../../src/renderer/services/docker/cha
 import axios from "axios";
 import MockAxiosAdapter from "@nodefactory/axios-mock-adapter";
 import {base64Encode, fromHex} from "../../../../../src/renderer/services/utils/bytes";
+import * as fs from "fs";
+import * as path from "path";
+import {FAR_FUTURE_EPOCH} from "@chainsafe/eth2.0-state-transition/lib/constants";
 
 const httpMock = new MockAxiosAdapter(axios);
 
@@ -56,6 +59,18 @@ describe("prysm beacon client", function() {
         });
         const isSyncing = await client.getSyncingStatus();
         expect(isSyncing).toBeTruthy();
+    });
+
+    it("get validator", async function() {
+        httpMock.onGet(PrysmBeaconRoutes.VALIDATOR, {params: {publicKey: base64Encode(Buffer.alloc(48, 1))}})
+            .reply(
+                200,
+                JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/validator.json"), "utf-8"))
+            );
+        const validator = await client.getValidator(Buffer.alloc(48, 1));
+        expect(validator.exitEpoch).toEqual(FAR_FUTURE_EPOCH);
+        expect(validator.slashed).toBeFalsy();
+        expect(validator.effectiveBalance).toEqual(BigInt("3100000000"));
     });
     
 });
