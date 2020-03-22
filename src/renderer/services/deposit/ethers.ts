@@ -1,5 +1,5 @@
 import {Contract, ethers, utils} from "ethers";
-import {bool, Gwei} from "@chainsafe/eth2.0-types";
+import {BLSPubkey, bool, Gwei} from "@chainsafe/eth2.0-types";
 import DepositContract from "./options";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {deserialize} from "@chainsafe/ssz";
@@ -8,31 +8,35 @@ import {warn} from "electron-log";
 import {ParamType} from "ethers/utils";
 import {etherToGwei} from "./utils";
 import {Log} from "ethers/providers/abstract-provider";
+import {PublicKey} from "@chainsafe/bls";
 
 const PUBKEY_INDEX = 0;
 const DATA_INDEX = 2;
 const DEPOSIT_EVENT = "DepositEvent";
 export const DEPOSIT_EVENT_TIMEOUT_MESSAGE = "Timeout waiting for deposit event";
 
-export class EthersNotifier {
+export interface IEth1Client {
+    depositEventListener(validatorPublicKey: PublicKey, timeout?: number): Promise<bigint>;
+    hasUserDeposited(validatorPublicKey: PublicKey): Promise<boolean>;
+}
+
+export class EthersNotifier implements IEth1Client{
     private networkConfig: INetworkConfig;
     private provider: ethers.providers.BaseProvider;
-    private signingKey: Keypair;
 
-    public constructor(networkConfig: INetworkConfig, provider: ethers.providers.BaseProvider, signingKey: Keypair) {
+    public constructor(networkConfig: INetworkConfig, provider: ethers.providers.BaseProvider) {
         this.networkConfig = networkConfig;
         this.provider = provider;
-        this.signingKey = signingKey;
     }
 
-    public depositEventListener(timeout: number): Promise<bigint>{
+    public depositEventListener(validatorPublicKey: PublicKey, timeout = 20000): Promise<bigint>{
         return new Promise((resolve, reject) => {
             const contract = new Contract(this.networkConfig.contract.address, DepositContract.abi, this.provider);
             const filter = contract.filters.DepositEvent(null);
     
             // Listen for our filtered results
             contract.on(filter, (pubkey, withdrawalCredentials, amount) => {
-                if (pubkey === this.signingKey.publicKey.toHexString()) {
+                if (pubkey === validatorPublicKey.toHexString()) {
                     const amountGwei = deserialize(
                         this.networkConfig.eth2Config.types.Gwei,
                         Buffer.from(amount.slice(2), "hex")
@@ -50,7 +54,7 @@ export class EthersNotifier {
         });
     }
 
-    public async checkUserDepositAmount(): Promise<bool> {
+    public async hasUserDeposited(validatorPublicKey: PublicKey): Promise<bool> {
         try {
             const filter = {
                 fromBlock: this.networkConfig.contract.deployedAtBlock,
@@ -66,7 +70,7 @@ export class EthersNotifier {
 
                 const validatorPubKey = data[PUBKEY_INDEX];
 
-                if (validatorPubKey === this.signingKey.publicKey.toHexString()) {
+                if (validatorPubKey === validatorPublicKey.toHexString()) {
                     const amount = deserialize(
                         this.networkConfig.eth2Config.types.Gwei,
                         Buffer.from(data[DATA_INDEX].slice(2), "hex")
