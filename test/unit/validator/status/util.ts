@@ -5,7 +5,7 @@ export function generateValidator(opts: Partial<Validator>): Validator {
     return {
         activationEligibilityEpoch: 0,
         activationEpoch: 0,
-        effectiveBalance: 32n,
+        effectiveBalance: BigInt(32),
         exitEpoch: FAR_FUTURE_EPOCH,
         slashed: false,
         pubkey: Buffer.alloc(48, 1),
