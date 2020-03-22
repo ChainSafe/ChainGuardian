@@ -10,7 +10,7 @@ import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {PrysmBeaconApiClient} from "./beacon";
 import {PrysmValidatorApiClient} from "./validator";
 
-export class PrysmBeaconClient extends AbstractApiClient implements IValidatorBeaconClient, IGenericEth2Client {
+export class PrysmEth2ApiClient extends AbstractApiClient implements IValidatorBeaconClient, IGenericEth2Client {
 
     public url: string;
     public beacon: IEth2BeaconApi;

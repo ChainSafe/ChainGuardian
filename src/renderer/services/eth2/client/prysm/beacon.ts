@@ -7,6 +7,7 @@ import {computeEpochAtSlot, getCurrentSlot} from "@chainsafe/lodestar-validator/
 import {base64Decode, base64Encode, fromHex} from "../../../utils/bytes";
 import {PrysmValidator} from "./types";
 import {fromPrysmaticJson} from "./converter";
+import {warn} from "electron-log";
 
 export enum PrysmBeaconRoutes {
     VERSION = "/node/version",
@@ -31,15 +32,20 @@ export class PrysmBeaconApiClient implements IEth2BeaconApi {
         return Buffer.from(response.version, "ascii");
     }
     
-    public async getValidator(pubkey: BLSPubkey): Promise<Validator> {
-        const response = await this.client.get<PrysmValidator>(
-            PrysmBeaconRoutes.VALIDATOR,
-            {
-                params: {
-                    publicKey: base64Encode(pubkey)
-                }
-            });
-        return fromPrysmaticJson<Validator>(this.config.types.Validator, {...response, pubkey: response.publicKey});
+    public async getValidator(pubkey: BLSPubkey): Promise<Validator|null> {
+        try {
+            const response = await this.client.get<PrysmValidator>(
+                PrysmBeaconRoutes.VALIDATOR,
+                {
+                    params: {
+                        publicKey: base64Encode(pubkey)
+                    }
+                });
+            return fromPrysmaticJson<Validator>(this.config.types.Validator, {...response, pubkey: response.publicKey});
+        } catch (e) {
+            warn("Validator not found", e);
+            return null;
+        }
     }
 
     public async getFork(): Promise<{ fork: Fork; chainId: uint64 }> {

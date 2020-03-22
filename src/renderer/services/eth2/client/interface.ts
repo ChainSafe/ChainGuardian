@@ -5,7 +5,7 @@ import {BLSPubkey, Validator} from "@chainsafe/eth2.0-types";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
 
 export interface IEth2BeaconApi extends IBeaconApi {
-    getValidator(pubkey: BLSPubkey): Promise<Validator>;
+    getValidator(pubkey: BLSPubkey): Promise<Validator|null>;
 }
 
 export type IEth2ValidatorApi  = IValidatorApi;
