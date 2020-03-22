@@ -1,6 +1,5 @@
-import {AbstractApiClient} from "@chainsafe/lodestar-validator/lib/api/abstract";
 import {getNetworkConfig} from "../../networks";
-import {IBeaconClientOptions, IValidatorBeaconClient} from "../interface";
+import {IBeaconClientOptions} from "../interface";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {IBeaconApiClient} from "../types";
@@ -27,9 +26,6 @@ export class PrysmBeaconClient /* extends AbstractApiClient implements IValidato
 
     public static getPrysmBeaconClient(url: string, network: string): PrysmBeaconClient | null {
         const networkConfig = getNetworkConfig(network);
-        console.log("network: ", network)
-        console.log("networkConfig: ", networkConfig)
-        console.log("url: ", url)
         if (!networkConfig) {
             return null;
         }

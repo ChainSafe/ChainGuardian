@@ -5,6 +5,7 @@ export interface INodeCardProps {
     value: number | string;
     url: string;
     onClick: () => void;
+    isSyncing?: boolean;
 }
 
 export const NodeCard: React.FunctionComponent<INodeCardProps> = (
@@ -13,8 +14,8 @@ export const NodeCard: React.FunctionComponent<INodeCardProps> = (
         <div onClick={(): void=>{props.onClick();}} className="node-card-container">
             <h2>{props.title}</h2>
             <span className="node-text">{props.url}</span>
-            <h2>{props.value} ms</h2>
-            <span className="node-text time">Average Response Time</span>
+            <h2>{props.value}</h2>
+            <span className="node-text time">Slot height</span>
         </div>
     );
 };

@@ -1,6 +1,7 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {readdirSync} from "fs";
 import {IBeaconNodeStatus} from "../actions/network";
+import {PrysmBeaconClient} from "../services/eth2/client/prysm/prysm";
 import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/keystore";
 import {BeaconNode, IValidatorBeaconNodes} from "./beaconNode";
 import database from "../services/db/api/database";
@@ -19,7 +20,6 @@ export class CGAccount implements IAccount {
 
     private validators: Keypair[] = [];
     private keystoreTarget: ICGKeystoreFactory;
-    private validatorsBeaconNodes: IValidatorBeaconNodes = {};
     private validatorsNetwork: IValidatorNetwork = {};
 
     public constructor(
@@ -61,8 +61,27 @@ export class CGAccount implements IAccount {
     /**
      * Returns array of beacon nodes that validator uses.
      */
-    public getValidatorBeaconNodes(validatorAddress: string): BeaconNode[] {
-        return this.validatorsBeaconNodes[validatorAddress];
+    public async getValidatorBeaconNodes(validatorAddress: string): Promise<BeaconNode[]> {
+        const loadedNodes = await database.beaconNodes.get(validatorAddress);
+        if (loadedNodes) {
+            // In case we don't have enough information to fetch status, return basic info.
+            const currentNetwork = await database.validator.network.get(validatorAddress);
+            if (!currentNetwork) {
+                return loadedNodes.nodes;
+            }
+
+            return await Promise.all(
+                loadedNodes.nodes.map(async(node: BeaconNode): Promise<BeaconNode> => {
+                    const beaconNode = PrysmBeaconClient.getPrysmBeaconClient(node.url, currentNetwork.name);
+                    return beaconNode ? {
+                        ...node,
+                        isSyncing: await beaconNode.isSyncing(),
+                        currentSlot: await beaconNode.getChainHeight(),
+                    } : node;
+                })
+            );
+        }
+        return [];
     }
 
     /**
@@ -119,10 +138,7 @@ export class CGAccount implements IAccount {
             const validator = await validators[validatorIdx];
             if (validator !== undefined) {
                 const validatorAddress = validator.publicKey.toHexString();
-                await Promise.all([
-                    this.loadValidatorBeaconNodes(validatorAddress),
-                    this.loadValidatorNetwork(validatorAddress),
-                ]);
+                await this.loadValidatorNetwork(validatorAddress);
                 this.validators.push(validator);
             }
         }
@@ -141,20 +157,6 @@ export class CGAccount implements IAccount {
     public lock(): void {
         // Clear validator Keypairs
         this.validators = [];
-        this.validatorsBeaconNodes = {};
-    }
-
-    public addBeaconNodeStatus(validatorAddress: string, beaconNodeUrl: string, status: IBeaconNodeStatus): void {
-        const beaconNodes = this.validatorsBeaconNodes[validatorAddress];
-        for (let i = 0; i < beaconNodes.length; i++) {
-            if (beaconNodes[i].url === beaconNodeUrl) {
-                this.validatorsBeaconNodes[validatorAddress][i] = {
-                    ...this.validatorsBeaconNodes[validatorAddress][i],
-                    ...status,
-                };
-                return;
-            }
-        }
     }
 
     private isUnlocked(): boolean {
@@ -184,15 +186,6 @@ export class CGAccount implements IAccount {
                 }
             })
             .filter((keystore): keystore is ICGKeystore => keystore !== null);
-    }
-
-    private async loadValidatorBeaconNodes(validatorAddress: string): Promise<void> {
-        const loadedNodes = await database.beaconNodes.get(validatorAddress);
-        if (loadedNodes) {
-            this.validatorsBeaconNodes[validatorAddress] = loadedNodes.nodes;
-        } else {
-            this.validatorsBeaconNodes[validatorAddress] = [];
-        }
     }
 
     private async loadValidatorNetwork(validatorAddress: string): Promise<void> {

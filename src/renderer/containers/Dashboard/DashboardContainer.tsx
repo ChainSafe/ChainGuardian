@@ -4,6 +4,7 @@ import {ValidatorSimple} from "../../components/Validator/ValidatorSimple";
 import {Background} from "../../components/Background/Background";
 import {ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {Dropdown} from "../../components/Dropdown/Dropdown";
+import {IValidatorBeaconNodes} from "../../models/beaconNode";
 import {exportKeystore} from "./export";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 import {connect} from "react-redux";
@@ -17,7 +18,9 @@ import {V4Keystore} from "../../services/keystore";
 import * as path from "path";
 import {storeAuthAction, startAddingNewValidator as startAddingNewValidatorAction} from "../../actions";
 
-type IOwnProps = Pick<RouteComponentProps, "history" | "location">;
+type IOwnProps = {
+    validatorBeaconNodes: IValidatorBeaconNodes;
+} & Pick<RouteComponentProps, "history" | "location">;
 
 export interface IValidator {
     name: string;
@@ -150,7 +153,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
                                 onRemoveClick={(): void => {onRemoveValidator(index);}}
                                 onExportClick={(): void => {onExportValidator(index);}}
                                 privateKey={v.privateKey}
-                                nodes={props.auth.account!.getValidatorBeaconNodes(v.publicKey)}
+                                nodes={props.validatorBeaconNodes.hasOwnProperty(v.publicKey) ? props.validatorBeaconNodes[v.publicKey] : []}
                             />
                         </div>;
                     })}
@@ -173,8 +176,9 @@ interface IInjectedProps{
     startAddingNewValidator: typeof startAddingNewValidatorAction;
 }
 
-const mapStateToProps = (state: IRootState): Pick<IRootState, "auth"> => ({
+const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"> => ({
     auth: state.auth,
+    validatorBeaconNodes: state.network.validatorBeaconNodes,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
