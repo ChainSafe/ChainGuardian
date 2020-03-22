@@ -7,6 +7,7 @@ import {base64Encode, fromHex} from "../../../../../src/renderer/services/utils/
 import * as fs from "fs";
 import * as path from "path";
 import {FAR_FUTURE_EPOCH} from "@chainsafe/eth2.0-state-transition/lib/constants";
+import {Validator} from "@chainsafe/eth2.0-types";
 
 const httpMock = new MockAxiosAdapter(axios);
 
@@ -67,7 +68,7 @@ describe("prysm beacon client", function() {
                 200,
                 JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/validator.json"), "utf-8"))
             );
-        const validator = await client.getValidator(Buffer.alloc(48, 1));
+        const validator = (await client.getValidator(Buffer.alloc(48, 1))) as Validator;
         expect(validator.exitEpoch).toEqual(FAR_FUTURE_EPOCH);
         expect(validator.slashed).toBeFalsy();
         expect(validator.effectiveBalance).toEqual(BigInt("3100000000"));

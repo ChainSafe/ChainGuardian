@@ -1,4 +1,3 @@
-import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {BLSPubkey, bytes32, Fork, number64, SyncingStatus, uint64, Validator} from "@chainsafe/eth2.0-types";
 import {IBeaconClientOptions, IEth2BeaconApi} from "../interface";
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";

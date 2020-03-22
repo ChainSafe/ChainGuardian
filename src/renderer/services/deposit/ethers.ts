@@ -1,7 +1,6 @@
 import {Contract, ethers, utils} from "ethers";
-import {BLSPubkey, bool, Gwei} from "@chainsafe/eth2.0-types";
+import {bool, Gwei} from "@chainsafe/eth2.0-types";
 import DepositContract from "./options";
-import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {deserialize} from "@chainsafe/ssz";
 import {INetworkConfig} from "../interfaces";
 import {warn} from "electron-log";
