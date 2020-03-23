@@ -13,7 +13,6 @@ import {PrysmValidatorApiClient} from "./validator";
 
 const apiPrefix = "/eth/v1alpha1";
 
-// export class PrysmBeaconClient /* extends AbstractApiClient implements IValidatorBeaconClient */ {
 export class PrysmEth2ApiClient extends AbstractApiClient implements IValidatorBeaconClient, IGenericEth2Client {
 
     public url: string;
@@ -30,7 +29,7 @@ export class PrysmEth2ApiClient extends AbstractApiClient implements IValidatorB
         this.validator = new PrysmValidatorApiClient(options);
     }
 
-    public static getPrysmBeaconClient(url: string, network: string): PrysmBeaconClient | null {
+    public static getPrysmBeaconClient(url: string, network: string): PrysmEth2ApiClient | null {
         const networkConfig = getNetworkConfig(network);
         if (!networkConfig) {
             return null;

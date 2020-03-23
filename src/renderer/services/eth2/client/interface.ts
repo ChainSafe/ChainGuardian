@@ -3,9 +3,11 @@ import {IApiClient} from "@chainsafe/lodestar-validator/lib";
 import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {BLSPubkey, Validator} from "@chainsafe/eth2.0-types";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
+import {ChainHead} from './prysm/types';
 
 export interface IEth2BeaconApi extends IBeaconApi {
     getValidator(pubkey: BLSPubkey): Promise<Validator|null>;
+    getChainHead(): Promise<ChainHead>;
 }
 
 export type IEth2ValidatorApi  = IValidatorApi;
