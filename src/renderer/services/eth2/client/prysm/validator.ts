@@ -41,7 +41,7 @@ export class PrysmValidatorApiClient implements IValidatorApi {
     private committees: Map<string, number[]> = new Map();
 
     public constructor(options: IBeaconClientOptions, validators: BLSPubkey[] = []) {
-        this.client = new HttpClient(options.urlPrefix);
+        this.client = new HttpClient(options.baseUrl);
         this.config = options.config;
         validators.forEach((validator) => this.trackedValidators.add(validator));
     }

@@ -28,7 +28,7 @@ describe("prysm validator client", function() {
         ];
         client = new PrysmValidatorApiClient({
             config: networks.find((network) => network.networkName === SupportedNetworks.PRYSM)!.eth2Config,
-            urlPrefix: ""
+            baseUrl: ""
         },
         validators
         );

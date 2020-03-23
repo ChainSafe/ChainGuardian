@@ -48,7 +48,7 @@ export enum PrysmValidatorStatus {
     EXITED = "EXITED"
 }
 
-export type ChainHead = {
+export type PrysmChainHeadResponse = {
     headSlot: string,
     headEpoch: string,
     headBlockRoot: string,

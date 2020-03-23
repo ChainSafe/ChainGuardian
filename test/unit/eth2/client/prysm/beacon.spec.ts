@@ -15,7 +15,7 @@ describe("prysm beacon client", function() {
 
     const client = new PrysmBeaconApiClient({
         config: networks.find((network) => network.networkName === SupportedNetworks.PRYSM)!.eth2Config,
-        urlPrefix: ""
+        baseUrl: ""
     });
     
     it("get client version", async function() {

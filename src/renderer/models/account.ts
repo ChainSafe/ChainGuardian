@@ -77,7 +77,7 @@ export class CGAccount implements IAccount {
                         return beaconNode ? {
                             ...node,
                             isSyncing: await beaconNode.isSyncing(),
-                            currentSlot: await beaconNode.getChainHeight(),
+                            currentSlot: (await beaconNode.beacon.getChainHead()).headSlot,
                         } : node;
                     } catch (e) {
                         warn(`Error while trying to fetch beacon node status... ${e.message}`);

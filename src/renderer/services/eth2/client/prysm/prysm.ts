@@ -23,8 +23,8 @@ export class PrysmEth2ApiClient extends AbstractApiClient implements IValidatorB
 
     public constructor(options: IBeaconClientOptions) {
         super();
-        options.urlPrefix = `${options.urlPrefix}${apiPrefix}`;
-        this.url = options.urlPrefix;
+        options.baseUrl = `${options.baseUrl}${apiPrefix}`;
+        this.url = options.baseUrl;
         this.config = options.config;
         this.beacon = new PrysmBeaconApiClient(options);
         this.validator = new PrysmValidatorApiClient(options);
@@ -37,7 +37,7 @@ export class PrysmEth2ApiClient extends AbstractApiClient implements IValidatorB
         }
 
         return new PrysmEth2ApiClient({
-            urlPrefix: url,
+            baseUrl: url,
             config: networkConfig.eth2Config
         });
     }
@@ -49,9 +49,5 @@ export class PrysmEth2ApiClient extends AbstractApiClient implements IValidatorB
     public async isSyncing(): Promise<boolean> {
         const result = await this.beacon.getSyncingStatus();
         return (typeof result === "boolean") ? result : false;
-    }
-
-    public async getChainHeight(): Promise<string> {
-        return (await this.beacon.getChainHead()).headSlot;
     }
 }
