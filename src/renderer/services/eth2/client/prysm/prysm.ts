@@ -13,7 +13,8 @@ import {PrysmValidatorApiClient} from "./validator";
 
 const apiPrefix = "/eth/v1alpha1";
 
-export class PrysmEth2ApiClient extends AbstractApiClient implements IValidatorBeaconClient, IGenericEth2Client {
+// TS error:  Class constructor AbstractApiClient cannot be invoked without 'new'
+export class PrysmEth2ApiClient /*extends AbstractApiClient implements IValidatorBeaconClient, IGenericEth2Client */ {
 
     public url: string;
     public beacon: IEth2BeaconApi;
@@ -21,7 +22,6 @@ export class PrysmEth2ApiClient extends AbstractApiClient implements IValidatorB
     public config: IBeaconConfig;
 
     public constructor(options: IBeaconClientOptions) {
-        super();
         options.urlPrefix = `${options.urlPrefix}${apiPrefix}`;
         this.url = options.urlPrefix;
         this.config = options.config;
