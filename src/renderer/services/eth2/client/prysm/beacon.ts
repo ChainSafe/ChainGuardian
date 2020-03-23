@@ -1,21 +1,25 @@
 import {bytes32, Fork, number64, SyncingStatus, uint64} from "@chainsafe/eth2.0-types";
-import {IBeaconClientOptions} from "../interface";
+import {IBeaconClientOptions, IEth2BeaconApi} from "../interface";
+import {BLSPubkey, Validator} from "@chainsafe/eth2.0-types";
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {HttpClient} from "../../../api";
 import {computeEpochAtSlot, getCurrentSlot} from "@chainsafe/lodestar-validator/lib/util";
 import {base64Decode, base64Encode, fromHex} from "../../../utils/bytes";
-import {IBeaconApiClient} from "../types";
 import {ChainHead} from "./types";
+import {PrysmValidator} from "./types";
+import {fromPrysmaticJson} from "./converter";
+import {warn} from "electron-log";
 
 export enum PrysmBeaconRoutes {
     VERSION = "/node/version",
+    VALIDATOR = "/validator",
     DOMAIN = "/validator/domain",
     GENESIS = "/node/genesis",
     SYNCING = "/node/syncing",
     CHAINHEAD = "beacon/chainhead",
 }
 
-export class PrysmBeaconApiClient implements IBeaconApiClient {
+export class PrysmBeaconApiClient implements IEth2BeaconApi {
 
     private client: HttpClient;
     private config: IBeaconConfig;
@@ -28,6 +32,22 @@ export class PrysmBeaconApiClient implements IBeaconApiClient {
     public async getClientVersion(): Promise<bytes32> {
         const response = await this.client.get<{version: string, metadata: string}>(PrysmBeaconRoutes.VERSION);
         return Buffer.from(response.version, "ascii");
+    }
+
+    public async getValidator(pubkey: BLSPubkey): Promise<Validator|null> {
+        try {
+            const response = await this.client.get<PrysmValidator>(
+                PrysmBeaconRoutes.VALIDATOR,
+                {
+                    params: {
+                        publicKey: base64Encode(pubkey)
+                    }
+                });
+            return fromPrysmaticJson<Validator>(this.config.types.Validator, {...response, pubkey: response.publicKey});
+        } catch (e) {
+            warn("Validator not found", e);
+            return null;
+        }
     }
 
     public async getFork(): Promise<{ fork: Fork; chainId: uint64 }> {
