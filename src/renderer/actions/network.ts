@@ -82,7 +82,6 @@ export interface IBeaconNodeStatus {
 }
 export const loadValidatorBeaconNodes = (validator: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
-        // TODO: Add start loading for the loading indicator
         const beaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
         dispatch({
             type: NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES,
