@@ -1,17 +1,20 @@
+import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {AbstractApiClient} from "@chainsafe/lodestar-validator/lib/api/abstract";
+
 import {getNetworkConfig} from "../../networks";
 import {
     IBeaconClientOptions,
     IEth2BeaconApi,
     IEth2ValidatorApi,
+    IGenericEth2Client,
+    IValidatorBeaconClient,
 } from "../interface";
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {PrysmBeaconApiClient} from "./beacon";
 import {PrysmValidatorApiClient} from "./validator";
 
 const apiPrefix = "/eth/v1alpha1";
 
-// TS error:  Class constructor AbstractApiClient cannot be invoked without 'new'
-export class PrysmEth2ApiClient /*extends AbstractApiClient implements IValidatorBeaconClient, IGenericEth2Client */ {
+export class PrysmEth2ApiClient extends AbstractApiClient implements IValidatorBeaconClient, IGenericEth2Client {
 
     public url: string;
     public beacon: IEth2BeaconApi;
@@ -19,6 +22,7 @@ export class PrysmEth2ApiClient /*extends AbstractApiClient implements IValidato
     public config: IBeaconConfig;
 
     public constructor(options: IBeaconClientOptions) {
+        super();
         options.urlPrefix = `${options.urlPrefix}${apiPrefix}`;
         this.url = options.urlPrefix;
         this.config = options.config;

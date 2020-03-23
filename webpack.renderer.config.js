@@ -25,7 +25,7 @@ module.exports = merge.smart(baseConfig, {
                     presets: [
                         [
                             '@babel/preset-env',
-                            { targets: { browsers: 'last 2 versions ' } }
+                            { targets: { electron: "7.1.5" } }
                         ],
                         '@babel/preset-typescript',
                         '@babel/preset-react'
