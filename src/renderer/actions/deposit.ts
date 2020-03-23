@@ -37,16 +37,16 @@ export const verifyDepositAction = (networkConfig: INetworkConfig, timeout = 300
         const signingKey = getState().register.signingKey;
         const keyPair = new Keypair(PrivateKey.fromHexString(signingKey));
         const provider = networkConfig.eth1Provider;
-        const ethersNotifier = new EthersNotifier(networkConfig, provider, keyPair);
+        const ethersNotifier = new EthersNotifier(networkConfig, provider);
         // Call deposit service and listen for event, when transaction is visible dispatch action
-        ethersNotifier.depositEventListener(timeout)
+        ethersNotifier.depositEventListener(keyPair.publicKey, timeout)
             .then(() => {
                 dispatch(setDepositDetected());
             })
             .catch(() => {
                 dispatch(setDepositNotFound());
             });
-        const hasDeposited = await ethersNotifier.checkUserDepositAmount();
+        const hasDeposited = await ethersNotifier.hasUserDeposited(keyPair.publicKey);
         if(hasDeposited) {
             dispatch(setDepositDetected());
             return;
