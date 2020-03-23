@@ -1,15 +1,14 @@
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
+import {warn} from 'electron-log';
 
 import {BeaconChain, SupportedNetworks} from "../services/docker/chain";
 import {DockerRegistry} from "../services/docker/docker-registry";
 import {NetworkActionTypes} from "../constants/action-types";
 import {Action, Dispatch} from "redux";
 import {IRootState} from "../reducers";
-import {BeaconNode, BeaconNodes, IValidatorBeaconNodes} from "../models/beaconNode";
+import {BeaconNode, BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
-import {PrysmBeaconClient} from "../services/eth2/client/prysm/prysm";
 import {fromHex} from "../services/utils/bytes";
-import {storeAuthAction} from "./auth";
 
 // User selected network in dashboard dropdown
 export interface ISaveSelectedNetworkAction {
@@ -82,13 +81,17 @@ export interface IBeaconNodeStatus {
 }
 export const loadValidatorBeaconNodes = (validator: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
-        const beaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
-        dispatch({
-            type: NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES,
-            payload: {
-                validator,
-                beaconNodes,
-            },
-        });
+        try {
+            const beaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
+            dispatch({
+                type: NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES,
+                payload: {
+                    validator,
+                    beaconNodes,
+                },
+            });
+        } catch (e) {
+            warn(`Error while trying to fetch beacon node status... ${e.message}`);
+        }
     };
 };

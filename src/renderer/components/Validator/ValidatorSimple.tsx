@@ -41,6 +41,8 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
             <div className="validator-nodes">
                 <div className="node-container">
                     <div className="node-grid-container">
+                        {props.nodes.length === 0 ? <p>No working beacon nodes.</p> : null}
+
                         {props.nodes.map(node => {
                             return (
                                 <NodeCard
