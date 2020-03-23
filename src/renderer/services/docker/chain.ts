@@ -1,15 +1,12 @@
 import * as logger from "electron-log";
 
 import database from "../db/api/database";
+import {SupportedNetworks} from "../eth2/supportedNetworks";
 import {Container} from "./container";
 import {DockerRegistry} from "./docker-registry";
 
 type LogType = "info" | "error";
 type LogCallbackFunc = (type: LogType, message: string) => void;
-
-export enum SupportedNetworks {
-    PRYSM = "Prysm",
-}
 
 export class BeaconChain extends Container {
     public static DefaultPorts = ["4000:4001", "13000:13000"];

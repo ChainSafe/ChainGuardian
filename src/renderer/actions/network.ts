@@ -1,12 +1,13 @@
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {Action, Dispatch} from "redux";
 
-import {BeaconChain, SupportedNetworks} from "../services/docker/chain";
+import {BeaconChain} from "../services/docker/chain";
 import {DockerRegistry} from "../services/docker/docker-registry";
 import {NetworkActionTypes} from "../constants/action-types";
 import {IRootState} from "../reducers";
 import {BeaconNode, BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
+import {SupportedNetworks} from "../services/eth2/supportedNetworks";
 import {fromHex} from "../services/utils/bytes";
 
 // User selected network in dashboard dropdown

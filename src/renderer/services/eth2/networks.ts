@@ -3,7 +3,7 @@ import {config as minimalBeaconConfig} from "@chainsafe/eth2.0-config/lib/preset
 import {ethers} from "ethers";
 import {JsonRpcProvider} from "ethers/providers";
 import {INetworkConfig} from "../interfaces";
-import {SupportedNetworks} from "../docker/chain";
+import {SupportedNetworks} from "./supportedNetworks";
 
 const isLocal = process.env.NODE_ENV !== "production";
 

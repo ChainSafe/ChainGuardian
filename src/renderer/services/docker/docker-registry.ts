@@ -1,4 +1,4 @@
-import {SupportedNetworks} from "./chain";
+import {SupportedNetworks} from "../eth2/supportedNetworks";
 import {Container} from "./container";
 
 type Registry = { [network: string]: Container };
