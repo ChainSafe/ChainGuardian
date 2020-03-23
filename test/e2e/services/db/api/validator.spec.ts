@@ -33,8 +33,8 @@ describe("IValidatorDB Implementation Test", () => {
 
     it("should save and load validator attestation", async () => {
         const validators = [
-            PrivateKey.fromInt(1231212312).toPublicKey().toBytesCompressed(),
-            PrivateKey.fromInt(232323232323).toPublicKey().toBytesCompressed()
+            PrivateKey.fromInt(10000231212312).toPublicKey().toBytesCompressed(),
+            PrivateKey.fromInt(20032323232323).toPublicKey().toBytesCompressed()
         ];
         let result = await validatorDB.getAttestations(validators[0]);
         expect(result.length).toEqual(0);
@@ -92,11 +92,7 @@ describe("IValidatorDB Implementation Test", () => {
         expect(result.length).toEqual(1);
     });
 
-    const fillAttestations = async(): Promise<BLSPubkey[]> => {
-        const validators = [
-            PrivateKey.fromInt(111302030111302030).toPublicKey().toBytesCompressed(),
-            PrivateKey.fromInt(211140304211140304).toPublicKey().toBytesCompressed()
-        ];
+    const fillAttestations = async(validators: BLSPubkey[]): Promise<BLSPubkey[]> => {
         const result = await validatorDB.getAttestations(validators[0]);
         expect(result.length).toEqual(0);
 
@@ -114,8 +110,12 @@ describe("IValidatorDB Implementation Test", () => {
     };
 
     it("should fetch attestations with epoch options within range", async () => {
-        const validators = await fillAttestations();
-        const result = await validatorDB.getAttestations(validators[0], {
+        const validators = [
+            PrivateKey.fromInt(66888891319006).toPublicKey().toBytesCompressed(),
+            PrivateKey.fromInt(88899994333131).toPublicKey().toBytesCompressed()
+        ];
+        const validatorsData = await fillAttestations(validators);
+        const result = await validatorDB.getAttestations(validatorsData[0], {
             gt: 2,
             lt: 6
         });
@@ -124,9 +124,13 @@ describe("IValidatorDB Implementation Test", () => {
     });
 
     it("should fetch no attestations with epoch options outside range", async () => {
-        const validators = await fillAttestations();
+        const validators = [
+            PrivateKey.fromInt(33088891319006).toPublicKey().toBytesCompressed(),
+            PrivateKey.fromInt(1109994333131).toPublicKey().toBytesCompressed()
+        ];
+        const validatorsData = await fillAttestations(validators);
 
-        const result = await validatorDB.getAttestations(validators[0], {
+        const result = await validatorDB.getAttestations(validatorsData[0], {
             gt: 3,
             lt: 6
         });
