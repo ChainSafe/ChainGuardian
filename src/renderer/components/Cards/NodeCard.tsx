@@ -19,11 +19,15 @@ export const NodeCard: React.FunctionComponent<INodeCardProps> = (
             <span className="node-text">{url}</span>
             <div className="row centered">
                 <h2>{value}</h2>
-                <ReactTooltip />
-                <span
-                    className={isSyncing ? "sync-progress-icon" : "success-icon"}
-                    data-tip={isSyncing ? "Syncing" : "Synced"}
-                />
+                {value ?
+                    <>
+                        <ReactTooltip />
+                        <span
+                            className={isSyncing ? "sync-progress-icon" : "success-icon"}
+                            data-tip={isSyncing ? "Syncing" : "Synced"}
+                        />
+                    </>
+                    : null}
             </div>
             <span className="node-text time">Slot height</span>
         </div>

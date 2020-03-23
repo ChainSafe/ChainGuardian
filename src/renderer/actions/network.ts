@@ -1,10 +1,9 @@
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
-import {warn} from "electron-log";
+import {Action, Dispatch} from "redux";
 
 import {BeaconChain, SupportedNetworks} from "../services/docker/chain";
 import {DockerRegistry} from "../services/docker/docker-registry";
 import {NetworkActionTypes} from "../constants/action-types";
-import {Action, Dispatch} from "redux";
 import {IRootState} from "../reducers";
 import {BeaconNode, BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
@@ -81,17 +80,13 @@ export interface IBeaconNodeStatus {
 }
 export const loadValidatorBeaconNodes = (validator: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
-        try {
-            const beaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
-            dispatch({
-                type: NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES,
-                payload: {
-                    validator,
-                    beaconNodes,
-                },
-            });
-        } catch (e) {
-            warn(`Error while trying to fetch beacon node status... ${e.message}`);
-        }
+        const beaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
+        dispatch({
+            type: NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES,
+            payload: {
+                validator,
+                beaconNodes,
+            },
+        });
     };
 };

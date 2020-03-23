@@ -1,6 +1,7 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
+import {warn} from "electron-log";
 import {readdirSync} from "fs";
-import {PrysmEth2ApiClient} from '../services/eth2/client/prysm/prysm';
+import {PrysmEth2ApiClient} from "../services/eth2/client/prysm/prysm";
 import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/keystore";
 import {BeaconNode} from "./beaconNode";
 import database from "../services/db/api/database";
@@ -72,11 +73,16 @@ export class CGAccount implements IAccount {
             return await Promise.all(
                 loadedNodes.nodes.map(async(node: BeaconNode): Promise<BeaconNode> => {
                     const beaconNode = PrysmEth2ApiClient.getPrysmBeaconClient(node.url, currentNetwork.name);
-                    return beaconNode ? {
-                        ...node,
-                        isSyncing: await beaconNode.isSyncing(),
-                        currentSlot: await beaconNode.getChainHeight(),
-                    } : node;
+                    try {
+                        return beaconNode ? {
+                            ...node,
+                            isSyncing: await beaconNode.isSyncing(),
+                            currentSlot: await beaconNode.getChainHeight(),
+                        } : node;
+                    } catch (e) {
+                        warn(`Error while trying to fetch beacon node status... ${e.message}`);
+                        return node;
+                    }
                 })
             );
         }
