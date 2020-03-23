@@ -33,8 +33,8 @@ describe("IValidatorDB Implementation Test", () => {
 
     it("should save and load validator attestation", async () => {
         const validators = [
-            PrivateKey.random().toPublicKey().toBytesCompressed(),
-            PrivateKey.random().toPublicKey().toBytesCompressed()
+            PrivateKey.fromInt(1231212312).toPublicKey().toBytesCompressed(),
+            PrivateKey.fromInt(232323232323).toPublicKey().toBytesCompressed()
         ];
         let result = await validatorDB.getAttestations(validators[0]);
         expect(result.length).toEqual(0);
@@ -49,8 +49,8 @@ describe("IValidatorDB Implementation Test", () => {
 
     it("should save and load multiple validators attestation", async () => {
         const validators = [
-            PrivateKey.random().toPublicKey().toBytesCompressed(),
-            PrivateKey.random().toPublicKey().toBytesCompressed()
+            PrivateKey.fromInt(112233112233).toPublicKey().toBytesCompressed(),
+            PrivateKey.fromInt(33445553344555).toPublicKey().toBytesCompressed()
         ];
         let result = await validatorDB.getAttestations(validators[0]);
         expect(result.length).toEqual(0);
@@ -71,8 +71,8 @@ describe("IValidatorDB Implementation Test", () => {
 
     it("should delete attestations", async () => {
         const validators = [
-            PrivateKey.random().toPublicKey().toBytesCompressed(),
-            PrivateKey.random().toPublicKey().toBytesCompressed()
+            PrivateKey.fromInt(667788667788).toPublicKey().toBytesCompressed(),
+            PrivateKey.fromInt(889900889900).toPublicKey().toBytesCompressed()
         ];
         let result = await validatorDB.getAttestations(validators[0]);
         expect(result.length).toEqual(0);
@@ -94,8 +94,8 @@ describe("IValidatorDB Implementation Test", () => {
 
     const fillAttestations = async(): Promise<BLSPubkey[]> => {
         const validators = [
-            PrivateKey.random().toPublicKey().toBytesCompressed(),
-            PrivateKey.random().toPublicKey().toBytesCompressed()
+            PrivateKey.fromInt(111302030111302030).toPublicKey().toBytesCompressed(),
+            PrivateKey.fromInt(211140304211140304).toPublicKey().toBytesCompressed()
         ];
         const result = await validatorDB.getAttestations(validators[0]);
         expect(result.length).toEqual(0);
@@ -134,7 +134,7 @@ describe("IValidatorDB Implementation Test", () => {
     });
 
     it("should save and load saved block", async () => {
-        const validator = PrivateKey.random().toPublicKey().toBytesCompressed();
+        const validator = PrivateKey.fromInt(238902389023890).toPublicKey().toBytesCompressed();
         let result = await validatorDB.getBlock(validator);
         expect(result).toEqual(null);
 
