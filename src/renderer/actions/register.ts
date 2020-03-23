@@ -1,5 +1,6 @@
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action, Dispatch} from "redux";
+import {ValidatorNetwork} from "../models/network";
 import {IRootState} from "../reducers";
 import {V4Keystore} from "../services/keystore";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
@@ -105,8 +106,7 @@ export interface IWithdrawalKeyAction extends Action<RegisterActionTypes> {
     payload: IStoreWithdrawalKeyPayload;
 }
 
-const saveKeystore = async(state: IRootState, password: string): Promise<string> => {
-    const signingKey = PrivateKey.fromBytes(fromHex(state.register.signingKey));
+const saveKeystore = async(signingKey: PrivateKey, password: string): Promise<string> => {
     const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
     await V4Keystore.create(
         path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
@@ -116,12 +116,19 @@ const saveKeystore = async(state: IRootState, password: string): Promise<string>
     return accountDirectory;
 };
 
+const saveNetwork = async(signingKey: PrivateKey, networkName: string): Promise<void> => {
+    const network = new ValidatorNetwork(networkName);
+    const validatorPubKey = signingKey.toPublicKey().toHexString();
+    await database.validator.network.set(validatorPubKey, network);
+};
+
 // After password action
 export const afterPasswordAction = (password: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+        const signingKey = PrivateKey.fromBytes(fromHex(getState().register.signingKey));
         // 1. Save to keystore
         dispatch(startRegistrationSubmission());
-        const accountDirectory = await saveKeystore(getState(), password);
+        const accountDirectory = await saveKeystore(signingKey, password);
 
         // 2. Save account to db
         const account = new CGAccount({
@@ -134,6 +141,10 @@ export const afterPasswordAction = (password: string) => {
             DEFAULT_ACCOUNT,
             account
         );
+
+        // 3. Save network
+        await saveNetwork(signingKey, getState().register.network);
+
         dispatch(completeRegistrationSubmission());
     };
 };
@@ -149,9 +160,15 @@ export const completeRegistrationSubmission = (): Action<RegisterActionTypes> =>
 
 export const addNewValidatorAction = (password: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
-        await saveKeystore(getState(), password);
+        const signingKey = PrivateKey.fromBytes(fromHex(getState().register.signingKey));
+        const state = getState();
 
-        const account = getState().auth.account;
+        // Add new validator to database
+        await saveKeystore(signingKey, password);
+        // Save validator's network
+        await saveNetwork(signingKey, state.register.network);
+
+        const account = state.auth.account;
         if (account !== null) {
             // Reload validators and beacon nodes
             await account.unlock(password);

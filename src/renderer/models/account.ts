@@ -3,6 +3,7 @@ import {readdirSync} from "fs";
 import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/keystore";
 import {BeaconNode, IValidatorBeaconNodes} from "./beaconNode";
 import database from "../services/db/api/database";
+import {IValidatorNetwork} from "./network";
 
 export interface IAccount {
     name: string;
@@ -18,6 +19,7 @@ export class CGAccount implements IAccount {
     private validators: Keypair[] = [];
     private keystoreTarget: ICGKeystoreFactory;
     private validatorsBeaconNodes: IValidatorBeaconNodes = {};
+    private validatorsNetwork: IValidatorNetwork = {};
 
     public constructor(
         account: IAccount,
@@ -115,7 +117,11 @@ export class CGAccount implements IAccount {
         for (const validatorIdx in validators) {
             const validator = await validators[validatorIdx];
             if (validator !== undefined) {
-                await this.loadValidatorBeaconNodes(validator);
+                const validatorAddress = validator.publicKey.toHexString();
+                await Promise.all([
+                    this.loadValidatorBeaconNodes(validatorAddress),
+                    this.loadValidatorNetwork(validatorAddress),
+                ]);
                 this.validators.push(validator);
             }
         }
@@ -166,13 +172,17 @@ export class CGAccount implements IAccount {
             .filter((keystore): keystore is ICGKeystore => keystore !== null);
     }
 
-    private async loadValidatorBeaconNodes(validator: Keypair): Promise<void> {
-        const validatorAddress = validator.publicKey.toHexString();
+    private async loadValidatorBeaconNodes(validatorAddress: string): Promise<void> {
         const loadedNodes = await database.beaconNodes.get(validatorAddress);
         if (loadedNodes) {
             this.validatorsBeaconNodes[validatorAddress] = loadedNodes.nodes;
         } else {
             this.validatorsBeaconNodes[validatorAddress] = [];
         }
+    }
+
+    private async loadValidatorNetwork(validatorAddress: string): Promise<void> {
+        const network = await database.validator.network.get(validatorAddress);
+        this.validatorsNetwork[validatorAddress] = network ? network.name : "";
     }
 }

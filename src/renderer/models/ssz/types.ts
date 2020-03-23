@@ -24,3 +24,9 @@ export const ValidatorBeaconNode: AnyContainerType = {
         }],
     ],
 };
+
+export const ValidatorNetwork: AnyContainerType = {
+    fields: [
+        ["name", "string"],
+    ],
+};

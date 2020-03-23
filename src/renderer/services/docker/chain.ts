@@ -1,3 +1,6 @@
+import * as logger from "electron-log";
+
+import database from "../db/api/database";
 import {Container} from "./container";
 import {DockerRegistry} from "./docker-registry";
 
@@ -36,6 +39,21 @@ export class BeaconChain extends Container {
         return bc;
     }
 
+    public static async startAllLocalBeaconNodes(): Promise<void> {
+        const savedNodes = await database.beaconNodes.getAll();
+        logger.info("Going to start all stopped local beacon nodes...");
+        const promises: any = [];
+        for (let i = 0; i < savedNodes.length; i++) {
+            savedNodes[i].nodes.map((node) => {
+                if (node.localDockerId) {
+                    promises.push(Container.startStoppedContainer(node.localDockerId));
+                }
+            });
+        }
+        await Promise.all(promises);
+        logger.info(`Started ${promises.length} local beacon nodes.`);
+    }
+
     public static getContainerName(network: string): string {
         return `${network}-beacon-node`;
     }
@@ -46,7 +64,8 @@ export class BeaconChain extends Container {
             throw new Error("Logs not found");
         }
 
-        logs.stderr.on("data", function(message: string) {
+        logs.stderr.on("data", function(output: Buffer) {
+            const message = output.toString();
             const isInfo = message.substr(0, 40).includes("level=info");
             const type = isInfo ? "info" : "error";
             callback(type, message);

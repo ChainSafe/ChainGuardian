@@ -1,4 +1,5 @@
 import {BeaconChain, SupportedNetworks} from "../../../../src/renderer/services/docker/chain";
+import {DockerRegistry} from "../../../../src/renderer/services/docker/docker-registry";
 import {runCmdAsync} from "../../../../src/renderer/services/utils/cmd";
 import {assert} from "chai";
 
@@ -18,7 +19,8 @@ function tests(): void {
             if (isRunning) {
                 await beaconChain.stop();
             }
-            await runCmdAsync(`docker rm ${SupportedNetworks.PRYSM}`);
+            DockerRegistry.removeContainer(SupportedNetworks.PRYSM);
+            await runCmdAsync(`docker rm ${BeaconChain.getContainerName(SupportedNetworks.PRYSM)}`);
             await runCmdAsync(`docker volume rm ${SupportedNetworks.PRYSM}-chain-data`);
         }
     }, 20000);
