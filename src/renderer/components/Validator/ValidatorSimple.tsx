@@ -33,7 +33,7 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
             dispatch(loadValidatorBeaconNodes(props.publicKey));
         }, 5000);
 
-        return () => clearInterval(timeoutID);
+        return (): void => clearInterval(timeoutID);
     }, [props.publicKey]);
 
     const renderBeaconNodes = (): React.ReactElement => {

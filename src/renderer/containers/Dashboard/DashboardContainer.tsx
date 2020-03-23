@@ -144,6 +144,10 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
                             currentNetwork === 0 // if all networks
                     )
                     .map((v, index) => {
+                        const hasNodes = Object.prototype.hasOwnProperty.call(
+                            props.validatorBeaconNodes.hasOwnProperty, v.publicKey
+                        );
+
                         return <div key={index} className={"validator-wrapper"}>
                             <ValidatorSimple
                                 name={v.name}
@@ -153,7 +157,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
                                 onRemoveClick={(): void => {onRemoveValidator(index);}}
                                 onExportClick={(): void => {onExportValidator(index);}}
                                 privateKey={v.privateKey}
-                                nodes={props.validatorBeaconNodes.hasOwnProperty(v.publicKey) ? props.validatorBeaconNodes[v.publicKey] : []}
+                                nodes={hasNodes ? props.validatorBeaconNodes[v.publicKey] : []}
                             />
                         </div>;
                     })}

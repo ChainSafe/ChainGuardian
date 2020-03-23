@@ -1,5 +1,5 @@
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
-import {warn} from 'electron-log';
+import {warn} from "electron-log";
 
 import {BeaconChain, SupportedNetworks} from "../services/docker/chain";
 import {DockerRegistry} from "../services/docker/docker-registry";

@@ -16,11 +16,12 @@ const initialState: INetworkState = {
 export const networkReducer = (
     state = initialState,
     action: Action<NetworkActionTypes>): INetworkState => {
+    let payload;
     switch (action.type) {
         case NetworkActionTypes.SELECT_NETWORK:
             return {...state, selected: (action as ISaveSelectedNetworkAction).payload};
         case NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES:
-            const payload = (action as ILoadedValidatorBeaconNodesAction).payload;
+            payload = (action as ILoadedValidatorBeaconNodesAction).payload;
             return {
                 ...state,
                 validatorBeaconNodes: {

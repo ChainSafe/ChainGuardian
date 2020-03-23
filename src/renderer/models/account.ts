@@ -1,9 +1,8 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {readdirSync} from "fs";
-import {IBeaconNodeStatus} from "../actions/network";
 import {PrysmBeaconClient} from "../services/eth2/client/prysm/prysm";
 import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/keystore";
-import {BeaconNode, IValidatorBeaconNodes} from "./beaconNode";
+import {BeaconNode} from "./beaconNode";
 import database from "../services/db/api/database";
 import {IValidatorNetwork} from "./network";
 
