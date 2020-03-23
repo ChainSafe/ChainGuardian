@@ -25,6 +25,10 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
     const dispatch = useDispatch();
 
     useEffect(() => {
+        // Initially load beacon nodes
+        dispatch(loadValidatorBeaconNodes(props.publicKey));
+
+        // Periodically refresh status with latest height
         const timeoutID = setInterval(() => {
             dispatch(loadValidatorBeaconNodes(props.publicKey));
         }, 5000);

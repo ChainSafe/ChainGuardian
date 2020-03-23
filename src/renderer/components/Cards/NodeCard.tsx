@@ -1,4 +1,5 @@
-import * as React from "react";
+import React from "react";
+import ReactTooltip from 'react-tooltip'
 
 export interface INodeCardProps {
     title: string;
@@ -10,11 +11,20 @@ export interface INodeCardProps {
 
 export const NodeCard: React.FunctionComponent<INodeCardProps> = (
     props: INodeCardProps) => {
-    return(
-        <div onClick={(): void=>{props.onClick();}} className="node-card-container">
-            <h2>{props.title}</h2>
-            <span className="node-text">{props.url}</span>
-            <h2>{props.value}</h2>
+    const {onClick, title, value, url, isSyncing} = props;
+
+    return (
+        <div onClick={(): void=> onClick()} className="node-card-container">
+            <h2>{title}</h2>
+            <span className="node-text">{url}</span>
+            <div className="row centered">
+                <h2>{value}</h2>
+                <ReactTooltip />
+                <span
+                    className={isSyncing ? "sync-progress-icon" : "success-icon"}
+                    data-tip={isSyncing ? "Syncing" : "Synced"}
+                />
+            </div>
             <span className="node-text time">Slot height</span>
         </div>
     );
