@@ -2,7 +2,7 @@
   "nonce": "0x0000000000000042",
   "config": {
     "clique": {
-      "period": 5,
+      "period": 14,
       "epoch": 30000
     },
     "chainId": 999,
