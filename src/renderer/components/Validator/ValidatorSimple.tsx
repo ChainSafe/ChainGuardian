@@ -25,9 +25,11 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log("Triggering reload...");
-        // TODO: Do this in a loop
-        dispatch(loadValidatorBeaconNodes(props.publicKey));
+        const timeoutID = setInterval(() => {
+            dispatch(loadValidatorBeaconNodes(props.publicKey));
+        }, 5000);
+
+        return () => clearInterval(timeoutID);
     }, [props.publicKey]);
 
     const renderBeaconNodes = (): React.ReactElement => {
