@@ -8,6 +8,7 @@ import {NetworkActionTypes} from "../constants/action-types";
 import {IRootState} from "../reducers";
 import {BeaconNode, BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
+import {PrysmChainHeadResponse} from "../services/eth2/client/prysm/types";
 import {SupportedNetworks} from "../services/eth2/supportedNetworks";
 import {fromHex} from "../services/utils/bytes";
 
@@ -76,25 +77,55 @@ export interface ILoadedValidatorBeaconNodesAction {
     };
 }
 
-export const loadValidatorBeaconNodes = (validator: string) => {
+export const loadValidatorBeaconNodes = (validator: string, subscribe = false) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
-        const beaconNodes = await Promise.all(validatorBeaconNodes.map(async(validatorBN) => {
-            try {
-                if (!validatorBN.client) {
-                    throw new Error("No ETH2 API client");
+        await Promise.all(validatorBeaconNodes.map(async(validatorBN) => {
+            if (validatorBN.client) {
+                try {
+                    // Load data once initially
+                    const chainHead = await validatorBN.client.beacon.getChainHead();
+                    await refreshBeaconNodeStatus(dispatch, getState, validator, chainHead);
+
+                    if (subscribe) {
+                        validatorBN.client.onNewChainHead([refreshBeaconNodeStatus],[dispatch, getState, validator]);
+                    }
+                } catch (e) {
+                    storeValidatorBeaconNodes(validator, validatorBeaconNodes)(dispatch);
+                    warn("Error while fetching chainhead from beacon node... ", e.message);
                 }
-                return {
-                    ...validatorBN,
-                    isSyncing: !!(await validatorBN.client.beacon.getSyncingStatus()),
-                    currentSlot: (await validatorBN.client.beacon.getChainHead()).headSlot,
-                };
-            } catch (e) {
-                warn(`Error while trying to fetch beacon node status... ${e.message}`);
-                return validatorBN;
             }
         }));
+    };
+};
 
+async function refreshBeaconNodeStatus(
+    dispatch: Dispatch<Action<unknown>>,
+    getState: () => IRootState,
+    validator: string,
+    chainHead: PrysmChainHeadResponse,
+): Promise<void> {
+    const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
+    const beaconNodes = await Promise.all(validatorBeaconNodes.map(async(validatorBN) => {
+        try {
+            if (!validatorBN.client) {
+                throw new Error("No ETH2 API client");
+            }
+            return {
+                ...validatorBN,
+                isSyncing: !!(await validatorBN.client.beacon.getSyncingStatus()),
+                currentSlot: chainHead.headSlot,
+            };
+        } catch (e) {
+            warn(`Error while trying to fetch beacon node status... ${e.message}`);
+            return validatorBN;
+        }
+    }));
+    storeValidatorBeaconNodes(validator, beaconNodes)(dispatch);
+}
+
+const storeValidatorBeaconNodes = (validator: string, beaconNodes: BeaconNode[]) =>
+    (dispatch: Dispatch<Action<unknown>>): void => {
         dispatch({
             type: NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES,
             payload: {
@@ -103,4 +134,4 @@ export const loadValidatorBeaconNodes = (validator: string) => {
             },
         });
     };
-};
+

@@ -15,7 +15,8 @@ export enum PrysmBeaconRoutes {
     DOMAIN = "/validator/domain",
     GENESIS = "/node/genesis",
     SYNCING = "/node/syncing",
-    CHAINHEAD = "beacon/chainhead",
+    CHAINHEAD = "/beacon/chainhead",
+    CHAINHEAD_STREAM = "/beacon/chainhead/stream",
 }
 
 export class PrysmBeaconApiClient implements IEth2BeaconApi {

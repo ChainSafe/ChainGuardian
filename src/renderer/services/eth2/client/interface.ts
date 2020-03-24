@@ -24,7 +24,8 @@ export interface IGenericEth2Client extends IApiClient {
     validator: IEth2ValidatorApi;
 
     getVersion(): Promise<string>;
-    
+
+    onNewChainHead(callbacks: Array<any>, params: Array<any>): void;
 }
 
 export type IValidatorBeaconClient  =  IApiClient;
