@@ -5,8 +5,7 @@ import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {HttpClient} from "../../../api";
 import {computeEpochAtSlot, getCurrentSlot} from "@chainsafe/lodestar-validator/lib/util";
 import {base64Decode, base64Encode, fromHex} from "../../../utils/bytes";
-import {PrysmChainHeadResponse} from "./types";
-import {PrysmValidator} from "./types";
+import {PrysmChainHeadResponse, PrysmValidator} from "./types";
 import {fromPrysmaticJson} from "./converter";
 import {warn} from "electron-log";
 

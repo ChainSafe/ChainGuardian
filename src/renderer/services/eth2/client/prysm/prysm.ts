@@ -30,24 +30,7 @@ export class PrysmEth2ApiClient extends AbstractApiClient implements IValidatorB
         this.validator = new PrysmValidatorApiClient(options);
     }
 
-    public static getPrysmBeaconClient(url: string, network: string): PrysmEth2ApiClient | null {
-        const networkConfig = getNetworkConfig(network);
-        if (!networkConfig) {
-            return null;
-        }
-
-        return new PrysmEth2ApiClient({
-            baseUrl: url,
-            config: networkConfig.eth2Config
-        });
-    }
-
     public async getVersion(): Promise<string> {
         return (await this.beacon.getClientVersion()).toString("ascii");
-    }
-
-    public async isSyncing(): Promise<boolean> {
-        const result = await this.beacon.getSyncingStatus();
-        return (typeof result === "boolean") ? result : false;
     }
 }

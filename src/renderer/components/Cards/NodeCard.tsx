@@ -19,7 +19,7 @@ export const NodeCard: React.FunctionComponent<INodeCardProps> = (
             <span className="node-text">{url}</span>
             <div className="row centered">
                 <h2>{value}</h2>
-                {value ?
+                {value !== "N/A" ?
                     <>
                         <ReactTooltip />
                         <span
