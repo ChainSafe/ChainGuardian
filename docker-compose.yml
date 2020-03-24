@@ -13,7 +13,7 @@ services:
       - "./eth1/passwd.txt:/tmp/passwd.txt:ro"
 
   deployer:
-    image: nodefactory/web3:latest
+    image: gochain/web3:0.2.19
     depends_on:
       - eth1-node
     restart: on-failure
@@ -31,7 +31,7 @@ services:
     command: /opt/start.sh
     volumes:
       - "./cg_testnet:/opt/cg_testnet"
-      - "./start.sh:/opt/start.sh:ro"
+      - "./cg_testnet/start.sh:/opt/start.sh:ro"
     depends_on:
       - eth1-node
     ports:
@@ -40,6 +40,6 @@ services:
   eth2-validators:
     image: sigp/lighthouse:latest
     container_name: "lighthouse_validators"
-    command: 'lighthouse vc --server http://eth2-bn:5052 --spec minimal testnet insecure 0 32'
+    command: 'lighthouse vc --server http://eth2-bn:5052 --spec minimal testnet insecure 0 15'
     depends_on:
       - eth2-bn
