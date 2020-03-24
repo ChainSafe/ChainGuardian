@@ -1,4 +1,5 @@
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
+import {warn} from "electron-log";
 import {Action, Dispatch} from "redux";
 
 import {BeaconChain} from "../services/docker/chain";
@@ -75,13 +76,25 @@ export interface ILoadedValidatorBeaconNodesAction {
     };
 }
 
-export interface IBeaconNodeStatus {
-    isSyncing: boolean;
-    currentSlot: string;
-}
 export const loadValidatorBeaconNodes = (validator: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
-        const beaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
+        const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
+        const beaconNodes = await Promise.all(validatorBeaconNodes.map(async(validatorBN) => {
+            try {
+                if (!validatorBN.client) {
+                    throw new Error("No ETH2 API client");
+                }
+                return {
+                    ...validatorBN,
+                    isSyncing: !!(await validatorBN.client.beacon.getSyncingStatus()),
+                    currentSlot: (await validatorBN.client.beacon.getChainHead()).headSlot,
+                };
+            } catch (e) {
+                warn(`Error while trying to fetch beacon node status... ${e.message}`);
+                return validatorBN;
+            }
+        }));
+
         dispatch({
             type: NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES,
             payload: {

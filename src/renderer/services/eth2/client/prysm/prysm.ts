@@ -1,7 +1,6 @@
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {AbstractApiClient} from "@chainsafe/lodestar-validator/lib/api/abstract";
 
-import {getNetworkConfig} from "../../networks";
 import {
     IBeaconClientOptions,
     IEth2BeaconApi,
