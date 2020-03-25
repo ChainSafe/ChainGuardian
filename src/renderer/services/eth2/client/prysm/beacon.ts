@@ -1,10 +1,11 @@
-import {BLSPubkey, bytes32, Fork, number64, SyncingStatus, uint64, Validator} from "@chainsafe/eth2.0-types";
+import {bytes32, Fork, number64, SyncingStatus, uint64} from "@chainsafe/eth2.0-types";
 import {IBeaconClientOptions, IEth2BeaconApi} from "../interface";
+import {BLSPubkey, Validator} from "@chainsafe/eth2.0-types";
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {HttpClient} from "../../../api";
 import {computeEpochAtSlot, getCurrentSlot} from "@chainsafe/lodestar-validator/lib/util";
 import {base64Decode, base64Encode, fromHex} from "../../../utils/bytes";
-import {PrysmValidator} from "./types";
+import {PrysmChainHeadResponse, PrysmValidator} from "./types";
 import {fromPrysmaticJson} from "./converter";
 import {warn} from "electron-log";
 
@@ -13,7 +14,9 @@ export enum PrysmBeaconRoutes {
     VALIDATOR = "/validator",
     DOMAIN = "/validator/domain",
     GENESIS = "/node/genesis",
-    SYNCING = "/node/syncing"
+    SYNCING = "/node/syncing",
+    CHAINHEAD = "/beacon/chainhead",
+    CHAINHEAD_STREAM = "/beacon/chainhead/stream",
 }
 
 export class PrysmBeaconApiClient implements IEth2BeaconApi {
@@ -22,7 +25,7 @@ export class PrysmBeaconApiClient implements IEth2BeaconApi {
     private config: IBeaconConfig;
     
     public constructor(options: IBeaconClientOptions) {
-        this.client = new HttpClient(options.urlPrefix);
+        this.client = new HttpClient(options.baseUrl);
         this.config = options.config;
     }
     
@@ -30,7 +33,7 @@ export class PrysmBeaconApiClient implements IEth2BeaconApi {
         const response = await this.client.get<{version: string, metadata: string}>(PrysmBeaconRoutes.VERSION);
         return Buffer.from(response.version, "ascii");
     }
-    
+
     public async getValidator(pubkey: BLSPubkey): Promise<Validator|null> {
         try {
             const response = await this.client.get<PrysmValidator>(
@@ -76,4 +79,7 @@ export class PrysmBeaconApiClient implements IEth2BeaconApi {
         return response.syncing;
     }
 
+    public async getChainHead(): Promise<PrysmChainHeadResponse> {
+        return await this.client.get<PrysmChainHeadResponse>(PrysmBeaconRoutes.CHAINHEAD);
+    }
 }

@@ -9,12 +9,12 @@ export class StandardValidatorBeaconClient extends ApiClientOverRest implements 
     private httpClient: HttpClient;
 
     public constructor(options: IBeaconClientOptions) {
-        if (!options.urlPrefix) {
+        if (!options.baseUrl) {
             throw new EmptyUrl();
         }
-        super(options.config, options.urlPrefix, new ApiLogger());
+        super(options.config, options.baseUrl, new ApiLogger());
         this.options = options;
-        this.httpClient = new HttpClient(options.urlPrefix);
+        this.httpClient = new HttpClient(options.baseUrl);
     }
     
     public async getVersion(): Promise<string> {

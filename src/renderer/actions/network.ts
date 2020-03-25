@@ -1,13 +1,28 @@
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
+import {warn} from "electron-log";
+import {Action, Dispatch} from "redux";
 
-import {BeaconChain, SupportedNetworks} from "../services/docker/chain";
+import {BeaconChain} from "../services/docker/chain";
 import {DockerRegistry} from "../services/docker/docker-registry";
 import {NetworkActionTypes} from "../constants/action-types";
-import {Action, Dispatch} from "redux";
 import {IRootState} from "../reducers";
-import {BeaconNodes} from "../models/beaconNode";
+import {BeaconNode, BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
+import {ChainHead} from "../services/eth2/client/prysm/types";
+import {SupportedNetworks} from "../services/eth2/supportedNetworks";
 import {fromHex} from "../services/utils/bytes";
+
+// User selected network in dashboard dropdown
+export interface ISaveSelectedNetworkAction {
+    type: typeof NetworkActionTypes.SELECT_NETWORK;
+    payload: string;
+}
+export const saveSelectedNetworkAction = (network: string): ISaveSelectedNetworkAction => ({
+    type: NetworkActionTypes.SELECT_NETWORK,
+    payload: network,
+});
+
+// Beacon chain
 
 export const startBeaconChainAction = (network: string, ports?: string[]) => {
     return async (): Promise<void> => {
@@ -39,16 +54,6 @@ export const restartBeaconChainAction = (network = SupportedNetworks.PRYSM) => {
     };
 };
 
-// User selected network in dashboard dropdown
-export interface ISaveSelectedNetworkAction {
-    type: typeof NetworkActionTypes.SELECT_NETWORK;
-    payload: string;
-}
-export const saveSelectedNetworkAction = (network: string): ISaveSelectedNetworkAction => ({
-    type: NetworkActionTypes.SELECT_NETWORK,
-    payload: network,
-});
-
 export const saveBeaconNodeAction = (url: string, network?: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const localDockerName = network ? BeaconChain.getContainerName(network) : undefined;
@@ -61,3 +66,73 @@ export const saveBeaconNodeAction = (url: string, network?: string) => {
         );
     };
 };
+
+// Loading validator beacon nodes
+
+export interface ILoadedValidatorBeaconNodesAction {
+    type: typeof NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES;
+    payload: {
+        validator: string;
+        beaconNodes: BeaconNode[];
+    };
+}
+
+export const loadValidatorBeaconNodes = (validator: string, subscribe = false) => {
+    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+        const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
+        await Promise.all(validatorBeaconNodes.map(async(validatorBN) => {
+            if (validatorBN.client) {
+                try {
+                    // Load data once initially
+                    const chainHead = await validatorBN.client.beacon.getChainHead();
+                    const refreshFnWithContext = refreshBeaconNodeStatus.bind(null, dispatch, getState, validator);
+                    await refreshFnWithContext(chainHead);
+
+                    if (subscribe) {
+                        validatorBN.client.onNewChainHead(refreshFnWithContext);
+                    }
+                } catch (e) {
+                    storeValidatorBeaconNodes(validator, validatorBeaconNodes)(dispatch);
+                    warn("Error while fetching chainhead from beacon node... ", e.message);
+                }
+            }
+        }));
+    };
+};
+
+async function refreshBeaconNodeStatus(
+    dispatch: Dispatch<Action<unknown>>,
+    getState: () => IRootState,
+    validator: string,
+    chainHead: ChainHead,
+): Promise<void> {
+    const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
+    const beaconNodes: BeaconNode[] = await Promise.all(validatorBeaconNodes.map(async(validatorBN: BeaconNode) => {
+        try {
+            if (!validatorBN.client) {
+                throw new Error("No ETH2 API client");
+            }
+            return {
+                ...validatorBN,
+                isSyncing: !!(await validatorBN.client.beacon.getSyncingStatus()),
+                currentSlot: chainHead.headSlot,
+            };
+        } catch (e) {
+            warn(`Error while trying to fetch beacon node status... ${e.message}`);
+            return validatorBN;
+        }
+    }));
+    storeValidatorBeaconNodes(validator, beaconNodes)(dispatch);
+}
+
+const storeValidatorBeaconNodes = (validator: string, beaconNodes: BeaconNode[]) =>
+    (dispatch: Dispatch<Action<unknown>>): void => {
+        dispatch({
+            type: NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES,
+            payload: {
+                validator,
+                beaconNodes,
+            },
+        });
+    };
+

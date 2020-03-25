@@ -9,7 +9,7 @@ import {
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 import {ISetNetworkAction} from "../actions";
-import {networks} from "../services/deposit/networks";
+import {networks} from "../services/eth2/networks";
 
 export enum RegisterType { ONBOARDING, ADD }
 

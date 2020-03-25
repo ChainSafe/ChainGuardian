@@ -38,6 +38,7 @@
     flex-direction: column;
     h2:nth-child(1){
         color: $primary-blue-200;
+        margin-right: 5px;
     }
     h2:nth-child(3){
         align-self: center;
@@ -52,5 +53,6 @@
     color: $neutral-200;
     &.time{
         align-self: center;
+        padding-right: 0.8rem;
     }
 }

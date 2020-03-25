@@ -1,7 +1,9 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {readdirSync} from "fs";
+
+import {getEth2ApiClient} from "../services/eth2/client";
 import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/keystore";
-import {BeaconNode, IValidatorBeaconNodes} from "./beaconNode";
+import {BeaconNode} from "./beaconNode";
 import database from "../services/db/api/database";
 import {IValidatorNetwork} from "./network";
 
@@ -18,7 +20,6 @@ export class CGAccount implements IAccount {
 
     private validators: Keypair[] = [];
     private keystoreTarget: ICGKeystoreFactory;
-    private validatorsBeaconNodes: IValidatorBeaconNodes = {};
     private validatorsNetwork: IValidatorNetwork = {};
 
     public constructor(
@@ -60,8 +61,26 @@ export class CGAccount implements IAccount {
     /**
      * Returns array of beacon nodes that validator uses.
      */
-    public getValidatorBeaconNodes(validatorAddress: string): BeaconNode[] {
-        return this.validatorsBeaconNodes[validatorAddress];
+    public async getValidatorBeaconNodes(validatorAddress: string): Promise<BeaconNode[]> {
+        const loadedNodes = await database.beaconNodes.get(validatorAddress);
+        if (loadedNodes) {
+            // In case we don't have enough information to fetch status, return basic info.
+            const currentNetwork = await database.validator.network.get(validatorAddress);
+            if (!currentNetwork) {
+                return loadedNodes.nodes;
+            }
+
+            return await Promise.all(
+                loadedNodes.nodes.map(async(node: BeaconNode): Promise<BeaconNode> => {
+                    const beaconNode = getEth2ApiClient(node.url, currentNetwork.name);
+                    return {
+                        ...node,
+                        client: beaconNode,
+                    };
+                })
+            );
+        }
+        return [];
     }
 
     /**
@@ -118,10 +137,7 @@ export class CGAccount implements IAccount {
             const validator = await validators[validatorIdx];
             if (validator !== undefined) {
                 const validatorAddress = validator.publicKey.toHexString();
-                await Promise.all([
-                    this.loadValidatorBeaconNodes(validatorAddress),
-                    this.loadValidatorNetwork(validatorAddress),
-                ]);
+                await this.loadValidatorNetwork(validatorAddress);
                 this.validators.push(validator);
             }
         }
@@ -140,7 +156,6 @@ export class CGAccount implements IAccount {
     public lock(): void {
         // Clear validator Keypairs
         this.validators = [];
-        this.validatorsBeaconNodes = {};
     }
 
     private isUnlocked(): boolean {
@@ -170,15 +185,6 @@ export class CGAccount implements IAccount {
                 }
             })
             .filter((keystore): keystore is ICGKeystore => keystore !== null);
-    }
-
-    private async loadValidatorBeaconNodes(validatorAddress: string): Promise<void> {
-        const loadedNodes = await database.beaconNodes.get(validatorAddress);
-        if (loadedNodes) {
-            this.validatorsBeaconNodes[validatorAddress] = loadedNodes.nodes;
-        } else {
-            this.validatorsBeaconNodes[validatorAddress] = [];
-        }
     }
 
     private async loadValidatorNetwork(validatorAddress: string): Promise<void> {

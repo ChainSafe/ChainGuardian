@@ -1,8 +1,8 @@
 import {PrysmBeaconApiClient, PrysmBeaconRoutes} from "../../../../../src/renderer/services/eth2/client/prysm/beacon";
-import {networks} from "../../../../../src/renderer/services/deposit/networks";
-import {SupportedNetworks} from "../../../../../src/renderer/services/docker/chain";
+import {networks} from "../../../../../src/renderer/services/eth2/networks";
 import axios from "axios";
 import MockAxiosAdapter from "@nodefactory/axios-mock-adapter";
+import {SupportedNetworks} from "../../../../../src/renderer/services/eth2/supportedNetworks";
 import {base64Encode, fromHex} from "../../../../../src/renderer/services/utils/bytes";
 import * as fs from "fs";
 import * as path from "path";
@@ -15,7 +15,7 @@ describe("prysm beacon client", function() {
 
     const client = new PrysmBeaconApiClient({
         config: networks.find((network) => network.networkName === SupportedNetworks.PRYSM)!.eth2Config,
-        urlPrefix: ""
+        baseUrl: ""
     });
     
     it("get client version", async function() {

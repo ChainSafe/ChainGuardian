@@ -13,14 +13,25 @@ exports[`Cards renders correctly, NodeCard 1`] = `
   >
     rocketsonic.hr
   </span>
-  <h2>
-    21
-     ms
-  </h2>
+  <div
+    className="row centered"
+  >
+    <h2>
+      21
+    </h2>
+    <div
+      className="__react_component_tooltip place-top type-dark "
+      data-id="tooltip"
+    />
+    <span
+      className="success-icon"
+      data-tip="Synced"
+    />
+  </div>
   <span
     className="node-text time"
   >
-    Average Response Time
+    Slot height
   </span>
 </div>
 `;

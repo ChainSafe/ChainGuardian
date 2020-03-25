@@ -19,7 +19,7 @@ export async function createWindow(): Promise<void> {
     );
     // eslint-disable-next-line require-atomic-updates
     win = new BrowserWindow({
-        webPreferences: {nodeIntegration: true},
+        webPreferences: {nodeIntegration: true, webSecurity: false},
         backgroundColor: "#052437",
         show: false,
         icon: iconPath,
