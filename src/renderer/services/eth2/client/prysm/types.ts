@@ -63,7 +63,9 @@ export type PrysmChainHeadResponse = {
     previousJustifiedBlockRoot: string
 };
 
-export type PrysmChainHeadStreamResponse = {
+export type ChainHead = PrysmChainHeadResponse;
+
+export type PrysmChainHeadStreamMessage = {
     result: PrysmChainHeadResponse,
     error: {
         httpStatus: string;

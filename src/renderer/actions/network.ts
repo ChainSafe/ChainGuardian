@@ -8,7 +8,7 @@ import {NetworkActionTypes} from "../constants/action-types";
 import {IRootState} from "../reducers";
 import {BeaconNode, BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
-import {PrysmChainHeadResponse} from "../services/eth2/client/prysm/types";
+import {ChainHead} from "../services/eth2/client/prysm/types";
 import {SupportedNetworks} from "../services/eth2/supportedNetworks";
 import {fromHex} from "../services/utils/bytes";
 
@@ -85,10 +85,11 @@ export const loadValidatorBeaconNodes = (validator: string, subscribe = false) =
                 try {
                     // Load data once initially
                     const chainHead = await validatorBN.client.beacon.getChainHead();
-                    await refreshBeaconNodeStatus(dispatch, getState, validator, chainHead);
+                    const refreshFnWithContext = refreshBeaconNodeStatus.bind(null, dispatch, getState, validator);
+                    await refreshFnWithContext(chainHead);
 
                     if (subscribe) {
-                        validatorBN.client.onNewChainHead([refreshBeaconNodeStatus],[dispatch, getState, validator]);
+                        validatorBN.client.onNewChainHead(refreshFnWithContext);
                     }
                 } catch (e) {
                     storeValidatorBeaconNodes(validator, validatorBeaconNodes)(dispatch);
@@ -103,10 +104,10 @@ async function refreshBeaconNodeStatus(
     dispatch: Dispatch<Action<unknown>>,
     getState: () => IRootState,
     validator: string,
-    chainHead: PrysmChainHeadResponse,
+    chainHead: ChainHead,
 ): Promise<void> {
     const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
-    const beaconNodes = await Promise.all(validatorBeaconNodes.map(async(validatorBN) => {
+    const beaconNodes: BeaconNode[] = await Promise.all(validatorBeaconNodes.map(async(validatorBN: BeaconNode) => {
         try {
             if (!validatorBN.client) {
                 throw new Error("No ETH2 API client");
