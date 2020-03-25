@@ -11,6 +11,9 @@ export interface IConfig {
     },
     db: {
         name: string
+    },
+    params: {
+        SECONDS_PER_SLOT: number
     }
 }
 
@@ -31,6 +34,9 @@ export function getConfig(app?: App): IConfig {
 
     return {
         storage: storageConfig,
-        db: dbConfig
+        db: dbConfig,
+        params: {
+            SECONDS_PER_SLOT: 12000,
+        }
     };
 }

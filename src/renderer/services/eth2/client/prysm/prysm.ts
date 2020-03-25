@@ -1,6 +1,8 @@
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {AbstractApiClient} from "@chainsafe/lodestar-validator/lib/api/abstract";
+import {remote} from "electron";
 
+import {getConfig} from "../../../../../config/config";
 import {
     IBeaconClientOptions,
     IEth2BeaconApi,
@@ -44,6 +46,6 @@ export class PrysmEth2ApiClient extends AbstractApiClient implements IValidatorB
         setInterval(async() => {
             const response = await this.beacon.getChainHead();
             callback(response);
-        }, 12000);
+        }, getConfig(remote.app).params.SECONDS_PER_SLOT);
     }
 }
