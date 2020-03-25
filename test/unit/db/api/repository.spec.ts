@@ -1,23 +1,27 @@
 import sinon from "sinon";
 import chai, {expect} from "chai";
 import chaiAsPromised from "chai-as-promised";
-import {SimpleContainerType} from "@chainsafe/ssz";
-import {bytes32} from "@chainsafe/eth2.0-types";
-import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
+import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {BulkRepository} from "../../../../src/renderer/services/db/api/repository";
 import {SSZ} from "../../../../src/renderer/services/db/serializers/ssz";
 import {IDatabaseController, LevelDbController} from "../../../../src/main/db/controller";
 import {Bucket} from "../../../../src/renderer/services/db/schema";
+import {ContainerType} from "@chainsafe/ssz";
+import {Bytes32} from "@chainsafe/lodestar-types";
 
 chai.use(chaiAsPromised);
 
-const TestSSZType: SimpleContainerType = {
-    fields: [["bool", config.types.bool], ["bytes", config.types.bytes32]]
-};
+const TestSSZType = new ContainerType<ITestType>({
+    fields: {
+        bool: config.types.Boolean,
+        //@ts-ignore
+        bytes: config.types.Bytes32
+    }
+});
 
 interface ITestType {
     bool: boolean;
-    bytes: bytes32;
+    bytes: Bytes32;
 }
 
 const BucketMock = "testBucket";

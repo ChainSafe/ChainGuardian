@@ -4,6 +4,7 @@
 
 // Buckets are separate database namespaces
 import {toBufferLE} from "bigint-buffer";
+import {Id} from "./api/repository";
 
 export enum Bucket {
     account,
@@ -18,7 +19,7 @@ export enum Key {}
 /**
  * Prepend a bucket to a key
  */
-export function encodeKey(bucket: Bucket, key: Buffer | string | number | bigint, useBuffer = true): Buffer | string {
+export function encodeKey(bucket: Bucket, key: Id, useBuffer = true): Buffer | string {
     let buf;
     if (typeof key === "string") {
         buf = Buffer.alloc(key.length + 1);
@@ -31,7 +32,7 @@ export function encodeKey(bucket: Bucket, key: Buffer | string | number | bigint
         toBufferLE(BigInt(key), 8).copy(buf, 1);
     }  else {
         buf = Buffer.alloc(key.length + 1);
-        key.copy(buf, 1);
+        Buffer.from(key).copy(buf, 1);
     }
     buf.writeUInt8(bucket, 0);
     return useBuffer ? buf : buf.toString("hex");

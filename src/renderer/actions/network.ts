@@ -1,4 +1,4 @@
-import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
+import {PrivateKey} from "@chainsafe/bls";
 
 import {BeaconChain, SupportedNetworks} from "../services/docker/chain";
 import {DockerRegistry} from "../services/docker/docker-registry";

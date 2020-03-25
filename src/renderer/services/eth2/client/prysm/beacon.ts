@@ -1,11 +1,10 @@
-import {BLSPubkey, bytes32, Fork, number64, SyncingStatus, uint64, Validator} from "@chainsafe/eth2.0-types";
+import {BLSPubkey, Bytes32, Fork, Number64, SyncingStatus, Uint64, Validator} from "@chainsafe/lodestar-types";
 import {IBeaconClientOptions, IEth2BeaconApi} from "../interface";
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {HttpClient} from "../../../api";
-import {computeEpochAtSlot, getCurrentSlot} from "@chainsafe/lodestar-validator/lib/util";
+import {computeEpochAtSlot, getCurrentSlot} from "@chainsafe/lodestar-beacon-state-transition";
 import {base64Decode, base64Encode, fromHex} from "../../../utils/bytes";
 import {PrysmValidator} from "./types";
-import {fromPrysmaticJson} from "./converter";
 import {warn} from "electron-log";
 
 export enum PrysmBeaconRoutes {
@@ -26,7 +25,7 @@ export class PrysmBeaconApiClient implements IEth2BeaconApi {
         this.config = options.config;
     }
     
-    public async getClientVersion(): Promise<bytes32> {
+    public async getClientVersion(): Promise<Bytes32> {
         const response = await this.client.get<{version: string, metadata: string}>(PrysmBeaconRoutes.VERSION);
         return Buffer.from(response.version, "ascii");
     }
@@ -37,7 +36,7 @@ export class PrysmBeaconApiClient implements IEth2BeaconApi {
                 PrysmBeaconRoutes.VALIDATOR,
                 {
                     params: {
-                        publicKey: base64Encode(pubkey)
+                        publicKey: base64Encode(pubkey.valueOf() as Uint8Array)
                     }
                 });
             return fromPrysmaticJson<Validator>(this.config.types.Validator, {...response, pubkey: response.publicKey});
@@ -47,7 +46,7 @@ export class PrysmBeaconApiClient implements IEth2BeaconApi {
         }
     }
 
-    public async getFork(): Promise<{ fork: Fork; chainId: uint64 }> {
+    public async getFork(): Promise<{ fork: Fork; chainId: Uint64 }> {
         //TODO; move when epoch param is introduced
         const epoch = computeEpochAtSlot(this.config, getCurrentSlot(this.config, await this.getGenesisTime()));
         const response = await this.client.get<{signatureDomain: string}>(
@@ -66,7 +65,7 @@ export class PrysmBeaconApiClient implements IEth2BeaconApi {
         };
     }
 
-    public async getGenesisTime(): Promise<number64> {
+    public async getGenesisTime(): Promise<Number64> {
         const response = await this.client.get<{genesisTime: string}>(PrysmBeaconRoutes.GENESIS);
         return Math.floor(Date.parse(response.genesisTime) / 1000);
     }

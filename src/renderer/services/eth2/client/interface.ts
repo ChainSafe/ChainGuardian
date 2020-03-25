@@ -1,7 +1,7 @@
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {IApiClient} from "@chainsafe/lodestar-validator/lib";
 import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
-import {BLSPubkey, Validator} from "@chainsafe/eth2.0-types";
+import {BLSPubkey, Validator} from "@chainsafe/lodestar-types";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
 
 export interface IEth2BeaconApi extends IBeaconApi {

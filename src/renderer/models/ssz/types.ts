@@ -1,32 +1,32 @@
-import {AnyContainerType} from "@chainsafe/ssz";
+import {BasicListType, BooleanType, ContainerType} from "@chainsafe/ssz";
+import {IAccount} from "../account";
+import {StringType} from "./string";
+import {IBeaconNodes} from "../beaconNode";
 import {MAX_VALIDATOR_BEACON_NODES} from "../../constants/account";
 
-export const Account: AnyContainerType = {
-    fields: [
-        ["name", "bytes512"],
-        ["directory", "bytes512"],
-        ["sendStats", "bool"],
-    ],
-};
+export const Account = new ContainerType<IAccount>({
+    fields: {
+        name: new StringType(),
+        directory: new StringType(),
+        sendStats: new BooleanType()
+    }
+});
 
-const BeaconNode: AnyContainerType = {
-    fields: [
-        ["url", "string"],
-        ["localDockerId", "string"],
-    ],
-};
+const BeaconNode = new ContainerType({
+    fields: {
+        url: new StringType(),
+        localDockerId: new StringType()
+    }
+});
 
-export const ValidatorBeaconNode: AnyContainerType = {
-    fields: [
-        ["nodes", {
-            elementType: BeaconNode,
-            maxLength: MAX_VALIDATOR_BEACON_NODES,
-        }],
-    ],
-};
+export const ValidatorBeaconNode = new ContainerType<IBeaconNodes>({
+    fields: {
+        nodes: new BasicListType({elementType: BeaconNode, limit: MAX_VALIDATOR_BEACON_NODES})
+    }
+});
 
-export const ValidatorNetwork: AnyContainerType = {
-    fields: [
-        ["name", "string"],
-    ],
-};
+export const ValidatorNetwork = new ContainerType({
+    fields: {
+        name: new StringType()
+    }
+});

@@ -2,9 +2,9 @@
 import {Bucket, encodeKey} from "../schema";
 import {ICGSerialization} from "../abstract";
 import {IDatabaseController, ISearchOptions} from "../../../../main/db/controller";
-import {AnySSZType} from "@chainsafe/ssz";
+import {Type} from "@chainsafe/ssz";
 
-export type Id = Buffer | string | number | bigint;
+export type Id = Uint8Array | ArrayLike<number> | string | number | bigint;
 
 export abstract class Repository<T> {
 
@@ -12,7 +12,7 @@ export abstract class Repository<T> {
 
     protected bucket: Bucket;
 
-    protected type: AnySSZType;
+    protected type: Type<T>;
 
     protected serializer: ICGSerialization<unknown>;
 
@@ -20,7 +20,7 @@ export abstract class Repository<T> {
         db: IDatabaseController,
         serializer: ICGSerialization<unknown>,
         bucket: Bucket,
-        type: AnySSZType
+        type: Type<T>
     ) {
         this.db = db;
         this.serializer = serializer;
@@ -64,14 +64,14 @@ export abstract class Repository<T> {
 }
 
 export abstract class BulkRepository<T> extends Repository<T> {
-    public async getAll(id = Buffer.alloc(0), options?: ISearchOptions): Promise<T[]> {
+    public async getAll(id: Id = Buffer.alloc(0), options?: ISearchOptions): Promise<T[]> {
         let searchFilter: ISearchOptions;
         if (options) {
             searchFilter = options;
         } else {
             const key = encodeKey(this.bucket, id);
             searchFilter = {
-                lt: encodeKey(this.bucket, Buffer.concat([id, this.fillBufferWithOnes(100)])),
+                lt: encodeKey(this.bucket, Buffer.concat([id.valueOf() as Uint8Array, this.fillBufferWithOnes(100)])),
                 gte: key,
             };
         }

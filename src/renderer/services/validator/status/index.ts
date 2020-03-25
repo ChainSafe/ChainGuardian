@@ -3,8 +3,7 @@ import {warn} from "electron-log";
 import {IEth1Client} from "../../deposit/ethers";
 import {IGenericEth2Client} from "../../eth2/client/interface";
 import {BLSPubkey} from "@chainsafe/eth2.0-types";
-import {computeEpochAtSlot} from "@chainsafe/eth2.0-state-transition";
-import {FAR_FUTURE_EPOCH} from "@chainsafe/eth2.0-state-transition/lib/constants";
+import {computeEpochAtSlot, FAR_FUTURE_EPOCH} from "@chainsafe/lodestar-beacon-state-transition";
 import {PublicKey} from "@chainsafe/bls";
 
 export * from "./statuses";

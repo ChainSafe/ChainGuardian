@@ -1,9 +1,10 @@
-export type BeaconNode = {
+// eslint-disable-next-line @typescript-eslint/interface-name-prefix
+export interface BeaconNode {
     url: string;
     localDockerId: string;
-};
+}
 
-interface IBeaconNodes {
+export interface IBeaconNodes {
     nodes: BeaconNode[];
 }
 

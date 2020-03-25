@@ -1,4 +1,4 @@
-import {ILogger, LogLevel} from "@chainsafe/eth2.0-utils/lib/logger";
+import {ILogger, LogLevel} from "@chainsafe/lodestar-utils/lib/logger";
 import * as electronLogger from "electron-log";
 
 export class ApiLogger implements ILogger {

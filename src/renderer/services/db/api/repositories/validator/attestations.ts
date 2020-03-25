@@ -3,13 +3,19 @@ import {BulkRepository} from "../../repository";
 import {IDatabaseController, ISearchOptions} from "../../../../../../main/db/controller";
 import {Bucket, encodeKey} from "../../../schema";
 import {JSONSerializer} from "../../../serializers/json";
-import {types as mainnetTypes} from "@chainsafe/eth2.0-types/lib/ssz/presets/mainnet";
-import {Attestation, BLSPubkey} from "@chainsafe/eth2.0-types";
-import {intToBytes} from "@chainsafe/eth2.0-utils";
+import {types as mainnetTypes} from "@chainsafe/lodestar-types/lib/ssz/presets/mainnet";
+import {Attestation, BLSPubkey} from "@chainsafe/lodestar-types";
+import {intToBytes} from "@chainsafe/lodestar-utils";
+import {Type} from "@chainsafe/ssz";
 
 export class ValidatorAttestationsRepository extends BulkRepository<Attestation> {
     public constructor(db: IDatabaseController) {
-        super(db, JSONSerializer, Bucket.validatorAttestations, mainnetTypes.Attestation);
+        super(
+            db,
+            JSONSerializer,
+            Bucket.validatorAttestations,
+            mainnetTypes.Attestation as unknown as Type<Attestation>
+        );
     }
 
     public async set(pubKey: BLSPubkey, attestation: Attestation): Promise<void> {
@@ -28,26 +34,26 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
 
     public async getAll(pubKey: BLSPubkey, options?: IAttestationSearchOptions): Promise<Attestation[]> {
         if (!options) {
-            return await super.getAll(pubKey);
+            return await super.getAll(pubKey.valueOf() as Uint8Array);
         }
 
         const searchFilters: ISearchOptions = {};
         if (options.lt) {
             const epoch = intToBytes(options.lt, 2);
-            const search = Buffer.concat([pubKey, epoch]);
+            const search = Buffer.concat([pubKey.valueOf() as Uint8Array, epoch]);
             searchFilters.lt = encodeKey(this.bucket, search);
         }
         if (options.gt) {
             const epoch = intToBytes(options.gt, 2);
-            const search = Buffer.concat([pubKey, epoch, this.fillBufferWithOnes(96)]);
+            const search = Buffer.concat([pubKey.valueOf() as Uint8Array, epoch, this.fillBufferWithOnes(96)]);
             searchFilters.gt = encodeKey(this.bucket, search);
         }
 
-        return await super.getAll(pubKey, searchFilters);
+        return await super.getAll(pubKey.valueOf() as Uint8Array, searchFilters);
     }
 
     private getAttestationKey(pubKey: BLSPubkey, attestation: Attestation): Buffer {
         const epoch = intToBytes(attestation.data.target.epoch, 2);
-        return Buffer.concat([pubKey, epoch, attestation.signature]);
+        return Buffer.concat([pubKey.valueOf() as Uint8Array, epoch, attestation.signature.valueOf() as Uint8Array]);
     }
 }

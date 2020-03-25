@@ -3,7 +3,7 @@ import {deployDepositContract} from "./deposit-test-util";
 import DepositContract from "../../../../src/renderer/services/deposit/options";
 import {Keypair as KeyPair, Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
-import {toHexString} from "../../../../src/renderer/services/utils/crypto";
+import {toHexString} from "../../../../src/renderer/services/utils/hex";
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
 import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {DEPOSIT_EVENT_TIMEOUT_MESSAGE, EthersNotifier} from "../../../../src/renderer/services/deposit/ethers";

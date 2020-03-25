@@ -1,5 +1,5 @@
 import {HttpClient} from "../../../api";
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {IBeaconClientOptions} from "../interface";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
 import {
@@ -12,14 +12,13 @@ import {
     SignedBeaconBlock,
     Slot,
     ValidatorDuty
-} from "@chainsafe/eth2.0-types";
+} from "@chainsafe/lodestar-types";
 import {PrysmAttestationData, PrysmValidatorDutiesResponse} from "./types";
 import {base64Decode, base64Encode} from "../../../utils/bytes";
-import {bytesToInt, intDiv} from "@chainsafe/eth2.0-utils";
+import {bytesToInt, intDiv} from "@chainsafe/lodestar-utils";
 // @ts-ignore
 import SHA256 from "bcrypto/lib/sha256";
 import {BitList} from "@chainsafe/bit-utils";
-import {fromPrysmaticJson, toPrysmaticJson} from "./converter";
 
 export enum PrysmValidatorRoutes {
     DUTIES = "/validator/duties",
@@ -52,7 +51,8 @@ export class PrysmValidatorApiClient implements IValidatorApi {
         const combinedDuties = await this.getDuties(epoch, validatorPubKeys);
         combinedDuties.duties.forEach((prysmDuty) => {
             const validatorPubkey = base64Decode(prysmDuty.publicKey);
-            if(prysmDuty.attesterSlot && validatorPubKeys.findIndex((key) => key.equals(validatorPubkey)) !== -1) {
+            if(prysmDuty.attesterSlot
+                && validatorPubKeys.findIndex((key) => validatorPubkey.equals(key.valueOf() as Uint8Array)) !== -1) {
                 duties.push({
                     validatorPubkey,
                     attestationSlot: Number(prysmDuty.attesterSlot),
@@ -190,5 +190,9 @@ export class PrysmValidatorApiClient implements IValidatorApi {
                     publicKeys: publicKeys.map(base64Encode)
                 }
             });
+    }
+
+    subscribeCommitteeSubnet(slot: number, slotSignature, committeeIndex: number, aggregatorPubkey): Promise<void> {
+        return undefined;
     }
 }

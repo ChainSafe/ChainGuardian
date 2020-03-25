@@ -6,7 +6,7 @@ import {
     IGenericEth2Client,
     IValidatorBeaconClient
 } from "../interface";
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {PrysmBeaconApiClient} from "./beacon";
 import {PrysmValidatorApiClient} from "./validator";
 
@@ -24,9 +24,9 @@ export class PrysmEth2ApiClient extends AbstractApiClient implements IValidatorB
         this.beacon = new PrysmBeaconApiClient(options);
         this.validator = new PrysmValidatorApiClient(options);
     }
-    
+
     public async getVersion(): Promise<string> {
-        return (await this.beacon.getClientVersion()).toString("ascii");
+        return Buffer.from(await this.beacon.getClientVersion()).toString("ascii");
     }
 
 }

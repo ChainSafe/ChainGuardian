@@ -6,8 +6,8 @@ import {PrysmBeaconApiClient} from "../../../../src/renderer/services/eth2/clien
 import {PrysmValidatorApiClient} from "../../../../src/renderer/services/eth2/client/prysm/validator";
 import {initBLS} from "@chainsafe/bls";
 import {generateValidator} from "./util";
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
-import {config} from "@chainsafe/eth2.0-config/lib/presets/minimal";
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
+import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
 
 interface IStubbedPrysmEth2ApiClient extends PrysmEth2ApiClient {
     beacon: SinonStubbedInstance<PrysmBeaconApiClient>,

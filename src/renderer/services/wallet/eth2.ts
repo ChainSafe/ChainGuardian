@@ -1,7 +1,5 @@
 import {entropyToMnemonic, generateMnemonic} from "bip39";
-import {bytes} from "@chainsafe/eth2.0-types";
-import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
-import {Keypair} from "@chainsafe/bls/lib/keypair";
+import { Keypair, PrivateKey } from '@chainsafe/bls';
 import {mnemonicToSecretKey} from "@chainsafe/bls-keygen";
 
 export class Eth2HDWallet {
@@ -9,7 +7,7 @@ export class Eth2HDWallet {
      * If entropy is not provided bip39 uses crypto.randomBytes() as entropy source
      * @param entropy entropy to generate mnemonic
      */
-    public static generate(entropy?: bytes): string {
+    public static generate(entropy?: Buffer): string {
         return entropy ? entropyToMnemonic(entropy) : generateMnemonic();
     }
 

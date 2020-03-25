@@ -1,4 +1,4 @@
-import {toHexString} from "../../../src/renderer/services/utils/crypto";
+import {toHexString} from "../../../src/renderer/services/utils/hex";
 
 describe("crypto utils unit tests", () => {
     it("should successfully prefix string to become hex string.", async () => {

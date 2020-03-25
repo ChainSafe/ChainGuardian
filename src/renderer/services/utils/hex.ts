@@ -15,13 +15,3 @@ export function toHexString(data: string | Buffer | bigint): string {
     return hexString.startsWith("0x") ? hexString : `0x${hexString}`;
 }
 
-export function eth1IdToEthersName(networkId: number): string {
-    switch(networkId) {
-        case 1: return "homestead";
-        case 3: return "ropsten";
-        case 4: return "rinkeby";
-        case 42: return "kovan";
-        default: return "homestead";
-    }
-}
-

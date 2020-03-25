@@ -1,11 +1,9 @@
-import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
-import {BLSPubkey as BLSPubKey, DepositData} from "@chainsafe/eth2.0-types";
+import {Keypair as KeyPair} from "@chainsafe/bls";
+import {BLSPubkey as BLSPubKey, DepositData, DepositMessage} from "@chainsafe/lodestar-types";
 import {createHash} from "crypto";
-import {hashTreeRoot} from "@chainsafe/ssz";
-import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
+import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {DEPOSIT_DOMAIN} from "./constants";
 import {ethers, utils} from "ethers";
-import {DepositMessage} from "@chainsafe/eth2.0-types/lib/types/misc";
 
 /**
  * Generate function signature from ABI object.
@@ -54,7 +52,7 @@ export function generateDeposit(
     // BLS_WITHDRAWAL_PREFIX + hash(withdrawal_pubkey)[1:]
     const withdrawalCredentials: Buffer = Buffer.concat([
         Buffer.alloc(1),
-        createHash("sha256").update(withdrawalPubKey).digest().subarray(1)
+        createHash("sha256").update(withdrawalPubKey.valueOf() as Uint8Array).digest().subarray(1)
     ]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const amount = BigInt(
@@ -68,11 +66,11 @@ export function generateDeposit(
         amount: amount,
     };
     // calculate root
-    const root = hashTreeRoot(config.types.DepositMessage, depositMsg);
+    const root = config.types.DepositMessage.hashTreeRoot(depositMsg);
     // sign calculated root
     const signature = signingKey.privateKey.signMessage(
         root,
-        DEPOSIT_DOMAIN
+        DEPOSIT_DOMAIN.valueOf() as Uint8Array
     ).toBytesCompressed();
     return {
         ...depositMsg,

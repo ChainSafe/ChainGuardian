@@ -1,5 +1,5 @@
 import {IAttestationSearchOptions, IValidatorDB} from "@chainsafe/lodestar-validator/lib/db/interface";
-import {Attestation, BLSPubkey, SignedBeaconBlock} from "@chainsafe/eth2.0-types";
+import {Attestation, BLSPubkey, SignedBeaconBlock} from "@chainsafe/lodestar-types";
 import {CGDatabase} from "./database";
 import {IpcDatabaseController} from "../controller/ipc";
 

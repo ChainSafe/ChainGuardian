@@ -1,5 +1,5 @@
-import {config as mainnetBeaconConfig} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
-import {config as minimalBeaconConfig} from "@chainsafe/eth2.0-config/lib/presets/minimal";
+import {config as mainnetBeaconConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
+import {config as minimalBeaconConfig} from "@chainsafe/lodestar-config/lib/presets/minimal";
 import {ethers} from "ethers";
 import {JsonRpcProvider} from "ethers/providers";
 import {INetworkConfig} from "../interfaces";
