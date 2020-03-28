@@ -8,7 +8,8 @@ import {fromJson} from "@chainsafe/eth2.0-utils";
 export enum LighthouseBeaconRoutes {
     VERSION = "/node/version",
     FORK = "/beacon/fork",
-    GENESIS_TIME = "/beacon/genesis_time"
+    GENESIS_TIME = "/beacon/genesis_time",
+    SYNCING = "/node/syncing"
 }
 
 export class LighthouseBeaconApiClient implements IBeaconApi {
@@ -34,12 +35,12 @@ export class LighthouseBeaconApiClient implements IBeaconApi {
         };
     }
 
-    public getGenesisTime(): Promise<number64> {
-        throw "not implemented";
+    public async getGenesisTime(): Promise<number64> {
+        return await this.client.get<number>(LighthouseBeaconRoutes.GENESIS_TIME);
     }
 
-    public getSyncingStatus(): Promise<boolean | SyncingStatus> {
-        throw "not implemented";
+    public async getSyncingStatus(): Promise<boolean | SyncingStatus> {
+        return false;
     }
 
 }
