@@ -83,7 +83,7 @@ describe("lighthouse validator client", function() {
 
     it("produce attestation", async function() {
         httpMock.onGet(
-            LighthouseValidatorRoutes.PRODUCE_ATTESTATION,
+            LighthouseValidatorRoutes.ATTESTATION,
             {params: {slot: 100, "committee_index": 0}}
         ).reply(
             200,
@@ -95,7 +95,7 @@ describe("lighthouse validator client", function() {
 
     it("produce block", async function() {
         httpMock.onGet(
-            LighthouseValidatorRoutes.PRODUCE_BLOCK,
+            LighthouseValidatorRoutes.BLOCK,
             {params: {slot: 23, "randao_reveal": "0x00"}}
         ).reply(
             200,

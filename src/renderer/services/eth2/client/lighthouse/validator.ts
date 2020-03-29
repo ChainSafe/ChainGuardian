@@ -7,13 +7,13 @@ import {ILighthouseDutiesRequest, ILighthouseDutiesResponse} from "./types";
 import {toHexString} from "../../../utils/crypto";
 import {fromHex} from "../../../utils/bytes";
 import {computeEpochAtSlot} from "@chainsafe/eth2.0-state-transition";
-import {fromJson} from "@chainsafe/eth2.0-utils";
+import {fromJson, toJson} from "@chainsafe/eth2.0-utils";
 
 export enum LighthouseValidatorRoutes {
 
     DUTIES = "/validator/duties",
-    PRODUCE_ATTESTATION = "/validator/attestation",
-    PRODUCE_BLOCK = "/validator/block"
+    ATTESTATION = "/validator/attestation",
+    BLOCK = "/validator/block"
 
 }
 
@@ -82,7 +82,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
         validatorPubKey: Buffer, pocBit: boolean, index: number, slot: number
     ): Promise<Attestation> {
         const response = await this.client.get<object>(
-            LighthouseValidatorRoutes.PRODUCE_ATTESTATION,
+            LighthouseValidatorRoutes.ATTESTATION,
             {
                 params: 
                     {
@@ -96,7 +96,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
 
     public async produceBlock(slot: number, randaoReveal: Buffer): Promise<BeaconBlock> {
         const response = await this.client.get<object>(
-            LighthouseValidatorRoutes.PRODUCE_BLOCK,
+            LighthouseValidatorRoutes.BLOCK,
             {
                 params:
                     {
@@ -108,18 +108,16 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
         return fromJson<BeaconBlock>(this.config.types.BeaconBlock, response);
     }
 
-    public publishAggregatedAttestation(
-        aggregated: Attestation, validatorPubKey: Buffer, slotSignature: Buffer
-    ): Promise<void> {
-        throw "not implemented";
+    public async publishAggregatedAttestation(): Promise<void> {
+        return;
     }
 
-    public publishAttestation(attestation: Attestation): Promise<void> {
-        throw "not implemented";
+    public async publishAttestation(attestation: Attestation): Promise<void> {
+        await this.client.post(LighthouseValidatorRoutes.ATTESTATION, {message: toJson(attestation)});
     }
 
-    public publishBlock(signedBlock: SignedBeaconBlock): Promise<void> {
-        throw "not implemented";
+    public async publishBlock(signedBlock: SignedBeaconBlock): Promise<void> {
+        await this.client.post(LighthouseValidatorRoutes.BLOCK, toJson(signedBlock));
     }
 
 }
