@@ -41,27 +41,20 @@ describe("lighthouse validator client", function() {
         );
     });
 
-    // it("propose block flow", async function() {
-    //     httpMock.onGet(
-    //         PrysmValidatorRoutes.DUTIES,
-    //         {params: {epoch: 0, publicKeys: validators.map(base64Encode)}}
-    //     ).reply<PrysmValidatorDutiesResponse>(
-    //         200,
-    //         JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/duties.json"), "utf-8"))
-    //     );
-    //     httpMock.onGet(
-    //         PrysmValidatorRoutes.BLOCK,
-    //         {params: {slot: 356216, randaoReveal: base64Encode(Buffer.alloc(32, 1))}}
-    //     ).reply<BeaconBlock>(
-    //         200,
-    //         JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/block.json"), "utf-8"))
-    //     );
-    //     const duties = await client.getProposerDuties(0);
-    //     expect(duties.get(7)).toEqual(PrivateKey.fromInt(0).toPublicKey().toBytesCompressed());
-    //     const block = await client.produceBlock(356216, Buffer.alloc(32, 1));
-    //     expect(block.slot).toEqual(356216);
-    //     expect(block.body.randaoReveal).toEqual(Buffer.alloc(32, 1));
-    // });
+    it("get block proposers", async function() {
+        httpMock.onPost(
+            LighthouseValidatorRoutes.DUTIES,
+            {epoch: 0, pubkeys: validators.map(toHexString)}
+        ).reply(
+            200,
+            JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/duties.json"), "utf-8"))
+        );
+        const proposers = await client.getProposerDuties(0);
+        expect(proposers.size).toEqual(3);
+        expect(proposers.get(1)).toEqual(validators[0]);
+        expect(proposers.get(5)).toEqual(validators[0]);
+        expect(proposers.get(2)).toEqual(validators[1]);
+    });
 
     it("get attestation duties", async function() {
         httpMock.onPost(
@@ -78,10 +71,15 @@ describe("lighthouse validator client", function() {
         expect(duties[0].committeeIndex).toEqual(3);
     });
 
-    // it("get wire attestations", async function() {
-    //     const attestations = await client.getWireAttestations();
-    //     expect(attestations.length).toEqual(0);
-    // });
+    it("get wire attestations", async function() {
+        const attestations = await client.getWireAttestations();
+        expect(attestations.length).toEqual(0);
+    });
+
+    it("is aggregator", async function() {
+        const isAggregator = await client.isAggregator();
+        expect(isAggregator).toBeFalsy();
+    });
 
 
 });

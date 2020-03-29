@@ -6,6 +6,7 @@ import {Attestation, BeaconBlock, BLSPubkey, SignedBeaconBlock, Slot, ValidatorD
 import {ILighthouseDutiesRequest, ILighthouseDutiesResponse} from "./types";
 import {toHexString} from "../../../utils/crypto";
 import {fromHex} from "../../../utils/bytes";
+import {computeEpochAtSlot} from "@chainsafe/eth2.0-state-transition";
 
 export enum LighthouseValidatorRoutes {
 
@@ -47,16 +48,31 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
         }).filter((value) => !!value) as ValidatorDuty[];
     }
 
-    public getProposerDuties(epoch: number): Promise<Map<Slot, BLSPubkey>> {
-        throw "not implemented";
+    public async getProposerDuties(epoch: number): Promise<Map<Slot, BLSPubkey>> {
+        const response = await this.client.post<ILighthouseDutiesRequest, ILighthouseDutiesResponse[]>(
+            LighthouseValidatorRoutes.DUTIES,
+            {
+                epoch,
+                pubkeys: Array.from(this.trackedValidators.values()).map(toHexString)
+            });
+        const proposers = new Map<Slot, BLSPubkey>();
+        response.forEach((lhDuty) => {
+            lhDuty.block_proposal_slots.forEach((proposerSlot) => {
+                if(computeEpochAtSlot(this.config, proposerSlot) === epoch) {
+                    proposers.set(proposerSlot, fromHex(lhDuty.validator_pubkey));
+                } 
+            });
+        });
+        return proposers;
     }
 
-    public getWireAttestations(epoch: number, committeeIndex: number): Promise<Attestation[]> {
-        throw "not implemented";
+    public async getWireAttestations(): Promise<Attestation[]> {
+        return [];
     }
 
-    public isAggregator(slot: number, committeeIndex: number, slotSignature: Buffer): Promise<boolean> {
-        throw "not implemented";
+    public async  isAggregator(): Promise<boolean> {
+        //current api doesn't support aggregation
+        return false;
     }
 
     public produceAttestation(validatorPubKey: Buffer, pocBit: boolean, index: number, slot: number): Promise<Attestation> {
