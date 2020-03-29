@@ -1,4 +1,7 @@
-import {PrysmBeaconApiClient, PrysmBeaconRoutes} from "../../../../../../src/renderer/services/eth2/client/prysm/beacon";
+import {
+    PrysmBeaconApiClient,
+    PrysmBeaconRoutes
+} from "../../../../../../src/renderer/services/eth2/client/prysm/beacon";
 import {networks} from "../../../../../../src/renderer/services/deposit/networks";
 import {SupportedNetworks} from "../../../../../../src/renderer/services/docker/chain";
 import axios from "axios";
