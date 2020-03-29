@@ -87,12 +87,22 @@ describe("lighthouse validator client", function() {
             {params: {slot: 100, "committee_index": 0}}
         ).reply(
             200,
-            {
-                message: JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/attestation.json"), "utf-8"))
-            }
+            JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/attestation.json"), "utf-8"))
         );
         const attestation = await client.produceAttestation(validators[0], false, 0, 100);
         expect(attestation).toBeDefined();
+    });
+
+    it("produce block", async function() {
+        httpMock.onGet(
+            LighthouseValidatorRoutes.PRODUCE_BLOCK,
+            {params: {slot: 23, "randao_reveal": "0x00"}}
+        ).reply(
+            200,
+            JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/block.json"), "utf-8"))
+        );
+        const block = await client.produceBlock(23, Buffer.alloc(1));
+        expect(block).toBeDefined();
     });
 
 

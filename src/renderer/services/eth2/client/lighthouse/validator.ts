@@ -12,7 +12,8 @@ import {fromJson} from "@chainsafe/eth2.0-utils";
 export enum LighthouseValidatorRoutes {
 
     DUTIES = "/validator/duties",
-    PRODUCE_ATTESTATION = "/validator/attestation"
+    PRODUCE_ATTESTATION = "/validator/attestation",
+    PRODUCE_BLOCK = "/validator/block"
 
 }
 
@@ -80,7 +81,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
     public async produceAttestation(
         validatorPubKey: Buffer, pocBit: boolean, index: number, slot: number
     ): Promise<Attestation> {
-        const response = await this.client.get<{message: object}>(
+        const response = await this.client.get<object>(
             LighthouseValidatorRoutes.PRODUCE_ATTESTATION,
             {
                 params: 
@@ -90,11 +91,21 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
                     }
             }
         );
-        return fromJson<Attestation>(this.config.types.Attestation, response.message);
+        return fromJson<Attestation>(this.config.types.Attestation, response);
     }
 
-    public produceBlock(slot: number, randaoReveal: Buffer): Promise<BeaconBlock> {
-        throw "not implemented";
+    public async produceBlock(slot: number, randaoReveal: Buffer): Promise<BeaconBlock> {
+        const response = await this.client.get<object>(
+            LighthouseValidatorRoutes.PRODUCE_BLOCK,
+            {
+                params:
+                    {
+                        slot,
+                        "randao_reveal": toHexString(randaoReveal)
+                    }
+            }
+        );
+        return fromJson<BeaconBlock>(this.config.types.BeaconBlock, response);
     }
 
     public publishAggregatedAttestation(
