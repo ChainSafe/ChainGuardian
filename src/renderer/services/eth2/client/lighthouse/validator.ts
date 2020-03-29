@@ -3,19 +3,48 @@ import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {IBeaconClientOptions} from "../interface";
 import {Attestation, BeaconBlock, BLSPubkey, SignedBeaconBlock, Slot, ValidatorDuty} from "@chainsafe/eth2.0-types";
+import {ILighthouseDutiesRequest, ILighthouseDutiesResponse} from "./types";
+import {toHexString} from "../../../utils/crypto";
+import {fromHex} from "../../../utils/bytes";
+
+export enum LighthouseValidatorRoutes {
+
+    DUTIES = "/validator/duties"
+
+}
 
 export class LighthouseValidatorApiClient implements IValidatorApi {
 
     private client: HttpClient;
     private config: IBeaconConfig;
+    private trackedValidators: Set<BLSPubkey> = new Set();
 
-    public constructor(options: IBeaconClientOptions) {
+    public constructor(options: IBeaconClientOptions, validators: BLSPubkey[] = []) {
         this.client = new HttpClient(options.urlPrefix);
         this.config = options.config;
+        validators.forEach((validator) => this.trackedValidators.add(validator));
     }
     
-    public getAttesterDuties(epoch: number, validatorPubKey: BLSPubkey[]): Promise<ValidatorDuty[]> {
-        throw "not implemented";
+    public async getAttesterDuties(epoch: number, validatorPubKeys: BLSPubkey[]): Promise<ValidatorDuty[]> {
+        validatorPubKeys.forEach((key) => this.trackedValidators.add(key));
+        const response = await this.client.post<ILighthouseDutiesRequest, ILighthouseDutiesResponse[]>(
+            LighthouseValidatorRoutes.DUTIES,
+            {
+                epoch,
+                pubkeys: validatorPubKeys.map(toHexString)
+            });
+        return validatorPubKeys.map((validatorPubKey) => {
+            const lhDuty = response.find((value => fromHex(value.validator_pubkey).equals(validatorPubKey)));
+            if(lhDuty) {
+                return {
+                    validatorPubkey: validatorPubKey,
+                    attestationSlot: lhDuty.attestation_slot,
+                    committeeIndex: lhDuty.attestation_committee_index
+                } as ValidatorDuty;
+            } else {
+                return null;
+            }
+        }).filter((value) => !!value) as ValidatorDuty[];
     }
 
     public getProposerDuties(epoch: number): Promise<Map<Slot, BLSPubkey>> {
