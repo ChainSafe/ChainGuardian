@@ -15,8 +15,8 @@ import {base64Decode, base64Encode, fromHex} from "../../../../../../src/rendere
 import {
     LighthouseValidatorApiClient,
     LighthouseValidatorRoutes
-} from '../../../../../../src/renderer/services/eth2/client/lighthouse/validator';
-import { toHexString } from '../../../../../../src/renderer/services/utils/crypto';
+} from "../../../../../../src/renderer/services/eth2/client/lighthouse/validator";
+import {toHexString} from "../../../../../../src/renderer/services/utils/crypto";
 
 const httpMock = new MockAxiosAdapter(axios);
 
@@ -79,6 +79,20 @@ describe("lighthouse validator client", function() {
     it("is aggregator", async function() {
         const isAggregator = await client.isAggregator();
         expect(isAggregator).toBeFalsy();
+    });
+
+    it("produce attestation", async function() {
+        httpMock.onGet(
+            LighthouseValidatorRoutes.PRODUCE_ATTESTATION,
+            {params: {slot: 100, "committee_index": 0}}
+        ).reply(
+            200,
+            {
+                message: JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/attestation.json"), "utf-8"))
+            }
+        );
+        const attestation = await client.produceAttestation(validators[0], false, 0, 100);
+        expect(attestation).toBeDefined();
     });
 
 

@@ -7,10 +7,12 @@ import {ILighthouseDutiesRequest, ILighthouseDutiesResponse} from "./types";
 import {toHexString} from "../../../utils/crypto";
 import {fromHex} from "../../../utils/bytes";
 import {computeEpochAtSlot} from "@chainsafe/eth2.0-state-transition";
+import {fromJson} from "@chainsafe/eth2.0-utils";
 
 export enum LighthouseValidatorRoutes {
 
-    DUTIES = "/validator/duties"
+    DUTIES = "/validator/duties",
+    PRODUCE_ATTESTATION = "/validator/attestation"
 
 }
 
@@ -75,8 +77,20 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
         return false;
     }
 
-    public produceAttestation(validatorPubKey: Buffer, pocBit: boolean, index: number, slot: number): Promise<Attestation> {
-        throw "not implemented";
+    public async produceAttestation(
+        validatorPubKey: Buffer, pocBit: boolean, index: number, slot: number
+    ): Promise<Attestation> {
+        const response = await this.client.get<{message: object}>(
+            LighthouseValidatorRoutes.PRODUCE_ATTESTATION,
+            {
+                params: 
+                    {
+                        slot,
+                        "committee_index": index
+                    }
+            }
+        );
+        return fromJson<Attestation>(this.config.types.Attestation, response.message);
     }
 
     public produceBlock(slot: number, randaoReveal: Buffer): Promise<BeaconBlock> {
