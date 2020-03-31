@@ -1,17 +1,17 @@
-import {networks} from "../../../../../src/renderer/services/deposit/networks";
-import {SupportedNetworks} from "../../../../../src/renderer/services/docker/chain";
+import {networks} from "../../../../../../src/renderer/services/deposit/networks";
+import {SupportedNetworks} from "../../../../../../src/renderer/services/docker/chain";
 import axios from "axios";
 import MockAxiosAdapter from "@nodefactory/axios-mock-adapter";
 import {
     PrysmValidatorApiClient,
     PrysmValidatorRoutes
-} from "../../../../../src/renderer/services/eth2/client/prysm/validator";
+} from "../../../../../../src/renderer/services/eth2/client/prysm/validator";
 import {initBLS, PrivateKey} from "@chainsafe/bls";
-import {PrysmValidatorDutiesResponse} from "../../../../../src/renderer/services/eth2/client/prysm/types";
+import {PrysmValidatorDutiesResponse} from "../../../../../../src/renderer/services/eth2/client/prysm/types";
 import * as fs from "fs";
 import * as path from "path";
 import {BeaconBlock, BLSPubkey} from "@chainsafe/eth2.0-types";
-import {base64Decode, base64Encode} from "../../../../../src/renderer/services/utils/bytes";
+import {base64Decode, base64Encode} from "../../../../../../src/renderer/services/utils/bytes";
 
 const httpMock = new MockAxiosAdapter(axios);
 
