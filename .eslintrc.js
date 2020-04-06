@@ -62,6 +62,7 @@ module.exports = {
         "prefer-const": "error",
         "quotes": ["error", "double"],
         "semi": "off",
-        "react/prop-types": "off"
+        "react/prop-types": "off",
+        "no-async-promise-executor": "off"
     }
 };

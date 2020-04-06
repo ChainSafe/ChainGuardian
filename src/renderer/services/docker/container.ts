@@ -45,13 +45,6 @@ export abstract class Container {
         }
     }
 
-    public async startStoppedContainer(): Promise<void> {
-        if (!(await Container.isContainerRunning(this.params.name))) {
-            const container = runCmd(Command.start(this.params.name));
-            this.docker = {name: this.params.name, stdout: container.stdout, stderr: container.stderr};
-        }
-    }
-
     public static async isContainerRunning(name: string): Promise<boolean> {
         const cmdResult = await runCmdAsync(Command.ps(name, "running"));
         // first line of output is header line, second line is definition of found docker instance
@@ -65,6 +58,13 @@ export abstract class Container {
         if (instance) {
             const values = instance.split("   ");
             return values[1];
+        }
+    }
+
+    public async startStoppedContainer(): Promise<void> {
+        if (!(await Container.isContainerRunning(this.params.name))) {
+            const container = runCmd(Command.start(this.params.name));
+            this.docker = {name: this.params.name, stdout: container.stdout, stderr: container.stderr};
         }
     }
 

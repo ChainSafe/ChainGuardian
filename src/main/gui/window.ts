@@ -68,7 +68,7 @@ export async function createWindow(): Promise<void> {
                 e.preventDefault();
             } else {
                 if (process.env.NODE_ENV !== "production") {
-                    win.webContents.send('stop-docker');
+                    win.webContents.send("stop-docker");
                 }
             }
         }

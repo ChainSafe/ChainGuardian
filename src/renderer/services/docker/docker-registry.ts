@@ -30,6 +30,6 @@ class DockerRegistryClass {
 export const DockerRegistry = new DockerRegistryClass();
 Object.freeze(DockerRegistry);
 
-ipcRenderer.on('stop-docker', async() => {
+ipcRenderer.on("stop-docker", async() => {
     await DockerRegistry.stopAll();
 });

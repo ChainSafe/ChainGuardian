@@ -72,6 +72,16 @@ export class BeaconChain extends Container {
         }
     }
 
+    private static async loadStoppedChain(name: string, image: string): Promise<void> {
+        const bc = new BeaconChain({
+            name,
+            image,
+        });
+        await bc.startStoppedContainer();
+        const network = BeaconChain.getNetworkFromContainerName(name);
+        DockerRegistry.addContainer(network!, bc);
+    }
+
     public listenToLogs(callback: LogCallbackFunc): void {
         const logs = this.getLogs();
         if (!logs) {
@@ -84,15 +94,5 @@ export class BeaconChain extends Container {
             const type = isInfo ? "info" : "error";
             callback(type, message);
         });
-    }
-
-    private static async loadStoppedChain(name: string, image: string): Promise<void> {
-        const bc = new BeaconChain({
-            name,
-            image,
-        });
-        await bc.startStoppedContainer();
-        const network = BeaconChain.getNetworkFromContainerName(name);
-        DockerRegistry.addContainer(network!, bc);
     }
 }
