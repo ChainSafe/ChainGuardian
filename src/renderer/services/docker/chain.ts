@@ -44,7 +44,16 @@ export class BeaconChain extends Container {
         for (let i = 0; i < savedNodes.length; i++) {
             savedNodes[i].nodes.map((node) => {
                 if (node.localDockerId) {
-                    promises.push(Container.startStoppedContainer(node.localDockerId));
+                    const promise = new Promise(async(resolve, reject) => {
+                        const image = await Container.getImage(node.localDockerId);
+                        if (image) {
+                            await BeaconChain.loadStoppedChain(node.localDockerId, image);
+                        } else {
+                            return reject("Image not found.");
+                        }
+                        resolve();
+                    });
+                    promises.push(promise);
                 }
             });
         }
@@ -54,6 +63,13 @@ export class BeaconChain extends Container {
 
     public static getContainerName(network: string): string {
         return `${network}-beacon-node`;
+    }
+
+    public static getNetworkFromContainerName(containerName: string): SupportedNetworks|undefined {
+        const name = containerName.split("-")[0];
+        if (name === SupportedNetworks.PRYSM) {
+            return SupportedNetworks.PRYSM;
+        }
     }
 
     public listenToLogs(callback: LogCallbackFunc): void {
@@ -68,5 +84,15 @@ export class BeaconChain extends Container {
             const type = isInfo ? "info" : "error";
             callback(type, message);
         });
+    }
+
+    private static async loadStoppedChain(name: string, image: string): Promise<void> {
+        const bc = new BeaconChain({
+            name,
+            image,
+        });
+        await bc.startStoppedContainer();
+        const network = BeaconChain.getNetworkFromContainerName(name);
+        DockerRegistry.addContainer(network!, bc);
     }
 }
