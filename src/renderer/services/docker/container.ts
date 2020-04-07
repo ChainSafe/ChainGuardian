@@ -52,8 +52,8 @@ export abstract class Container {
         return runningInstance !== "";
     }
 
-    public static async getImage(name: string): Promise<string|undefined> {
-        const cmdResult = await runCmdAsync(Command.ps(name));
+    public static async getImageName(dockerId: string): Promise<string|undefined> {
+        const cmdResult = await runCmdAsync(Command.ps(dockerId));
         const instance = cmdResult.stdout.split("\n")[1];
         if (instance) {
             const values = instance.split("   ");

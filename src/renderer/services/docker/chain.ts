@@ -43,7 +43,7 @@ export class BeaconChain extends Container {
         for (let i = 0; i < savedNodes.length; i++) {
             savedNodes[i].nodes.map(async(node) => {
                 if (node.localDockerId) {
-                    const image = await Container.getImage(node.localDockerId);
+                    const image = await Container.getImageName(node.localDockerId);
                     if (image) {
                         const bc = await BeaconChain.createBeaconChainContainer(node.localDockerId, image);
                         await bc.startStoppedContainer();
