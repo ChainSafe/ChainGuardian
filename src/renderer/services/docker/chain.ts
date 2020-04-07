@@ -40,20 +40,43 @@ export class BeaconChain extends Container {
     public static async startAllLocalBeaconNodes(): Promise<void> {
         const savedNodes = await database.beaconNodes.getAll();
         logger.info("Going to start all stopped local beacon nodes...");
-        const promises: any = [];
         for (let i = 0; i < savedNodes.length; i++) {
-            savedNodes[i].nodes.map((node) => {
+            savedNodes[i].nodes.map(async(node) => {
                 if (node.localDockerId) {
-                    promises.push(Container.startStoppedContainer(node.localDockerId));
+                    const image = await Container.getImageName(node.localDockerId);
+                    if (image) {
+                        const bc = await BeaconChain.createBeaconChainContainer(node.localDockerId, image);
+                        await bc.startStoppedContainer();
+                        logger.info(`Started ${node.localDockerId} local beacon node.`);
+                    } else {
+                        logger.info(`Image for container ${node.localDockerId} not found.`);
+                    }
                 }
             });
         }
-        await Promise.all(promises);
-        logger.info(`Started ${promises.length} local beacon nodes.`);
     }
 
     public static getContainerName(network: string): string {
         return `${network}-beacon-node`;
+    }
+
+    public static getNetworkFromContainerName(containerName: string): SupportedNetworks|undefined {
+        const name = containerName.split("-")[0];
+        if (name === SupportedNetworks.PRYSM) {
+            return SupportedNetworks.PRYSM;
+        }
+    }
+
+    private static async createBeaconChainContainer(name: string, image: string): Promise<BeaconChain> {
+        const bc = new BeaconChain({
+            name,
+            image,
+        });
+
+        const network = BeaconChain.getNetworkFromContainerName(name);
+        DockerRegistry.addContainer(network!, bc);
+
+        return bc;
     }
 
     public listenToLogs(callback: LogCallbackFunc): void {

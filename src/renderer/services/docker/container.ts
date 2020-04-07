@@ -45,17 +45,27 @@ export abstract class Container {
         }
     }
 
-    public static async startStoppedContainer(name: string): Promise<void> {
-        if (!(await Container.isContainerRunning(name))) {
-            runCmd(Command.start(name));
-        }
-    }
-
     public static async isContainerRunning(name: string): Promise<boolean> {
         const cmdResult = await runCmdAsync(Command.ps(name, "running"));
         // first line of output is header line, second line is definition of found docker instance
         const runningInstance = cmdResult.stdout.split("\n")[1];
         return runningInstance !== "";
+    }
+
+    public static async getImageName(dockerId: string): Promise<string|undefined> {
+        const cmdResult = await runCmdAsync(Command.ps(dockerId));
+        const instance = cmdResult.stdout.split("\n")[1];
+        if (instance) {
+            const values = instance.split("   ");
+            return values[1];
+        }
+    }
+
+    public async startStoppedContainer(): Promise<void> {
+        if (!(await Container.isContainerRunning(this.params.name))) {
+            const container = runCmd(Command.start(this.params.name));
+            this.docker = {name: this.params.name, stdout: container.stdout, stderr: container.stderr};
+        }
     }
 
     public getName(): string | undefined {
