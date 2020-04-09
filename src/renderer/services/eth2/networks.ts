@@ -51,7 +51,10 @@ const getNetworkConfig = (name: string): null | INetworkConfig => {
     return (result.length === 0) ? null : result[0];
 };
 
+const networksList = networks.map((contract) => contract.networkName);
+
 export {
     networks,
     getNetworkConfig,
+    networksList,
 };
