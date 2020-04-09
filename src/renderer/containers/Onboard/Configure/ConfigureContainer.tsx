@@ -4,7 +4,7 @@ import {ButtonPrimary, ButtonSecondary} from "../../../components/Button/ButtonS
 import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {Dropdown} from "../../../components/Dropdown/Dropdown";
-import {networks} from "../../../services/eth2/networks";
+import {networks, networksList} from "../../../services/eth2/networks";
 import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
 import {setNetworkAction} from "../../../actions";
@@ -25,7 +25,6 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
     const onBeaconNodeInput = (e: React.FormEvent<HTMLInputElement>): void => {
         setBeaconNodeInput(e.currentTarget.value);
     };
-    const networkOptions = networks.map((contract) => contract.networkName);
 
     const handleSubmit = (): void => {
         props.setNetwork(networks[selectedNetworkIndex].networkName);
@@ -66,7 +65,7 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
                     label="Network"
                     current={selectedNetworkIndex}
                     onChange={setSelectedNetworkIndex}
-                    options={networkOptions}
+                    options={networksList}
                 />
             </div>
 

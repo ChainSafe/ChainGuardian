@@ -19,7 +19,8 @@ export const networkReducer = (
     let payload;
     switch (action.type) {
         case NetworkActionTypes.SELECT_NETWORK:
-            return {...state, selected: (action as ISaveSelectedNetworkAction).payload};
+            payload = (action as ISaveSelectedNetworkAction).payload;
+            return {...state, selected: payload === "All networks" ? undefined : payload};
         case NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES:
             payload = (action as ILoadedValidatorBeaconNodesAction).payload;
             return {

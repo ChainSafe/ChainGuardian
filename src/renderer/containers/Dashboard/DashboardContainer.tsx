@@ -1,25 +1,27 @@
 import * as React from "react";
 import {useState, useEffect} from "react";
+import {connect} from "react-redux";
+import {RouteComponentProps} from "react-router";
+import {bindActionCreators, Dispatch} from "redux";
+import * as path from "path";
+
+import {NetworkDropdown} from "../../components/NetworkDropdown/NetworkDropdown";
 import {ValidatorSimple} from "../../components/Validator/ValidatorSimple";
 import {Background} from "../../components/Background/Background";
 import {ButtonPrimary} from "../../components/Button/ButtonStandard";
-import {Dropdown} from "../../components/Dropdown/Dropdown";
 import {IValidatorBeaconNodes} from "../../models/beaconNode";
 import {exportKeystore} from "./export";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
-import {connect} from "react-redux";
 import {IRootState} from "../../reducers";
-import {RouteComponentProps} from "react-router";
-import {bindActionCreators, Dispatch} from "redux";
 import {storeNotificationAction} from "../../actions";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {V4Keystore} from "../../services/keystore";
-import * as path from "path";
 import {storeAuthAction, startAddingNewValidator as startAddingNewValidatorAction} from "../../actions";
 
 type IOwnProps = {
     validatorBeaconNodes: IValidatorBeaconNodes;
+    network: string;
 } & Pick<RouteComponentProps, "history" | "location">;
 
 export interface IValidator {
@@ -33,18 +35,7 @@ export interface IValidator {
 
 
 const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRootState, "auth">> = (props) => {
-    // TODO - temporary object, import real network object
-    const networksMock: {[id: number]: string} = {
-        12: "NetworkA",
-        13: "NetworkB",
-        32: "NetworkC"
-    };
-
-    const networks: {[id: number]: string} = {...networksMock, 0: "All networks"};
-
-    // Component State
     const [validators, setValidators] = useState<Array<IValidator>>([]);
-    const [currentNetwork, setCurrentNetwork] = useState<number>(0);
     const [confirmModal, setConfirmModal] = useState<boolean>(false);
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
 
@@ -99,14 +90,14 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
     };
 
     const loadValidators =  (): void => {
-        if(props.auth && props.auth.account){
+        if (props.auth && props.auth.account) {
             const validators = props.auth.account.getValidators();
-            const validatorArray = validators.map((v, index) => ({
+            const validatorArray = validators.map((v) => ({
                 name: props.auth.account!.name,
                 status: "TODO status",
                 publicKey: v.publicKey.toHexString(),
                 deposit: 30,
-                network: `${index%2===0 ? "NetworkA" : "NetworkB"}`,
+                network: props.auth.account!.getValidatorNetwork(v.publicKey.toHexString()),
                 privateKey: v.privateKey.toHexString()
             }));
             setValidators(validatorArray);
@@ -123,13 +114,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
 
     const topBar =
             <div className={"validator-top-bar"}>
-                <div className={"validator-dropdown"}>
-                    <Dropdown
-                        options={networks}
-                        current={currentNetwork}
-                        onChange={(selected): void => setCurrentNetwork(selected)}
-                    />
-                </div>
+                <NetworkDropdown />
                 <ButtonPrimary onClick={onAddNewValidator} buttonId={"add-validator"}>
                     ADD NEW VALIDATOR
                 </ButtonPrimary>
@@ -140,8 +125,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
             <div className={"validators-display"}>
                 {validators
                     .filter(validator =>
-                        validator.network === networks[currentNetwork] ||
-                            currentNetwork === 0 // if all networks
+                        validator.network === props.network || !props.network // if all networks
                     )
                     .map((v, index) => {
                         const hasNodes = Object.prototype.hasOwnProperty.call(props.validatorBeaconNodes, v.publicKey);
@@ -180,6 +164,7 @@ interface IInjectedProps{
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"> => ({
     auth: state.auth,
     validatorBeaconNodes: state.network.validatorBeaconNodes,
+    network: state.network.selected,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
