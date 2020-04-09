@@ -58,6 +58,10 @@ export class CGAccount implements IAccount {
         return this.validators;
     }
 
+    public getValidatorNetwork(validatorAddress: string): string {
+        return this.validatorsNetwork[validatorAddress];
+    }
+
     /**
      * Returns array of beacon nodes that validator uses.
      */

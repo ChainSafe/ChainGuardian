@@ -94,14 +94,14 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
     };
 
     const loadValidators =  (): void => {
-        if(props.auth && props.auth.account){
+        if (props.auth && props.auth.account) {
             const validators = props.auth.account.getValidators();
-            const validatorArray = validators.map((v, index) => ({
+            const validatorArray = validators.map((v) => ({
                 name: props.auth.account!.name,
                 status: "TODO status",
                 publicKey: v.publicKey.toHexString(),
                 deposit: 30,
-                network: `${index%2===0 ? "NetworkA" : "NetworkB"}`,
+                network: props.auth.account!.getValidatorNetwork(v.publicKey.toHexString()),
                 privateKey: v.privateKey.toHexString()
             }));
             setValidators(validatorArray);
