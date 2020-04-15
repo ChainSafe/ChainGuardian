@@ -3,20 +3,19 @@ import {useState, useEffect} from "react";
 import {connect} from "react-redux";
 import {RouteComponentProps} from "react-router";
 import {bindActionCreators, Dispatch} from "redux";
-import * as path from "path";
 
 import {NetworkDropdown} from "../../components/NetworkDropdown/NetworkDropdown";
 import {ValidatorSimple} from "../../components/Validator/ValidatorSimple";
 import {Background} from "../../components/Background/Background";
 import {ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {IValidatorBeaconNodes} from "../../models/beaconNode";
+import {deleteKeystore} from "../../services/utils/account";
 import {exportKeystore} from "./export";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 import {IRootState} from "../../reducers";
 import {storeNotificationAction} from "../../actions";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
-import {V4Keystore} from "../../services/keystore";
 import {storeAuthAction, startAddingNewValidator as startAddingNewValidatorAction} from "../../actions";
 
 type IOwnProps = {
@@ -54,38 +53,20 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
         if(validatorsData && props.auth.account){
             const validators =validatorsData.getValidators();
             const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey.toHexString();
-            const selectedV4Keystore = new V4Keystore(
-                path.join(validatorsData.directory,selectedValidatorPublicKey + ".json"));
-            selectedV4Keystore.destroy();
+            deleteKeystore(validatorsData.directory, selectedValidatorPublicKey);
             props.auth.account.removeValidator(selectedValidatorIndex);
             props.storeAuth(props.auth.account);
         }
         loadValidators();
         setConfirmModal(false);
-        props.notification({
-            source: props.history.location.pathname,
-            isVisible: true,
-            title: "Validator removed.",
-            horizontalPosition: Horizontal.RIGHT,
-            verticalPosition: Vertical.BOTTOM,
-            level: Level.ERROR,
-            expireTime: 10
-        });
+        displayNotification("Validator removed.");
     };
 
     const onExportValidator = (index: number): void => {
         const result = exportKeystore(validators[index]);
         // show notification only if success or error, not on cancel
-        if(result) {
-            props.notification({
-                source: props.history.location.pathname,
-                isVisible: true,
-                title: result.message,
-                horizontalPosition: Horizontal.RIGHT,
-                verticalPosition: Vertical.BOTTOM,
-                level: result.level,
-                expireTime: 10
-            });
+        if (result) {
+            displayNotification(result.message, result.level);
         }
     };
 
@@ -102,6 +83,18 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
             }));
             setValidators(validatorArray);
         }
+    };
+
+    const displayNotification = (title: string, level = Level.ERROR): void => {
+        props.notification({
+            source: props.history.location.pathname,
+            isVisible: true,
+            title,
+            horizontalPosition: Horizontal.RIGHT,
+            verticalPosition: Vertical.BOTTOM,
+            level,
+            expireTime: 10
+        });
     };
 
     useEffect(()=> {
