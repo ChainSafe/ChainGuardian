@@ -1,22 +1,25 @@
-import * as React from "react";
-import {ReactElement, Component} from "react";
+import React, {ReactElement, Component} from "react";
+import {RouteComponentProps} from "react-router";
+import {bindActionCreators, Dispatch} from "redux";
+import {connect} from "react-redux";
+import {getConfig} from "../../../config/config";
+
 import {Background} from "../../components/Background/Background";
 import {Modal} from "../../components/Modal/Modal";
 import {InputForm} from "../../components/Input/InputForm";
 import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
-import {Link} from "react-router-dom";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
-import {RouteComponentProps} from "react-router";
 import {Level, Horizontal, Vertical} from "../../components/Notification/NotificationEnums";
 import database from "../../services/db/api/database";
-import {bindActionCreators, Dispatch} from "redux";
-import {connect} from "react-redux";
 import {storeAuthAction, storeNotificationAction} from "../../actions";
 import {IRootState} from "../../reducers";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
+import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
+import {cleanUpAccount} from "../../services/utils/account";
 
 interface IState {
     input: string;
+    confirmModal: boolean;
 }
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
@@ -30,7 +33,8 @@ class Login extends Component<
 IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
 
     public state: IState = {
-        input: ""
+        input: "",
+        confirmModal: false,
     };
 
     public render(): ReactElement {
@@ -65,6 +69,14 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
                         REGISTER
                     </ButtonPrimary>
                 </Modal>
+
+                <ConfirmModal
+                    showModal={this.state.confirmModal}
+                    question={"Are you sure?"}
+                    description={"You already have an account registered. If you continue, all data will be erased."}
+                    onOKClick={this.handleNewAccount}
+                    onCancelClick={(): void => this.setState({confirmModal: false})}
+                />
             </Background>
         );
     }
@@ -89,7 +101,17 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
         }
     };
 
-    private handleRegisterClick = (): void => {
+    private handleRegisterClick = async(): Promise<void> => {
+        const account = await database.account.get(DEFAULT_ACCOUNT);
+        if (!account) {
+            this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
+        } else {
+            this.setState({confirmModal: true});
+        }
+    };
+
+    private handleNewAccount = async(): Promise<void> => {
+        await cleanUpAccount();
         this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
     };
 
@@ -104,7 +126,7 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
             level: Level.ERROR,
             expireTime: 3
         });
-    }
+    };
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
