@@ -18,7 +18,7 @@ export const cleanUpAccount = async(): Promise<void> => {
     }
 };
 
-export const deleteKeystore = (directory: string, publicKey: string) => {
+export const deleteKeystore = (directory: string, publicKey: string): void => {
     const selectedV4Keystore = new V4Keystore(path.join(directory, `${publicKey}.json`));
     selectedV4Keystore.destroy();
 };

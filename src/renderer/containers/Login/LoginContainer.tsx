@@ -2,7 +2,6 @@ import React, {ReactElement, Component} from "react";
 import {RouteComponentProps} from "react-router";
 import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
-import {getConfig} from "../../../config/config";
 
 import {Background} from "../../components/Background/Background";
 import {Modal} from "../../components/Modal/Modal";
