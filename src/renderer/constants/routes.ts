@@ -3,6 +3,7 @@ export class Routes {
     public static LOGIN_ROUTE = "/login";
     public static ONBOARD_ROUTE = "/onboard/:step";
     public static CHECK_PASSWORD = "/checkpassword";
+    public static VALIDATOR_DETAILS = "/details/:id";
     public static ONBOARD_ROUTE_EVALUATE = (step: OnBoardingRoutes): string => `/onboard/${step}`;
 }
 

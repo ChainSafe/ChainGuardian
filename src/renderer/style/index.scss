@@ -11,11 +11,7 @@
 @import '../components/TabNavigation/tabnavigation.scss';
 @import '../components/KeyModalContent/KeyModalContent.scss';
 @import '../components/Dropdown/dropdown.scss';
-
 @import '../components/LogStream/logstream.scss';
-
-@import '../containers/Onboard/index';
-
 @import '../components/CopyField/copyfield.scss';
 @import '../components/Notification/notification.scss';
 @import '../components/VerifyMnemonic/VerifyMnemonic.scss';
@@ -28,6 +24,7 @@
 @import '../components/ResponseCodeError/responsecodeerror.scss';
 @import '../components/Prompt/inputprompt.scss';
 @import '../components/ConfirmModal/confirmmodal.scss';
+@import '../components/MultipleInputVertical/multipleinputvertical.scss';
 
 @import '../containers/Onboard/index';
 @import '../containers/Login/LoginContainer.scss';
@@ -35,8 +32,7 @@
 @import '../containers/Onboard/SigningKey/Generate/Mnemonic.scss';
 @import '../containers/Onboard/WithdrawalKey/WithdrawalKey.scss';
 @import '../containers/AddValidator/CheckPassword.scss';
-
-@import '../components/MultipleInputVertical/multipleinputvertical.scss';
 @import '../containers/Onboard/CreatePassword/CreatePasswordContainer';
+@import '../containers/ValidatorDetails/ValidatorDetails';
 
 @import url('https://fonts.googleapis.com/css?family=Fira+Code|Lato|Palanquin+Dark:400,500,600,700|Palanquin:400,500&display=swap&subset=latin-ext');

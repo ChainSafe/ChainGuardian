@@ -8,6 +8,7 @@ import {LoginContainer} from "./Login/LoginContainer";
 import {Routes} from "../constants/routes";
 import {DashboardContainer} from "./Dashboard/DashboardContainer";
 import {CheckPasswordContainer} from "./AddValidator/CheckPassword";
+import {ValidatorDetailsContainer} from "./ValidatorDetails/ValidatorDetailsContainer";
 
 const Application = (): ReactElement => {
     useEffect(() => {
@@ -26,6 +27,7 @@ const Application = (): ReactElement => {
                     <Route path={Routes.LOGIN_ROUTE} component={LoginContainer}/>
                     <Route path={Routes.DASHBOARD_ROUTE} component={DashboardContainer}/>
                     <Route path={Routes.CHECK_PASSWORD} component={CheckPasswordContainer}/>
+                    <Route path={Routes.VALIDATOR_DETAILS} component={ValidatorDetailsContainer}/>
                     <Redirect from="/" to={Routes.LOGIN_ROUTE}/>
                 </Switch>
             </Router>
