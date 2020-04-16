@@ -13,7 +13,7 @@ import {deleteKeystore} from "../../services/utils/account";
 import {exportKeystore} from "./export";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 import {IRootState} from "../../reducers";
-import {storeNotificationAction} from "../../actions";
+import {loadValidatorsAction, storeNotificationAction} from "../../actions";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {storeAuthAction, startAddingNewValidator as startAddingNewValidatorAction} from "../../actions";
@@ -34,9 +34,9 @@ export interface IValidator {
 
 
 const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRootState, "auth">> = (props) => {
-    const [validators, setValidators] = useState<Array<IValidator>>([]);
     const [confirmModal, setConfirmModal] = useState<boolean>(false);
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
+    const validators = props.auth.validators;
 
     const onAddNewValidator = (): void => {
         props.startAddingNewValidator();
@@ -49,32 +49,15 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
     };
 
     const onConfirmDelete = (): void => {
-        const validatorsData = props.auth.account;
-        if(validatorsData && props.auth.account){
-            const validators =validatorsData.getValidators();
-            const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey.toHexString();
-            deleteKeystore(validatorsData.directory, selectedValidatorPublicKey);
+        if(props.auth.account){
+            const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey;
+            deleteKeystore(props.auth.account.directory, selectedValidatorPublicKey);
             props.auth.account.removeValidator(selectedValidatorIndex);
             props.storeAuth(props.auth.account);
+            props.loadValidators();
         }
-        loadValidators();
         setConfirmModal(false);
         displayNotification("Validator removed.");
-    };
-
-    const loadValidators =  (): void => {
-        if (props.auth && props.auth.account) {
-            const validators = props.auth.account.getValidators();
-            const validatorArray = validators.map((v) => ({
-                name: props.auth.account!.name,
-                status: "TODO status",
-                publicKey: v.publicKey.toHexString(),
-                deposit: 30,
-                network: props.auth.account!.getValidatorNetwork(v.publicKey.toHexString()),
-                privateKey: v.privateKey.toHexString()
-            }));
-            setValidators(validatorArray);
-        }
     };
 
     const displayNotification = (title: string, level = Level.ERROR): void => {
@@ -94,7 +77,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
             return props.history.push(Routes.LOGIN_ROUTE);
         }
 
-        loadValidators();
+        props.loadValidators();
     },[props.auth.account && props.auth.account.getValidators().length]);
 
     const topBar =
@@ -145,6 +128,7 @@ interface IInjectedProps{
     storeAuth: typeof storeAuthAction;
     notification: typeof storeNotificationAction;
     startAddingNewValidator: typeof startAddingNewValidatorAction;
+    loadValidators: typeof loadValidatorsAction;
 }
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"> => ({
@@ -159,6 +143,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
             storeAuth: storeAuthAction,
             notification: storeNotificationAction,
             startAddingNewValidator: startAddingNewValidatorAction,
+            loadValidators: loadValidatorsAction,
         },
         dispatch
     );
