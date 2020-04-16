@@ -62,14 +62,6 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
         displayNotification("Validator removed.");
     };
 
-    const onExportValidator = (index: number): void => {
-        const result = exportKeystore(validators[index]);
-        // show notification only if success or error, not on cancel
-        if (result) {
-            displayNotification(result.message, result.level);
-        }
-    };
-
     const loadValidators =  (): void => {
         if (props.auth && props.auth.account) {
             const validators = props.auth.account.getValidators();
@@ -129,7 +121,8 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
                                 publicKey={v.publicKey}
                                 deposit={v.deposit}
                                 onRemoveClick={(): void => {onRemoveValidator(index);}}
-                                onExportClick={(): void => {onExportValidator(index);}}
+                                onDetailsClick={(): void =>
+                                    props.history.push(Routes.VALIDATOR_DETAILS.replace(":id", index.toString()))}
                                 privateKey={v.privateKey}
                                 nodes={hasNodes ? props.validatorBeaconNodes[v.publicKey] : []}
                             />

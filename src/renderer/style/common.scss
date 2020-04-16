@@ -11,6 +11,11 @@
   flex-direction: column;
 }
 
+.stretch {
+  display: flex;
+  flex: 1;
+}
+
 .centered {
   align-items: center;
   justify-content: center;
