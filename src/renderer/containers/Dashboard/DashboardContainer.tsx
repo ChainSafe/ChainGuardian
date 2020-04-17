@@ -10,7 +10,6 @@ import {Background} from "../../components/Background/Background";
 import {ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {IValidatorBeaconNodes} from "../../models/beaconNode";
 import {deleteKeystore} from "../../services/utils/account";
-import {exportKeystore} from "./export";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 import {IRootState} from "../../reducers";
 import {loadValidatorsAction, storeNotificationAction} from "../../actions";
@@ -57,18 +56,12 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
             props.loadValidators();
         }
         setConfirmModal(false);
-        displayNotification("Validator removed.");
-    };
-
-    const displayNotification = (title: string, level = Level.ERROR): void => {
         props.notification({
             source: props.history.location.pathname,
-            isVisible: true,
-            title,
+            title: "Validator removed.",
             horizontalPosition: Horizontal.RIGHT,
             verticalPosition: Vertical.BOTTOM,
-            level,
-            expireTime: 10
+            level: Level.ERROR,
         });
     };
 

@@ -8,7 +8,6 @@ import {clipboard} from "electron";
 import {connect} from "react-redux";
 import {storeWithdrawalMnemonicAction,storeNotificationAction} from "../../../../actions";
 import {bindActionCreators, Dispatch} from "redux";
-import {Level, Horizontal, Vertical} from "../../../../components/Notification/NotificationEnums";
 import {IRootState} from "../../../../reducers";
 
 interface IState {
@@ -31,14 +30,9 @@ class WithdrawalKeyGenerate extends Component<IOwnProps & IInjectedProps &  Pick
         if(this.props.register.withdrawalVerification) {
             this.props.notification({
                 source: this.props.history.location.pathname,
-                isVisible: true,
                 title: "Oh no! That wasn’t the correct word.",
                 content: `Please make sure you have saved your unique mnemonic in a safe location
                  that you can quickly refer to and try again.`,
-                horizontalPosition: Horizontal.CENTER,
-                verticalPosition: Vertical.TOP,
-                level: Level.ERROR,
-                expireTime: 10
             });
         }
 
@@ -47,9 +41,9 @@ class WithdrawalKeyGenerate extends Component<IOwnProps & IInjectedProps &  Pick
             <>
                 <h1>Here’s your special withdrawal key mnemonic </h1>
                 <p className="mnemonic-paragraph">
-                    This is yours and yours only! Please store it somewhere safe, 
-                    like physically writing it down with pen and paper. 
-                    You should never store your key in a note-taking app like Evernote, 
+                    This is yours and yours only! Please store it somewhere safe,
+                    like physically writing it down with pen and paper.
+                    You should never store your key in a note-taking app like Evernote,
                     including cloud storage apps like Dropbox.
                 </p>
                 <MnemonicCopyField

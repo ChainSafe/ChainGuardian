@@ -41,7 +41,7 @@ export const loadValidatorsAction = () => {
             dispatch({
                 type: AuthActionTypes.LOAD_VALIDATORS,
                 payload: validatorArray,
-            })
+            });
         }
-    }
+    };
 };

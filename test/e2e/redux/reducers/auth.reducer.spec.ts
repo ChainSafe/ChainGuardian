@@ -1,4 +1,4 @@
-import {setAuth} from "../../../../src/renderer/actions/auth";
+import {setAuth} from "../../../../src/renderer/actions";
 import {IAuthState, authReducer as reducer} from "../../../../src/renderer/reducers/auth";
 import {AuthActionTypes} from "../../../../src/renderer/constants/action-types";
 import {Action} from "redux";
@@ -12,6 +12,7 @@ const account = new CGAccount({
 
 const initalState: IAuthState = {
     account: null,
+    validators: [],
 };
 
 describe("auth reducer", () => {

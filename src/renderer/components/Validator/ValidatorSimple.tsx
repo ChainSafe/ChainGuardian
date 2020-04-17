@@ -1,11 +1,9 @@
 import React, {useEffect} from "react";
 import {useDispatch} from "react-redux";
-import {useHistory} from "react-router";
 
 import {loadValidatorBeaconNodes} from "../../actions/network";
-import {Routes} from "../../constants/routes";
 import {BeaconNode} from "../../models/beaconNode";
-import {ButtonSecondary, ButtonDestructive, ButtonPrimary} from "../Button/ButtonStandard";
+import {ButtonDestructive, ButtonPrimary} from "../Button/ButtonStandard";
 import {ValidatorStat} from "../Cards/ValidatorStat";
 import {PrivateKeyField} from "../PrivateKeyField/PrivateKeyField";
 import {InputForm} from "../Input/InputForm";
@@ -25,7 +23,6 @@ export interface IValidatorSimpleProps {
 export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
     props: IValidatorSimpleProps) => {
     const dispatch = useDispatch();
-    const history = useHistory();
 
     useEffect(() => {
         dispatch(loadValidatorBeaconNodes(props.publicKey, true));

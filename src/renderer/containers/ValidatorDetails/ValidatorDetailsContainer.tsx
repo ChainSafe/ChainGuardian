@@ -1,14 +1,14 @@
-import React, {useState} from "react";
+import React, {ReactElement, useState} from "react";
 import {useHistory, useParams} from "react-router";
 import {Background} from "../../components/Background/Background";
 import {BackButton} from "../../components/Button/ButtonAction";
 import {TabNavigation} from "../../components/TabNavigation/TabNavigation";
 import {ValidatorStats} from "./ValidatorStats/ValidatorStats";
 
-export const ValidatorDetailsContainer = () => {
+export const ValidatorDetailsContainer = (): ReactElement => {
     const [currentTab, setCurrentTab] = useState(0);
     const history = useHistory();
-    const { id } = useParams();
+    const {id} = useParams();
     const validatorId = id ? parseInt(id) : 0;
 
     const tabs = [
@@ -26,7 +26,7 @@ export const ValidatorDetailsContainer = () => {
 
                 {currentTab === tabs[0].tabId ?
                     <ValidatorStats validatorId={validatorId} />
-                : null}
+                    : null}
             </div>
         </Background>
     );
