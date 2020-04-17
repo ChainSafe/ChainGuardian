@@ -14,5 +14,12 @@ module.exports = ({ config, mode }) => {
         },
     });
     config.resolve.extensions.push('.ts', '.tsx', ".scss");
+
+    config.resolve.alias = {
+        ...config.resolve.alias,
+        // Mock required modules for some containers
+        [path.resolve(__dirname, '../src/renderer/actions/index')]: path.resolve(__dirname, 'mockActions.ts'),
+        [path.resolve(__dirname, '../src/renderer/services/utils/account')]: path.resolve(__dirname, 'mockFn.ts'),
+    };
     return config;
 };

@@ -1,10 +1,11 @@
 import React from "react";
 import {useHistory} from "react-router";
+import {useSelector, useDispatch} from "react-redux";
+
 import {storeNotificationAction} from "../../../actions";
 import {BalanceGraph, IntervalEnum} from "../../../components/BalanceGraph/BalanceGraph";
 import {ButtonSecondary} from "../../../components/Button/ButtonStandard";
 import {IRootState} from "../../../reducers";
-import {useSelector, useDispatch} from "react-redux";
 import {exportKeystore} from "../../../services/utils/account";
 
 interface IValidatorStatsProps {
