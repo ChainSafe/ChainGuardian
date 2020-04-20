@@ -5,13 +5,14 @@ import {MemoryRouter} from "react-router";
 import { Provider as ReduxProvider } from 'react-redux';
 import {combineReducers, createStore} from "redux";
 
-import {ValidatorDetailsContainer} from "./ValidatorDetailsContainer";
+import {ValidatorStats} from "./ValidatorStats";
 
 function Provider({ story }: any) {
     const store = createStore(combineReducers({auth: () => ({
         account: null,
         validators: [],
     })}));
+
     return (
         <ReduxProvider store={store}>
             {story}
@@ -19,8 +20,18 @@ function Provider({ story }: any) {
     );
 }
 
-storiesOf('Validator Details', module).add('container', () => {
-    return <ValidatorDetailsContainer />
+storiesOf('Validator stats', module).add('stats', () => {
+    return <ValidatorStats
+        validatorId={1}
+        validator={{
+            name: "test",
+            status: "good",
+            publicKey: "0xpublic",
+            deposit: 32,
+            network: "Lighthouse",
+            privateKey: "0xprivate",
+        }}
+    />
 })
     .addDecorator(story => <Provider story={story()} />)
     .addDecorator(withKnobs)

@@ -1,8 +1,11 @@
 import React, {ReactElement, useState} from "react";
 import {useHistory, useParams} from "react-router";
+import {useSelector} from "react-redux";
 import {Background} from "../../components/Background/Background";
 import {BackButton} from "../../components/Button/ButtonAction";
 import {TabNavigation} from "../../components/TabNavigation/TabNavigation";
+import {IRootState} from "../../reducers";
+import {BeaconNode} from "./BeaconNode/BeaconNode";
 import {ValidatorStats} from "./ValidatorStats/ValidatorStats";
 
 export const ValidatorDetailsContainer = (): ReactElement => {
@@ -10,11 +13,19 @@ export const ValidatorDetailsContainer = (): ReactElement => {
     const history = useHistory();
     const {id} = useParams();
     const validatorId = id ? parseInt(id) : 0;
+    const validators = useSelector((state: IRootState) => state.auth.validators);
+    const beaconNodes = useSelector((state: IRootState) => state.network.validatorBeaconNodes);
+    const validatorBeaconNodes = beaconNodes[validators[validatorId].publicKey] || [];
 
     const tabs = [
-        {tabId: 0, tabName: "Validator stats"},
-        {tabId: 1, tabName: "Beacon node"},
+        {tabId: 0, tabName: "Validator stats", index: validatorId},
     ];
+    // Load dynamically all validator's beacon node in tabs
+    validatorBeaconNodes.forEach((node, index) => tabs.push({
+        tabId: tabs.length + index,
+        tabName: "Beacon node",
+        index,
+    }));
 
     return (
         <Background scrollable={true}>
@@ -25,8 +36,13 @@ export const ValidatorDetailsContainer = (): ReactElement => {
                 </div>
 
                 {currentTab === tabs[0].tabId ?
-                    <ValidatorStats validatorId={validatorId} />
+                    <ValidatorStats validator={validators[validatorId]} validatorId={validatorId} />
                     : null}
+
+                {tabs.forEach(tab => (currentTab === tabs[1].tabId ?
+                    <BeaconNode node={validatorBeaconNodes[tab.index]} />
+                    : null
+                ))}
             </div>
         </Background>
     );

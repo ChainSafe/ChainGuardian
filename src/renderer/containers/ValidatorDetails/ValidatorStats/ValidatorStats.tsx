@@ -1,24 +1,24 @@
 import React from "react";
 import {useHistory} from "react-router";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch} from "react-redux";
 
 import {storeNotificationAction} from "../../../actions";
 import {BalanceGraph, IntervalEnum} from "../../../components/BalanceGraph/BalanceGraph";
 import {ButtonSecondary} from "../../../components/Button/ButtonStandard";
-import {IRootState} from "../../../reducers";
 import {exportKeystore} from "../../../services/utils/account";
+import {IValidator} from "../../Dashboard/DashboardContainer";
 
 interface IValidatorStatsProps {
     validatorId: number;
+    validator: IValidator;
 }
 
-export const ValidatorStats = ({validatorId}: IValidatorStatsProps) => {
-    const validators = useSelector((state: IRootState) => state.auth.validators);
+export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps) => {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const onExportValidator = (index: number): void => {
-        const result = exportKeystore(validators[index]);
+    const onExportValidator = (): void => {
+        const result = exportKeystore(validator);
         // show notification only if success or error, not on cancel
         if (result) {
             dispatch(storeNotificationAction({
@@ -32,7 +32,7 @@ export const ValidatorStats = ({validatorId}: IValidatorStatsProps) => {
     return (
         <div className="validator-details-stats">
             <h2>Validator {validatorId}</h2>
-            <ButtonSecondary onClick={(): void => onExportValidator(validatorId)}>EXPORT</ButtonSecondary>
+            <ButtonSecondary onClick={onExportValidator}>EXPORT</ButtonSecondary>
 
             <div className="row">
                 <BalanceGraph
