@@ -3,7 +3,6 @@ import {warn} from "electron-log";
 import {Action, Dispatch} from "redux";
 
 import {BeaconChain} from "../services/docker/chain";
-import {DockerRegistry} from "../services/docker/docker-registry";
 import {NetworkActionTypes} from "../constants/action-types";
 import {IRootState} from "../reducers";
 import {BeaconNode, BeaconNodes} from "../models/beaconNode";
@@ -32,24 +31,6 @@ export const startBeaconChainAction = (network: string, ports?: string[]) => {
                 break;
             default:
                 await BeaconChain.startPrysmBeaconChain(ports);
-        }
-    };
-};
-
-export const stopBeaconChainAction = (network = SupportedNetworks.PRYSM) => {
-    return async (): Promise<void> => {
-        const container = DockerRegistry.getContainer(network);
-        if (container) {
-            await container.stop();
-        }
-    };
-};
-
-export const restartBeaconChainAction = (network = SupportedNetworks.PRYSM) => {
-    return async (): Promise<void> => {
-        const container = DockerRegistry.getContainer(network);
-        if (container) {
-            await container.restart();
         }
     };
 };

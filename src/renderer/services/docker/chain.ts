@@ -15,20 +15,22 @@ export class BeaconChain extends Container {
         ports = BeaconChain.DefaultPorts,
         waitUntilReady = false,
     ): Promise<BeaconChain> {
-        const existingBC = DockerRegistry.getContainer(SupportedNetworks.PRYSM);
+        const imageName = BeaconChain.getContainerName(SupportedNetworks.PRYSM);
+        // Check if docker image already exists
+        const existingBC = DockerRegistry.getContainer(imageName);
         if (existingBC) {
             return existingBC as BeaconChain;
         }
 
         const bc = new BeaconChain({
             image: "gcr.io/prysmaticlabs/prysm/beacon-chain:latest",
-            name: BeaconChain.getContainerName(SupportedNetworks.PRYSM),
+            name: imageName,
             restart: "unless-stopped",
             ports,
             volume: `${SupportedNetworks.PRYSM}-chain-data:/data`,
             cmd: "--datadir=/data --grpc-gateway-port 4001"
         });
-        DockerRegistry.addContainer(SupportedNetworks.PRYSM, bc);
+        DockerRegistry.addContainer(imageName, bc);
 
         await bc.run();
         if (waitUntilReady) {
@@ -73,8 +75,7 @@ export class BeaconChain extends Container {
             image,
         });
 
-        const network = BeaconChain.getNetworkFromContainerName(name);
-        DockerRegistry.addContainer(network!, bc);
+        DockerRegistry.addContainer(name, bc);
 
         return bc;
     }

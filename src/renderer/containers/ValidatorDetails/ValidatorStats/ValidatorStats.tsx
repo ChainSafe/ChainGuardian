@@ -1,4 +1,4 @@
-import React from "react";
+import React, {ReactElement} from "react";
 import {useHistory} from "react-router";
 import {useDispatch} from "react-redux";
 
@@ -13,7 +13,7 @@ interface IValidatorStatsProps {
     validator: IValidator;
 }
 
-export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps) => {
+export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps): ReactElement => {
     const history = useHistory();
     const dispatch = useDispatch();
 
