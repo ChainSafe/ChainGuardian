@@ -5,6 +5,7 @@ import database from "../db/api/database";
 import {SupportedNetworks} from "../eth2/supportedNetworks";
 import {Container} from "./container";
 import {DockerRegistry} from "./docker-registry";
+import {getLogMessageType} from "./utils";
 
 type LogType = "info" | "error";
 type LogCallbackFunc = (type: LogType, message: string) => void;
@@ -79,8 +80,7 @@ export class BeaconChain extends Container {
 
         logs.stderr.on("data", function(output: Buffer) {
             const message = output.toString();
-            const isInfo = message.substr(0, 40).includes("level=info");
-            const type = isInfo ? "info" : "error";
+            const type = getLogMessageType(message);
             callback(type, message);
         });
     }

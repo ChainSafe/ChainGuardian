@@ -40,7 +40,7 @@ export const ValidatorDetailsContainer = (): ReactElement => {
                     : null}
 
                 {tabs.map(tab => (tab.tabName === "Beacon node" && currentTab === tab.tabId ?
-                    <BeaconNode node={validatorBeaconNodes[tab.index]} />
+                    <BeaconNode key={tab.tabId} node={validatorBeaconNodes[tab.index]} />
                     : null
                 ))}
             </div>

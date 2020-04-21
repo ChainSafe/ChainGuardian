@@ -13,7 +13,10 @@ export const BeaconNode = ({node}: IBeaconNodeProps): ReactElement => {
 
     return (
         <div className="beacon-node">
-            <LogStream stream={container ? container.getLogStream()! : undefined} />
+            <div className="box log-stream-container">
+                <h4>Log Stream</h4>
+                <LogStream stream={container ? container.getLogStream()! : undefined} />
+            </div>
         </div>
     );
 };

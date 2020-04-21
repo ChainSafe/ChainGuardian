@@ -31,7 +31,7 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
     const renderBeaconNodes = (): React.ReactElement => {
         return (
             <div className="validator-nodes">
-                <div className="node-container">
+                <div className="box node-container">
                     <div className="node-grid-container">
                         {props.nodes.length === 0 ? <p>No working beacon nodes.</p> : null}
 

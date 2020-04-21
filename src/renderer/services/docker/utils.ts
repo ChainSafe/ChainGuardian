@@ -15,3 +15,8 @@ export function extractDockerVersion(dockerLog: string): string | null {
     const regexp = /docker version (\d+\.\d+\.\d+)/.exec(dockerLog.toLowerCase());
     return regexp ? regexp[1] : null;
 }
+
+export function getLogMessageType(message: string): "info"|"error" {
+    const isInfo = message.substr(0, 40).includes("level=info");
+    return isInfo ? "info" : "error";
+}
