@@ -120,7 +120,7 @@ exports[`LineGraph renders correctly, day 1`] = `
             }
           }
         >
-
+          
         </p>
       </div>
     </div>
@@ -248,7 +248,7 @@ exports[`LineGraph renders correctly, hour 1`] = `
             }
           }
         >
-
+          
         </p>
       </div>
     </div>
@@ -376,7 +376,7 @@ exports[`LineGraph renders correctly, month 1`] = `
             }
           }
         >
-
+          
         </p>
       </div>
     </div>
@@ -504,7 +504,7 @@ exports[`LineGraph renders correctly, week 1`] = `
             }
           }
         >
-
+          
         </p>
       </div>
     </div>
@@ -632,7 +632,7 @@ exports[`LineGraph renders correctly, year 1`] = `
             }
           }
         >
-
+          
         </p>
       </div>
     </div>

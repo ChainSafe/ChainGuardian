@@ -65,7 +65,7 @@ exports[`Validator renders correctly, 2 nodes 1`] = `
     className="validator-nodes"
   >
     <div
-      className="node-container"
+      className="box node-container"
     >
       <div
         className="node-grid-container"
@@ -248,7 +248,7 @@ exports[`Validator renders correctly, 4 nodes 1`] = `
     className="validator-nodes"
   >
     <div
-      className="node-container"
+      className="box node-container"
     >
       <div
         className="node-grid-container"
