@@ -61,13 +61,6 @@ export class BeaconChain extends Container {
         return `${network}-beacon-node`;
     }
 
-    public static getNetworkFromContainerName(containerName: string): SupportedNetworks|undefined {
-        const name = containerName.split("-")[0];
-        if (name === SupportedNetworks.PRYSM) {
-            return SupportedNetworks.PRYSM;
-        }
-    }
-
     private static async restartBeaconChainContainer(name: string, image: string): Promise<void> {
         const bc = new BeaconChain({
             name,

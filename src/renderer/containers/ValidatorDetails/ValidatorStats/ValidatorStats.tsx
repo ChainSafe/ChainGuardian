@@ -37,7 +37,7 @@ export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps): 
             <div className="row">
                 <BalanceGraph
                     defaultInterval={IntervalEnum.MONTH}
-                    getData={async () => [2356,3213,8934,7924,7924]}
+                    getData={async (): Promise<number[]> => [2356,3213,8934,7924,7924]}
                 />
             </div>
         </div>

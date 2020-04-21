@@ -10,7 +10,7 @@ export const LogStream: React.FunctionComponent<ILogStreamProps> = (props: ILogS
     const [logs, setLogs] = useState<string[]>([]);
     
     useEffect(()=> {
-        props.stream && props.stream.on('data', (chunk: Buffer)=>{
+        props.stream && props.stream.on("data", (chunk: Buffer)=>{
             setLogs(logs.concat([chunk.toString()]));
         });
     },[logs]);
