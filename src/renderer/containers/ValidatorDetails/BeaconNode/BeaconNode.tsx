@@ -13,7 +13,7 @@ export const BeaconNode = ({node}: IBeaconNodeProps): ReactElement => {
 
     return (
         <div className="beacon-node">
-            <div className="row">
+            <div className="row space-between">
                 <h3>Beacon Node</h3>
                 <h5>{node.url}</h5>
             </div>

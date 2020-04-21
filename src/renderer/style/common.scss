@@ -21,6 +21,10 @@
   justify-content: center;
 }
 
+.space-between {
+  justify-content: space-between;
+}
+
 .box {
   background-color: $neutral-800;
   box-shadow: inset 0px 2px 6px rgba(10, 39, 51, 0.2);

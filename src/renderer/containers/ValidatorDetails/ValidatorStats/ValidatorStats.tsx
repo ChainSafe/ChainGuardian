@@ -31,8 +31,10 @@ export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps): 
 
     return (
         <div className="validator-details-stats">
-            <h2>Validator {validatorId}</h2>
-            <ButtonSecondary onClick={onExportValidator}>EXPORT</ButtonSecondary>
+            <div className="row space-between">
+                <h2>Validator {validatorId}</h2>
+                <ButtonSecondary onClick={onExportValidator}>EXPORT</ButtonSecondary>
+            </div>
 
             <div className="row">
                 <BalanceGraph
