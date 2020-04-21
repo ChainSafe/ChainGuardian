@@ -24,7 +24,7 @@ storiesOf('BeaconNode', module).add('stats', () => {
     return <BeaconNode
         node={{
             url: "test.com",
-            localDockerId: "prysm-network-node",
+            localDockerId: "Prysm-beacon-node",
         }}
     />
 })
