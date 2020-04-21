@@ -12,7 +12,7 @@ export enum IntervalEnum {
     YEAR = "year",
 }
 
-export interface IBalanceGraphProps {
+export interface ILineGraphProps {
     defaultInterval: IntervalEnum;
     /**
      * Should return values based on IntervalEnum //
@@ -24,9 +24,10 @@ export interface IBalanceGraphProps {
      * YEAR-last 12 months- 12 values,
      */
     getData: (interval: IntervalEnum) => Promise<number[]>;
+    title: string;
 }
 
-export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props: IBalanceGraphProps) => {
+export const LineGraph: React.FunctionComponent<ILineGraphProps> = (props: ILineGraphProps) => {
     const [data, setData] = useState<Array<object>>([]);
     const [intervalOption, setIntervalOption] = useState<IntervalEnum>(props.defaultInterval);
     const [refreshIntervalId, setRefreshIntervalId] = useState<number>(0);
@@ -79,9 +80,9 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
                 break;
             case IntervalEnum.YEAR: if(diffInSeconds >= 2678400) setLastRefreshTime(timeOnInterval);
                 break;
-        } 
+        }
     };
- 
+
     useEffect(()=>{
         awaitData();
         clearInterval(refreshIntervalId);
@@ -97,21 +98,21 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
     return(
         <div className="balance-graph">
             <div className="graph-header">
-                <div className="graph-title">Validator Balance</div>
+                <div className="graph-title">{props.title}</div>
                 <div className="graph-options">
-                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.HOUR);}} 
+                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.HOUR);}}
                         className={renderGraphIntervalOption(IntervalEnum.HOUR)}
                     >1H</div>
-                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.DAY);}} 
+                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.DAY);}}
                         className={renderGraphIntervalOption(IntervalEnum.DAY)}
                     >1D</div>
-                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.WEEK);}} 
+                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.WEEK);}}
                         className={renderGraphIntervalOption(IntervalEnum.WEEK)}
                     >1W</div>
-                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.MONTH);}} 
+                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.MONTH);}}
                         className={renderGraphIntervalOption(IntervalEnum.MONTH)}
                     >1M</div>
-                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.YEAR);}} 
+                    <div onClick={(): void=>{handleOptionClick(IntervalEnum.YEAR);}}
                         className={renderGraphIntervalOption(IntervalEnum.YEAR)}
                     >1Y</div>
                 </div>
@@ -119,7 +120,7 @@ export const BalanceGraph: React.FunctionComponent<IBalanceGraphProps> = (props:
             <LineChart
                 width={624} height={199} data={data}
                 margin={{top: 5, bottom: 0, left: 20, right: 20,}}>
-                <XAxis dataKey="name" stroke="#9ba7af" 
+                <XAxis dataKey="name" stroke="#9ba7af"
                     interval="preserveStartEnd" tickLine={false}/>
                 <Tooltip isAnimationActive={false}/>
                 <Line type="step" dataKey="value" stroke="#76DF9A" dot={false}/>

@@ -3,7 +3,7 @@ import {useHistory} from "react-router";
 import {useDispatch} from "react-redux";
 
 import {storeNotificationAction} from "../../../actions";
-import {BalanceGraph, IntervalEnum} from "../../../components/BalanceGraph/BalanceGraph";
+import {LineGraph, IntervalEnum} from "../../../components/LineGraph/LineGraph";
 import {ButtonSecondary} from "../../../components/Button/ButtonStandard";
 import {exportKeystore} from "../../../services/utils/account";
 import {IValidator} from "../../Dashboard/DashboardContainer";
@@ -37,7 +37,8 @@ export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps): 
             </div>
 
             <div className="row">
-                <BalanceGraph
+                <LineGraph
+                    title="Validator Balance"
                     defaultInterval={IntervalEnum.MONTH}
                     getData={async (): Promise<number[]> => [2356,3213,8934,7924,7924]}
                 />

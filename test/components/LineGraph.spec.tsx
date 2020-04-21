@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as renderer from "react-test-renderer";
-import {BalanceGraph, IntervalEnum} from "../../src/renderer/components/BalanceGraph/BalanceGraph";
+import {LineGraph, IntervalEnum} from "../../src/renderer/components/LineGraph/LineGraph";
 
 const giveData = async (): Promise<number[]> => {
     return [2356,3213,8934,7924,7924,1245,3456,5673,2124,
@@ -12,10 +12,11 @@ const giveData = async (): Promise<number[]> => {
         6777,6777,6777,6777,6777,6777,4000,4000,4000,1000,1200];
 };
 
-describe("BalanceGraph", () => {
+describe("LineGraph", () => {
     it("renders correctly, hour", () => {
         const tree = renderer
-            .create(<BalanceGraph 
+            .create(<LineGraph
+                title="Validator Balance"
                 defaultInterval={IntervalEnum.HOUR}
                 getData={giveData}
             />)
@@ -24,7 +25,8 @@ describe("BalanceGraph", () => {
     });
     it("renders correctly, day", () => {
         const tree = renderer
-            .create(<BalanceGraph 
+            .create(<LineGraph
+                title="Validator Balance"
                 defaultInterval={IntervalEnum.DAY}
                 getData={giveData}
             />)
@@ -33,7 +35,8 @@ describe("BalanceGraph", () => {
     });
     it("renders correctly, week", () => {
         const tree = renderer
-            .create(<BalanceGraph 
+            .create(<LineGraph
+                title="Validator Balance"
                 defaultInterval={IntervalEnum.WEEK}
                 getData={giveData}
             />)
@@ -42,7 +45,8 @@ describe("BalanceGraph", () => {
     });
     it("renders correctly, month", () => {
         const tree = renderer
-            .create(<BalanceGraph 
+            .create(<LineGraph
+                title="Validator Balance"
                 defaultInterval={IntervalEnum.MONTH}
                 getData={giveData}
             />)
@@ -51,7 +55,8 @@ describe("BalanceGraph", () => {
     });
     it("renders correctly, year", () => {
         const tree = renderer
-            .create(<BalanceGraph 
+            .create(<LineGraph
+                title="Validator Balance"
                 defaultInterval={IntervalEnum.YEAR}
                 getData={giveData}
             />)

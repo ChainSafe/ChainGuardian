@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BalanceGraph renders correctly, day 1`] = `
+exports[`LineGraph renders correctly, day 1`] = `
 <div
   className="balance-graph"
 >
@@ -120,7 +120,7 @@ exports[`BalanceGraph renders correctly, day 1`] = `
             }
           }
         >
-          
+
         </p>
       </div>
     </div>
@@ -128,7 +128,7 @@ exports[`BalanceGraph renders correctly, day 1`] = `
 </div>
 `;
 
-exports[`BalanceGraph renders correctly, hour 1`] = `
+exports[`LineGraph renders correctly, hour 1`] = `
 <div
   className="balance-graph"
 >
@@ -248,7 +248,7 @@ exports[`BalanceGraph renders correctly, hour 1`] = `
             }
           }
         >
-          
+
         </p>
       </div>
     </div>
@@ -256,7 +256,7 @@ exports[`BalanceGraph renders correctly, hour 1`] = `
 </div>
 `;
 
-exports[`BalanceGraph renders correctly, month 1`] = `
+exports[`LineGraph renders correctly, month 1`] = `
 <div
   className="balance-graph"
 >
@@ -376,7 +376,7 @@ exports[`BalanceGraph renders correctly, month 1`] = `
             }
           }
         >
-          
+
         </p>
       </div>
     </div>
@@ -384,7 +384,7 @@ exports[`BalanceGraph renders correctly, month 1`] = `
 </div>
 `;
 
-exports[`BalanceGraph renders correctly, week 1`] = `
+exports[`LineGraph renders correctly, week 1`] = `
 <div
   className="balance-graph"
 >
@@ -504,7 +504,7 @@ exports[`BalanceGraph renders correctly, week 1`] = `
             }
           }
         >
-          
+
         </p>
       </div>
     </div>
@@ -512,7 +512,7 @@ exports[`BalanceGraph renders correctly, week 1`] = `
 </div>
 `;
 
-exports[`BalanceGraph renders correctly, year 1`] = `
+exports[`LineGraph renders correctly, year 1`] = `
 <div
   className="balance-graph"
 >
@@ -632,7 +632,7 @@ exports[`BalanceGraph renders correctly, year 1`] = `
             }
           }
         >
-          
+
         </p>
       </div>
     </div>
