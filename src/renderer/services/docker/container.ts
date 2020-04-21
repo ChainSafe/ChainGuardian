@@ -63,9 +63,11 @@ export abstract class Container {
 
     public async startStoppedContainer(): Promise<void> {
         if (!(await Container.isContainerRunning(this.params.name))) {
-            const container = runCmd(Command.start(this.params.name));
-            this.docker = {name: this.params.name, stdout: container.stdout, stderr: container.stderr};
+            runCmd(Command.start(this.params.name));
         }
+        // Use the same way as docker run
+        const logs = runCmd(Command.logs(this.params.name, true));
+        this.docker = {name: this.params.name, stdout: logs.stdout, stderr: logs.stderr};
     }
 
     public getName(): string | undefined {

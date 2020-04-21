@@ -1,4 +1,5 @@
 import * as logger from "electron-log";
+import {Readable} from "stream";
 
 import database from "../db/api/database";
 import {SupportedNetworks} from "../eth2/supportedNetworks";
@@ -47,9 +48,7 @@ export class BeaconChain extends Container {
                 if (node.localDockerId) {
                     const image = await Container.getImageName(node.localDockerId);
                     if (image) {
-                        const bc = await BeaconChain.createBeaconChainContainer(node.localDockerId, image);
-                        await bc.startStoppedContainer();
-                        logger.info(`Started ${node.localDockerId} local beacon node.`);
+                        await BeaconChain.restartBeaconChainContainer(node.localDockerId, image);
                     } else {
                         logger.info(`Image for container ${node.localDockerId} not found.`);
                     }
@@ -69,15 +68,14 @@ export class BeaconChain extends Container {
         }
     }
 
-    private static async createBeaconChainContainer(name: string, image: string): Promise<BeaconChain> {
+    private static async restartBeaconChainContainer(name: string, image: string): Promise<void> {
         const bc = new BeaconChain({
             name,
             image,
         });
-
+        await bc.startStoppedContainer();
         DockerRegistry.addContainer(name, bc);
-
-        return bc;
+        logger.info(`Started ${name} local beacon node.`);
     }
 
     public listenToLogs(callback: LogCallbackFunc): void {
@@ -92,5 +90,10 @@ export class BeaconChain extends Container {
             const type = isInfo ? "info" : "error";
             callback(type, message);
         });
+    }
+
+    public getLogStream(): Readable|null {
+        const logs = this.getLogs();
+        return logs ? logs.stderr : null;
     }
 }
