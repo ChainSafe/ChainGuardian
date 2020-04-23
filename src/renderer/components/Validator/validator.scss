@@ -3,8 +3,9 @@
     box-shadow: 0px 2px 56px rgba(0, 0, 0, 0.3);
     border-radius: 24px;
     padding: 32px;
-    width: 1280px;
     display: flex;
+    flex: 1;
+    max-width: 1280px;
     justify-content: space-between;
 }
 .validator-stats{
@@ -24,9 +25,6 @@
 }
 .node-container{
     padding: 24px;
-    background-color: $neutral-800;
-    box-shadow: inset 0px 2px 6px rgba(10, 39, 51, 0.2);
-    border-radius: 16px;
     .add-button{
         position: fixed;
         margin-top: -40px;

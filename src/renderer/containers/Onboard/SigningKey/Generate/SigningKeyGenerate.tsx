@@ -8,7 +8,6 @@ import {Eth2HDWallet} from "../../../../services/wallet";
 import {connect} from "react-redux";
 import {storeSigningMnemonicAction, storeNotificationAction} from "../../../../actions";
 import {bindActionCreators, Dispatch} from "redux";
-import {Level, Horizontal, Vertical} from "../../../../components/Notification/NotificationEnums"; 
 import {IRootState} from "../../../../reducers";
 
 interface IState {
@@ -26,19 +25,14 @@ class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRoot
     public state = {
         mnemonic: Eth2HDWallet.generate(),
     };
-    
+
     public render(): ReactElement {
         if(this.props.register.signingVerification) {
             this.props.notification({
                 source: this.props.history.location.pathname,
-                isVisible: true,
                 title: "Oh no! That wasn’t the correct word.",
                 content: `Please make sure you have saved your unique mnemonic in a safe location
                  that you can quickly refer to and try again.`,
-                horizontalPosition: Horizontal.CENTER,
-                verticalPosition: Vertical.TOP,
-                level: Level.ERROR,
-                expireTime: 10
             });
         }
 
@@ -46,16 +40,16 @@ class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRoot
         return (
             <>
                 <h1>Here’s your special signing key mnemonic</h1>
-                <p className="mnemonic-paragraph">This is yours and yours only! Please store it somewhere safe, 
-                    like physically writing it down with pen and paper. 
-                    You should never store your key in a note-taking app like Evernote, 
+                <p className="mnemonic-paragraph">This is yours and yours only! Please store it somewhere safe,
+                    like physically writing it down with pen and paper.
+                    You should never store your key in a note-taking app like Evernote,
                     including cloud storage apps like Dropbox.</p>
                 <MnemonicCopyField
                     value={mnemonic}
                     onCopy={(): void => clipboard.writeText(mnemonic)}
                 />
                 <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_KEY_VALIDATE)}>
-                    <ButtonPrimary 
+                    <ButtonPrimary
                         onClick={(): void => {this.props.storeMnemonic(mnemonic);}}
                         buttonId="savedSigningMnemonic"
                     >I SAVED THIS MNEMONIC</ButtonPrimary>

@@ -3,7 +3,7 @@ import {useDispatch} from "react-redux";
 
 import {loadValidatorBeaconNodes} from "../../actions/network";
 import {BeaconNode} from "../../models/beaconNode";
-import {ButtonSecondary, ButtonDestructive} from "../Button/ButtonStandard";
+import {ButtonDestructive, ButtonPrimary} from "../Button/ButtonStandard";
 import {ValidatorStat} from "../Cards/ValidatorStat";
 import {PrivateKeyField} from "../PrivateKeyField/PrivateKeyField";
 import {InputForm} from "../Input/InputForm";
@@ -15,7 +15,7 @@ export interface IValidatorSimpleProps {
     publicKey: string,
     deposit: number,
     onRemoveClick: () => void;
-    onExportClick: () => void;
+    onDetailsClick: () => void;
     privateKey: string;
     nodes: BeaconNode[];
 }
@@ -31,7 +31,7 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
     const renderBeaconNodes = (): React.ReactElement => {
         return (
             <div className="validator-nodes">
-                <div className="node-container">
+                <div className="box node-container">
                     <div className="node-grid-container">
                         {props.nodes.length === 0 ? <p>No working beacon nodes.</p> : null}
 
@@ -82,7 +82,7 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
                 {renderBeaconNodes()}
                 <div className="validator-simple-buttons">
                     <ButtonDestructive onClick={props.onRemoveClick}>REMOVE</ButtonDestructive>
-                    <ButtonSecondary onClick={props.onExportClick}>EXPORT</ButtonSecondary>
+                    <ButtonPrimary onClick={props.onDetailsClick}>DETAILS</ButtonPrimary>
                 </div>
             </div>
         </div>

@@ -25,7 +25,8 @@ export enum DepositActionTypes {
 }
 
 export enum AuthActionTypes {
-    STORE_AUTH = "STORE_AUTH"
+    STORE_AUTH = "STORE_AUTH",
+    LOAD_VALIDATORS = "LOAD_VALIDATORS"
 }
 
 export enum NotificationActionTypes {

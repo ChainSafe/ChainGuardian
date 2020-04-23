@@ -1,7 +1,7 @@
 .tab-container{
     width: 768px;
     display: flex;
-    
+    flex: 1;
     border-bottom: 2px solid $neutral-500;
 }
 .tab{

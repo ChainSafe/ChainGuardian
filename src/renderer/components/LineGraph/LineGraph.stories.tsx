@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, text, boolean, number, select } from '@storybook/addon-knobs';
-import { BalanceGraph, IntervalEnum } from './BalanceGraph';
+import { withKnobs } from '@storybook/addon-knobs';
+import { LineGraph, IntervalEnum } from './LineGraph';
 
-storiesOf('BalanceGraph', module).add('BalanceGraph', () => {
-    
-    return <BalanceGraph 
+storiesOf('LineGraph', module).add('Balance graph', () => {
+
+    return <LineGraph
+    title="Validator Balance"
     defaultInterval={IntervalEnum.MONTH}
     getData={async ()=>{
         return(

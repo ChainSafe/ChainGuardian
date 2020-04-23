@@ -8,7 +8,6 @@ import {Modal} from "../../components/Modal/Modal";
 import {InputForm} from "../../components/Input/InputForm";
 import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
-import {Level, Horizontal, Vertical} from "../../components/Notification/NotificationEnums";
 import database from "../../services/db/api/database";
 import {storeAuthAction, storeNotificationAction} from "../../actions";
 import {IRootState} from "../../reducers";
@@ -117,12 +116,8 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
     private displayNotification = (title: string, content: string): void => {
         this.props.notification({
             source: this.props.history.location.pathname,
-            isVisible: true,
             title,
             content,
-            horizontalPosition: Horizontal.CENTER,
-            verticalPosition: Vertical.TOP,
-            level: Level.ERROR,
             expireTime: 3
         });
     };

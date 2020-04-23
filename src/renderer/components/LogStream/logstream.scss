@@ -3,5 +3,10 @@
     font-style: normal;
     font-weight: 400;
     font-size: 18px;
-    color: $neutral-300;
+    color: $neutral-200;
+    background: transparent;
+
+    .error {
+        color: $system-error-500;
+    }
 }

@@ -108,7 +108,7 @@
     &.error .notification-content{
         color: $system-error-200;
     }
-    
+
 }
 .notification-title{
     font-weight: 500;
@@ -128,9 +128,9 @@
     font-size: 18px;
     line-height: 28px;
 }
-.info{
+.notification-level-info{
     background-color: $secondary-blue-600;
 }
-.error{
+.notification-level-error{
     background-color: $system-error-700;
 }

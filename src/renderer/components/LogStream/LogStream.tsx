@@ -1,28 +1,31 @@
 import * as React from "react";
 import {useState, useEffect} from "react";
+import {Readable} from "stream";
+import {getLogMessageType} from "../../services/docker/utils";
 
 export interface ILogStreamProps {
-    stream: ReadableStream;
+    stream?: Readable;
 }
 
 export const LogStream: React.FunctionComponent<ILogStreamProps> = (props: ILogStreamProps) => {
     const [logs, setLogs] = useState<string[]>([]);
-    
-    useEffect(()=>{
-        const reader = props.stream.getReader();
-        reader.read().then(({value}: {value: string})=>{
-            setLogs(logs.concat([value]));
-            reader.releaseLock();
+
+    useEffect(()=> {
+        props.stream && props.stream.on("data", (chunk: Buffer)=>{
+            setLogs(logs.concat([chunk.toString()]));
         });
     },[logs]);
 
     return(
         <React.Fragment>
-            {logs.map((logEntry: string) =>{
-                return(
-                    <div key={logEntry} className="log-data">{logEntry}</div>
+            {logs.length === 0 ? <div className="log-data">There are no logs.</div> : null}
+
+            {logs.map((logEntry: string) => {
+                const type = getLogMessageType(logEntry);
+                return (
+                    <div key={logEntry} className={`log-data ${type}`}>{logEntry}</div>
                 );
             })}
-        </React.Fragment> 
+        </React.Fragment>
     );
 };

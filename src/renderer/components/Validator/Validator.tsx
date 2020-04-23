@@ -60,7 +60,7 @@ export const Validator: React.FunctionComponent<IValidatorProps> = (
                 </div>
             </div>
             <div className="validator-nodes">
-                <div className="node-container">
+                <div className="box node-container">
                     <div className="node-grid-container" >
                         {
                             nodeStatus ?

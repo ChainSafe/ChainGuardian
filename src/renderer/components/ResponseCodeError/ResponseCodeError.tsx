@@ -1,7 +1,7 @@
 import * as React from "react";
 import {useState, useEffect} from "react";
 import {PieChart, Pie, Tooltip, Cell,} from "recharts";
-import {IntervalEnum} from "../BalanceGraph/BalanceGraph";
+import {IntervalEnum} from "../LineGraph/LineGraph";
 
 export interface IResponseCodeErrorProps {
 
@@ -10,7 +10,7 @@ export interface IResponseCodeErrorProps {
 
 const COLORS = ["#09BC8A", "#EDFF86", "#EA526F"];
 
-export const ResponseCodeError: React.FunctionComponent<IResponseCodeErrorProps> = 
+export const ResponseCodeError: React.FunctionComponent<IResponseCodeErrorProps> =
 (props: IResponseCodeErrorProps) => {
     const [data, setData] = useState<Array<object>>([]);
     const [intervalOption, setIntervalOption] = useState<IntervalEnum>(IntervalEnum.DAY);
@@ -76,7 +76,7 @@ export const ResponseCodeError: React.FunctionComponent<IResponseCodeErrorProps>
                         minAngle={10}
                     >
                         {
-                            data.map((entry, index) => 
+                            data.map((entry, index) =>
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
                         }
                     </Pie>

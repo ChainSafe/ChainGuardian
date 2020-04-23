@@ -20,8 +20,9 @@ function tests(): void {
             if (isRunning) {
                 await beaconChain.stop();
             }
-            DockerRegistry.removeContainer(SupportedNetworks.PRYSM);
-            await runCmdAsync(`docker rm ${BeaconChain.getContainerName(SupportedNetworks.PRYSM)}`);
+            const name = BeaconChain.getContainerName(SupportedNetworks.PRYSM);
+            DockerRegistry.removeContainer(name);
+            await runCmdAsync(`docker rm ${name}`);
             await runCmdAsync(`docker volume rm ${SupportedNetworks.PRYSM}-chain-data`);
         }
     }, 20000);
