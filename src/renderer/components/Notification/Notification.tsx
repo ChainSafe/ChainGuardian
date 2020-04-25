@@ -13,13 +13,13 @@ export interface INotificationProps{
 
 export const Notification: React.FunctionComponent<React.PropsWithChildren<INotificationProps>> = (
     props: React.PropsWithChildren<INotificationProps>) => {
-    
+
     function getClasses(props: INotificationProps): string {
         let classes ="";
         if(props.isVisible){
             classes+= "visible ";
         } else {classes+= "none ";}
-        classes+= props.horizontalPosition + " " + props.verticalPosition + " " + props.level; 
+        classes+= props.horizontalPosition + " " + props.verticalPosition + " " + `notification-level-${props.level}`;
         return `notification${isStackedNotification(props.horizontalPosition, props.verticalPosition) ?
             "-stacked" : ""} ${classes}`;
     }

@@ -2,9 +2,9 @@ import * as React from "react";
 import {Notification} from "./components/Notification/Notification";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
-import {IRootState} from "./reducers/index";
+import {IRootState} from "./reducers";
 import {INotificationState} from "./reducers/notification";
-import {removeNotificationAction} from "./actions/notification";
+import {removeNotificationAction} from "./actions";
 
 const NotificationRendererContainer: React.FunctionComponent<
 IInjectedProps & Pick<IRootState, "notificationArray">> = (props) => {

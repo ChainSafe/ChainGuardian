@@ -1,0 +1,18 @@
+.beacon-node {
+  .row {
+    margin: 32px 0;
+  }
+
+  .log-stream-container {
+    padding: 16px;
+    margin: 32px 0;
+    max-width: 100%;
+    height: 280px;
+    overflow-y: scroll;
+
+    h4 {
+      margin-bottom: 16px;
+    }
+  }
+}
+

@@ -1,9 +1,12 @@
-import * as React from "react";
-import {ButtonSecondary, ButtonDestructive} from "../Button/ButtonStandard";
+import React, {useEffect} from "react";
+import {useDispatch} from "react-redux";
+
+import {loadValidatorBeaconNodes} from "../../actions/network";
+import {BeaconNode} from "../../models/beaconNode";
+import {ButtonDestructive, ButtonPrimary} from "../Button/ButtonStandard";
 import {ValidatorStat} from "../Cards/ValidatorStat";
 import {PrivateKeyField} from "../PrivateKeyField/PrivateKeyField";
 import {InputForm} from "../Input/InputForm";
-import {BeaconNode} from "../../models/beaconNode";
 import {NodeCard} from "../Cards/NodeCard";
 
 export interface IValidatorSimpleProps {
@@ -12,31 +15,44 @@ export interface IValidatorSimpleProps {
     publicKey: string,
     deposit: number,
     onRemoveClick: () => void;
-    onExportClick: () => void;
+    onDetailsClick: () => void;
     privateKey: string;
     nodes: BeaconNode[];
 }
 
 export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
     props: IValidatorSimpleProps) => {
+    const dispatch = useDispatch();
 
-    const renderBeaconNodes = (): React.ReactElement => (
-        <div className="validator-nodes">
-            <div className="node-container">
-                <div className="node-grid-container" >
-                    {props.nodes.map(node => (
-                        <NodeCard
-                            key={node.url}
-                            onClick={(): void=>{}}
-                            title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
-                            url={node.url}
-                            value="N/A"
-                        />
-                    ))}
+    useEffect(() => {
+        dispatch(loadValidatorBeaconNodes(props.publicKey, true));
+    }, [props.publicKey]);
+
+    const renderBeaconNodes = (): React.ReactElement => {
+        return (
+            <div className="validator-nodes">
+                <div className="box node-container">
+                    <div className="node-grid-container">
+                        {props.nodes.length === 0 ? <p>No working beacon nodes.</p> : null}
+
+                        {props.nodes.map(node => {
+                            return (
+                                <NodeCard
+                                    key={node.url}
+                                    onClick={(): void => {
+                                    }}
+                                    title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
+                                    url={node.url}
+                                    isSyncing={node.isSyncing}
+                                    value={node.currentSlot || "N/A"}
+                                />
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     return(
         <div className="validator-simple-container">
@@ -66,7 +82,7 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
                 {renderBeaconNodes()}
                 <div className="validator-simple-buttons">
                     <ButtonDestructive onClick={props.onRemoveClick}>REMOVE</ButtonDestructive>
-                    <ButtonSecondary onClick={props.onExportClick}>EXPORT</ButtonSecondary>
+                    <ButtonPrimary onClick={props.onDetailsClick}>DETAILS</ButtonPrimary>
                 </div>
             </div>
         </div>

@@ -1,12 +1,13 @@
-import {
-    PrysmBeaconApiClient,
-    PrysmBeaconRoutes
-} from "../../../../../../src/renderer/services/eth2/client/prysm/beacon";
-import {networks} from "../../../../../../src/renderer/services/deposit/networks";
-import {SupportedNetworks} from "../../../../../../src/renderer/services/docker/chain";
+import {PrysmBeaconApiClient, PrysmBeaconRoutes} from "../../../../../src/renderer/services/eth2/client/prysm/beacon";
+import {networks} from "../../../../../src/renderer/services/eth2/networks";
 import axios from "axios";
 import MockAxiosAdapter from "@nodefactory/axios-mock-adapter";
-import {base64Encode, fromHex} from "../../../../../../src/renderer/services/utils/bytes";
+import {SupportedNetworks} from "../../../../../src/renderer/services/eth2/supportedNetworks";
+import {base64Encode, fromHex} from "../../../../../src/renderer/services/utils/bytes";
+import * as fs from "fs";
+import * as path from "path";
+import {FAR_FUTURE_EPOCH} from "@chainsafe/eth2.0-state-transition/lib/constants";
+import {Validator} from "@chainsafe/eth2.0-types";
 
 const httpMock = new MockAxiosAdapter(axios);
 
@@ -14,7 +15,7 @@ describe("prysm beacon client", function() {
 
     const client = new PrysmBeaconApiClient({
         config: networks.find((network) => network.networkName === SupportedNetworks.PRYSM)!.eth2Config,
-        urlPrefix: ""
+        baseUrl: ""
     });
     
     it("get client version", async function() {
@@ -59,6 +60,18 @@ describe("prysm beacon client", function() {
         });
         const isSyncing = await client.getSyncingStatus();
         expect(isSyncing).toBeTruthy();
+    });
+
+    it("get validator", async function() {
+        httpMock.onGet(PrysmBeaconRoutes.VALIDATOR, {params: {publicKey: base64Encode(Buffer.alloc(48, 1))}})
+            .reply(
+                200,
+                JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/validator.json"), "utf-8"))
+            );
+        const validator = (await client.getValidator(Buffer.alloc(48, 1))) as Validator;
+        expect(validator.exitEpoch).toEqual(FAR_FUTURE_EPOCH);
+        expect(validator.slashed).toBeFalsy();
+        expect(validator.effectiveBalance).toEqual(BigInt("3100000000"));
     });
     
 });

@@ -65,7 +65,7 @@ exports[`Validator renders correctly, 2 nodes 1`] = `
     className="validator-nodes"
   >
     <div
-      className="node-container"
+      className="box node-container"
     >
       <div
         className="node-grid-container"
@@ -82,14 +82,25 @@ exports[`Validator renders correctly, 2 nodes 1`] = `
           >
             rocketsonic1.hr
           </span>
-          <h2>
-            21
-             ms
-          </h2>
+          <div
+            className="row centered"
+          >
+            <h2>
+              21
+            </h2>
+            <div
+              className="__react_component_tooltip place-top type-dark "
+              data-id="tooltip"
+            />
+            <span
+              className="success-icon"
+              data-tip="Synced"
+            />
+          </div>
           <span
             className="node-text time"
           >
-            Average Response Time
+            Slot height
           </span>
         </div>
         <div
@@ -104,14 +115,25 @@ exports[`Validator renders correctly, 2 nodes 1`] = `
           >
             rocketsonic2.hr
           </span>
-          <h2>
-            22
-             ms
-          </h2>
+          <div
+            className="row centered"
+          >
+            <h2>
+              22
+            </h2>
+            <div
+              className="__react_component_tooltip place-top type-dark "
+              data-id="tooltip"
+            />
+            <span
+              className="success-icon"
+              data-tip="Synced"
+            />
+          </div>
           <span
             className="node-text time"
           >
-            Average Response Time
+            Slot height
           </span>
         </div>
       </div>
@@ -226,7 +248,7 @@ exports[`Validator renders correctly, 4 nodes 1`] = `
     className="validator-nodes"
   >
     <div
-      className="node-container"
+      className="box node-container"
     >
       <div
         className="node-grid-container"
@@ -243,14 +265,25 @@ exports[`Validator renders correctly, 4 nodes 1`] = `
           >
             rocketsonic1.hr
           </span>
-          <h2>
-            21
-             ms
-          </h2>
+          <div
+            className="row centered"
+          >
+            <h2>
+              21
+            </h2>
+            <div
+              className="__react_component_tooltip place-top type-dark "
+              data-id="tooltip"
+            />
+            <span
+              className="success-icon"
+              data-tip="Synced"
+            />
+          </div>
           <span
             className="node-text time"
           >
-            Average Response Time
+            Slot height
           </span>
         </div>
         <div
@@ -265,14 +298,25 @@ exports[`Validator renders correctly, 4 nodes 1`] = `
           >
             rocketsonic2.hr
           </span>
-          <h2>
-            22
-             ms
-          </h2>
+          <div
+            className="row centered"
+          >
+            <h2>
+              22
+            </h2>
+            <div
+              className="__react_component_tooltip place-top type-dark "
+              data-id="tooltip"
+            />
+            <span
+              className="success-icon"
+              data-tip="Synced"
+            />
+          </div>
           <span
             className="node-text time"
           >
-            Average Response Time
+            Slot height
           </span>
         </div>
       </div>

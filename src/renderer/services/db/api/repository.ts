@@ -53,6 +53,14 @@ export abstract class Repository<T> {
     public async delete(id: Id): Promise<void> {
         await this.db.delete(encodeKey(this.bucket, id));
     }
+
+    public async getAll(): Promise<T[]> {
+        const data = await this.db.search({
+            gt: encodeKey(this.bucket, Buffer.alloc(0)),
+            lt: encodeKey(this.bucket + 1, Buffer.alloc(0))
+        });
+        return (data || []).map(data => this.serializer.deserialize(data as Buffer, this.type));
+    }
 }
 
 export abstract class BulkRepository<T> extends Repository<T> {
@@ -69,14 +77,6 @@ export abstract class BulkRepository<T> extends Repository<T> {
         }
 
         const data = await this.db.search(searchFilter);
-        return (data || []).map(data => this.serializer.deserialize(data as Buffer, this.type));
-    }
-
-    public async getAllFromBucket(): Promise<T[]> {
-        const data = await this.db.search({
-            gt: encodeKey(this.bucket, Buffer.alloc(0)),
-            lt: encodeKey(this.bucket + 1, Buffer.alloc(0))
-        });
         return (data || []).map(data => this.serializer.deserialize(data as Buffer, this.type));
     }
 

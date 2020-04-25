@@ -1,21 +1,35 @@
 import {NetworkActionTypes} from "../constants/action-types";
-import {ISaveSelectedNetworkAction} from "../actions/network";
+import {ILoadedValidatorBeaconNodesAction, ISaveSelectedNetworkAction} from "../actions/network";
 import {Action} from "redux";
+import {IValidatorBeaconNodes} from "../models/beaconNode";
 
 export interface INetworkState {
     selected?: string;
+    validatorBeaconNodes: IValidatorBeaconNodes;
 }
 
 const initialState: INetworkState = {
     selected: undefined,
+    validatorBeaconNodes: {},
 };
 
 export const networkReducer = (
     state = initialState,
     action: Action<NetworkActionTypes>): INetworkState => {
+    let payload;
     switch (action.type) {
         case NetworkActionTypes.SELECT_NETWORK:
-            return {...state, selected: (action as ISaveSelectedNetworkAction).payload};
+            payload = (action as ISaveSelectedNetworkAction).payload;
+            return {...state, selected: payload === "All networks" ? undefined : payload};
+        case NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES:
+            payload = (action as ILoadedValidatorBeaconNodesAction).payload;
+            return {
+                ...state,
+                validatorBeaconNodes: {
+                    ...state.validatorBeaconNodes,
+                    [payload.validator]: payload.beaconNodes,
+                }
+            };
         default:
             return state;
     }

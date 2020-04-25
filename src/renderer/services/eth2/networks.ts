@@ -3,7 +3,7 @@ import {config as minimalBeaconConfig} from "@chainsafe/eth2.0-config/lib/preset
 import {ethers} from "ethers";
 import {JsonRpcProvider} from "ethers/providers";
 import {INetworkConfig} from "../interfaces";
-import {SupportedNetworks} from "../docker/chain";
+import {SupportedNetworks} from "./supportedNetworks";
 
 const isLocal = process.env.NODE_ENV !== "production";
 
@@ -32,7 +32,7 @@ const networks: INetworkConfig[] = [
 
 if(isLocal) {
     networks.push({
-        networkName: "Local",
+        networkName: "localhost",
         networkId: 999,
         contract: {
             address: "0x2F1598e74b146F5687174C13f8EDCF490B2492e3",
@@ -46,4 +46,15 @@ if(isLocal) {
     });
 }
 
-export {networks};
+const getNetworkConfig = (name: string): null | INetworkConfig => {
+    const result = networks.filter((network) => network.networkName === name);
+    return (result.length === 0) ? null : result[0];
+};
+
+const networksList = networks.map((contract) => contract.networkName);
+
+export {
+    networks,
+    getNetworkConfig,
+    networksList,
+};

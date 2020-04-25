@@ -7,16 +7,20 @@ import {isStackedNotification} from "../services/notification/isStackedNotificat
 export interface INotificationProps {
     /** history.location.pathname */
     source: string,
-    isVisible: boolean,
+    isVisible?: boolean,
     title: string,
     content?: string,
-    level: Level,
-    horizontalPosition: Horizontal,
-    verticalPosition: Vertical,
+    level?: Level,
+    horizontalPosition?: Horizontal,
+    verticalPosition?: Vertical,
     /** seconds */
     expireTime?: number
 }
 export interface INotificationState extends INotificationProps {
+    horizontalPosition: Horizontal,
+    verticalPosition: Vertical,
+    level: Level,
+    isVisible: boolean,
     id: string
 }
 export interface INotificationStateObject {
@@ -29,7 +33,7 @@ const initialState: INotificationStateObject = {
 };
 
 export const notificationReducer = (
-    state = initialState, 
+    state = initialState,
     action: Action<NotificationActionTypes>): INotificationStateObject => {
 
     switch (action.type) {
@@ -52,12 +56,12 @@ export const notificationReducer = (
                 });
             }
         }
-            
+
         case NotificationActionTypes.REMOVE_NOTIFICATION: {
             const notificationId = (action as IRemoveNotificationAction).payload.id;
             let arrayIndex = 0;
             let stacked: boolean | undefined;
-                
+
             state.stacked.forEach((n, i) => {
                 if(n.id===notificationId){
                     arrayIndex = i;
@@ -74,7 +78,7 @@ export const notificationReducer = (
             if(stacked){
                 const newStackedArray = state.stacked.slice();
                 newStackedArray.splice(arrayIndex,1);
-                    
+
                 return Object.assign({}, {
                     stacked: newStackedArray,
                     other: state.other
@@ -82,14 +86,14 @@ export const notificationReducer = (
             } else {
                 const newOtherArray = state.other.slice();
                 newOtherArray.splice(arrayIndex,1);
-                    
+
                 return Object.assign({}, {
                     stacked: state.stacked,
                     other: newOtherArray
                 });
             }
         }
-            
+
         default:
             return state;
     }

@@ -1,6 +1,11 @@
+import {IGenericEth2Client} from "../services/eth2/client/interface";
+
 export type BeaconNode = {
     url: string;
     localDockerId: string;
+    isSyncing?: boolean;
+    currentSlot?: string;
+    client?: IGenericEth2Client;
 };
 
 interface IBeaconNodes {

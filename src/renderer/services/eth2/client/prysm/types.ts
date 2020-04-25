@@ -13,6 +13,17 @@ export interface PrysmValidatorDuty {
     validatorIndex: string;
 }
 
+export interface PrysmValidator {
+    publicKey: string;
+    withdrawalCredentials: string,
+    effectiveBalance: string,
+    slashed: boolean,
+    activationEligibilityEpoch: string,
+    activationEpoch: string,
+    exitEpoch: string,
+    withdrawableEpoch: string
+}
+
 export interface PrysmAttestationData {
     "slot": "string";
     "committeeIndex": "string";
@@ -36,3 +47,28 @@ export enum PrysmValidatorStatus {
     SLASHING = "SLASHING",
     EXITED = "EXITED"
 }
+
+export type PrysmChainHeadResponse = {
+    headSlot: string,
+    headEpoch: string,
+    headBlockRoot: string,
+    finalizedSlot: string,
+    finalizedEpoch: string,
+    finalizedBlockRoot: string,
+    justifiedSlot: string,
+    justifiedEpoch: string,
+    justifiedBlockRoot: string,
+    previousJustifiedSlot: string,
+    previousJustifiedEpoch: string,
+    previousJustifiedBlockRoot: string
+};
+
+export type ChainHead = PrysmChainHeadResponse;
+
+export type PrysmChainHeadStreamMessage = {
+    result: PrysmChainHeadResponse,
+    error: {
+        httpStatus: string;
+        message: string;
+    }
+};

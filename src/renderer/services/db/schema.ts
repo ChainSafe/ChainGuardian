@@ -10,6 +10,7 @@ export enum Bucket {
     beaconNodes,
     validatorAttestations,
     validatorBlocks,
+    validatorNetwork,
 }
 
 export enum Key {}

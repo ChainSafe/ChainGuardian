@@ -19,7 +19,7 @@ export async function createWindow(): Promise<void> {
     );
     // eslint-disable-next-line require-atomic-updates
     win = new BrowserWindow({
-        webPreferences: {nodeIntegration: true},
+        webPreferences: {nodeIntegration: true, webSecurity: false},
         backgroundColor: "#052437",
         show: false,
         icon: iconPath,
@@ -57,15 +57,19 @@ export async function createWindow(): Promise<void> {
     win.on("close", (e: Electron.Event) => {
         // TODO / Validator status - check if there is validator with status ACTIVE/VALIDATING
         if (!process.env.IS_TESTING && win !== null){
-            const choise = dialog.showMessageBoxSync(win,
+            const choice = dialog.showMessageBoxSync(win,
                 {
                     type: "question",
                     buttons: ["Yes", "No"],
                     title: "Confirm",
-                    message: "Are you sure you want to quit?"  
+                    message: "Are you sure you want to quit?"
                 });
-            if(choise === 1){
+            if (choice === 1) {
                 e.preventDefault();
+            } else {
+                if (process.env.NODE_ENV !== "production") {
+                    win.webContents.send("stop-docker");
+                }
             }
         }
     });

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, number, select } from '@storybook/addon-knobs';
+import {Readable} from "stream";
 import {LogStream} from './LogStream';
 
 storiesOf('Log Stream', module).add('Log Stream', () => {
@@ -14,15 +15,13 @@ storiesOf('Log Stream', module).add('Log Stream', () => {
         return string;
       }
 
-      const testStream = new ReadableStream({
-        start(controller) {
-          setInterval(() => {
-            let string = randomChars();
-
-            controller.enqueue(string);
-
-          }, time*1000);
-        } 
+      const testStream = new Readable({
+          read: function() {
+              setInterval(() => {
+                  let string = randomChars();
+                  this.push(string);
+              }, time*1000);
+          }
       });
 
     return  <LogStream

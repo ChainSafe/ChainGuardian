@@ -1,4 +1,6 @@
-import {BeaconChain, SupportedNetworks} from "../../../../src/renderer/services/docker/chain";
+import {BeaconChain} from "../../../../src/renderer/services/docker/chain";
+import {DockerRegistry} from "../../../../src/renderer/services/docker/docker-registry";
+import {SupportedNetworks} from "../../../../src/renderer/services/eth2/supportedNetworks";
 import {runCmdAsync} from "../../../../src/renderer/services/utils/cmd";
 import {assert} from "chai";
 
@@ -18,7 +20,9 @@ function tests(): void {
             if (isRunning) {
                 await beaconChain.stop();
             }
-            await runCmdAsync(`docker rm ${SupportedNetworks.PRYSM}`);
+            const name = BeaconChain.getContainerName(SupportedNetworks.PRYSM);
+            DockerRegistry.removeContainer(name);
+            await runCmdAsync(`docker rm ${name}`);
             await runCmdAsync(`docker volume rm ${SupportedNetworks.PRYSM}-chain-data`);
         }
     }, 20000);

@@ -25,7 +25,7 @@ describe("Onboarding configure screens", () => {
         const goButtonText = await client.getAttribute("#go", "textContent");
         expect(goButtonText).to.be.equal("GO");
         const inputPlaceholder = await client.getAttribute("#beaconURL", "placeholder");
-        expect(inputPlaceholder).to.be.equal("Enter beacon node URL");
+        expect(inputPlaceholder).to.be.equal("http://... beacon node URL");
     });
 
     it("should redirect to password since no withdrawal key", async () => {
