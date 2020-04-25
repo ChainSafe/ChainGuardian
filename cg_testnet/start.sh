@@ -5,7 +5,6 @@ rm -rf ~/.lighthouse/beacon
 rm -rf ~/.lighthouse/validators
 /opt/wait-for.sh eth1-node:8545
 sleep 10
-lcli -s minimal interop-genesis -t $(date +%s) -d /opt/cg_testnet 16
 lighthouse account validator new \
   --testnet-dir /opt/cg_testnet \
   --spec minimal \

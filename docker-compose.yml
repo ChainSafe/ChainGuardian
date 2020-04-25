@@ -49,6 +49,8 @@ services:
     image: sigp/lighthouse:latest
     restart: on-failure
     container_name: "lighthouse_validators"
-    command: 'lighthouse vc --server http://eth2-bn:5052 --spec minimal testnet insecure 0 16'
+    command: 'lighthouse --spec minimal vc --server http://eth2-bn:5052 --allow-unsynced --testnet-dir /opt/cg_testnet testnet insecure 0 16'
+    volumes:
+      - "./cg_testnet:/opt/cg_testnet"
     depends_on:
       - eth2-bn
