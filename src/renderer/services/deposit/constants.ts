@@ -1,4 +1,4 @@
-import {Domain} from "@chainsafe/eth2.0-types";
+import {Domain} from "@chainsafe/lodestar-types";
 import {toBufferLE} from "bigint-buffer";
 
 // domain_type + fork_version

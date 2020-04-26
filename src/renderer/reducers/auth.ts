@@ -1,4 +1,4 @@
-import {ILoadValidators, IStoreAuthAction} from "../actions/auth";
+import {ILoadValidators, IStoreAuthAction} from '../actions';
 import {AuthActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 import {IValidator} from "../containers/Dashboard/DashboardContainer";

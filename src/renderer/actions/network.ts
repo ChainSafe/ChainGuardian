@@ -1,4 +1,4 @@
-import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
+import {PrivateKey} from "@chainsafe/bls";
 import {warn} from "electron-log";
 import {Action, Dispatch} from "redux";
 

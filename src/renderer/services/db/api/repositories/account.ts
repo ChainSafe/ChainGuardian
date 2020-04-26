@@ -1,13 +1,13 @@
 import {Id, Repository} from "../repository";
 import {CGAccount} from "../../../../models/account";
 import {Bucket, encodeKey} from "../../schema";
-import {Account} from "../../../../models/ssz/types";
 import {JSONSerializer} from "../../serializers/json";
 import {IDatabaseController} from "../../../../../main/db/controller";
+import {AccountType} from "../../../../models/types/account";
 
 export class AccountRepository extends Repository<CGAccount> {
     public constructor(db: IDatabaseController) {
-        super(db, JSONSerializer, Bucket.account, Account);
+        super(db, JSONSerializer, Bucket.account, AccountType);
     }
 
     // Override get method to wrap deserialized data into CGAccount instance

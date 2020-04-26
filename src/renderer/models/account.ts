@@ -1,4 +1,4 @@
-import {Keypair} from "@chainsafe/bls/lib/keypair";
+import {Keypair} from "@chainsafe/bls";
 import {readdirSync} from "fs";
 
 import {getEth2ApiClient} from "../services/eth2/client";

@@ -1,13 +1,13 @@
 import {Contract, ethers, utils} from "ethers";
-import {bool, Gwei} from "@chainsafe/eth2.0-types";
+import {Gwei} from "@chainsafe/lodestar-types";
 import DepositContract from "./options";
-import {deserialize} from "@chainsafe/ssz";
 import {INetworkConfig} from "../interfaces";
 import {warn} from "electron-log";
 import {ParamType} from "ethers/utils";
 import {etherToGwei} from "./utils";
 import {Log} from "ethers/providers/abstract-provider";
 import {PublicKey} from "@chainsafe/bls";
+import {BooleanType} from "@chainsafe/ssz";
 
 const PUBKEY_INDEX = 0;
 const DATA_INDEX = 2;
@@ -36,8 +36,7 @@ export class EthersNotifier implements IEth1Client{
             // Listen for our filtered results
             contract.on(filter, (pubkey, withdrawalCredentials, amount) => {
                 if (pubkey === validatorPublicKey.toHexString()) {
-                    const amountGwei = deserialize(
-                        this.networkConfig.eth2Config.types.Gwei,
+                    const amountGwei = this.networkConfig.eth2Config.types.Gwei.deserialize(
                         Buffer.from(amount.slice(2), "hex")
                     ) as Gwei;
                     clearTimeout(timer);
@@ -53,7 +52,7 @@ export class EthersNotifier implements IEth1Client{
         });
     }
 
-    public async hasUserDeposited(validatorPublicKey: PublicKey): Promise<bool> {
+    public async hasUserDeposited(validatorPublicKey: PublicKey): Promise<boolean> {
         try {
             const filter = {
                 fromBlock: this.networkConfig.contract.deployedAtBlock,
@@ -70,8 +69,7 @@ export class EthersNotifier implements IEth1Client{
                 const validatorPubKey = data[PUBKEY_INDEX];
 
                 if (validatorPubKey === validatorPublicKey.toHexString()) {
-                    const amount = deserialize(
-                        this.networkConfig.eth2Config.types.Gwei,
+                    const amount = this.networkConfig.eth2Config.types.Gwei.deserialize(
                         Buffer.from(data[DATA_INDEX].slice(2), "hex")
                     ) as Gwei;
                     amountSum += amount;
