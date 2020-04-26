@@ -3,9 +3,9 @@ import {initBLS} from "@chainsafe/bls";
 const entropy = Buffer.from("69248c25e98665aac3fe2fc05ee4a1d3", "hex");
 const expectedMnemonic = "hard caught annual spread green step avocado shine scare warm chronic pond";
 
-const privateKeyStr = "0x49a23a24f575a7e6b712c4edd819126861783e76dca230ef2e3cc6c7e40d3c3b";
+const privateKeyStr = "0x49ee17f0fdfb6269db16a465da2ebda84f1a6ff15976f66a762353c874dc30ee";
 const publicKeyStr =
-    "0x95c259ecefa8e60edb099a6568887dd9ba35afa75062d01a12fcc5a40d402eca57afcdc1cff7e34fbcd84dfea0848bb9";
+    "0xb28a2cce086a4606b7089b3469357b1e5ae813f7b4cd7c6d5609e329aeb1cc585db9ace4922ce18af9a892ddf85cafc7";
 
 describe(".generate()", () => {
     beforeAll(async () => {

@@ -1,12 +1,5 @@
-import {
-    Attestation,
-    AttestationData,
-    CommitteeIndex,
-    Epoch,
-    Slot
-} from "@chainsafe/eth2.0-types";
+import {Attestation, AttestationData, CommitteeIndex, Epoch, Slot} from "@chainsafe/lodestar-types";
 import crypto from "crypto";
-import {BitList} from "@chainsafe/bit-utils";
 
 /**
  * Generates a fake attestation data for test purposes.
@@ -40,7 +33,8 @@ export function generateAttestationData(
 
 export function generateAttestation(override: Partial<Attestation> = {}): Attestation {
     return {
-        aggregationBits: BitList.fromBitfield(Buffer.alloc(8), 64),
+        // @ts-ignore
+        aggregationBits: [],
         data: {
             slot: 0,
             index: 0,

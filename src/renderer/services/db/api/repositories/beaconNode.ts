@@ -4,11 +4,11 @@ import {Bucket} from "../../schema";
 import {IDatabaseController} from "../../../../../main/db/controller";
 import {JSONSerializer} from "../../serializers/json";
 import {DEFAULT_ACCOUNT} from "../../../../constants/account";
-import {BeaconNodeType} from "../../../../models/types/beaconNode";
+import {BeaconNodesType} from "../../../../models/types/beaconNode";
 
 export class BeaconNodeRepository extends Repository<BeaconNodes> {
     public constructor(db: IDatabaseController) {
-        super(db, JSONSerializer, Bucket.beaconNodes, BeaconNodeType);
+        super(db, JSONSerializer, Bucket.beaconNodes, BeaconNodesType);
     }
 
     public async get(id: string): Promise<BeaconNodes | null> {

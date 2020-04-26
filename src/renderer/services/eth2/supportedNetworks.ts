@@ -1,3 +1,3 @@
 export enum SupportedNetworks {
-    // PRYSM = "Prysm",
+    PRYSM = "Prysm",
 }

@@ -1,4 +1,5 @@
-import {BeaconBlock, SignedBeaconBlock} from "@chainsafe/eth2.0-types";
+import {BeaconBlock, SignedBeaconBlock} from "@chainsafe/lodestar-types";
+
 export const ZERO_HASH = Buffer.alloc(32, 0);
 export const EMPTY_SIGNATURE = Buffer.alloc(96, 0);
 
@@ -7,6 +8,7 @@ export function generateEmptyBlock(): BeaconBlock {
         slot: 0,
         parentRoot: Buffer.alloc(32),
         stateRoot: ZERO_HASH,
+        proposerIndex: 0,
         body: {
             randaoReveal: Buffer.alloc(96),
             eth1Data: {

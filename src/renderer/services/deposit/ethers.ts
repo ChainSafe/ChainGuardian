@@ -7,7 +7,6 @@ import {ParamType} from "ethers/utils";
 import {etherToGwei} from "./utils";
 import {Log} from "ethers/providers/abstract-provider";
 import {PublicKey} from "@chainsafe/bls";
-import {BooleanType} from "@chainsafe/ssz";
 
 const PUBKEY_INDEX = 0;
 const DATA_INDEX = 2;

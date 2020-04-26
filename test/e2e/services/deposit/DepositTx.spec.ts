@@ -4,7 +4,7 @@ import {Keypair as KeyPair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls";
 import {toHexString} from "../../../../src/renderer/services/utils/crypto";
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
-import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
+import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {initBLS} from "@chainsafe/bls";
 
 jest.setTimeout(30000);
