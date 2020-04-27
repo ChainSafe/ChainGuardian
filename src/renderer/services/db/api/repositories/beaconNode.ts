@@ -1,14 +1,14 @@
 import {Repository} from "../repository";
 import {BeaconNodes} from "../../../../models/beaconNode";
 import {Bucket} from "../../schema";
-import {ValidatorBeaconNode} from "../../../../models/ssz/types";
 import {IDatabaseController} from "../../../../../main/db/controller";
 import {JSONSerializer} from "../../serializers/json";
 import {DEFAULT_ACCOUNT} from "../../../../constants/account";
+import {BeaconNodesType} from "../../../../models/types/beaconNode";
 
 export class BeaconNodeRepository extends Repository<BeaconNodes> {
     public constructor(db: IDatabaseController) {
-        super(db, JSONSerializer, Bucket.beaconNodes, ValidatorBeaconNode);
+        super(db, JSONSerializer, Bucket.beaconNodes, BeaconNodesType);
     }
 
     public async get(id: string): Promise<BeaconNodes | null> {

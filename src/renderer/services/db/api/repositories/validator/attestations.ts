@@ -3,16 +3,16 @@ import {BulkRepository} from "../../repository";
 import {IDatabaseController, ISearchOptions} from "../../../../../../main/db/controller";
 import {Bucket, encodeKey} from "../../../schema";
 import {JSONSerializer} from "../../../serializers/json";
-import {types as mainnetTypes} from "@chainsafe/eth2.0-types/lib/ssz/presets/mainnet";
-import {Attestation, BLSPubkey} from "@chainsafe/eth2.0-types";
-import {intToBytes} from "@chainsafe/eth2.0-utils";
+import {config as mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
+import {Attestation, BLSPubkey} from "@chainsafe/lodestar-types";
+import {intToBytes} from "@chainsafe/lodestar-utils";
 
 export class ValidatorAttestationsRepository extends BulkRepository<Attestation> {
     public constructor(db: IDatabaseController) {
-        super(db, JSONSerializer, Bucket.validatorAttestations, mainnetTypes.Attestation);
+        super(db, JSONSerializer, Bucket.validatorAttestations, mainnetConfig.types.Attestation);
     }
 
-    public async set(pubKey: BLSPubkey, attestation: Attestation): Promise<void> {
+    public async set(pubKey: Uint8Array|Buffer, attestation: Attestation): Promise<void> {
         const key = this.getAttestationKey(pubKey, attestation);
         await super.set(key, attestation);
     }
@@ -26,7 +26,7 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
         await Promise.all(promises);
     }
 
-    public async getAll(pubKey: BLSPubkey, options?: IAttestationSearchOptions): Promise<Attestation[]> {
+    public async getAll(pubKey: Uint8Array|Buffer, options?: IAttestationSearchOptions): Promise<Attestation[]> {
         if (!options) {
             return await super.getAll(pubKey);
         }
@@ -48,6 +48,6 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
 
     private getAttestationKey(pubKey: BLSPubkey, attestation: Attestation): Buffer {
         const epoch = intToBytes(attestation.data.target.epoch, 2);
-        return Buffer.concat([pubKey, epoch, attestation.signature]);
+        return Buffer.concat([pubKey.valueOf() as Uint8Array, epoch, attestation.signature.valueOf() as Uint8Array]);
     }
 }

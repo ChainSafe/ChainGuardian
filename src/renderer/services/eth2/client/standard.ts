@@ -1,5 +1,5 @@
 import {IBeaconClientOptions, IValidatorBeaconClient} from "./interface";
-import {HttpClient} from "../../api/http/httpClient";
+import {HttpClient} from "../../api";
 import {EmptyUrl} from "../../api/errors";
 import {ApiClientOverRest} from "@chainsafe/lodestar-validator/lib/api/impl/rest/apiClient";
 import {ApiLogger} from "./logger";
@@ -18,7 +18,7 @@ export class StandardValidatorBeaconClient extends ApiClientOverRest implements 
     }
     
     public async getVersion(): Promise<string> {
-        return (await this.beacon.getClientVersion()).toString("ascii");
+        return Buffer.from(await this.beacon.getClientVersion() as Uint8Array).toString("ascii");
     }
 
 }

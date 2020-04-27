@@ -1,5 +1,5 @@
 import {Keypair} from "@chainsafe/bls/lib/keypair";
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {CGAccount} from "../models/account";
 import {BaseProvider} from "ethers/providers";
 

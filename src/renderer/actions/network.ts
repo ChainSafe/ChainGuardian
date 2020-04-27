@@ -1,4 +1,4 @@
-import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
+import {PrivateKey} from "@chainsafe/bls";
 import {warn} from "electron-log";
 import {Action, Dispatch} from "redux";
 
@@ -7,9 +7,9 @@ import {NetworkActionTypes} from "../constants/action-types";
 import {IRootState} from "../reducers";
 import {BeaconNode, BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
-import {ChainHead} from "../services/eth2/client/prysm/types";
 import {SupportedNetworks} from "../services/eth2/supportedNetworks";
 import {fromHex} from "../services/utils/bytes";
+import {SignedBeaconBlock} from "@chainsafe/lodestar-types";
 
 // User selected network in dashboard dropdown
 export interface ISaveSelectedNetworkAction {
@@ -85,7 +85,7 @@ async function refreshBeaconNodeStatus(
     dispatch: Dispatch<Action<unknown>>,
     getState: () => IRootState,
     validator: string,
-    chainHead: ChainHead,
+    chainHead: SignedBeaconBlock,
 ): Promise<void> {
     const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
     const beaconNodes: BeaconNode[] = await Promise.all(validatorBeaconNodes.map(async(validatorBN: BeaconNode) => {
@@ -96,7 +96,7 @@ async function refreshBeaconNodeStatus(
             return {
                 ...validatorBN,
                 isSyncing: !!(await validatorBN.client.beacon.getSyncingStatus()),
-                currentSlot: chainHead.headSlot,
+                currentSlot: String(chainHead.message.slot),
             };
         } catch (e) {
             warn(`Error while trying to fetch beacon node status... ${e.message}`);

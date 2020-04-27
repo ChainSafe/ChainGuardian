@@ -1,5 +1,5 @@
 import {IAttestationSearchOptions, IValidatorDB} from "@chainsafe/lodestar-validator/lib/db/interface";
-import {Attestation, BLSPubkey, SignedBeaconBlock} from "@chainsafe/eth2.0-types";
+import {Attestation, BLSPubkey, SignedBeaconBlock} from "@chainsafe/lodestar-types";
 import {CGDatabase} from "./database";
 import {IpcDatabaseController} from "../controller/ipc";
 
@@ -14,7 +14,7 @@ export class ValidatorDB implements IValidatorDB {
      * Stores attestation proposed by validator with given index
      */
     public async setAttestation(pubKey: BLSPubkey, attestation: Attestation): Promise<void> {
-        await this.db.validator.attestations.set(pubKey, attestation);
+        await this.db.validator.attestations.set(pubKey.valueOf() as Uint8Array, attestation);
     }
 
     public async deleteAttestations(pubKey: BLSPubkey, attestations: Attestation[]): Promise<void> {
@@ -27,20 +27,20 @@ export class ValidatorDB implements IValidatorDB {
      * @param options object contains lower and higher target epoch to search
      */
     public async getAttestations(pubKey: BLSPubkey, options?: IAttestationSearchOptions): Promise<Attestation[]> {
-        return await this.db.validator.attestations.getAll(pubKey, options);
+        return await this.db.validator.attestations.getAll(pubKey.valueOf() as Uint8Array, options);
     }
 
     /**
      * Stores beacon block proposed by validator with given index
      */
     public async setBlock(pubKey: BLSPubkey, block: SignedBeaconBlock): Promise<void> {
-        await this.db.validator.blocks.set(pubKey, block);
+        await this.db.validator.blocks.set(pubKey.valueOf() as Uint8Array, block);
     }
 
     /**
      * Obtains last proposed beacon block by validator with given index
      */
     public async getBlock(pubKey: BLSPubkey): Promise<SignedBeaconBlock | null> {
-        return await this.db.validator.blocks.get(pubKey);
+        return await this.db.validator.blocks.get(pubKey.valueOf() as Uint8Array);
     }
 }

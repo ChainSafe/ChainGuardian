@@ -1,30 +1,31 @@
 import sinon from "sinon";
 import chai, {expect} from "chai";
 import chaiAsPromised from "chai-as-promised";
-import {SimpleContainerType} from "@chainsafe/ssz";
-import {bytes32} from "@chainsafe/eth2.0-types";
-import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
 import {BulkRepository} from "../../../../src/renderer/services/db/api/repository";
-import {SSZ} from "../../../../src/renderer/services/db/serializers/ssz";
 import {IDatabaseController, LevelDbController} from "../../../../src/main/db/controller";
 import {Bucket} from "../../../../src/renderer/services/db/schema";
+import {BooleanType, ByteVectorType, ContainerType} from "@chainsafe/ssz";
+import {JSONSerializer} from "../../../../src/renderer/services/db/serializers/json";
 
 chai.use(chaiAsPromised);
 
-const TestSSZType: SimpleContainerType = {
-    fields: [["bool", config.types.bool], ["bytes", config.types.bytes32]]
-};
+const TestSSZType = new ContainerType<ITestType>({
+    fields: {
+        "bool": new BooleanType(),
+        "bytes": new ByteVectorType({length: 32})
+    }
+});
 
 interface ITestType {
     bool: boolean;
-    bytes: bytes32;
+    bytes: Buffer;
 }
 
 const BucketMock = "testBucket";
 
 class TestRepository extends BulkRepository<ITestType> {
     public constructor(db: IDatabaseController) {
-        super(db, SSZ, BucketMock as unknown as Bucket, TestSSZType);
+        super(db, JSONSerializer, BucketMock as unknown as Bucket, TestSSZType);
     }
 }
 
@@ -41,7 +42,7 @@ describe("database repository", () => {
 
     it("should get single item", async () => {
         const item = {bool: true, bytes: Buffer.alloc(32)};
-        controller.get.resolves(SSZ.serialize(item, TestSSZType));
+        controller.get.resolves(JSONSerializer.serialize(item, TestSSZType as any));
         const result = await repository.get("id");
         expect(result).to.be.deep.equal(item);
         expect(controller.get.calledOnce).to.be.true;
@@ -56,7 +57,7 @@ describe("database repository", () => {
 
     it("should return true if item exists", async () => {
         const item = {bool: true, bytes: Buffer.alloc(32)};
-        controller.get.resolves(SSZ.serialize(item, TestSSZType));
+        controller.get.resolves(JSONSerializer.serialize(item, TestSSZType as any));
         const result = await repository.has("id");
         expect(result).to.be.true;
         expect(controller.get.calledOnce).to.be.true;
@@ -88,7 +89,7 @@ describe("database repository", () => {
 
     it("should return all items", async () => {
         const item = {bool: true, bytes: Buffer.alloc(32)};
-        const itemSerialized = SSZ.serialize(item, TestSSZType);
+        const itemSerialized = Buffer.from(JSONSerializer.serialize(item, TestSSZType as any));
         const items = [itemSerialized, itemSerialized, itemSerialized];
         controller.search.resolves(items);
         const result = await repository.getAll();

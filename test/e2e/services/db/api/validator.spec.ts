@@ -1,4 +1,4 @@
-import {BLSPubkey} from "@chainsafe/eth2.0-types";
+import {BLSPubkey} from "@chainsafe/lodestar-types";
 import {ValidatorDB} from "../../../../../src/renderer/services/db/api/validator";
 import {initBLS, PrivateKey} from "@chainsafe/bls";
 import {generateAttestation} from "../../../mocks/attestation";

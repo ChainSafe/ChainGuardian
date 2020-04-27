@@ -8,7 +8,7 @@
       "es2015",
       "es2016",
       "es2017",
-      "esnext.bigint",
+      "esnext.bigint"
     ],                             /* Specify library files to be included in the compilation:  */
      "allowJs": true,                       /* Allow javascript files to be compiled. */
     // "checkJs": true,                       /* Report errors in .js files. */
@@ -25,7 +25,9 @@
     // "isolatedModules": true,               /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
 
     /* Strict Type-Checking Options */
-    "strict": true,                            /* Enable all strict type-checking options. */
+    "strict": true,
+    "strictNullChecks": false,
+    /* Enable all strict type-checking options. */
     // "noImplicitAny": true,                 /* Raise error on expressions and declarations with an implied 'any' type. */
     // "strictNullChecks": true,              /* Enable strict null checks. */
     // "strictFunctionTypes": true,           /* Enable strict checking of function types. */

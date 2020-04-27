@@ -1,4 +1,4 @@
-import {IStoreNotificationAction, IRemoveNotificationAction} from "../actions/notification";
+import {IStoreNotificationAction, IRemoveNotificationAction} from "../actions";
 import {NotificationActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 import {Level, Horizontal, Vertical} from "../components/Notification/NotificationEnums";
