@@ -5,45 +5,50 @@ services:
     container_name: "cg_eth1_node"
     ports:
       - "8545:8545"
-    entrypoint: sh /opt/init.sh --mine --networkid 999 --nodiscover --nousb --password "/tmp/passwd.txt" --allow-insecure-unlock  --unlock "0xBB5a971b06ba834E077Bae7f15C524bD493C5850"  --etherbase="0xBB5a971b06ba834E077Bae7f15C524bD493C5850" --rpc --rpcaddr 0.0.0.0 --rpcvhosts=* --rpcapi personal,db,eth,net,web3
+    entrypoint: sh /opt/init.sh --mine --networkid 999 --nodiscover --nousb --password "/tmp/passwd.txt" --allow-insecure-unlock  --unlock "0xE574F2A090380F4AF972b7CB1dF95aD21b566F37" --txpool.pricelimit 0  --etherbase="0xE574F2A090380F4AF972b7CB1dF95aD21b566F37" --miner.gasprice 0 --rpc --rpcaddr 0.0.0.0 --rpcvhosts=* --rpcapi personal,account,admin,db,eth,net,web3 --ws --wsport 8546 --wsorigins="*"
     volumes:
       - "./eth1/init.sh:/opt/init.sh:ro"
       - "./eth1/genesis.json:/tmp/genesis.json:ro"
       - "./eth1/signer.key:/tmp/signer.key:ro"
       - "./eth1/passwd.txt:/tmp/passwd.txt:ro"
-    logging:
-      driver: "none"
 
   deployer:
-    image: gochain/web3:0.2.14
+    image: gochain/web3:0.2.19
     depends_on:
       - eth1-node
     restart: on-failure
     container_name: "cg_eth1_deployer"
-    command: contract deploy /opt/deposit-contract.bin --verify false
+    entrypoint: []
+    command: sh -c '/opt/wait-for.sh eth1-node:8545 -- /app/web3 contract deploy /opt/deposit-contract.bin'
     volumes:
       - "./eth1/deposit-contract.bin:/opt/deposit-contract.bin"
+      - "./wait-for.sh:/opt/wait-for.sh"
     environment:
       - "WEB3_PRIVATE_KEY=0xcd8ed955f2eab4faa99c5165a76aa89953c6da9438649fc9f3235fbd72da29e1"
       - "WEB3_RPC_URL=http://eth1-node:8545"
-    logging:
-      driver: "none"
 
-  prysm-beacon-chain:
-    image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
-    container_name: "cg_prysm_beacon_chain"
-    command: --datadir=/data --custom-genesis-delay=0 --grpc-gateway-port 4001 --bootstrap-node= --deposit-contract 0x4689a3C63CE249355C8a573B5974db21D2d1b8Ef --interop-num-validators 64 --interop-eth1data-votes
-    ports:
-      - "4001:4001"
-      - "4000:4000"
-      - "13000:13000"
-
-  prysm-validator:
-    image: gcr.io/prysmaticlabs/prysm/validator:latest
-    container_name: "cg_prysm_validator"
-    command: --keymanager=interop --keymanageropts='{"keys":64}' --beacon-rpc-provider prysm-beacon-chain:4000
+  eth2-bn:
+    image: sigp/lighthouse:latest
+    container_name: "lighthouse_beacon_node"
+    command: /opt/start.sh
     restart: on-failure
+    links:
+      - deployer:deployer
+    volumes:
+      - "./cg_testnet:/opt/cg_testnet"
+      - "./eth1/passwd.txt:/opt/passwd.txt:ro"
+      - "./cg_testnet/start.sh:/opt/start.sh:ro"
+      - "./wait-for.sh:/opt/wait-for.sh"
     depends_on:
-      - prysm-beacon-chain
-    logging:
-      driver: "none"
+      - eth1-node
+      - deployer
+    ports:
+      - "5052:5052"
+
+  eth2-validators:
+    image: sigp/lighthouse:latest
+    restart: on-failure
+    container_name: "lighthouse_validators"
+    command: 'lighthouse vc --server http://eth2-bn:5052 --spec minimal testnet insecure 0 16'
+    depends_on:
+      - eth2-bn
