@@ -14,10 +14,18 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-    }
-        .public-key{
-            padding: 32px 0 0 10px;
+
+        .validator-stat-container {
+            justify-content: space-evenly;
+
+            .validator-card-container:nth-child(2) {
+                margin: 75px 0 0;
+            }
         }
+    }
+    .public-key{
+        padding: 32px 0 0 10px;
+    }
 
     .validator-simple-status{
         display: flex;

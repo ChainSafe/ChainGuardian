@@ -61,7 +61,11 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
                 <h3>Status: {props.status}</h3>
                 <br />
 
-                <ValidatorStat title="Deposit" type="ETH" value={props.deposit}/>
+                <div className="row validator-stat-container ">
+                    <ValidatorStat title="Deposit" type="ETH" value={props.deposit}/>
+                    <ValidatorStat title="ROI" type="ROI" value={props.deposit}/>
+                    <ValidatorStat title="Uptime" type="Uptime" value={props.deposit}/>
+                </div>
 
                 <br />
 
