@@ -3,6 +3,7 @@ import {BLSPubkey as BLSPubKey, DepositData, DepositMessage} from "@chainsafe/lo
 import {createHash} from "crypto";
 import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {ethers, utils} from "ethers";
+import {computeDomain, DomainType, computeSigningRoot} from "@chainsafe/lodestar-beacon-state-transition";
 
 /**
  * Generate function signature from ABI object.
@@ -62,16 +63,16 @@ export function generateDeposit(
     const depositMsg: DepositMessage = {
         pubkey: publicKey,
         withdrawalCredentials: withdrawalCredentials,
-        amount: amount,
+        amount: amount
     };
-    // calculate root
-    const root = config.types.DepositMessage.hashTreeRoot(depositMsg);
     // sign calculated root
+    const domain = computeDomain(config, DomainType.DEPOSIT);
+    const signingRoot = computeSigningRoot(config, config.types.DepositMessage, depositMsg, domain);
     const signature = signingKey.privateKey.signMessage(
-        root
+        signingRoot,
     ).toBytesCompressed();
     return {
         ...depositMsg,
-        signature,
+        signature
     } as DepositData;
 }
