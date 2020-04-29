@@ -61,7 +61,7 @@ describe("Deposit transaction service unit tests", () => {
             }
         };
     });
-    
+
     it("should check if user deposited valid amount", async () => {
         const keyPair = new KeyPair(PrivateKey.fromHexString(wallet.privateKey));
         const ethersNotifier = new EthersNotifier(networkConfig, provider);
@@ -117,7 +117,7 @@ async function generateMultilpleTransactions(
     amounts: string[]): Promise<void> {
 
     await asyncForEach(amounts, async (amount: string) => {
-        const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1, "hex"), amount);
+        const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1, "hex"), amount, config);
         const depositTx = DepositTx.generateDepositTx(depositData, depositContractAddress, config, amount);
         const nonce = await provider.getTransactionCount(wallet.address);
         const signedTx = await depositTx.sign(wallet, nonce);

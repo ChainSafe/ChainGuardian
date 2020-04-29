@@ -3,7 +3,7 @@ import thunk from "redux-thunk";
 import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {
     setDepositDetected,
-    setDepositTransactionData, 
+    setDepositTransactionData,
     generateDepositAction
 } from "../../../../src/renderer/actions";
 import {IRootState} from "../../../../src/renderer/reducers";
@@ -77,11 +77,12 @@ describe("deposit actions", () => {
         const depositData = generateDeposit(
             keyPair,
             Buffer.from(publicKeyStr, "hex"),
-            networkConfig.contract.depositAmount
+            networkConfig.contract.depositAmount,
+            networkConfig.eth2Config,
         );
         const depositTx = DepositTx.generateDepositTx(
-            depositData, 
-            networkConfig.contract.address, 
+            depositData,
+            networkConfig.contract.address,
             networkConfig.eth2Config,
             networkConfig.contract.depositAmount);
         const txData = `0x${depositTx.data.toString("hex")}`;

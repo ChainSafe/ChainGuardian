@@ -15,7 +15,8 @@ export const generateDepositAction = (networkConfig: INetworkConfig) => {
         const depositData = generateDeposit(
             keyPair,
             Buffer.from(withdrawalKey, "hex"),
-            networkConfig.contract.depositAmount
+            networkConfig.contract.depositAmount,
+            networkConfig.eth2Config,
         );
         const depositTx = DepositTx.generateDepositTx(
             depositData,

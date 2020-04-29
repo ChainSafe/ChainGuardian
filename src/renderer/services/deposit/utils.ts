@@ -1,8 +1,9 @@
 import {Keypair as KeyPair} from "@chainsafe/bls";
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {BLSPubkey as BLSPubKey, DepositData, DepositMessage} from "@chainsafe/lodestar-types";
 import {createHash} from "crypto";
-import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {ethers, utils} from "ethers";
+import {computeDomain, DomainType, computeSigningRoot} from "@chainsafe/lodestar-beacon-state-transition";
 
 /**
  * Generate function signature from ABI object.
@@ -39,12 +40,15 @@ export function etherToGwei(ether: string|number|bigint): bigint {
  *
  * @param signingKey - signing @{KeyPair}.
  * @param withdrawalPubKey - withdrawal public key.
- *
  * @param depositAmount
+ * @param config
  * @return instance of ${DepositData} defining deposit transaction.
  */
 export function generateDeposit(
-    signingKey: KeyPair, withdrawalPubKey: BLSPubKey, depositAmount: string|number
+    signingKey: KeyPair,
+    withdrawalPubKey: BLSPubKey,
+    depositAmount: string|number,
+    config: IBeaconConfig,
 ): DepositData {
     // signing public key
     const publicKey: Buffer = signingKey.publicKey.toBytesCompressed();
@@ -62,16 +66,16 @@ export function generateDeposit(
     const depositMsg: DepositMessage = {
         pubkey: publicKey,
         withdrawalCredentials: withdrawalCredentials,
-        amount: amount,
+        amount: amount
     };
-    // calculate root
-    const root = config.types.DepositMessage.hashTreeRoot(depositMsg);
     // sign calculated root
+    const domain = computeDomain(config, DomainType.DEPOSIT);
+    const signingRoot = computeSigningRoot(config, config.types.DepositMessage, depositMsg, domain);
     const signature = signingKey.privateKey.signMessage(
-        root
+        signingRoot,
     ).toBytesCompressed();
     return {
         ...depositMsg,
-        signature,
+        signature
     } as DepositData;
 }
