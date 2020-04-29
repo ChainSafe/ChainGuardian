@@ -1,7 +1,7 @@
 import {Keypair as KeyPair} from "@chainsafe/bls";
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {BLSPubkey as BLSPubKey, DepositData, DepositMessage} from "@chainsafe/lodestar-types";
 import {createHash} from "crypto";
-import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {ethers, utils} from "ethers";
 import {computeDomain, DomainType, computeSigningRoot} from "@chainsafe/lodestar-beacon-state-transition";
 
@@ -40,12 +40,15 @@ export function etherToGwei(ether: string|number|bigint): bigint {
  *
  * @param signingKey - signing @{KeyPair}.
  * @param withdrawalPubKey - withdrawal public key.
- *
  * @param depositAmount
+ * @param config
  * @return instance of ${DepositData} defining deposit transaction.
  */
 export function generateDeposit(
-    signingKey: KeyPair, withdrawalPubKey: BLSPubKey, depositAmount: string|number
+    signingKey: KeyPair,
+    withdrawalPubKey: BLSPubKey,
+    depositAmount: string|number,
+    config: IBeaconConfig,
 ): DepositData {
     // signing public key
     const publicKey: Buffer = signingKey.publicKey.toBytesCompressed();
