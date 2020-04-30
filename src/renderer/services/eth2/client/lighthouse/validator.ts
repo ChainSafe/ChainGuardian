@@ -44,7 +44,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
             });
         return validatorPubKeys.map((validatorPubKey) => {
             const lhDuty = response.find((value => value.validator_pubkey === toHexString(validatorPubKey)));
-            if(lhDuty) {
+            if(lhDuty && lhDuty.attestation_slot !== null) {
                 return {
                     validatorPubkey: validatorPubKey,
                     attestationSlot: lhDuty.attestation_slot,
@@ -67,7 +67,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
         return response.flatMap((lhDuty) => {
             return lhDuty.block_proposal_slots.map((proposalSlot) => {
                 return {
-                    proposerPubkey: this.config.types.BLSPubkey.fromJson(lhDuty.validator_pubkey),
+                    proposerPubkey: this.config.types.BLSPubkey.fromJson(lhDuty.validator_pubkey, {case: "snake"}),
                     slot: proposalSlot
                 } as ProposerDuty;  
             });
@@ -87,7 +87,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
                     }
             }
         );
-        return this.config.types.Attestation.fromJson(response);
+        return this.config.types.Attestation.fromJson(response, {case: "snake"});
     }
 
     public async produceBlock(slot: Slot, proposerPubKey: BLSPubkey, randaoReveal: Uint8Array): Promise<BeaconBlock> {
@@ -101,20 +101,20 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
                     }
             }
         );
-        return this.config.types.BeaconBlock.fromJson(response);
+        return this.config.types.BeaconBlock.fromJson(response, {case: "snake"});
     }
 
     public async publishAttestation(attestation: Attestation): Promise<void> {
         await this.client.post(
             LighthouseRoutes.PUBLISH_ATTESTATION,
-            this.config.types.Attestation.toJson(attestation)
+            this.config.types.Attestation.toJson(attestation, {case: "snake"})
         );
     }
 
     public async publishBlock(signedBlock: SignedBeaconBlock): Promise<void> {
         await this.client.post(
             LighthouseRoutes.PUBLISH_BLOCK,
-            this.config.types.SignedBeaconBlock.toJson(signedBlock)
+            this.config.types.SignedBeaconBlock.toJson(signedBlock, {case: "snake"})
         );
     }
 
@@ -136,13 +136,13 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
         );
     }
 
-    public getWireAttestations(): Promise<Attestation[]> {
+    public async getWireAttestations(): Promise<Attestation[]> {
         throw new Error("Method not implemented.");
     }
     
     public async publishAggregateAndProof(signedAggregateAndProof: SignedAggregateAndProof): Promise<void> {
         await this.client.post(LighthouseRoutes.PUBLISH_AGGREGATES_AND_PROOFS, [
-            this.config.types.SignedAggregateAndProof.toJson(signedAggregateAndProof)
+            this.config.types.SignedAggregateAndProof.toJson(signedAggregateAndProof, {case: "snake"})
         ]);
     }
     
@@ -156,7 +156,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
                 }
             });
         const validator = await this.beaconApi.getValidator(aggregator);
-        const aggregate = this.config.types.Attestation.fromJson(response);
+        const aggregate = this.config.types.Attestation.fromJson(response, {case: "snake"});
         return {
             aggregate,
             aggregatorIndex: validator.index,

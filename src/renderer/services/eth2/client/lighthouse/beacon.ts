@@ -44,8 +44,8 @@ export class LighthouseBeaconApiClient implements IBeaconApi {
             this.client.get<Json>(LighthouseRoutes.GET_FORK)
         ]);
         return {
-            fork: this.config.types.Fork.fromJson(objectToCamelCase(forkResponse as object) as Json),
-            genesisValidatorsRoot: this.config.types.Root.fromJson(validatorsRootResponse),
+            fork: this.config.types.Fork.fromJson(forkResponse, {case: "snake"}),
+            genesisValidatorsRoot: this.config.types.Root.fromJson(validatorsRootResponse, {case: "snake"}),
             chainId: BigInt(0)
         };
     }
@@ -78,10 +78,12 @@ export class LighthouseBeaconApiClient implements IBeaconApi {
     public async getValidator(pubkey: BLSPubkey): Promise<ValidatorResponse | null> {
         const validatorResponse = await this.client.post<{pubkeys: string[]}, Json[]>(
             LighthouseRoutes.GET_VALIDATORS,
-            {pubkeys: [this.config.types.BLSPubkey.toJson(pubkey) as string]}
+            {pubkeys: [this.config.types.BLSPubkey.toJson(pubkey, {case: "snake"}) as string]}
         );
-        // @ts-ignore
-        const validator = validatorResponse.find((validatorJson) => validatorJson.pubkey === toHexString(pubkey));
+        const validator = validatorResponse.find((validatorJson) =>
+            // @ts-ignore
+            validatorJson.pubkey === toHexString(pubkey)
+        );
         // @ts-ignore
         if(!validator || !validator.validator) {
             return null;
@@ -89,7 +91,7 @@ export class LighthouseBeaconApiClient implements IBeaconApi {
         //naming issues, hopefully removed with standardized api
         // @ts-ignore
         validatorResponse[0].index = validatorResponse[0].validator_index;
-        return this.config.types.ValidatorResponse.fromJson(objectToCamelCase(validatorResponse[0] as object) as Json);
+        return this.config.types.ValidatorResponse.fromJson(validatorResponse[0], {case: "snake"});
     }
 
 }
