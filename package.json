@@ -176,8 +176,8 @@
   "dependencies": {
     "@chainsafe/bls": "1.0.0",
     "@chainsafe/bls-keygen": "0.1.0",
-    "@chainsafe/lodestar-config": "0.6.0",
     "@chainsafe/lodestar-beacon-state-transition": "0.6.0",
+    "@chainsafe/lodestar-config": "0.6.0",
     "@chainsafe/lodestar-types": "0.6.0",
     "@chainsafe/lodestar-utils": "0.6.0",
     "@chainsafe/lodestar-validator": "0.6.0",
@@ -192,6 +192,7 @@
     "electron-log": "^3.0.8",
     "ethereumjs-abi": "^0.6.8",
     "ethers": "^4.0.38",
+    "json-bigint": "^0.3.0",
     "level": "6.0.0",
     "levelup": "4.3.2",
     "node-cmd": "^3.0.0",

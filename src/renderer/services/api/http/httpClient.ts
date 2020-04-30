@@ -3,9 +3,14 @@ import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} fro
 export class HttpClient {
     private client: AxiosInstance;
 
-    public constructor(baseURL: string) {
+    public constructor(baseURL: string, options: {axios?: AxiosRequestConfig} = {}) {
+        if(!options) {
+            // eslint-disable-next-line no-param-reassign
+            options = {axios: {}};
+        }
         this.client = axios.create({
-            baseURL
+            baseURL,
+            ...options
         });
     }
 

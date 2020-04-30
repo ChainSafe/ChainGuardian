@@ -6,7 +6,7 @@ import {LighthouseRoutes} from "../../../../../../src/renderer/services/eth2/cli
 import * as fs from "fs";
 import * as path from "path";
 import {SyncingStatus} from "@chainsafe/lodestar-types";
-import {func} from "prop-types";
+import {parse} from "json-bigint";
 
 const httpMock = new MockAxiosAdapter(axios);
 
@@ -87,17 +87,33 @@ describe("ligthhouse beacon client", function() {
         )
             .reply(
                 200,
-                JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/beacon/validators.json"), "utf-8"))
+                parse(fs.readFileSync(path.join(__dirname, "./payloads/beacon/validators.json"), "utf-8"))
             );
         const validator = await client.getValidator(
             Buffer.from(
-                "0x98f87bc7c8fa10408425bbeeeb3dc387e3e0b4bd92f57775b60b39156a16f9ec80b273a64269332d97bdb7d93ae05a16", 
+                "98f87bc7c8fa10408425bbeeeb3dc387e3e0b4bd92f57775b60b39156a16f9ec80b273a64269332d97bdb7d93ae05a16",
                 "hex")
         );
         expect(validator).toBeDefined();
         expect(validator.index).toEqual(14935);
         expect(validator.balance.toString()).toEqual("3228885987");
         expect(validator.validator).toBeDefined();
+    });
+
+    it("get validator - doesn't exists", async function() {
+        httpMock.onPost(
+            LighthouseRoutes.GET_VALIDATORS
+        )
+            .reply(
+                200,
+                parse(fs.readFileSync(path.join(__dirname, "./payloads/beacon/validators.json"), "utf-8"))
+            );
+        const validator = await client.getValidator(
+            Buffer.from(
+                "42f87bc7c8fa10408425bbeeeb3dc3874242b4bd92f57775b60b39142426f9ec80b273a64269332d97bdb7d93ae05a42",
+                "hex")
+        );
+        expect(validator).toBeNull();
     });
     
 });

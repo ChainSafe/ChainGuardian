@@ -49,7 +49,7 @@ module.exports = {
         "@typescript-eslint/no-use-before-define": "off",
         "@typescript-eslint/semi": "error",
         "camelcase": "error",
-        "no-param-reassign": "error",
+        "no-param-reassign": "warn",
         "max-len": ["error", {
             "code": 120
         }],

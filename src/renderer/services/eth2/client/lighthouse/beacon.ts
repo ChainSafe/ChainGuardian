@@ -12,10 +12,11 @@ import {
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {IBeaconClientOptions} from "../interface";
-import {Json, toHexString} from "@chainsafe/ssz";
+import { Json, toHexString } from '@chainsafe/ssz';
 import {LighthouseRoutes} from "./routes";
 import {ILighthouseSyncResponse} from "./types";
 import {objectToCamelCase} from "@chainsafe/lodestar-utils/lib/misc";
+import {parse as bigIntParse} from "json-bigint";
 
 
 export class LighthouseBeaconApiClient implements IBeaconApi {
@@ -24,7 +25,7 @@ export class LighthouseBeaconApiClient implements IBeaconApi {
     private config: IBeaconConfig;
 
     public constructor(options: IBeaconClientOptions) {
-        this.client = new HttpClient(options.baseUrl);
+        this.client = new HttpClient(options.baseUrl, {axios: {transformResponse: bigIntParse}});
         this.config = options.config;
     }
     
@@ -79,13 +80,15 @@ export class LighthouseBeaconApiClient implements IBeaconApi {
             LighthouseRoutes.GET_VALIDATORS,
             {pubkeys: [this.config.types.BLSPubkey.toJson(pubkey) as string]}
         );
-        if(validatorResponse.length === 0) {
+        // @ts-ignore
+        const validator = validatorResponse.find((validatorJson) => validatorJson.pubkey === toHexString(pubkey));
+        // @ts-ignore
+        if(!validator || !validator.validator) {
             return null;
         }
+        //naming issues, hopefully removed with standardized api
         // @ts-ignore
         validatorResponse[0].index = validatorResponse[0].validator_index;
-        // @ts-ignore
-        validatorResponse[0].balance = String(validatorResponse[0].balance);
         return this.config.types.ValidatorResponse.fromJson(objectToCamelCase(validatorResponse[0] as object) as Json);
     }
 
