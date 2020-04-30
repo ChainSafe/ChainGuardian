@@ -1821,13 +1821,14 @@
   dependencies:
     "@chainsafe/as-sha256" "^0.2.0"
 
-"@chainsafe/ssz@0.6.2", "@chainsafe/ssz@^0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@chainsafe/ssz/-/ssz-0.6.2.tgz#f548f13ca17ce2f9a06bfe16b7521a566faa6067"
-  integrity sha512-w6wk6kBB2KXeiu1wI2VXPDQqNjen7P0uK+NcxXAzBcD3HDr/XHzjBz1U1BI96uTjRI6kbXhujejAWFUOSNAunA==
+"@chainsafe/ssz@0.6.2", "@chainsafe/ssz@0.6.3", "@chainsafe/ssz@^0.6.2":
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/@chainsafe/ssz/-/ssz-0.6.3.tgz#a4a28e6cc932b455d56ef6ab102dde0a0a08f85b"
+  integrity sha512-3EbEdQrTfjhuxhi9iuCkuPqXetyP0dcRYybzRqILZxqlDQQWnIGhKMv14CpXneWDDsgJvdtl05BNpmHQimtXpA==
   dependencies:
     "@chainsafe/as-sha256" "^0.2.0"
     "@chainsafe/persistent-merkle-tree" "^0.1.2"
+    case "^1.6.3"
 
 "@cnakazawa/watch@^1.0.3":
   version "1.0.3"
@@ -4784,6 +4785,11 @@ capture-exit@^2.0.0:
 case-sensitive-paths-webpack-plugin@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.2.0.tgz#3371ef6365ef9c25fa4b81c16ace0e9c7dc58c3e"
+
+case@^1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/case/-/case-1.6.3.tgz#0a4386e3e9825351ca2e6216c60467ff5f1ea1c9"
+  integrity sha512-mzDSXIPaFwVDvZAHqZ9VlbyF4yyXRuX6IvB06WvPYkqJVO24kX1PPhv9bfpKNFZyxYFmmgo03HUiD8iklmJYRQ==
 
 caseless@~0.12.0:
   version "0.12.0"
