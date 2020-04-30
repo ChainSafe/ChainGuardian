@@ -12,7 +12,7 @@ import {
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {IBeaconClientOptions} from "../interface";
-import { Json, toHexString } from '@chainsafe/ssz';
+import {Json, toHexString} from "@chainsafe/ssz";
 import {LighthouseRoutes} from "./routes";
 import {ILighthouseSyncResponse} from "./types";
 import {objectToCamelCase} from "@chainsafe/lodestar-utils/lib/misc";

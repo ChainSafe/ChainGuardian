@@ -9,7 +9,8 @@ export interface ILighthouseDutiesResponse {
     attestation_slot: number,
     attestation_committee_index: number,
     attestation_committee_position: number,
-    block_proposal_slots: number[]
+    block_proposal_slots: number[],
+    aggregator_modulo: number
 }
 
 export interface ILighthouseFinalizedSyncing {

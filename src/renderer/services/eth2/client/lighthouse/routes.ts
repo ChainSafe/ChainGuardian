@@ -6,4 +6,13 @@ export enum LighthouseRoutes {
     GET_SYNC_STATUS = "/lighthouse/syncing",
     GET_VALIDATORS = "/beacon/validators",
 
+    //validator related
+    GET_DUTIES = "/validator/duties",
+    GET_ATTESTATION = "/validator/attestation",
+    PUBLISH_ATTESTATION = "/validator/attestation",
+    GET_BLOCK = "/validator/block",
+    PUBLISH_BLOCK = "/validator/block",
+    SUBSCRIBE_TO_COMMITTEE_SUBNET = "/validator/subscribe",
+    GET_AGGREGATED_ATTESTATION = "/validator/aggregate_attestation",
+    PUBLISH_AGGREGATES_AND_PROOFS = "/validator/aggregate_and_proofs"
 }

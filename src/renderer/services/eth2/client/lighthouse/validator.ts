@@ -1,88 +1,84 @@
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
 import {HttpClient} from "../../../api";
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
 import {IBeaconClientOptions} from "../interface";
-import {Attestation, BeaconBlock, BLSPubkey, SignedBeaconBlock, Slot, ValidatorDuty} from "@chainsafe/eth2.0-types";
 import {ILighthouseDutiesRequest, ILighthouseDutiesResponse} from "./types";
-import {toHexString} from "../../../utils/crypto";
-import {fromHex} from "../../../utils/bytes";
-import {computeEpochAtSlot} from "@chainsafe/eth2.0-state-transition";
-import {fromJson, toJson} from "@chainsafe/eth2.0-utils";
-
-export enum LighthouseValidatorRoutes {
-
-    DUTIES = "/validator/duties",
-    ATTESTATION = "/validator/attestation",
-    BLOCK = "/validator/block"
-
-}
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
+import {
+    AggregateAndProof,
+    Attestation, AttestationData,
+    AttesterDuty,
+    BeaconBlock,
+    BLSPubkey,
+    BLSSignature,
+    CommitteeIndex,
+    Epoch,
+    ProposerDuty, SignedAggregateAndProof,
+    SignedBeaconBlock,
+    Slot
+} from "@chainsafe/lodestar-types";
+import {parse as bigIntParse} from "json-bigint";
+import {Json, toHexString} from "@chainsafe/ssz";
+import {LighthouseRoutes} from "./routes";
+import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
+import {ZERO_HASH} from "@chainsafe/lodestar-beacon-state-transition";
 
 export class LighthouseValidatorApiClient implements IValidatorApi {
 
-    private client: HttpClient;
-    private config: IBeaconConfig;
-    private trackedValidators: Set<BLSPubkey> = new Set();
-
-    public constructor(options: IBeaconClientOptions, validators: BLSPubkey[] = []) {
-        this.client = new HttpClient(options.urlPrefix);
-        this.config = options.config;
-        validators.forEach((validator) => this.trackedValidators.add(validator));
-    }
+    private readonly client: HttpClient;
+    private readonly config: IBeaconConfig;
+    private readonly beaconApi: IBeaconApi;
     
-    public async getAttesterDuties(epoch: number, validatorPubKeys: BLSPubkey[]): Promise<ValidatorDuty[]> {
-        validatorPubKeys.forEach((key) => this.trackedValidators.add(key));
+    public constructor(options: IBeaconClientOptions, beaconApi: IBeaconApi) {
+        this.client = new HttpClient(options.baseUrl, {axios: {transformResponse: bigIntParse}});
+        this.config = options.config;
+        this.beaconApi = beaconApi;
+    }
+
+    public async getAttesterDuties(epoch: Epoch, validatorPubKeys: BLSPubkey[]): Promise<AttesterDuty[]> {
+
         const response = await this.client.post<ILighthouseDutiesRequest, ILighthouseDutiesResponse[]>(
-            LighthouseValidatorRoutes.DUTIES,
+            LighthouseRoutes.GET_DUTIES,
             {
                 epoch,
                 pubkeys: validatorPubKeys.map(toHexString)
             });
         return validatorPubKeys.map((validatorPubKey) => {
-            const lhDuty = response.find((value => fromHex(value.validator_pubkey).equals(validatorPubKey)));
+            const lhDuty = response.find((value => value.validator_pubkey === toHexString(validatorPubKey)));
             if(lhDuty) {
                 return {
                     validatorPubkey: validatorPubKey,
                     attestationSlot: lhDuty.attestation_slot,
-                    committeeIndex: lhDuty.attestation_committee_index
-                } as ValidatorDuty;
+                    committeeIndex: lhDuty.attestation_committee_index,
+                    aggregatorModulo: lhDuty.aggregator_modulo
+                };
             } else {
                 return null;
             }
-        }).filter((value) => !!value) as ValidatorDuty[];
+        }).filter((value) => !!value);
     }
 
-    public async getProposerDuties(epoch: number): Promise<Map<Slot, BLSPubkey>> {
+    public async getProposerDuties(epoch: Epoch, validatorPubKeys: BLSPubkey[]): Promise<ProposerDuty[]> {
         const response = await this.client.post<ILighthouseDutiesRequest, ILighthouseDutiesResponse[]>(
-            LighthouseValidatorRoutes.DUTIES,
+            LighthouseRoutes.GET_DUTIES,
             {
                 epoch,
-                pubkeys: Array.from(this.trackedValidators.values()).map(toHexString)
+                pubkeys: validatorPubKeys.map(toHexString)
             });
-        const proposers = new Map<Slot, BLSPubkey>();
-        response.forEach((lhDuty) => {
-            lhDuty.block_proposal_slots.forEach((proposerSlot) => {
-                if(computeEpochAtSlot(this.config, proposerSlot) === epoch) {
-                    proposers.set(proposerSlot, fromHex(lhDuty.validator_pubkey));
-                } 
+        return response.flatMap((lhDuty) => {
+            return lhDuty.block_proposal_slots.map((proposalSlot) => {
+                return {
+                    proposerPubkey: this.config.types.BLSPubkey.fromJson(lhDuty.validator_pubkey),
+                    slot: proposalSlot
+                } as ProposerDuty;  
             });
         });
-        return proposers;
-    }
-
-    public async getWireAttestations(): Promise<Attestation[]> {
-        return [];
-    }
-
-    public async  isAggregator(): Promise<boolean> {
-        //current api doesn't support aggregation
-        return false;
     }
 
     public async produceAttestation(
-        validatorPubKey: Buffer, pocBit: boolean, index: number, slot: number
+        validatorPubKey: BLSPubkey, index: CommitteeIndex, slot: Slot
     ): Promise<Attestation> {
-        const response = await this.client.get<object>(
-            LighthouseValidatorRoutes.ATTESTATION,
+        const response = await this.client.get<Json>(
+            LighthouseRoutes.GET_ATTESTATION,
             {
                 params: 
                     {
@@ -91,12 +87,12 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
                     }
             }
         );
-        return fromJson<Attestation>(this.config.types.Attestation, response);
+        return this.config.types.Attestation.fromJson(response);
     }
 
-    public async produceBlock(slot: number, randaoReveal: Buffer): Promise<BeaconBlock> {
-        const response = await this.client.get<object>(
-            LighthouseValidatorRoutes.BLOCK,
+    public async produceBlock(slot: Slot, proposerPubKey: BLSPubkey, randaoReveal: Uint8Array): Promise<BeaconBlock> {
+        const response = await this.client.get<Json>(
+            LighthouseRoutes.GET_BLOCK,
             {
                 params:
                     {
@@ -105,19 +101,67 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
                     }
             }
         );
-        return fromJson<BeaconBlock>(this.config.types.BeaconBlock, response);
-    }
-
-    public async publishAggregatedAttestation(): Promise<void> {
-        return;
+        return this.config.types.BeaconBlock.fromJson(response);
     }
 
     public async publishAttestation(attestation: Attestation): Promise<void> {
-        await this.client.post(LighthouseValidatorRoutes.ATTESTATION, {message: toJson(attestation)});
+        await this.client.post(
+            LighthouseRoutes.PUBLISH_ATTESTATION,
+            this.config.types.Attestation.toJson(attestation)
+        );
     }
 
     public async publishBlock(signedBlock: SignedBeaconBlock): Promise<void> {
-        await this.client.post(LighthouseValidatorRoutes.BLOCK, toJson(signedBlock));
+        await this.client.post(
+            LighthouseRoutes.PUBLISH_BLOCK,
+            this.config.types.SignedBeaconBlock.toJson(signedBlock)
+        );
+    }
+
+    public async subscribeCommitteeSubnet(
+        slot: Slot, slotSignature: BLSSignature,
+        committeeIndex: CommitteeIndex, aggregatorPubkey: BLSPubkey
+    ): Promise<void> {
+        const validator = await this.beaconApi.getValidator(aggregatorPubkey);
+        await this.client.post(
+            LighthouseRoutes.SUBSCRIBE_TO_COMMITTEE_SUBNET,
+            [
+                {
+                    "validator_index": validator.index,
+                    "attestation_committee_index": committeeIndex,
+                    slot: slot,
+                    "is_aggregator": true
+                }
+            ]
+        );
+    }
+
+    public getWireAttestations(): Promise<Attestation[]> {
+        throw new Error("Method not implemented.");
+    }
+    
+    public async publishAggregateAndProof(signedAggregateAndProof: SignedAggregateAndProof): Promise<void> {
+        await this.client.post(LighthouseRoutes.PUBLISH_AGGREGATES_AND_PROOFS, [
+            this.config.types.SignedAggregateAndProof.toJson(signedAggregateAndProof)
+        ]);
+    }
+    
+    public async produceAggregateAndProof(
+        attestationData: AttestationData, aggregator: BLSPubkey): Promise<AggregateAndProof> {
+        const response = await this.client.get<Json>(
+            LighthouseRoutes.GET_AGGREGATED_ATTESTATION, 
+            {
+                params: {
+                    "attestation_data": JSON.stringify(this.config.types.AttestationData.toJson(attestationData))   
+                }
+            });
+        const validator = await this.beaconApi.getValidator(aggregator);
+        const aggregate = this.config.types.Attestation.fromJson(response);
+        return {
+            aggregate,
+            aggregatorIndex: validator.index,
+            selectionProof: ZERO_HASH
+        };
     }
 
 }
