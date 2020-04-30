@@ -9,7 +9,7 @@ import {BeaconNode, BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
 import {SupportedNetworks} from "../services/eth2/supportedNetworks";
 import {fromHex} from "../services/utils/bytes";
-import {SignedBeaconBlock} from "@chainsafe/lodestar-types";
+import {IEth2ChainHead} from "../models/head";
 
 // User selected network in dashboard dropdown
 export interface ISaveSelectedNetworkAction {
@@ -85,7 +85,7 @@ async function refreshBeaconNodeStatus(
     dispatch: Dispatch<Action<unknown>>,
     getState: () => IRootState,
     validator: string,
-    chainHead: SignedBeaconBlock,
+    chainHead: IEth2ChainHead,
 ): Promise<void> {
     const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
     const beaconNodes: BeaconNode[] = await Promise.all(validatorBeaconNodes.map(async(validatorBN: BeaconNode) => {
@@ -96,7 +96,7 @@ async function refreshBeaconNodeStatus(
             return {
                 ...validatorBN,
                 isSyncing: !!(await validatorBN.client.beacon.getSyncingStatus()),
-                currentSlot: String(chainHead.message.slot),
+                currentSlot: String(chainHead.slot),
             };
         } catch (e) {
             warn(`Error while trying to fetch beacon node status... ${e.message}`);
