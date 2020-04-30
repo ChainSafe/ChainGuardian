@@ -17,6 +17,22 @@ describe("ligthhouse beacon client", function() {
         baseUrl: ""
     });
     
+    it("get chain head", async function() {
+        httpMock.onGet(LighthouseRoutes.GET_HEAD).reply(
+            200,
+            JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/beacon/head.json"), "utf-8"))
+        );
+        const head = await client.getChainHead();
+        expect(head).toBeDefined();
+        expect(head.slot).toEqual(37923);
+        expect(
+            config.types.Root.equals(
+                head.blockRoot,
+                Buffer.from("e865d4805395a0776b8abe46d714a9e64914ab8dc5ff66624e5a1776bcc1684b", "hex")
+            )
+        ).toBeTruthy();
+    });
+
     it("get client version", async function() {
         httpMock.onGet(LighthouseRoutes.GET_VERSION).reply(200, "Lighthouse/v0.1.0-unstable/x86_64-linux");
         const version = await client.getClientVersion();

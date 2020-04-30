@@ -1,4 +1,5 @@
 export enum LighthouseRoutes {
+    GET_HEAD = "/beacon/head",
     GET_GENESIS_TIME = "/beacon/genesis_time",
     GET_FORK= "/beacon/fork",
     GET_GENESIS_VALIDATORS_ROOT = "/beacon/genesis_validators_root",

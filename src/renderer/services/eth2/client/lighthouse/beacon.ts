@@ -1,4 +1,3 @@
-import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {
     BLSPubkey,
     Bytes32,
@@ -11,15 +10,16 @@ import {
 } from "@chainsafe/lodestar-types";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
-import {IBeaconClientOptions} from "../interface";
+import {IBeaconClientOptions, IEth2BeaconApi} from "../interface";
 import {Json, toHexString} from "@chainsafe/ssz";
 import {LighthouseRoutes} from "./routes";
 import {ILighthouseSyncResponse} from "./types";
-import {objectToCamelCase} from "@chainsafe/lodestar-utils/lib/misc";
 import {parse as bigIntParse} from "json-bigint";
+import {Eth2ChainHeadType} from "../../../../models/types/head";
+import {IEth2ChainHead} from "../../../../models/head";
 
 
-export class LighthouseBeaconApiClient implements IBeaconApi {
+export class LighthouseBeaconApiClient implements IEth2BeaconApi {
 
     private client: HttpClient;
     private config: IBeaconConfig;
@@ -92,6 +92,13 @@ export class LighthouseBeaconApiClient implements IBeaconApi {
         // @ts-ignore
         validatorResponse[0].index = validatorResponse[0].validator_index;
         return this.config.types.ValidatorResponse.fromJson(validatorResponse[0], {case: "snake"});
+    }
+
+    public async getChainHead(): Promise<IEth2ChainHead> {
+        return Eth2ChainHeadType.fromJson(
+            await this.client.get<Json>(LighthouseRoutes.GET_HEAD), 
+            {case: "snake"}
+        );
     }
 
 }
