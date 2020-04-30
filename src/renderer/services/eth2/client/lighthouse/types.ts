@@ -11,3 +11,24 @@ export interface ILighthouseDutiesResponse {
     attestation_committee_position: number,
     block_proposal_slots: number[]
 }
+
+export interface ILighthouseFinalizedSyncing {
+    "SyncingFinalized": {
+        "start_slot": number,
+        "head_slot": number,
+        "head_root": string
+    }
+}
+
+export interface ILighthouseHeadSyncing {
+    "SyncingHead": {
+        "start_slot": number,
+        "head_slot": number,
+    }
+}
+
+export interface ILighthouseSynced {
+    "Synced": {}
+}
+
+export type ILighthouseSyncResponse = ILighthouseFinalizedSyncing & ILighthouseHeadSyncing & ILighthouseSynced;

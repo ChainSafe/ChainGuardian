@@ -1,16 +1,22 @@
 import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
-import {bytes32, Fork, number64, SyncingStatus, uint64} from "@chainsafe/eth2.0-types";
+import {
+    BLSPubkey,
+    Bytes32,
+    Fork,
+    Number64,
+    Root,
+    SyncingStatus,
+    Uint64,
+    ValidatorResponse
+} from "@chainsafe/lodestar-types";
 import {HttpClient} from "../../../api";
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {IBeaconClientOptions} from "../interface";
-import {fromJson} from "@chainsafe/eth2.0-utils";
+import {Json, toHexString} from "@chainsafe/ssz";
+import {LighthouseRoutes} from "./routes";
+import {ILighthouseSyncResponse} from "./types";
+import {objectToCamelCase} from "@chainsafe/lodestar-utils/lib/misc";
 
-export enum LighthouseBeaconRoutes {
-    VERSION = "/node/version",
-    FORK = "/beacon/fork",
-    GENESIS_TIME = "/beacon/genesis_time",
-    SYNCING = "/node/syncing"
-}
 
 export class LighthouseBeaconApiClient implements IBeaconApi {
 
@@ -18,29 +24,69 @@ export class LighthouseBeaconApiClient implements IBeaconApi {
     private config: IBeaconConfig;
 
     public constructor(options: IBeaconClientOptions) {
-        this.client = new HttpClient(options.urlPrefix);
+        this.client = new HttpClient(options.baseUrl);
         this.config = options.config;
     }
     
-    public async getClientVersion(): Promise<bytes32> {
-        const response = await this.client.get<string>(LighthouseBeaconRoutes.VERSION);
+    public async getClientVersion(): Promise<Bytes32> {
+        const response = await this.client.get<string>(LighthouseRoutes.GET_VERSION);
         return Buffer.from(response, "utf8");
     }
 
-    public async getFork(): Promise<{ fork: Fork; chainId: uint64 }> {
-        const response = await this.client.get<JSON>(LighthouseBeaconRoutes.FORK);
+    public async getFork(): Promise<{
+        fork: Fork;
+        chainId: Uint64;
+        genesisValidatorsRoot: Root;
+    }> {
+        const [validatorsRootResponse, forkResponse] = await Promise.all([
+            this.client.get<string>(LighthouseRoutes.GET_GENESIS_VALIDATORS_ROOT),
+            this.client.get<Json>(LighthouseRoutes.GET_FORK)
+        ]);
         return {
-            fork: fromJson<Fork>(this.config.types.Fork, response),
+            fork: this.config.types.Fork.fromJson(objectToCamelCase(forkResponse as object) as Json),
+            genesisValidatorsRoot: this.config.types.Root.fromJson(validatorsRootResponse),
             chainId: BigInt(0)
         };
     }
 
-    public async getGenesisTime(): Promise<number64> {
-        return await this.client.get<number>(LighthouseBeaconRoutes.GENESIS_TIME);
+    public async getGenesisTime(): Promise<Number64> {
+        return await this.client.get<number>(LighthouseRoutes.GET_GENESIS_TIME);
     }
 
     public async getSyncingStatus(): Promise<boolean | SyncingStatus> {
-        return false;
+        const response = await this.client.get<ILighthouseSyncResponse>(LighthouseRoutes.GET_SYNC_STATUS);
+        if(Object.keys(response).includes("Synced")) {
+            return false;
+        }
+        if(response.SyncingFinalized) {
+            return {
+                currentBlock: BigInt(response.SyncingFinalized.head_slot),
+                highestBlock: BigInt(response.SyncingFinalized.head_slot),
+                startingBlock: BigInt(response.SyncingFinalized.start_slot)
+            };
+        }
+        if(response.SyncingHead) {
+            return {
+                currentBlock: BigInt(response.SyncingHead.head_slot),
+                highestBlock: BigInt(response.SyncingHead.head_slot),
+                startingBlock: BigInt(response.SyncingHead.start_slot)
+            };
+        }
+    }
+
+    public async getValidator(pubkey: BLSPubkey): Promise<ValidatorResponse | null> {
+        const validatorResponse = await this.client.post<{pubkeys: string[]}, Json[]>(
+            LighthouseRoutes.GET_VALIDATORS,
+            {pubkeys: [this.config.types.BLSPubkey.toJson(pubkey) as string]}
+        );
+        if(validatorResponse.length === 0) {
+            return null;
+        }
+        // @ts-ignore
+        validatorResponse[0].index = validatorResponse[0].validator_index;
+        // @ts-ignore
+        validatorResponse[0].balance = String(validatorResponse[0].balance);
+        return this.config.types.ValidatorResponse.fromJson(objectToCamelCase(validatorResponse[0] as object) as Json);
     }
 
 }
