@@ -1,6 +1,6 @@
 import axios from "axios";
 import MockAxiosAdapter from "@nodefactory/axios-mock-adapter";
-import {initBLS, PrivateKey, PublicKey} from "@chainsafe/bls";
+import {initBLS, PrivateKey} from "@chainsafe/bls";
 import * as fs from "fs";
 import * as path from "path";
 import {LighthouseValidatorApiClient} from "../../../../../../src/renderer/services/eth2/client/lighthouse/validator";
@@ -11,7 +11,7 @@ import {LighthouseBeaconApiClient} from "../../../../../../src/renderer/services
 import {LighthouseRoutes} from "../../../../../../src/renderer/services/eth2/client/lighthouse/routes";
 import {BLSPubkey} from "@chainsafe/lodestar-types";
 import {toHexString} from "@chainsafe/ssz";
-import { generateEmptyAttestation } from '../../../../../e2e/mocks/attestation';
+import {generateEmptyAttestation} from "../../../../../e2e/mocks/attestation";
 
 const httpMock = new MockAxiosAdapter(axios);
 

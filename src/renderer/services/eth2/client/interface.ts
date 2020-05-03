@@ -1,7 +1,7 @@
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {IApiClient} from "@chainsafe/lodestar-validator/lib";
 import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
-import {BLSPubkey, SignedBeaconBlock, ValidatorResponse} from "@chainsafe/lodestar-types";
+import {BLSPubkey, ValidatorResponse} from "@chainsafe/lodestar-types";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
 import {IEth2ChainHead} from "../../../models/head";
 
