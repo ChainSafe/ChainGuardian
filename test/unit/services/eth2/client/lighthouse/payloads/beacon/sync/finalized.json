@@ -1,0 +1,7 @@
+{
+  "SyncingFinalized": {
+    "start_slot": 10,
+    "head_slot": 20,
+    "head_root":"0x74020d0e3c3c02d2ea6279d5760f7d0dd376c4924beaaec4d5c0cefd1c0c4465"
+  }
+}

@@ -50,7 +50,7 @@
     "constant": true,
     "payable": false,
     "type": "function",
-    "gas": 95727
+    "gas": 95628
   },
   {
     "name": "get_deposit_count",
@@ -64,7 +64,7 @@
     "constant": true,
     "payable": false,
     "type": "function",
-    "gas": 18283
+    "gas": 18231
   },
   {
     "name": "deposit",
@@ -90,6 +90,6 @@
     "constant": false,
     "payable": true,
     "type": "function",
-    "gas": 1342680
+    "gas": 1342274
   }
 ]

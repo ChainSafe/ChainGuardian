@@ -1,0 +1,11 @@
+{
+  "slot": 37923,
+  "block_root": "0xe865d4805395a0776b8abe46d714a9e64914ab8dc5ff66624e5a1776bcc1684b",
+  "state_root": "0xe500e3567ab273c9a6f8a057440deff476ab236f0983da27f201ee9494a879f0",
+  "finalized_slot": 37856,
+  "finalized_block_root": "0xbdae152b62acef1e5c332697567d2b89e358628790b8273729096da670b23e86",
+  "justified_slot": 37888,
+  "justified_block_root": "0x01c2f516a407d8fdda23cad4ed4381e4ab8913d638f935a2fe9bd00d6ced5ec4",
+  "previous_justified_slot": 37856,
+  "previous_justified_block_root": "0xbdae152b62acef1e5c332697567d2b89e358628790b8273729096da670b23e86"
+}

@@ -3,7 +3,7 @@ import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {init, destroy} from "@chainsafe/bls/lib/context";
 import fs from "fs";
 import sinon from "sinon";
-import {ICGKeystore, V4Keystore} from "../../../src/renderer/services/keystore";
+import {ICGKeystore, V4Keystore} from "../../../../src/renderer/services/keystore";
 import example from "./example.v4.json";
 
 const privateKey = "0e43429c844ccedd4aff7aaa05fe996f41f9464b360ca03a4349387ba49b3e18";
