@@ -5,6 +5,8 @@ import database from "../db/api/database";
 import {SupportedNetworks} from "../eth2/supportedNetworks";
 import {Container} from "./container";
 import {DockerRegistry} from "./docker-registry";
+import {getLighthouseBeaconChainConfig, getPrysmBeaconChainConfig} from "./images";
+import {DockerPort} from "./type";
 import {getLogMessageType} from "./utils";
 
 type LogType = "info" | "error";
@@ -12,7 +14,7 @@ type LogCallbackFunc = (type: LogType, message: string) => void;
 
 export class BeaconChain extends Container {
     public static async startPrysmBeaconChain(
-        ports = ["4000:4001", "13000:13000"],
+        ports?: DockerPort[],
         waitUntilReady = false,
     ): Promise<BeaconChain> {
         const imageName = BeaconChain.getContainerName(SupportedNetworks.PRYSM);
@@ -23,12 +25,8 @@ export class BeaconChain extends Container {
         }
 
         const bc = new BeaconChain({
-            image: "gcr.io/prysmaticlabs/prysm/beacon-chain:latest",
-            name: imageName,
-            restart: "unless-stopped",
+            ...getPrysmBeaconChainConfig(SupportedNetworks.PRYSM),
             ports,
-            volume: `${SupportedNetworks.PRYSM}-chain-data:/data`,
-            cmd: "--datadir=/data --grpc-gateway-port 4001"
         });
         DockerRegistry.addContainer(imageName, bc);
 
@@ -40,7 +38,7 @@ export class BeaconChain extends Container {
     }
 
     public static async startSchlesiBeaconChain(
-        ports = ["9000:9000", "5052:5052"],
+        ports: DockerPort[],
         waitUntilReady = false,
     ): Promise<BeaconChain> {
         const imageName = BeaconChain.getContainerName(SupportedNetworks.SCHLESI);
@@ -51,12 +49,8 @@ export class BeaconChain extends Container {
         }
 
         const bc = new BeaconChain({
-            image: "sigp/lighthouse:latest",
-            name: imageName,
-            restart: "unless-stopped",
+            ...getLighthouseBeaconChainConfig(SupportedNetworks.SCHLESI),
             ports,
-            volume: `${SupportedNetworks.SCHLESI}-chain-data:/root/.lighthouse`,
-            cmd: "lighthouse beacon --http --http-address 0.0.0.0 --eth1-endpoint https://goerli.infura.io/v3/9b8caef145c74574869579199c47e847"
         });
         DockerRegistry.addContainer(imageName, bc);
 

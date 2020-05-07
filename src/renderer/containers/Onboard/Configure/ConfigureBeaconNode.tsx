@@ -7,6 +7,7 @@ import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
 import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {IRootState} from "../../../reducers";
+import {getNetworkBeaconChainConfig} from "../../../services/docker/images";
 
 type IStateProps = Pick<IRootState, "register">;
 type IOwnProps =  Pick<RouteComponentProps, "history">;
@@ -16,13 +17,17 @@ interface IInjectedProps {
 }
 
 const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProps> = (props) => {
-    const [rpcPort, setRpcPort] = useState("5052");
-    const [libp2pPort, setLibp2pPort] = useState("9000");
+    const {network} = props.register;
+    const ports = getNetworkBeaconChainConfig(network).ports;
+    const defaultRpcPort = ports[0].local;
+    const [rpcPort, setRpcPort] = useState(defaultRpcPort);
+    const defaultLibp2pPort = ports[1].local;
+    const [libp2pPort, setLibp2pPort] = useState(ports[1].local);
 
     const onSubmit = (): void => {
         // Start beacon chain with selected network and redirect to deposit
         if (props.register.network) {
-            props.startBeaconChain(props.register.network, [`${rpcPort}:5052`, `${libp2pPort}:9000`]);
+            props.startBeaconChain(network, [{...ports[0], local: rpcPort}, {...ports[1], local: libp2pPort}]);
             props.saveBeaconNode(`http://localhost:${rpcPort}`, props.register.network);
             props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
         }
@@ -36,7 +41,7 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProp
             <div className="configure-port">
                 <div className="row">
                     <h3>Local RPC port</h3>
-                    <p>(default: 4000)</p>
+                    <p>(default: {defaultRpcPort})</p>
                 </div>
                 <InputForm
                     onChange={(e): void => setRpcPort(e.currentTarget.value)}
@@ -46,7 +51,7 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProp
 
             <div className="configure-port">
                 <div className="row">
-                    <h3>Local libp2p port</h3><p>(default: 13000)</p>
+                    <h3>Local libp2p port</h3><p>(default: {defaultLibp2pPort})</p>
                 </div>
                 <InputForm
                     onChange={(e): void => setLibp2pPort(e.currentTarget.value)}

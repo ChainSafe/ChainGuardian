@@ -7,6 +7,7 @@ import {NetworkActionTypes} from "../constants/action-types";
 import {IRootState} from "../reducers";
 import {BeaconNode, BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
+import {DockerPort} from "../services/docker/type";
 import {SupportedNetworks} from "../services/eth2/supportedNetworks";
 import {fromHex} from "../services/utils/bytes";
 import {IEth2ChainHead} from "../models/head";
@@ -23,7 +24,7 @@ export const saveSelectedNetworkAction = (network: string): ISaveSelectedNetwork
 
 // Beacon chain
 
-export const startBeaconChainAction = (network: string, ports?: string[]) => {
+export const startBeaconChainAction = (network: string, ports?: DockerPort[]) => {
     return async (): Promise<void> => {
         switch(network) {
             case SupportedNetworks.PRYSM:
