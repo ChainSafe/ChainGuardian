@@ -16,13 +16,13 @@ interface IInjectedProps {
 }
 
 const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProps> = (props) => {
-    const [rpcPort, setRpcPort] = useState("4000");
-    const [libp2pPort, setLibp2pPort] = useState("13000");
+    const [rpcPort, setRpcPort] = useState("5052");
+    const [libp2pPort, setLibp2pPort] = useState("9000");
 
     const onSubmit = (): void => {
         // Start beacon chain with selected network and redirect to deposit
         if (props.register.network) {
-            props.startBeaconChain(props.register.network, [`${rpcPort}:4001`, `${libp2pPort}:13000`]);
+            props.startBeaconChain(props.register.network, [`${rpcPort}:5052`, `${libp2pPort}:9000`]);
             props.saveBeaconNode(`http://localhost:${rpcPort}`, props.register.network);
             props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
         }

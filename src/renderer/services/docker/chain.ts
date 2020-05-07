@@ -11,10 +11,8 @@ type LogType = "info" | "error";
 type LogCallbackFunc = (type: LogType, message: string) => void;
 
 export class BeaconChain extends Container {
-    public static DefaultPorts = ["4000:4001", "13000:13000"];
-
     public static async startPrysmBeaconChain(
-        ports = BeaconChain.DefaultPorts,
+        ports = ["4000:4001", "13000:13000"],
         waitUntilReady = false,
     ): Promise<BeaconChain> {
         const imageName = BeaconChain.getContainerName(SupportedNetworks.PRYSM);
@@ -31,6 +29,34 @@ export class BeaconChain extends Container {
             ports,
             volume: `${SupportedNetworks.PRYSM}-chain-data:/data`,
             cmd: "--datadir=/data --grpc-gateway-port 4001"
+        });
+        DockerRegistry.addContainer(imageName, bc);
+
+        await bc.run();
+        if (waitUntilReady) {
+            while (!(await bc.isRunning())) { /* */ }
+        }
+        return bc;
+    }
+
+    public static async startSchlesiBeaconChain(
+        ports = ["9000:9000", "5052:5052"],
+        waitUntilReady = false,
+    ): Promise<BeaconChain> {
+        const imageName = BeaconChain.getContainerName(SupportedNetworks.SCHLESI);
+        // Check if docker image already exists
+        const existingBC = DockerRegistry.getContainer(imageName);
+        if (existingBC) {
+            return existingBC as BeaconChain;
+        }
+
+        const bc = new BeaconChain({
+            image: "sigp/lighthouse:latest",
+            name: imageName,
+            restart: "unless-stopped",
+            ports,
+            volume: `${SupportedNetworks.SCHLESI}-chain-data:/root/.lighthouse`,
+            cmd: "lighthouse beacon --http --http-address 0.0.0.0 --eth1-endpoint https://goerli.infura.io/v3/9b8caef145c74574869579199c47e847"
         });
         DockerRegistry.addContainer(imageName, bc);
 

@@ -29,6 +29,9 @@ export const startBeaconChainAction = (network: string, ports?: string[]) => {
             case SupportedNetworks.PRYSM:
                 await BeaconChain.startPrysmBeaconChain(ports);
                 break;
+            case SupportedNetworks.SCHLESI:
+                await BeaconChain.startSchlesiBeaconChain(ports);
+                break;
             default:
                 await BeaconChain.startPrysmBeaconChain(ports);
         }
@@ -61,6 +64,7 @@ export interface ILoadedValidatorBeaconNodesAction {
 export const loadValidatorBeaconNodes = (validator: string, subscribe = false) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
+        console.log("validatorBeaconNodes: ", validatorBeaconNodes);
         await Promise.all(validatorBeaconNodes.map(async(validatorBN) => {
             if (validatorBN.client) {
                 try {

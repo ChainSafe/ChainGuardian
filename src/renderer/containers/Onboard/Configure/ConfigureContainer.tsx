@@ -19,7 +19,7 @@ interface IInjectedProps {
 
 const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) => {
     const [beaconNodeInput, setBeaconNodeInput] = useState("");
-    const [selectedNetworkIndex, setSelectedNetworkIndex] = useState(0);
+    const [selectedNetworkIndex, setSelectedNetworkIndex] = useState(1);
     const [errorMessage, setErrorMessage] = useState("");
 
     const onBeaconNodeInput = (e: React.FormEvent<HTMLInputElement>): void => {
