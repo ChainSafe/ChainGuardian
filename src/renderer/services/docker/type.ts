@@ -30,4 +30,4 @@ export interface IDockerRunParams {
 export type DockerPort = {
     local: string;
     host: string;
-}
+};

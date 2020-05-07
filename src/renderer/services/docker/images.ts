@@ -2,11 +2,13 @@ import {SupportedNetworks} from "../eth2/supportedNetworks";
 import {BeaconChain} from "./chain";
 import {IDockerRunParams} from "./type";
 
+const eth1Endpoint = "https://goerli.infura.io/v3/9b8caef145c74574869579199c47e847";
+
 export const getLighthouseBeaconChainConfig = (network: SupportedNetworks): IDockerRunParams => ({
     name: BeaconChain.getContainerName(network),
     image: "sigp/lighthouse:latest",
     restart: "unless-stopped",
-    cmd: "lighthouse beacon --http --http-address 0.0.0.0 --eth1-endpoint https://goerli.infura.io/v3/9b8caef145c74574869579199c47e847",
+    cmd: `lighthouse beacon --http --http-address 0.0.0.0 --eth1-endpoint ${eth1Endpoint}`,
     volume: `${network}-chain-data:/root/.lighthouse`,
     ports: [
         {
