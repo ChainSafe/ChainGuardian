@@ -13,11 +13,12 @@ type LogType = "info" | "error";
 type LogCallbackFunc = (type: LogType, message: string) => void;
 
 export class BeaconChain extends Container {
-    public static async startPrysmBeaconChain(
+    public static async startBeaconChain(
+        network: SupportedNetworks,
         ports?: DockerPort[],
         waitUntilReady = false,
     ): Promise<BeaconChain> {
-        const imageName = BeaconChain.getContainerName(SupportedNetworks.PRYSM);
+        const imageName = BeaconChain.getContainerName(network);
         // Check if docker image already exists
         const existingBC = DockerRegistry.getContainer(imageName);
         if (existingBC) {
@@ -25,31 +26,7 @@ export class BeaconChain extends Container {
         }
 
         const bc = new BeaconChain({
-            ...getNetworkConfig(SupportedNetworks.PRYSM).dockerConfig,
-            ports,
-        });
-        DockerRegistry.addContainer(imageName, bc);
-
-        await bc.run();
-        if (waitUntilReady) {
-            while (!(await bc.isRunning())) { /* */ }
-        }
-        return bc;
-    }
-
-    public static async startSchlesiBeaconChain(
-        ports: DockerPort[],
-        waitUntilReady = false,
-    ): Promise<BeaconChain> {
-        const imageName = BeaconChain.getContainerName(SupportedNetworks.SCHLESI);
-        // Check if docker image already exists
-        const existingBC = DockerRegistry.getContainer(imageName);
-        if (existingBC) {
-            return existingBC as BeaconChain;
-        }
-
-        const bc = new BeaconChain({
-            ...getNetworkConfig(SupportedNetworks.SCHLESI).dockerConfig,
+            ...getNetworkConfig(network).dockerConfig,
             ports,
         });
         DockerRegistry.addContainer(imageName, bc);

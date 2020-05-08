@@ -29,13 +29,13 @@ export const startBeaconChainAction = (network: string, ports?: DockerPort[]) =>
     return async (): Promise<void> => {
         switch(network) {
             case SupportedNetworks.PRYSM:
-                await BeaconChain.startPrysmBeaconChain(ports);
+                await BeaconChain.startBeaconChain(SupportedNetworks.PRYSM, ports);
                 break;
             case SupportedNetworks.SCHLESI:
-                await BeaconChain.startSchlesiBeaconChain(ports);
+                await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI, ports);
                 break;
             default:
-                await BeaconChain.startSchlesiBeaconChain(ports);
+                await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI, ports);
         }
     };
 };
