@@ -27,7 +27,7 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProp
     const onSubmit = (): void => {
         // Start beacon chain with selected network and redirect to deposit
         if (props.register.network) {
-            props.startBeaconChain(network, [{...ports[0], local: rpcPort}, {...ports[1], local: libp2pPort}]);
+            props.startBeaconChain(network, [{...ports[0], local: libp2pPort}, {...ports[1], local: rpcPort}]);
             props.saveBeaconNode(`http://localhost:${rpcPort}`, props.register.network);
             props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
         }

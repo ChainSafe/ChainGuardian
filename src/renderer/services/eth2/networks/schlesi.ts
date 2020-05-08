@@ -4,13 +4,11 @@ import {IDockerRunParams} from "../../docker/type";
 import {SupportedNetworks} from "../supportedNetworks";
 import {INetworkConfig} from "../../interfaces";
 
-const eth1Endpoint = "https://goerli.infura.io/v3/9b8caef145c74574869579199c47e847";
-
 const dockerConfig: IDockerRunParams = {
     name: "Schlesi-beacon-node",
     image: "sigp/lighthouse:latest",
     restart: "unless-stopped",
-    cmd: `lighthouse beacon --http --http-address 0.0.0.0 --eth1-endpoint ${eth1Endpoint}`,
+    cmd: `lighthouse beacon --http --http-address 0.0.0.0`,
     volume: `${SupportedNetworks.SCHLESI}-chain-data:/root/.lighthouse`,
     ports: [
         {
