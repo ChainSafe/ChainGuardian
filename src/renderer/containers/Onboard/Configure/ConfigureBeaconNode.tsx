@@ -19,10 +19,10 @@ interface IInjectedProps {
 const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProps> = (props) => {
     const {network} = props.register;
     const ports = getNetworkConfig(network).dockerConfig.ports;
-    const defaultRpcPort = ports[0].local;
+    const defaultRpcPort = ports[1].local;
     const [rpcPort, setRpcPort] = useState(defaultRpcPort);
-    const defaultLibp2pPort = ports[1].local;
-    const [libp2pPort, setLibp2pPort] = useState(ports[1].local);
+    const defaultLibp2pPort = ports[0].local;
+    const [libp2pPort, setLibp2pPort] = useState(defaultLibp2pPort);
 
     const onSubmit = (): void => {
         // Start beacon chain with selected network and redirect to deposit
