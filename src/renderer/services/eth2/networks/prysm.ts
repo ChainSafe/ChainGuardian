@@ -21,7 +21,7 @@ const dockerConfig: IDockerRunParams = {
             host: "13000",
         }
     ]
-}
+};
 
 export const PrysmConfig: INetworkConfig = Object.freeze({
     networkName: SupportedNetworks.PRYSM,
