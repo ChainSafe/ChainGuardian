@@ -2,6 +2,7 @@ import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {CGAccount} from "../models/account";
 import {BaseProvider} from "ethers/providers";
+import {IDockerRunParams} from "./docker/type";
 
 export interface IService {
     start(): Promise<void>;
@@ -73,7 +74,8 @@ export interface INetworkConfig {
         bytecode: string,
         depositAmount: string|number;
         deployedAtBlock: number
-    }
+    };
+    dockerConfig: IDockerRunParams;
 }
 
 export interface IIpcDatabaseEntry {

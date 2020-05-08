@@ -25,7 +25,7 @@ const initalState: IRegisterState = {
     withdrawalMnemonic: "",
     withdrawalVerification: false,
     withdrawalKey: "",
-    network: SupportedNetworks.PRYSM,
+    network: SupportedNetworks.SCHLESI,
     registerType: null,
 };
 

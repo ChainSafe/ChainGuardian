@@ -4,7 +4,7 @@ import {ButtonPrimary, ButtonSecondary} from "../../../components/Button/ButtonS
 import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {Dropdown} from "../../../components/Dropdown/Dropdown";
-import {networks, networksList} from "../../../services/eth2/networks";
+import {defaultNetworkIndex, networks, networksList} from "../../../services/eth2/networks";
 import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
 import {setNetworkAction} from "../../../actions";
@@ -19,7 +19,7 @@ interface IInjectedProps {
 
 const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) => {
     const [beaconNodeInput, setBeaconNodeInput] = useState("");
-    const [selectedNetworkIndex, setSelectedNetworkIndex] = useState(0);
+    const [selectedNetworkIndex, setSelectedNetworkIndex] = useState(defaultNetworkIndex);
     const [errorMessage, setErrorMessage] = useState("");
 
     const onBeaconNodeInput = (e: React.FormEvent<HTMLInputElement>): void => {
