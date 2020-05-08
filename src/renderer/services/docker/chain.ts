@@ -27,6 +27,7 @@ export class BeaconChain extends Container {
 
         const bc = new BeaconChain({
             ...getNetworkConfig(network).dockerConfig,
+            name: imageName,
             ports,
         });
         DockerRegistry.addContainer(imageName, bc);
