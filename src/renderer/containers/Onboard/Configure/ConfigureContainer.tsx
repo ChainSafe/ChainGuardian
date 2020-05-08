@@ -15,7 +15,7 @@ import {Joi} from "../../../services/validation";
 
 type IStateProps = {
     network: string;
-}
+};
 type IOwnProps = Pick<RouteComponentProps, "history">;
 interface IInjectedProps {
     setNetwork: typeof setNetworkAction;
