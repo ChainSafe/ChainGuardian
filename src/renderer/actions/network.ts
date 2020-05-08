@@ -1,6 +1,7 @@
 import {PrivateKey} from "@chainsafe/bls";
 import {warn} from "electron-log";
 import {Action, Dispatch} from "redux";
+import logger from "electron-log";
 
 import {BeaconChain} from "../services/docker/chain";
 import {NetworkActionTypes} from "../constants/action-types";
@@ -34,7 +35,7 @@ export const startBeaconChainAction = (network: string, ports?: DockerPort[]) =>
                 await BeaconChain.startSchlesiBeaconChain(ports);
                 break;
             default:
-                await BeaconChain.startPrysmBeaconChain(ports);
+                await BeaconChain.startSchlesiBeaconChain(ports);
         }
     };
 };
@@ -65,7 +66,7 @@ export interface ILoadedValidatorBeaconNodesAction {
 export const loadValidatorBeaconNodes = (validator: string, subscribe = false) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
-        console.log("validatorBeaconNodes: ", validatorBeaconNodes);
+        logger.debug(`Found validator ${validator} beacon nodes: `, validatorBeaconNodes);
         await Promise.all(validatorBeaconNodes.map(async(validatorBN) => {
             if (validatorBN.client) {
                 try {

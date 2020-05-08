@@ -21,6 +21,9 @@ export function getEth2ApiClient(url: string, network: string): IGenericEth2Clie
                 config: networkConfig.eth2Config
             });
         default:
-            return undefined;
+            return new LighthouseEth2ApiClient({
+                baseUrl: url,
+                config: networkConfig.eth2Config
+            });
     }
 }
