@@ -1,7 +1,27 @@
 import {config as mainnetBeaconConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {ethers} from "ethers";
+import {BeaconChain} from "../../docker/chain";
+import {IDockerRunParams} from "../../docker/type";
 import {SupportedNetworks} from "../supportedNetworks";
 import {INetworkConfig} from "../../interfaces";
+
+const dockerConfig: IDockerRunParams = {
+    name: BeaconChain.getContainerName(SupportedNetworks.PRYSM),
+    image: "gcr.io/prysmaticlabs/prysm/beacon-chain:latest",
+    restart: "unless-stopped",
+    volume: `${SupportedNetworks.PRYSM}-chain-data:/data`,
+    cmd: "--datadir=/data --grpc-gateway-port 4001",
+    ports: [
+        {
+            local: "4000",
+            host: "4001",
+        },
+        {
+            local: "13000",
+            host: "13000",
+        }
+    ]
+}
 
 export const PrysmConfig: INetworkConfig = Object.freeze({
     networkName: SupportedNetworks.PRYSM,
@@ -21,5 +41,6 @@ export const PrysmConfig: INetworkConfig = Object.freeze({
             EJECTION_BALANCE: BigInt(1600000000000000000)
         }
     },
-    eth1Provider: ethers.getDefaultProvider("goerli")
+    eth1Provider: ethers.getDefaultProvider("goerli"),
+    dockerConfig,
 });

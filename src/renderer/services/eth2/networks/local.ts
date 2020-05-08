@@ -13,5 +13,9 @@ export const LocalhostConfig: INetworkConfig = Object.freeze({
         deployedAtBlock: 0
     },
     eth2Config: minimalBeaconConfig,
-    eth1Provider: new JsonRpcProvider("http://localhost:8545")
+    eth1Provider: new JsonRpcProvider("http://localhost:8545"),
+    dockerConfig: {
+        name: "lighthouse_validators",
+        image: "sigp/lighthouse:latest",
+    }
 });

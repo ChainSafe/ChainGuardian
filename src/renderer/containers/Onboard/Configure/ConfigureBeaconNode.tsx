@@ -7,7 +7,7 @@ import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
 import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {IRootState} from "../../../reducers";
-import {getNetworkBeaconChainConfig} from "../../../services/docker/images";
+import {getNetworkConfig} from "../../../services/eth2/networks";
 
 type IStateProps = Pick<IRootState, "register">;
 type IOwnProps =  Pick<RouteComponentProps, "history">;
@@ -18,7 +18,7 @@ interface IInjectedProps {
 
 const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProps> = (props) => {
     const {network} = props.register;
-    const ports = getNetworkBeaconChainConfig(network).ports;
+    const ports = getNetworkConfig(network).dockerConfig.ports;
     const defaultRpcPort = ports[0].local;
     const [rpcPort, setRpcPort] = useState(defaultRpcPort);
     const defaultLibp2pPort = ports[1].local;

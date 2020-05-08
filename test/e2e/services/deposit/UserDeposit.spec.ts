@@ -58,6 +58,10 @@ describe("Deposit transaction service unit tests", () => {
                 bytecode: DepositContract.bytecode,
                 depositAmount: 32,
                 deployedAtBlock: await provider.getBlockNumber()
+            },
+            dockerConfig: {
+                name: "UserDepositTest",
+                image: "not-important",
             }
         };
     });

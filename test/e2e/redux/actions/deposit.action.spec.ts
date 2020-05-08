@@ -69,6 +69,10 @@ describe("deposit actions", () => {
                 bytecode: "",
                 depositAmount: 32,
                 deployedAtBlock: 0
+            },
+            dockerConfig: {
+                name: "DepositActionTest",
+                image: "not-important",
             }
         };
 

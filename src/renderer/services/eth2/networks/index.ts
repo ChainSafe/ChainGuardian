@@ -11,14 +11,14 @@ if (isLocal) {
     networks.push(LocalhostConfig);
 }
 
+const defaultNetworkIndex = 0;
+
 const getNetworkConfig = (name: string): null | INetworkConfig => {
     const result = networks.filter((network) => network.networkName === name);
-    return (result.length === 0) ? null : result[0];
+    return (result.length === 0) ? networks[defaultNetworkIndex] : result[0];
 };
 
 const networksList = networks.map((contract) => contract.networkName);
-
-const defaultNetworkIndex = 0;
 
 export {
     networks,

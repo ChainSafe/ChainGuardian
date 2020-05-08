@@ -2,10 +2,10 @@ import * as logger from "electron-log";
 import {Readable} from "stream";
 
 import database from "../db/api/database";
+import {getNetworkConfig} from "../eth2/networks";
 import {SupportedNetworks} from "../eth2/supportedNetworks";
 import {Container} from "./container";
 import {DockerRegistry} from "./docker-registry";
-import {getLighthouseBeaconChainConfig, getPrysmBeaconChainConfig} from "./images";
 import {DockerPort} from "./type";
 import {getLogMessageType} from "./utils";
 
@@ -25,7 +25,7 @@ export class BeaconChain extends Container {
         }
 
         const bc = new BeaconChain({
-            ...getPrysmBeaconChainConfig(SupportedNetworks.PRYSM),
+            ...getNetworkConfig(SupportedNetworks.PRYSM).dockerConfig,
             ports,
         });
         DockerRegistry.addContainer(imageName, bc);
@@ -49,7 +49,7 @@ export class BeaconChain extends Container {
         }
 
         const bc = new BeaconChain({
-            ...getLighthouseBeaconChainConfig(SupportedNetworks.SCHLESI),
+            ...getNetworkConfig(SupportedNetworks.SCHLESI).dockerConfig,
             ports,
         });
         DockerRegistry.addContainer(imageName, bc);
