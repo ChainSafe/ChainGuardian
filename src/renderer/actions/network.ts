@@ -1,7 +1,7 @@
 import {PrivateKey} from "@chainsafe/bls";
 import {warn} from "electron-log";
 import {Action, Dispatch} from "redux";
-import logger from "electron-log";
+import * as logger from "electron-log";
 
 import {BeaconChain} from "../services/docker/chain";
 import {NetworkActionTypes} from "../constants/action-types";
@@ -66,7 +66,7 @@ export interface ILoadedValidatorBeaconNodesAction {
 export const loadValidatorBeaconNodes = (validator: string, subscribe = false) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
-        logger.debug(`Found validator ${validator} beacon nodes: `, validatorBeaconNodes);
+        logger.info(`Found ${validatorBeaconNodes.length} beacon nodes for validator ${validator}.`);
         await Promise.all(validatorBeaconNodes.map(async(validatorBN) => {
             if (validatorBN.client) {
                 try {
