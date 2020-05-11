@@ -49,7 +49,7 @@ services:
     image: sigp/lighthouse:latest
     restart: on-failure
     container_name: "lighthouse_validators"
-    command: 'lighthouse -s minimal vc --testnet-dir /opt/eth2_testnet --server http://eth2-bn:5052 testnet insecure 0 16'
+    command: 'lighthouse -s minimal vc --testnet-dir /opt/eth2_testnet --server http://eth2-bn:5052 testnet insecure 0 15'
     volumes:
       - "./eth2_testnet:/opt/eth2_testnet"
     depends_on:

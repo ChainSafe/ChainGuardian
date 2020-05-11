@@ -15,6 +15,21 @@
     }
   },
   {
+    "pubkey": "0x872c61b4a7f8510ec809e5b023f5fdda2105d024c470ddbbeca4bc74e8280af0d178d749853e8f6a841083ac1b4db98f",
+    "validator_index": 15,
+    "balance": 32000000000,
+    "validator": {
+      "pubkey": "0x872c61b4a7f8510ec809e5b023f5fdda2105d024c470ddbbeca4bc74e8280af0d178d749853e8f6a841083ac1b4db98f",
+      "withdrawal_credentials": "0x0020dd5f2223831fce8d1c8fd4148943c9917e1d3a92191651892dc56448451c",
+      "effective_balance": 32000000000,
+      "slashed": false,
+      "activation_eligibility_epoch": 0,
+      "activation_epoch": 0,
+      "exit_epoch": 18446744073709551615,
+      "withdrawable_epoch": 18446744073709551615
+    }
+  },
+  {
     "pubkey": "0x42f87bc7c8fa10408425bbeeeb3dc3874242b4bd92f57775b60b39142426f9ec80b273a64269332d97bdb7d93ae05a42",
     "validator_index": null,
     "balance": null,

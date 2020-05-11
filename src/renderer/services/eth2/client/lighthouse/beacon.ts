@@ -17,18 +17,46 @@ import {ILighthouseSyncResponse} from "./types";
 import {parse as bigIntParse} from "json-bigint";
 import {Eth2ChainHeadType} from "../../../../models/types/head";
 import {IEth2ChainHead} from "../../../../models/head";
+import {ILogger} from "@chainsafe/lodestar-utils";
 
 
 export class LighthouseBeaconApiClient implements IEth2BeaconApi {
 
     private client: HttpClient;
-    private config: IBeaconConfig;
+    private readonly config: IBeaconConfig;
+    private readonly logger: ILogger;
 
     public constructor(options: IBeaconClientOptions) {
-        this.client = new HttpClient(options.baseUrl, {axios: {transformResponse: bigIntParse}});
+        this.client = new HttpClient(options.baseUrl, {
+            axios: {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                transformRequest: [
+                    (data: any): string => {
+                        //this will remove quotations around numbers
+                        try {
+                            return JSON.stringify(data).replace(/"([0-9]+\.{0,1}[0-9]*)"/g, "$1");
+                        } catch (e) {
+                            return data;
+                        }
+                    }
+                ],
+                transformResponse: [
+                    (data): any => {
+                        try {
+                            return bigIntParse(data);
+                        } catch (e) {
+                            return data;
+                        }
+                    }
+                ]
+            }
+        });
         this.config = options.config;
+        this.logger = options.logger;
     }
-    
+
     public async getClientVersion(): Promise<Bytes32> {
         const response = await this.client.get<string>(LighthouseRoutes.GET_VERSION);
         return Buffer.from(response, "utf8");
@@ -51,7 +79,13 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
     }
 
     public async getGenesisTime(): Promise<Number64> {
-        return await this.client.get<number>(LighthouseRoutes.GET_GENESIS_TIME);
+        try {
+            const result =  await this.client.get<number>(LighthouseRoutes.GET_GENESIS_TIME);
+            return result;
+        } catch (e) {
+            this.logger.warn("Failed to get genesis time. Error: " + e.message);
+            return 0;
+        }
     }
 
     public async getSyncingStatus(): Promise<boolean | SyncingStatus> {
@@ -96,7 +130,7 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
 
     public async getChainHead(): Promise<IEth2ChainHead> {
         return Eth2ChainHeadType.fromJson(
-            await this.client.get<Json>(LighthouseRoutes.GET_HEAD), 
+            await this.client.get<Json>(LighthouseRoutes.GET_HEAD),
             {case: "snake"}
         );
     }

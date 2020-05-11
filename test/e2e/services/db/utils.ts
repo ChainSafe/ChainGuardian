@@ -1,8 +1,7 @@
 // @ts-ignore
 import level from "level";
 import {LevelDbController} from "../../../../src/main/db/controller";
-import leveldown from "leveldown";
-import {promisify} from "util";
+import * as rimraf from "rimraf";
 
 const dbLocation = "./.__testdb";
 
@@ -16,9 +15,10 @@ export const getLevelDbController = (): LevelDbController => {
 
 export const destroyDb = async(): Promise<void> => {
     try {
-        await promisify(new leveldown(dbLocation).destroy)(dbLocation);
+        rimraf.sync(dbLocation);
         console.log("Database successfully destroyed.");
     } catch (e) {
+        console.log(e);
         console.log("Database destroyed already.");
     }
 };

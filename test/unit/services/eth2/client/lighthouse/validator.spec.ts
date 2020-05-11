@@ -12,6 +12,7 @@ import {LighthouseRoutes} from "../../../../../../src/renderer/services/eth2/cli
 import {BLSPubkey} from "@chainsafe/lodestar-types";
 import {toHexString} from "@chainsafe/ssz";
 import {generateEmptyAttestation} from "../../../../../e2e/mocks/attestation";
+import {WinstonLogger} from "@chainsafe/lodestar-utils";
 
 const httpMock = new MockAxiosAdapter(axios);
 
@@ -23,7 +24,7 @@ describe("lighthouse validator client", function() {
         "98f87bc7c8fa10408425bbeeeb3dc387e3e0b4bd92f57775b60b39156a16f9ec80b273a64269332d97bdb7d93ae05a16",
         "hex"
     );
-    
+
     const fakeValidator: BLSPubkey = Buffer.from(
         "42f87bc7c8fa10408425bbeeeb3dc3874242b4bd92f57775b60b39142426f9ec80b273a64269332d97bdb7d93ae05a42",
         "hex"
@@ -34,6 +35,7 @@ describe("lighthouse validator client", function() {
         beaconApiStub = sinon.createStubInstance(LighthouseBeaconApiClient);
         client = new LighthouseValidatorApiClient({
             config,
+            logger: sinon.createStubInstance(WinstonLogger),
             baseUrl: ""
         }, beaconApiStub);
     });
@@ -63,7 +65,7 @@ describe("lighthouse validator client", function() {
             JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/validator/duties.json"), "utf-8"))
         );
         const proposers = await client.getProposerDuties(
-            0, 
+            0,
             [fakeValidatorPubkey.toBytesCompressed()
             ]);
         expect(proposers.length).toEqual(2);

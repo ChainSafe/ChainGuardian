@@ -6,7 +6,8 @@ import {LighthouseRoutes} from "../../../../../../src/renderer/services/eth2/cli
 import * as fs from "fs";
 import * as path from "path";
 import {SyncingStatus} from "@chainsafe/lodestar-types";
-import {parse} from "json-bigint";
+import {WinstonLogger} from "@chainsafe/lodestar-utils";
+import sinon from "sinon";
 
 const httpMock = new MockAxiosAdapter(axios);
 
@@ -14,13 +15,14 @@ describe("ligthhouse beacon client", function() {
 
     const client = new LighthouseBeaconApiClient({
         config,
+        logger: sinon.createStubInstance(WinstonLogger),
         baseUrl: ""
     });
-    
+
     it("get chain head", async function() {
         httpMock.onGet(LighthouseRoutes.GET_HEAD).reply(
             200,
-            JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/beacon/head.json"), "utf-8"))
+            fs.readFileSync(path.join(__dirname, "./payloads/beacon/head.json"), "utf-8")
         );
         const head = await client.getChainHead();
         expect(head).toBeDefined();
@@ -65,7 +67,7 @@ describe("ligthhouse beacon client", function() {
             .onGet(LighthouseRoutes.GET_SYNC_STATUS)
             .reply(
                 200,
-                JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/beacon/sync/synced.json"), "utf-8"))
+                fs.readFileSync(path.join(__dirname, "./payloads/beacon/sync/synced.json"), "utf-8")
             );
         const isSyncing = await client.getSyncingStatus();
         expect(isSyncing).toBeFalsy();
@@ -76,7 +78,7 @@ describe("ligthhouse beacon client", function() {
             .onGet(LighthouseRoutes.GET_SYNC_STATUS)
             .reply(
                 200,
-                JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/beacon/sync/finalized.json"), "utf-8"))
+                fs.readFileSync(path.join(__dirname, "./payloads/beacon/sync/finalized.json"), "utf-8")
             );
         const syncStatus = await client.getSyncingStatus() as SyncingStatus;
         expect(syncStatus.currentBlock.toString()).toEqual("20");
@@ -89,25 +91,25 @@ describe("ligthhouse beacon client", function() {
             .onGet(LighthouseRoutes.GET_SYNC_STATUS)
             .reply(
                 200,
-                JSON.parse(fs.readFileSync(path.join(__dirname, "./payloads/beacon/sync/head.json"), "utf-8"))
+                fs.readFileSync(path.join(__dirname, "./payloads/beacon/sync/head.json"), "utf-8")
             );
         const syncStatus = await client.getSyncingStatus() as SyncingStatus;
         expect(syncStatus.currentBlock.toString()).toEqual("1195");
         expect(syncStatus.startingBlock.toString()).toEqual("0");
         expect(syncStatus.highestBlock.toString()).toEqual("1195");
     });
-    
+
     it("get validator - exists", async function() {
         httpMock.onPost(
             LighthouseRoutes.GET_VALIDATORS
         )
             .reply(
                 200,
-                parse(fs.readFileSync(path.join(__dirname, "./payloads/beacon/validators.json"), "utf-8"))
+                fs.readFileSync(path.join(__dirname, "./payloads/beacon/validators.json"), "utf-8")
             );
         const validator = await client.getValidator(
             Buffer.from(
-                "98f87bc7c8fa10408425bbeeeb3dc387e3e0b4bd92f57775b60b39156a16f9ec80b273a64269332d97bdb7d93ae05a16",
+                "872c61b4a7f8510ec809e5b023f5fdda2105d024c470ddbbeca4bc74e8280af0d178d749853e8f6a841083ac1b4db98f",
                 "hex")
         );
         expect(validator).toBeDefined();
@@ -122,7 +124,7 @@ describe("ligthhouse beacon client", function() {
         )
             .reply(
                 200,
-                parse(fs.readFileSync(path.join(__dirname, "./payloads/beacon/validators.json"), "utf-8"))
+                fs.readFileSync(path.join(__dirname, "./payloads/beacon/validators.json"), "utf-8")
             );
         const validator = await client.getValidator(
             Buffer.from(
@@ -131,5 +133,5 @@ describe("ligthhouse beacon client", function() {
         );
         expect(validator).toBeNull();
     });
-    
+
 });
