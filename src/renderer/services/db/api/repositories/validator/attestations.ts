@@ -36,10 +36,12 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
             const epoch = intToBytes(options.lt, 2);
             const search = Buffer.concat([pubKey, epoch]);
             searchFilters.lt = encodeKey(this.bucket, search);
+        } else {
+            searchFilters.lt = encodeKey(this.bucket, Buffer.concat([pubKey, this.fillBufferWithOnes(100)]));
         }
         if (options.gt) {
             const epoch = intToBytes(options.gt, 2);
-            const search = Buffer.concat([pubKey, epoch, this.fillBufferWithOnes(96)]);
+            const search = Buffer.concat([pubKey, epoch, this.fillBufferWithOnes(32)]);
             searchFilters.gt = encodeKey(this.bucket, search);
         }
 
@@ -48,6 +50,6 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
 
     private getAttestationKey(pubKey: BLSPubkey, attestation: Attestation): Buffer {
         const epoch = intToBytes(attestation.data.target.epoch, 2);
-        return Buffer.concat([pubKey.valueOf() as Uint8Array, epoch, attestation.signature.valueOf() as Uint8Array]);
+        return Buffer.concat([pubKey.valueOf() as Uint8Array, epoch, this.type.hashTreeRoot(attestation)]);
     }
 }
