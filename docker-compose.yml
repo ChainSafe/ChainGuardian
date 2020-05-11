@@ -36,7 +36,7 @@ services:
       - deployer:deployer
     volumes:
       - "./eth2_testnet:/opt/eth2_testnet"
-      - "./eth1/passwd.txt:/opt/passwd.txt:ro"
+      - "./eth1_testnet/passwd.txt:/opt/passwd.txt:ro"
       - "./eth2_testnet/start.sh:/opt/start.sh:ro"
       - "./wait-for.sh:/opt/wait-for.sh"
     depends_on:
