@@ -49,7 +49,9 @@
     "dist": "yarn run build && electron-builder",
     "postinstall": "electron-builder install-app-deps",
     "storybook": "start-storybook -p 6006",
-    "codecov": "codecov"
+    "codecov": "codecov",
+    "script": "node -r ts-node/register",
+    "generate:validators": "yarn run script scripts/generate_interop_validators.ts"
   },
   "jest": {
     "transform": {
@@ -167,6 +169,7 @@
     "stream-mock": "^2.0.5",
     "style-loader": "^0.23.1",
     "ts-jest": "25.4.0",
+    "ts-node": "^8.10.1",
     "typescript": "3.8.3",
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2",
