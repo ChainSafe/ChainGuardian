@@ -4,7 +4,7 @@ import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon
 import {BLSPubkey, ValidatorResponse} from "@chainsafe/lodestar-types";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
 import {IEth2ChainHead} from "../../../models/head";
-import { ILogger } from '@chainsafe/lodestar-utils';
+import {ILogger} from "@chainsafe/lodestar-utils";
 
 export interface IEth2BeaconApi extends IBeaconApi {
     getValidator(pubkey: BLSPubkey): Promise<ValidatorResponse|null>;
