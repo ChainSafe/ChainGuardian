@@ -9,4 +9,4 @@ coverage
 *.log
 package-lock.json
 *.db
-/cg_testnet/genesis.ssz
+/eth2_testnet/genesis.ssz
