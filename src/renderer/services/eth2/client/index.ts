@@ -31,8 +31,8 @@ export function getEth2ApiClient(url: string, network: string): IGenericEth2Clie
 export async function isSupportedBeaconChain(url: string, network: string): Promise<boolean> {
     const client = getEth2ApiClient(url, network);
     try {
-        await client.beacon.getSyncingStatus();
-        return true;
+        const version = await client.getVersion();
+        return version.startsWith("Lighthouse");
     } catch (e) {
         return false;
     }
