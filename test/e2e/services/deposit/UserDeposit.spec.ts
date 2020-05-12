@@ -5,7 +5,7 @@ import {Keypair as KeyPair, Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {toHexString} from "../../../../src/renderer/services/utils/crypto";
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
-import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
+import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {DEPOSIT_EVENT_TIMEOUT_MESSAGE, EthersNotifier} from "../../../../src/renderer/services/deposit/ethers";
 import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
 import {initBLS} from "@chainsafe/bls";
@@ -58,10 +58,14 @@ describe("Deposit transaction service unit tests", () => {
                 bytecode: DepositContract.bytecode,
                 depositAmount: 32,
                 deployedAtBlock: await provider.getBlockNumber()
+            },
+            dockerConfig: {
+                name: "UserDepositTest",
+                image: "not-important",
             }
         };
     });
-    
+
     it("should check if user deposited valid amount", async () => {
         const keyPair = new KeyPair(PrivateKey.fromHexString(wallet.privateKey));
         const ethersNotifier = new EthersNotifier(networkConfig, provider);
@@ -117,7 +121,7 @@ async function generateMultilpleTransactions(
     amounts: string[]): Promise<void> {
 
     await asyncForEach(amounts, async (amount: string) => {
-        const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1, "hex"), amount);
+        const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1, "hex"), amount, config);
         const depositTx = DepositTx.generateDepositTx(depositData, depositContractAddress, config, amount);
         const nonce = await provider.getTransactionCount(wallet.address);
         const signedTx = await depositTx.sign(wallet, nonce);

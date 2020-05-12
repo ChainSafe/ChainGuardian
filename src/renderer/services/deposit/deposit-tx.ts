@@ -1,20 +1,19 @@
-import {bytes, DepositData} from "@chainsafe/eth2.0-types";
+import {DepositData} from "@chainsafe/lodestar-types";
 import abi from "ethereumjs-abi";
 import {ITx} from "./types";
 import {functionSignatureFromABI} from "./utils";
 import DepositContract from "../../../../src/renderer/services/deposit/options";
 import {DEPOSIT_TX_GAS} from "./constants";
-import {hashTreeRoot} from "@chainsafe/ssz";
 import {Wallet} from "ethers/wallet";
 import {utils} from "ethers";
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
 
 export class DepositTx implements ITx{
-    public data: string | bytes;
+    public data: string | Buffer;
     public to: string;
     public value: string;
 
-    public constructor(data: string | bytes, to: string, value: string) {
+    public constructor(data: string | Buffer, to: string, value: string) {
         this.data = data;
         this.to = to;
         this.value = value;
@@ -34,7 +33,7 @@ export class DepositTx implements ITx{
         config: IBeaconConfig,
         depositAmount: string|number): DepositTx {
         // calculate root
-        const depositDataRoot = hashTreeRoot(config.types.DepositData, depositParams);
+        const depositDataRoot = config.types.DepositData.hashTreeRoot(depositParams);
         const depositFunctionEncoded = abi.simpleEncode(
             functionSignatureFromABI(DepositContract.abi, "deposit"),
             depositParams.pubkey,

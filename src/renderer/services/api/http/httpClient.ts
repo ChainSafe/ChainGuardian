@@ -3,9 +3,14 @@ import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} fro
 export class HttpClient {
     private client: AxiosInstance;
 
-    public constructor(baseURL: string) {
+    public constructor(baseURL: string, options: {axios?: AxiosRequestConfig} = {}) {
+        if(!options) {
+            // eslint-disable-next-line no-param-reassign
+            options = {axios: {}};
+        }
         this.client = axios.create({
-            baseURL
+            baseURL,
+            ...options.axios
         });
     }
 
@@ -39,14 +44,11 @@ export class HttpClient {
 }
 
 const handleError = (error: AxiosError): Error => {
-    let message: string | number;
+    let message: string;
     if (error.response) {
-        message = error.response.status;
-    } else if (error.request) {
-        message = error.request;
+        message = error.response.data || error.response.statusText;
     } else {
-        message = error.message;
+        message = error.message.toString();
     }
-
-    return new Error(message.toString());
+    return new Error(message);
 };

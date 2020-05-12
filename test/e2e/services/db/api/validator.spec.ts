@@ -1,4 +1,4 @@
-import {BLSPubkey} from "@chainsafe/eth2.0-types";
+import {BLSPubkey} from "@chainsafe/lodestar-types";
 import {ValidatorDB} from "../../../../../src/renderer/services/db/api/validator";
 import {initBLS, PrivateKey} from "@chainsafe/bls";
 import {generateAttestation} from "../../../mocks/attestation";
@@ -6,8 +6,6 @@ import {CGDatabase} from "../../../../../src/renderer/services/db/api";
 import {generateEmptySignedBlock} from "../../../mocks/block";
 import {destroyDb, getLevelDbController} from "../utils";
 import {LevelDbController} from "../../../../../src/main/db/controller";
-// import {equals} from "@chainsafe/ssz";
-// import {types as mainnetTypes} from "@chainsafe/eth2.0-types/lib/ssz/presets/mainnet";
 
 describe("IValidatorDB Implementation Test", () => {
     let database: CGDatabase;
@@ -16,6 +14,7 @@ describe("IValidatorDB Implementation Test", () => {
 
     beforeAll(async () => {
         await initBLS();
+        await destroyDb();
         controller = getLevelDbController();
         await controller.start();
     });
@@ -36,6 +35,7 @@ describe("IValidatorDB Implementation Test", () => {
             PrivateKey.fromInt(10000231212312).toPublicKey().toBytesCompressed(),
             PrivateKey.fromInt(20032323232323).toPublicKey().toBytesCompressed()
         ];
+        await validatorDB.setBlock(validators[0], generateEmptySignedBlock());
         let result = await validatorDB.getAttestations(validators[0]);
         expect(result.length).toEqual(0);
 

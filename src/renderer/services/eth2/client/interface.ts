@@ -1,13 +1,14 @@
-import {IBeaconConfig} from "@chainsafe/eth2.0-config";
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {IApiClient} from "@chainsafe/lodestar-validator/lib";
 import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
-import {BLSPubkey, Validator} from "@chainsafe/eth2.0-types";
+import {BLSPubkey, ValidatorResponse} from "@chainsafe/lodestar-types";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
-import {ChainHead} from "./prysm/types";
+import {IEth2ChainHead} from "../../../models/head";
+import {ILogger} from "@chainsafe/lodestar-utils";
 
 export interface IEth2BeaconApi extends IBeaconApi {
-    getValidator(pubkey: BLSPubkey): Promise<Validator|null>;
-    getChainHead(): Promise<ChainHead>;
+    getValidator(pubkey: BLSPubkey): Promise<ValidatorResponse|null>;
+    getChainHead(): Promise<IEth2ChainHead>;
 }
 
 export type IEth2ValidatorApi  = IValidatorApi;
@@ -18,14 +19,14 @@ export type IEth2ValidatorApi  = IValidatorApi;
 export interface IGenericEth2Client extends IApiClient {
 
     config: IBeaconConfig;
-    
+
     beacon: IEth2BeaconApi;
 
     validator: IEth2ValidatorApi;
 
     getVersion(): Promise<string>;
 
-    onNewChainHead(callback: (head: ChainHead) => void): void;
+    onNewChainHead(callback: (head: IEth2ChainHead) => void): void;
 }
 
 export type IValidatorBeaconClient  =  IApiClient;
@@ -33,5 +34,6 @@ export type IValidatorBeaconClient  =  IApiClient;
 export interface IBeaconClientOptions {
     // Add more options if needed
     baseUrl: string;
+    logger: ILogger,
     config: IBeaconConfig;
 }

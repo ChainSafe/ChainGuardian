@@ -1,4 +1,4 @@
-import {Keypair} from "@chainsafe/bls/lib/keypair";
+import {Keypair} from "@chainsafe/bls";
 
 export interface ICGKeystore {
     decrypt(password: string): Promise<Keypair>;

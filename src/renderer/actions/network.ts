@@ -1,15 +1,17 @@
-import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
+import {PrivateKey} from "@chainsafe/bls";
 import {warn} from "electron-log";
 import {Action, Dispatch} from "redux";
+import * as logger from "electron-log";
 
 import {BeaconChain} from "../services/docker/chain";
 import {NetworkActionTypes} from "../constants/action-types";
 import {IRootState} from "../reducers";
 import {BeaconNode, BeaconNodes} from "../models/beaconNode";
 import database from "../services/db/api/database";
-import {ChainHead} from "../services/eth2/client/prysm/types";
+import {DockerPort} from "../services/docker/type";
 import {SupportedNetworks} from "../services/eth2/supportedNetworks";
 import {fromHex} from "../services/utils/bytes";
+import {IEth2ChainHead} from "../models/head";
 
 // User selected network in dashboard dropdown
 export interface ISaveSelectedNetworkAction {
@@ -23,14 +25,17 @@ export const saveSelectedNetworkAction = (network: string): ISaveSelectedNetwork
 
 // Beacon chain
 
-export const startBeaconChainAction = (network: string, ports?: string[]) => {
+export const startBeaconChainAction = (network: string, ports?: DockerPort[]) => {
     return async (): Promise<void> => {
         switch(network) {
             case SupportedNetworks.PRYSM:
-                await BeaconChain.startPrysmBeaconChain(ports);
+                await BeaconChain.startBeaconChain(SupportedNetworks.PRYSM, ports);
+                break;
+            case SupportedNetworks.SCHLESI:
+                await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI, ports);
                 break;
             default:
-                await BeaconChain.startPrysmBeaconChain(ports);
+                await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI, ports);
         }
     };
 };
@@ -61,6 +66,7 @@ export interface ILoadedValidatorBeaconNodesAction {
 export const loadValidatorBeaconNodes = (validator: string, subscribe = false) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
+        logger.info(`Found ${validatorBeaconNodes.length} beacon nodes for validator ${validator}.`);
         await Promise.all(validatorBeaconNodes.map(async(validatorBN) => {
             if (validatorBN.client) {
                 try {
@@ -85,7 +91,7 @@ async function refreshBeaconNodeStatus(
     dispatch: Dispatch<Action<unknown>>,
     getState: () => IRootState,
     validator: string,
-    chainHead: ChainHead,
+    chainHead: IEth2ChainHead,
 ): Promise<void> {
     const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
     const beaconNodes: BeaconNode[] = await Promise.all(validatorBeaconNodes.map(async(validatorBN: BeaconNode) => {
@@ -96,7 +102,7 @@ async function refreshBeaconNodeStatus(
             return {
                 ...validatorBN,
                 isSyncing: !!(await validatorBN.client.beacon.getSyncingStatus()),
-                currentSlot: chainHead.headSlot,
+                currentSlot: String(chainHead.slot),
             };
         } catch (e) {
             warn(`Error while trying to fetch beacon node status... ${e.message}`);

@@ -1,10 +1,9 @@
-// tslint:disable-next-line: import-name
 import {Bucket, encodeKey} from "../schema";
 import {ICGSerialization} from "../abstract";
 import {IDatabaseController, ISearchOptions} from "../../../../main/db/controller";
-import {AnySSZType} from "@chainsafe/ssz";
+import {Type} from "@chainsafe/ssz";
 
-export type Id = Buffer | string | number | bigint;
+export type Id = Buffer | Uint8Array | string | number | bigint;
 
 export abstract class Repository<T> {
 
@@ -12,7 +11,7 @@ export abstract class Repository<T> {
 
     protected bucket: Bucket;
 
-    protected type: AnySSZType;
+    protected type: Type<T>;
 
     protected serializer: ICGSerialization<unknown>;
 
@@ -20,7 +19,7 @@ export abstract class Repository<T> {
         db: IDatabaseController,
         serializer: ICGSerialization<unknown>,
         bucket: Bucket,
-        type: AnySSZType
+        type: Type<T>
     ) {
         this.db = db;
         this.serializer = serializer;
@@ -64,7 +63,7 @@ export abstract class Repository<T> {
 }
 
 export abstract class BulkRepository<T> extends Repository<T> {
-    public async getAll(id = Buffer.alloc(0), options?: ISearchOptions): Promise<T[]> {
+    public async getAll(id: Buffer|Uint8Array = Buffer.alloc(0), options?: ISearchOptions): Promise<T[]> {
         let searchFilter: ISearchOptions;
         if (options) {
             searchFilter = options;
