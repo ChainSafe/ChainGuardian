@@ -21,6 +21,7 @@ import {Json, toHexString} from "@chainsafe/ssz";
 import {LighthouseRoutes} from "./routes";
 import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {ZERO_HASH} from "@chainsafe/lodestar-beacon-state-transition";
+import {axiosConfig} from "./axios";
 
 export class LighthouseValidatorApiClient implements IValidatorApi {
 
@@ -30,30 +31,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
 
     public constructor(options: IBeaconClientOptions, beaconApi: IBeaconApi) {
         this.client = new HttpClient(options.baseUrl, {
-            axios: {
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                transformRequest: [
-                    (data: any): string => {
-                        //this will remove quotations around numbers
-                        try {
-                            return JSON.stringify(data).replace(/"([0-9]+\.{0,1}[0-9]*)"/g, "$1");
-                        } catch (e) {
-                            return data;
-                        }
-                    }
-                ],
-                transformResponse: [
-                    (data): any => {
-                        try {
-                            return bigIntParse(data);
-                        } catch (e) {
-                            return data;
-                        }
-                    }
-                ]
-            }
+            axios: axiosConfig
         });
         this.config = options.config;
         this.beaconApi = beaconApi;

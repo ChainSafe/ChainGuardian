@@ -10,7 +10,7 @@ export function getEth2ApiClient(url: string, network: string, logger?: ILogger)
         return undefined;
     }
     if(!logger) {
-        new WinstonLogger();
+        logger = new WinstonLogger();
     }
 
     switch(network) {

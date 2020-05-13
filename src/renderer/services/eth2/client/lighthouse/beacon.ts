@@ -18,6 +18,7 @@ import {parse as bigIntParse} from "json-bigint";
 import {Eth2ChainHeadType} from "../../../../models/types/head";
 import {IEth2ChainHead} from "../../../../models/head";
 import {ILogger} from "@chainsafe/lodestar-utils";
+import {axiosConfig} from "./axios";
 
 
 export class LighthouseBeaconApiClient implements IEth2BeaconApi {
@@ -28,30 +29,7 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
 
     public constructor(options: IBeaconClientOptions) {
         this.client = new HttpClient(options.baseUrl, {
-            axios: {
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                transformRequest: [
-                    (data: any): string => {
-                        //this will remove quotations around numbers
-                        try {
-                            return JSON.stringify(data).replace(/"([0-9]+\.{0,1}[0-9]*)"/g, "$1");
-                        } catch (e) {
-                            return data;
-                        }
-                    }
-                ],
-                transformResponse: [
-                    (data): any => {
-                        try {
-                            return bigIntParse(data);
-                        } catch (e) {
-                            return data;
-                        }
-                    }
-                ]
-            }
+            axios: axiosConfig
         });
         this.config = options.config;
         this.logger = options.logger;
