@@ -5,10 +5,9 @@ import {RouteComponentProps} from "react-router";
 import {bindActionCreators, Dispatch} from "redux";
 
 import {NetworkDropdown} from "../../components/NetworkDropdown/NetworkDropdown";
-import {Validator} from "../../components/Validator/Validator";
+import {Validator} from "../Validator/Validator";
 import {Background} from "../../components/Background/Background";
 import {ButtonPrimary} from "../../components/Button/ButtonStandard";
-import {IValidatorBeaconNodes} from "../../models/beaconNode";
 import {deleteKeystore} from "../../services/utils/account";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 import {IRootState} from "../../reducers";
@@ -18,7 +17,6 @@ import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {storeAuthAction, startAddingNewValidator as startAddingNewValidatorAction} from "../../actions";
 
 type IOwnProps = {
-    validatorBeaconNodes: IValidatorBeaconNodes;
     network: string;
 } & Pick<RouteComponentProps, "history" | "location">;
 
@@ -89,7 +87,6 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
                         validator.network === props.network || !props.network // if all networks
                     )
                     .map((v, index) => {
-                        const hasNodes = Object.prototype.hasOwnProperty.call(props.validatorBeaconNodes, v.publicKey);
                         return <div key={index} className={"validator-wrapper"}>
                             <Validator
                                 name={v.name}
@@ -99,7 +96,6 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
                                 onDetailsClick={(): void =>
                                     props.history.push(Routes.VALIDATOR_DETAILS.replace(":id", index.toString()))}
                                 privateKey={v.privateKey}
-                                nodes={hasNodes ? props.validatorBeaconNodes[v.publicKey] : []}
                             />
                         </div>;
                     })}
@@ -125,7 +121,6 @@ interface IInjectedProps{
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"> => ({
     auth: state.auth,
-    validatorBeaconNodes: state.network.validatorBeaconNodes,
     network: state.network.selected,
 });
 

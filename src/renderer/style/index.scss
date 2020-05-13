@@ -15,7 +15,6 @@
 @import '../components/CopyField/copyfield.scss';
 @import '../components/Notification/notification.scss';
 @import '../components/VerifyMnemonic/VerifyMnemonic.scss';
-@import '../components/Validator/validator.scss';
 @import '../components/Cards/cards.scss';
 @import '../components/Loading/loading.scss';
 @import '../components/LineGraph/linegraph.scss';
@@ -33,5 +32,6 @@
 @import '../containers/AddValidator/CheckPassword.scss';
 @import '../containers/Onboard/CreatePassword/CreatePasswordContainer';
 @import '../containers/ValidatorDetails/ValidatorDetails';
+@import '../containers/Validator/validator.scss';
 
 @import url('https://fonts.googleapis.com/css?family=Fira+Code|Lato|Palanquin+Dark:400,500,600,700|Palanquin:400,500&display=swap&subset=latin-ext');

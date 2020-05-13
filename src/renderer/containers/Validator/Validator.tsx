@@ -3,15 +3,14 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {loadValidatorBeaconNodes} from "../../actions/network";
 import {loadValidator} from "../../actions/validator";
-import {BeaconNode} from "../../models/beaconNode";
 import {IRootState} from "../../reducers";
 import {calculateROI} from "../../services/utils/math";
-import {AddButton} from "../Button/ButtonAction";
-import {ButtonDestructive, ButtonPrimary} from "../Button/ButtonStandard";
-import {ValidatorStat} from "../Cards/ValidatorStat";
-import {PrivateKeyField} from "../PrivateKeyField/PrivateKeyField";
-import {InputForm} from "../Input/InputForm";
-import {NodeCard} from "../Cards/NodeCard";
+import {AddButton} from "../../components/Button/ButtonAction";
+import {ButtonDestructive, ButtonPrimary} from "../../components/Button/ButtonStandard";
+import {ValidatorStat} from "../../components/Cards/ValidatorStat";
+import {PrivateKeyField} from "../../components/PrivateKeyField/PrivateKeyField";
+import {InputForm} from "../../components/Input/InputForm";
+import {NodeCard} from "../../components/Cards/NodeCard";
 
 export interface IValidatorSimpleProps {
     name: string,
@@ -20,13 +19,16 @@ export interface IValidatorSimpleProps {
     onRemoveClick: () => void;
     onDetailsClick: () => void;
     privateKey: string;
-    nodes: BeaconNode[];
 }
 
 export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     props: IValidatorSimpleProps) => {
     const validators = useSelector((state: IRootState) => state.validators);
     const network = useSelector((state: IRootState) => state.network.selected);
+    const validatorBeaconNodes = useSelector((state: IRootState) => state.network.validatorBeaconNodes);
+    const nodes = Object.prototype.hasOwnProperty.call(validatorBeaconNodes, props.publicKey) ?
+        validatorBeaconNodes[props.publicKey] : [];
+
     const isLoaded = !!validators[props.publicKey];
     const balance = isLoaded ? validators[props.publicKey].balance : 0n;
     const ROI = calculateROI(balance, network);
@@ -37,10 +39,10 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     }, [props.publicKey]);
 
     useEffect(() => {
-        if (props.nodes.length > 0) {
+        if (nodes.length > 0) {
             dispatch(loadValidator(props.publicKey));
         }
-    }, [props.publicKey, props.nodes.length]);
+    }, [props.publicKey, nodes.length]);
 
     const renderAddBeaconNodeButton = (): React.ReactElement => {
         return true ? null :  <AddButton onClick={(): void=>{}}/>
@@ -51,9 +53,9 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
             <div className="validator-nodes">
                 <div className="box node-container">
                     <div className="node-grid-container">
-                        {props.nodes.length === 0 ? <p>No working beacon nodes.</p> : null}
+                        {nodes.length === 0 ? <p>No working beacon nodes.</p> : null}
 
-                        {props.nodes.map(node => {
+                        {nodes.map(node => {
                             return (
                                 <NodeCard
                                     key={node.url}
