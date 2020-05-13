@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 import {loadValidatorBeaconNodes} from "../../actions/network";
-import {loadValidator} from "../../actions/validator";
+import {loadValidatorBalance} from "../../actions/validator";
 import {IRootState} from "../../reducers";
 import {calculateROI} from "../../services/utils/math";
 import {AddButton} from "../../components/Button/ButtonAction";
@@ -40,7 +40,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
 
     useEffect(() => {
         if (nodes.length > 0) {
-            dispatch(loadValidator(props.publicKey));
+            dispatch(loadValidatorBalance(props.publicKey));
         }
     }, [props.publicKey, nodes.length]);
 

@@ -1,10 +1,11 @@
-import {ValidatorResponse} from "@chainsafe/lodestar-types";
+import {Gwei} from "@chainsafe/lodestar-types";
 import {Action, Dispatch} from "redux";
+
 import {ValidatorActionTypes} from "../constants/action-types";
 import {IRootState} from "../reducers";
 import {fromHex} from "../services/utils/bytes";
 
-export const loadValidator = (validator: string) => {
+export const loadValidatorBalance = (validator: string) => {
     return async (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): Promise<void> => {
         const beaconNodes = getState().network.validatorBeaconNodes[validator];
         // TODO: Use any working beacon node instead of first one
@@ -12,13 +13,19 @@ export const loadValidator = (validator: string) => {
         const response = await client.beacon.getValidator(fromHex(validator));
 
         dispatch({
-            type: ValidatorActionTypes.LOADED_VALIDATOR,
-            payload: response,
+            type: ValidatorActionTypes.LOADED_VALIDATOR_BALANCE,
+            payload: {
+                balance: response.balance,
+                validator,
+            },
         });
     };
 };
 
-export interface ILoadedValidatorAction {
-    type: typeof ValidatorActionTypes.LOADED_VALIDATOR;
-    payload: ValidatorResponse;
+export interface ILoadedValidatorBalanceAction {
+    type: typeof ValidatorActionTypes.LOADED_VALIDATOR_BALANCE;
+    payload: {
+        balance: Gwei,
+        validator: string;
+    };
 }

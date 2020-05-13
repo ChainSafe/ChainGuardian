@@ -40,5 +40,5 @@ export enum NetworkActionTypes {
 }
 
 export enum ValidatorActionTypes {
-    LOADED_VALIDATOR = "LOADED_VALIDATOR",
+    LOADED_VALIDATOR_BALANCE = "LOADED_VALIDATOR_BALANCE",
 }

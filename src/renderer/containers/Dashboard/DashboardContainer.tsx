@@ -27,6 +27,7 @@ export interface IValidator {
     deposit: number;
     network: string;
     privateKey: string;
+    balance?: bigint;
 }
 
 

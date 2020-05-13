@@ -1,12 +1,11 @@
-import {ValidatorResponse} from "@chainsafe/lodestar-types";
 import {Action} from "redux";
 
-import {ILoadedValidatorAction} from "../actions/validator";
+import {ILoadedValidatorBalanceAction} from "../actions/validator";
 import {ValidatorActionTypes} from "../constants/action-types";
-import {toHexString} from "@chainsafe/ssz";
+import {IValidator} from "../containers/Dashboard/DashboardContainer";
 
 export interface IValidatorState {
-    [validatorAddress: string]: ValidatorResponse;
+    [validatorAddress: string]: IValidator,
 }
 
 const initialState: IValidatorState = {
@@ -16,13 +15,13 @@ export const validatorsReducer = (
     state = initialState,
     action: Action<ValidatorActionTypes>
 ): IValidatorState => {
-    let payload;
+    let payload: any;
     switch (action.type) {
-        case ValidatorActionTypes.LOADED_VALIDATOR:
-            payload = (action as ILoadedValidatorAction).payload;
+        case ValidatorActionTypes.LOADED_VALIDATOR_BALANCE:
+            payload = (action as ILoadedValidatorBalanceAction).payload;
             return {
                 ...state,
-                [toHexString(payload.pubkey)]: payload,
+                [payload.validator]: {...state[payload.validator], balance: payload.balance},
             };
         default:
             return state;
