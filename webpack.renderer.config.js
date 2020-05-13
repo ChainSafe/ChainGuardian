@@ -31,7 +31,8 @@ module.exports = merge.smart(baseConfig, {
                         '@babel/preset-react'
                     ],
                     plugins: [
-                        ['@babel/plugin-proposal-class-properties', { loose: true }]
+                        ['@babel/plugin-proposal-class-properties', { loose: true }],
+                        "@babel/plugin-syntax-bigint"
                     ]
                 }
             },
