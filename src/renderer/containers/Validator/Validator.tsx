@@ -45,7 +45,8 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     }, [props.publicKey, nodes.length]);
 
     const renderAddBeaconNodeButton = (): React.ReactElement => {
-        return true ? null :  <AddButton onClick={(): void=>{}}/>
+        // eslint-disable-next-line
+        return true ? null :  <AddButton onClick={(): void=>{}}/>;
     };
 
     const renderBeaconNodes = (): React.ReactElement => {

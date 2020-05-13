@@ -15,7 +15,7 @@ export const loadValidator = (validator: string) => {
             type: ValidatorActionTypes.LOADED_VALIDATOR,
             payload: response,
         });
-    }
+    };
 };
 
 export interface ILoadedValidatorAction {
