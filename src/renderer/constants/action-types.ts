@@ -38,3 +38,7 @@ export enum NetworkActionTypes {
     SELECT_NETWORK = "SELECT_NETWORK",
     LOADED_VALIDATOR_BEACON_NODES = "LOADED_VALIDATOR_BEACON_NODES",
 }
+
+export enum ValidatorActionTypes {
+    LOADED_VALIDATOR = "LOADED_VALIDATOR",
+}

@@ -4,6 +4,7 @@ import {IDepositState, depositReducer} from "./deposit";
 import {IAuthState, authReducer} from "./auth";
 import {INotificationStateObject, notificationReducer} from "./notification";
 import {INetworkState, networkReducer} from "./network";
+import {IValidatorState, validatorsReducer} from "./validators";
 
 export interface IRootState {
     register: IRegisterState,
@@ -11,6 +12,7 @@ export interface IRootState {
     auth: IAuthState,
     notificationArray: INotificationStateObject,
     network: INetworkState,
+    validators: IValidatorState,
 }
 
 export const rootReducer = combineReducers<IRootState>({
@@ -19,4 +21,5 @@ export const rootReducer = combineReducers<IRootState>({
     auth: authReducer,
     notificationArray: notificationReducer,
     network: networkReducer,
+    validators: validatorsReducer,
 });
