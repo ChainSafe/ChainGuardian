@@ -1,4 +1,5 @@
 import * as React from "react";
+import {utils} from "ethers";
 
 export interface IValidatorStatProps {
     title: string;
@@ -16,6 +17,7 @@ const renderROI = (props: IValidatorStatProps): React.ReactElement => {
     );
 };
 const renderBalance = (props: IValidatorStatProps): React.ReactElement => {
+    console.log(props);
     return(
         <div className="validator-card-container">
             <h5>{props.title}</h5>
@@ -23,7 +25,7 @@ const renderBalance = (props: IValidatorStatProps): React.ReactElement => {
                 props.value<1 ?
                     props.value.toString().slice(1)
                     :
-                    props.value
+                    Number(utils.formatEther(utils.parseUnits(props.value.toString(), "gwei"))).toFixed(3)
             }</h1>
             <h5>{props.type}</h5>
         </div>
