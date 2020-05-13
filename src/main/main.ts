@@ -8,8 +8,6 @@ const db = new DatabaseIpcHandler();
 
 app.on("before-quit", db.stop.bind(db));
 
-app.on("activate", db.start.bind(db));
-
 app.on("ready", async function() {
     await initBLS();
     await Promise.all([
