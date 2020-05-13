@@ -16,7 +16,6 @@ export interface IValidatorSimpleProps {
     name: string,
     status: string,
     publicKey: string,
-    deposit: number,
     onRemoveClick: () => void;
     onDetailsClick: () => void;
     privateKey: string;
@@ -72,13 +71,12 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
         <div className="validator-simple-container">
             <div className="validator-simple-keys">
                 <h2>{props.name}</h2>
-                <h3>Status: {props.status}</h3>
                 <br />
 
                 <div className="row validator-stat-container ">
                     <ValidatorStat title="Balance" type="ETH" value={balance}/>
                     <ValidatorStat title="Return (ETH)" type="ROI" value={ROI}/>
-                    <ValidatorStat title="Uptime" type="Uptime" value={props.deposit}/>
+                    <ValidatorStat title="Validator" type="Status" value={props.status}/>
                 </div>
 
                 <br />

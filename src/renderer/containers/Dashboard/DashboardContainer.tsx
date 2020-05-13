@@ -95,7 +95,6 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
                                 name={v.name}
                                 status={v.status}
                                 publicKey={v.publicKey}
-                                deposit={v.deposit}
                                 onRemoveClick={(): void => {onRemoveValidator(index);}}
                                 onDetailsClick={(): void =>
                                     props.history.push(Routes.VALIDATOR_DETAILS.replace(":id", index.toString()))}

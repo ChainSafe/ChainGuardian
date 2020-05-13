@@ -4,7 +4,7 @@ import {utils} from "ethers";
 export interface IValidatorStatProps {
     title: string;
     type: string;
-    value: bigint | number;
+    value: bigint | number | string;
 }
 const renderROI = (props: IValidatorStatProps): React.ReactElement => {
     return(
@@ -35,10 +35,8 @@ const renderUptime = (props: IValidatorStatProps): React.ReactElement => {
     return(
         <div className="validator-card-container">
             <h5>{props.title}</h5>
-            <h1>{
-                props.value
-            }</h1>
-            <h5>DAYS</h5>
+            <h1>{props.value ? "Online" : "Offline"}</h1>
+            <h5>{props.type}</h5>
         </div>
     );
 };
@@ -48,7 +46,7 @@ export const ValidatorStat: React.FunctionComponent<IValidatorStatProps> = (
     switch(props.type){
         case "ROI": return renderROI(props);
         case "ETH": return renderBalance(props);
-        case "Uptime": return renderUptime(props);
+        case "Status": return renderUptime(props);
         default: return(
             <div className="validator-card-container">
                 <h5>{props.title}</h5>
