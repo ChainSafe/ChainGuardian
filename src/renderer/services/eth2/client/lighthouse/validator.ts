@@ -5,18 +5,19 @@ import {ILighthouseDutiesRequest, ILighthouseDutiesResponse} from "./types";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {
     AggregateAndProof,
-    Attestation, AttestationData,
+    Attestation,
+    AttestationData,
     AttesterDuty,
     BeaconBlock,
     BLSPubkey,
     BLSSignature,
     CommitteeIndex,
     Epoch,
-    ProposerDuty, SignedAggregateAndProof,
+    ProposerDuty,
+    SignedAggregateAndProof,
     SignedBeaconBlock,
     Slot
 } from "@chainsafe/lodestar-types";
-import {parse as bigIntParse} from "json-bigint";
 import {Json, toHexString} from "@chainsafe/ssz";
 import {LighthouseRoutes} from "./routes";
 import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";

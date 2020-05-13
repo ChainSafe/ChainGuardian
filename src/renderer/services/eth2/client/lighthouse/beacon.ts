@@ -14,7 +14,6 @@ import {IBeaconClientOptions, IEth2BeaconApi} from "../interface";
 import {Json, toHexString} from "@chainsafe/ssz";
 import {LighthouseRoutes} from "./routes";
 import {ILighthouseSyncResponse} from "./types";
-import {parse as bigIntParse} from "json-bigint";
 import {Eth2ChainHeadType} from "../../../../models/types/head";
 import {IEth2ChainHead} from "../../../../models/head";
 import {ILogger} from "@chainsafe/lodestar-utils";
