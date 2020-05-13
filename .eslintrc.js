@@ -41,6 +41,7 @@ module.exports = {
         "@typescript-eslint/no-explicit-any": "warn",
         "@typescript-eslint/no-require-imports": "error",
         "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-empty-function": "off",
         "@typescript-eslint/ban-ts-ignore": "off",
         "@typescript-eslint/no-unused-vars": ["error", {
             "varsIgnorePattern": "^_"
@@ -48,7 +49,7 @@ module.exports = {
         "@typescript-eslint/no-use-before-define": "off",
         "@typescript-eslint/semi": "error",
         "camelcase": "error",
-        "no-param-reassign": "error",
+        "no-param-reassign": "warn",
         "max-len": ["error", {
             "code": 120
         }],

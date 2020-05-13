@@ -2,9 +2,8 @@ import {ValidatorStatus} from "./statuses";
 import {warn} from "electron-log";
 import {IEth1Client} from "../../deposit/ethers";
 import {IGenericEth2Client} from "../../eth2/client/interface";
-import {BLSPubkey} from "@chainsafe/eth2.0-types";
-import {computeEpochAtSlot} from "@chainsafe/eth2.0-state-transition";
-import {FAR_FUTURE_EPOCH} from "@chainsafe/eth2.0-state-transition/lib/constants";
+import {BLSPubkey} from "@chainsafe/lodestar-types";
+import {computeEpochAtSlot, FAR_FUTURE_EPOCH} from "@chainsafe/lodestar-beacon-state-transition";
 import {PublicKey} from "@chainsafe/bls";
 
 export * from "./statuses";
@@ -26,14 +25,15 @@ export async function getValidatorStatus(
     const validator = await eth2Api.beacon.getValidator(validatorPubKey);
     if(validator) {
         const currentEpoch = computeEpochAtSlot(eth2Api.config, eth2Api.getCurrentSlot());
-        if(validator.activationEpoch !== FAR_FUTURE_EPOCH && currentEpoch < validator.activationEpoch) {
+        if(validator.validator.activationEpoch !== FAR_FUTURE_EPOCH 
+            && currentEpoch < validator.validator.activationEpoch) {
             return ValidatorStatus.ACTIVATION_QUEUE;
         }
-        if(validator.slashed) {
+        if(validator.validator.slashed) {
             return ValidatorStatus.SLASHED;
         }
-        if(validator.exitEpoch !== FAR_FUTURE_EPOCH) {
-            if(currentEpoch > validator.exitEpoch) {
+        if(validator.validator.exitEpoch !== FAR_FUTURE_EPOCH) {
+            if(currentEpoch > validator.validator.exitEpoch) {
                 return ValidatorStatus.EXITED;
             } else {
                 return ValidatorStatus.EXIT_QUEUE;
@@ -78,5 +78,5 @@ async function isBeaconNodeSyncing(eth2Api: IGenericEth2Client): Promise<boolean
 }
 
 async function hasDeposited(pubkey: BLSPubkey, eth1: IEth1Client): Promise<boolean> {
-    return await eth1.hasUserDeposited(PublicKey.fromBytes(pubkey));
+    return await eth1.hasUserDeposited(PublicKey.fromBytes(pubkey as Uint8Array));
 }

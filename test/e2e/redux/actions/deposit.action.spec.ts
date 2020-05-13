@@ -1,9 +1,9 @@
 import configureStore from "redux-mock-store";
 import thunk from "redux-thunk";
-import {config} from "@chainsafe/eth2.0-config/lib/presets/mainnet";
+import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {
     setDepositDetected,
-    setDepositTransactionData, 
+    setDepositTransactionData,
     generateDepositAction
 } from "../../../../src/renderer/actions";
 import {IRootState} from "../../../../src/renderer/reducers";
@@ -69,6 +69,10 @@ describe("deposit actions", () => {
                 bytecode: "",
                 depositAmount: 32,
                 deployedAtBlock: 0
+            },
+            dockerConfig: {
+                name: "DepositActionTest",
+                image: "not-important",
             }
         };
 
@@ -77,11 +81,12 @@ describe("deposit actions", () => {
         const depositData = generateDeposit(
             keyPair,
             Buffer.from(publicKeyStr, "hex"),
-            networkConfig.contract.depositAmount
+            networkConfig.contract.depositAmount,
+            networkConfig.eth2Config,
         );
         const depositTx = DepositTx.generateDepositTx(
-            depositData, 
-            networkConfig.contract.address, 
+            depositData,
+            networkConfig.contract.address,
             networkConfig.eth2Config,
             networkConfig.contract.depositAmount);
         const txData = `0x${depositTx.data.toString("hex")}`;

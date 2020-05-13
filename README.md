@@ -51,7 +51,13 @@ By typing `docker-compose up` in terminal, you will get:
 - geth eth1 node with private POA network
 - deposit contract deployed on that private eth1 network
     - contract is always deployed on address `0x2F1598e74b146F5687174C13f8EDCF490B2492e3`
-- prysmatic eth2 private network
+- lighthouse eth2 private network
+
+Local testnet is started with 16 validators but only 15 are active (run using lighthouse docker validator).
+Url of local testnet beacon node is: `http://localhost:5052`;
+You can use this account to validate using ChainGuardian (skip withdrawal key):
+- private key: `0x03cffafa1cbaa7e585eaee07a9d35ae57f6dfe19a9ea53af9c37e9f3dfac617c`
+- public key: `0x872c61b4a7f8510ec809e5b023f5fdda2105d024c470ddbbeca4bc74e8280af0d178d749853e8f6a841083ac1b4db98f`
 
 ## Packaging
 We use [Electron builder](https://www.electron.build/) to build and package the application. By default you can run the following to package for your current platform:

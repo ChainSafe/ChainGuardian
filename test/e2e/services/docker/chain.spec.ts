@@ -20,21 +20,21 @@ function tests(): void {
             if (isRunning) {
                 await beaconChain.stop();
             }
-            const name = BeaconChain.getContainerName(SupportedNetworks.PRYSM);
+            const name = BeaconChain.getContainerName(SupportedNetworks.SCHLESI);
             DockerRegistry.removeContainer(name);
             await runCmdAsync(`docker rm ${name}`);
-            await runCmdAsync(`docker volume rm ${SupportedNetworks.PRYSM}-chain-data`);
+            await runCmdAsync(`docker volume rm ${SupportedNetworks.SCHLESI}-chain-data`);
         }
     }, 20000);
 
     /**
-     * TEST CASE: start Prysm chain
-     * 1) run docker instance of prysm beacon chain
+     * TEST CASE: start Schlesi chain
+     * 1) run docker instance of schlesi beacon chain
      * 2) check if instance is running using cmdRun
      */
     it("should execute test case: run-check", async done => {
         if (await BeaconChain.isDockerInstalled()) {
-            beaconChain = await BeaconChain.startPrysmBeaconChain();
+            beaconChain = await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI);
             // wait for docker instance to start
             while (!(await beaconChain.isRunning())) { /* */}
             done();
@@ -42,14 +42,14 @@ function tests(): void {
     }, 10000);
 
     /**
-     * TEST CASE: start Prysm chain and fetch logs
-     * 1) run docker instance of prysm beacon chain
+     * TEST CASE: start Schlesi chain and fetch logs
+     * 1) run docker instance of schlesi beacon chain
      * 2) check if logs are pipes to instance
      * NOTE: All logs go to stderr
      */
     it("should read logs using listenToLogs", async done => {
         if (await BeaconChain.isDockerInstalled()) {
-            beaconChain = await BeaconChain.startPrysmBeaconChain();
+            beaconChain = await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI);
             // wait for docker instance to start
             while (!(await beaconChain.isRunning())) { /* */ }
             const logs = beaconChain.getLogs();

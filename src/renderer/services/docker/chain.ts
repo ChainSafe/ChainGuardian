@@ -2,22 +2,23 @@ import * as logger from "electron-log";
 import {Readable} from "stream";
 
 import database from "../db/api/database";
+import {getNetworkConfig} from "../eth2/networks";
 import {SupportedNetworks} from "../eth2/supportedNetworks";
 import {Container} from "./container";
 import {DockerRegistry} from "./docker-registry";
+import {DockerPort} from "./type";
 import {getLogMessageType} from "./utils";
 
 type LogType = "info" | "error";
 type LogCallbackFunc = (type: LogType, message: string) => void;
 
 export class BeaconChain extends Container {
-    public static DefaultPorts = ["4000:4001", "13000:13000"];
-
-    public static async startPrysmBeaconChain(
-        ports = BeaconChain.DefaultPorts,
+    public static async startBeaconChain(
+        network: SupportedNetworks,
+        ports?: DockerPort[],
         waitUntilReady = false,
     ): Promise<BeaconChain> {
-        const imageName = BeaconChain.getContainerName(SupportedNetworks.PRYSM);
+        const imageName = BeaconChain.getContainerName(network);
         // Check if docker image already exists
         const existingBC = DockerRegistry.getContainer(imageName);
         if (existingBC) {
@@ -25,12 +26,9 @@ export class BeaconChain extends Container {
         }
 
         const bc = new BeaconChain({
-            image: "gcr.io/prysmaticlabs/prysm/beacon-chain:latest",
+            ...getNetworkConfig(network).dockerConfig,
             name: imageName,
-            restart: "unless-stopped",
             ports,
-            volume: `${SupportedNetworks.PRYSM}-chain-data:/data`,
-            cmd: "--datadir=/data --grpc-gateway-port 4001"
         });
         DockerRegistry.addContainer(imageName, bc);
 

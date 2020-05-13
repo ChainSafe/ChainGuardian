@@ -1,4 +1,4 @@
-import {Keypair} from "@chainsafe/bls/lib/keypair";
+import {Keypair} from "@chainsafe/bls";
 import {readdirSync} from "fs";
 
 import {getEth2ApiClient} from "../services/eth2/client";
@@ -6,6 +6,7 @@ import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/ke
 import {BeaconNode} from "./beaconNode";
 import database from "../services/db/api/database";
 import {IValidatorNetwork} from "./network";
+import {error} from "electron-log";
 
 export interface IAccount {
     name: string;
@@ -176,7 +177,7 @@ export class CGAccount implements IAccount {
                 })
                 .map(file => this.directory + file);
         } catch (e) {
-            console.log(e);
+            error(e);
             return [];
         }
 

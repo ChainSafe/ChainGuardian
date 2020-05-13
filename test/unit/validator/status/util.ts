@@ -1,5 +1,5 @@
-import {Validator} from "@chainsafe/eth2.0-types";
-import {FAR_FUTURE_EPOCH} from "@chainsafe/eth2.0-state-transition/lib/constants";
+import {Validator} from "@chainsafe/lodestar-types";
+import {FAR_FUTURE_EPOCH} from "@chainsafe/lodestar-beacon-state-transition";
 
 export function generateValidator(opts: Partial<Validator>): Validator {
     return {

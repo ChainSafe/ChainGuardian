@@ -1,15 +1,16 @@
 import {
-    ISigningMnemonicAction, 
+    ISigningMnemonicAction,
     ISigningVerificationStatusAction,
-    ISigningKeyAction, 
+    ISigningKeyAction,
     IWithdrawalMnemonicAction,
     IWithdrawalVerificationStatusAction,
-    IWithdrawalKeyAction, 
+    IWithdrawalKeyAction
 } from "../actions";
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 import {ISetNetworkAction} from "../actions";
 import {networks} from "../services/eth2/networks";
+import {deriveKeyFromMnemonic} from "@chainsafe/bls-keygen";
 
 export enum RegisterType { ONBOARDING, ADD }
 
@@ -32,14 +33,15 @@ const initialState: IRegisterState = {
     withdrawalVerification: false,
     withdrawalKey: "",
     network: networks[0].networkName,
-    registerType: null,
+    registerType: null
 };
 
 export const registerReducer = (state = initialState, action: Action<RegisterActionTypes>): IRegisterState => {
+    let typedActionPayload;
     switch (action.type) {
         case RegisterActionTypes.START_REGISTRATION_SUBMISSION:
             return Object.assign({}, state, {
-                registerType: RegisterType.ONBOARDING,
+                registerType: RegisterType.ONBOARDING
             });
 
         case RegisterActionTypes.STORE_SIGNING_MNEMONIC:
@@ -56,8 +58,11 @@ export const registerReducer = (state = initialState, action: Action<RegisterAct
             });
 
         case RegisterActionTypes.STORE_WITHDRAWAL_MNEMONIC:
+            typedActionPayload = (action as IWithdrawalMnemonicAction).payload;
             return Object.assign({}, state, {
-                withdrawalMnemonic: (action as IWithdrawalMnemonicAction).payload.withdrawalMnemonic
+                withdrawalMnemonic: typedActionPayload.withdrawalMnemonic,
+                withdrawalKey: deriveKeyFromMnemonic(typedActionPayload.withdrawalMnemonic, "m/12381/3600/0/0")
+                    .toString("hex")
             });
         case RegisterActionTypes.STORE_WITHDRAWAL_VERIFICATION_STATUS:
             return Object.assign({}, state, {
@@ -70,12 +75,12 @@ export const registerReducer = (state = initialState, action: Action<RegisterAct
 
         case RegisterActionTypes.SET_NETWORK:
             return Object.assign({}, state, {
-                network: (action as ISetNetworkAction).payload,
+                network: (action as ISetNetworkAction).payload
             });
 
         case RegisterActionTypes.START_ADDING_NEW_VALIDATOR:
             return Object.assign({}, state, {
-                registerType: RegisterType.ADD,
+                registerType: RegisterType.ADD
             });
 
         case RegisterActionTypes.COMPLETED_REGISTRATION_SUBMISSION || RegisterActionTypes.COMPLETE_ADDING_NEW_VALIDATOR:

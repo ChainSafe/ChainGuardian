@@ -15,7 +15,7 @@ export interface IDockerRunParams {
     // https://docs.docker.com/engine/reference/run/#expose-incoming-ports
     publishAllPorts?: boolean;
     // [ip:hostPort:containerPort | ip::containerPort | hostPort:containerPort | containerPort]
-    ports?: string[];
+    ports?: DockerPort[];
 
     // IMAGE
     image: string;
@@ -26,3 +26,8 @@ export interface IDockerRunParams {
     // volume-name:mount-point - https://docs.docker.com/storage/volumes/
     volume?: string;
 }
+
+export type DockerPort = {
+    local: string;
+    host: string;
+};
