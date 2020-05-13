@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import {useDispatch} from "react-redux";
 
 import {loadValidatorBeaconNodes} from "../../actions/network";
+import {loadValidator} from "../../actions/validator";
 import {BeaconNode} from "../../models/beaconNode";
 import {ButtonDestructive, ButtonPrimary} from "../Button/ButtonStandard";
 import {ValidatorStat} from "../Cards/ValidatorStat";
@@ -27,6 +28,12 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
     useEffect(() => {
         dispatch(loadValidatorBeaconNodes(props.publicKey, true));
     }, [props.publicKey]);
+
+    useEffect(() => {
+        if (props.nodes.length > 0) {
+            dispatch(loadValidator(props.publicKey));
+        }
+    }, [props.publicKey, props.nodes.length]);
 
     const renderBeaconNodes = (): React.ReactElement => {
         return (

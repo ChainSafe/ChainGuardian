@@ -3,6 +3,7 @@ import {Action} from "redux";
 
 import {ILoadedValidatorAction} from "../actions/validator";
 import {ValidatorActionTypes} from "../constants/action-types";
+import {toHexString} from "@chainsafe/ssz";
 
 export interface IValidatorState {
     [validatorAddress: string]: ValidatorResponse;
@@ -21,10 +22,7 @@ export const validatorsReducer = (
             payload = (action as ILoadedValidatorAction).payload;
             return {
                 ...state,
-                validators: {
-                    ...state.validators,
-                    [payload.pubkey.toString()]: payload
-                }
+                [toHexString(payload.pubkey)]: payload,
             };
         default:
             return state;
