@@ -8,6 +8,7 @@ import {IAuthState} from "../../../../src/renderer/reducers/auth";
 import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
 import {CGAccount} from "../../../../src/renderer/models/account";
 import {INetworkState} from "../../../../src/renderer/reducers/network";
+import {IValidatorState} from "../../../../src/renderer/reducers/validators";
 
 const account = new CGAccount({
     name: "TestName",
@@ -20,6 +21,7 @@ const initialState: IRootState = {
     auth: {} as IAuthState,
     notificationArray: {} as INotificationStateObject,
     network: {} as INetworkState,
+    validators: {} as IValidatorState,
 };
 
 describe("auth actions", () => {
