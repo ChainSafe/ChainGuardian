@@ -5,7 +5,7 @@ import {RouteComponentProps} from "react-router";
 import {bindActionCreators, Dispatch} from "redux";
 
 import {NetworkDropdown} from "../../components/NetworkDropdown/NetworkDropdown";
-import {ValidatorSimple} from "../../components/Validator/ValidatorSimple";
+import {Validator} from "../../components/Validator/Validator";
 import {Background} from "../../components/Background/Background";
 import {ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {IValidatorBeaconNodes} from "../../models/beaconNode";
@@ -91,7 +91,7 @@ const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRoot
                     .map((v, index) => {
                         const hasNodes = Object.prototype.hasOwnProperty.call(props.validatorBeaconNodes, v.publicKey);
                         return <div key={index} className={"validator-wrapper"}>
-                            <ValidatorSimple
+                            <Validator
                                 name={v.name}
                                 status={v.status}
                                 publicKey={v.publicKey}

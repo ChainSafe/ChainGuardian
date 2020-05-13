@@ -17,7 +17,6 @@ const renderROI = (props: IValidatorStatProps): React.ReactElement => {
     );
 };
 const renderBalance = (props: IValidatorStatProps): React.ReactElement => {
-    console.log(props);
     return(
         <div className="validator-card-container">
             <h5>{props.title}</h5>
