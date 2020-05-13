@@ -10,7 +10,7 @@ const renderROI = (props: IValidatorStatProps): React.ReactElement => {
         <div className="validator-card-container">
             <h5>{props.title}</h5>
             <h1 className={props.value>=0 ? "plus":"minus"}>
-                {props.value>=0 ? "+":"-"}{props.value}%</h1>
+                {props.value>=0 ? "+":""}{props.value}%</h1>
             <h5 className={props.value>=0 ? "plus":"minus"}>{props.type}</h5>
         </div>
     );
@@ -20,7 +20,7 @@ const renderBalance = (props: IValidatorStatProps): React.ReactElement => {
         <div className="validator-card-container">
             <h5>{props.title}</h5>
             <h1>{
-                props.value<1 ? 
+                props.value<1 ?
                     props.value.toString().slice(1)
                     :
                     props.value
@@ -42,7 +42,7 @@ const renderUptime = (props: IValidatorStatProps): React.ReactElement => {
 };
 export const ValidatorStat: React.FunctionComponent<IValidatorStatProps> = (
     props: IValidatorStatProps) => {
-    
+
     switch(props.type){
         case "ROI": return renderROI(props);
         case "ETH": return renderBalance(props);

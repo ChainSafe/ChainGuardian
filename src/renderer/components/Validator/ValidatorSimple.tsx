@@ -1,9 +1,11 @@
 import React, {useEffect} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 import {loadValidatorBeaconNodes} from "../../actions/network";
 import {loadValidator} from "../../actions/validator";
 import {BeaconNode} from "../../models/beaconNode";
+import {IRootState} from "../../reducers";
+import {calculateROI} from "../../services/utils/math";
 import {ButtonDestructive, ButtonPrimary} from "../Button/ButtonStandard";
 import {ValidatorStat} from "../Cards/ValidatorStat";
 import {PrivateKeyField} from "../PrivateKeyField/PrivateKeyField";
@@ -23,6 +25,11 @@ export interface IValidatorSimpleProps {
 
 export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
     props: IValidatorSimpleProps) => {
+    const validators = useSelector((state: IRootState) => state.validators);
+    const network = useSelector((state: IRootState) => state.network.selected);
+    const isLoaded = !!validators[props.publicKey];
+    const balance = isLoaded ? validators[props.publicKey].balance : 0n;
+    const ROI = calculateROI(balance, network);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -69,8 +76,8 @@ export const ValidatorSimple: React.FunctionComponent<IValidatorSimpleProps> = (
                 <br />
 
                 <div className="row validator-stat-container ">
-                    <ValidatorStat title="Deposit" type="ETH" value={props.deposit}/>
-                    <ValidatorStat title="ROI" type="ROI" value={props.deposit}/>
+                    <ValidatorStat title="Balance" type="ETH" value={balance}/>
+                    <ValidatorStat title="Return (ETH)" type="ROI" value={ROI}/>
                     <ValidatorStat title="Uptime" type="Uptime" value={props.deposit}/>
                 </div>
 
