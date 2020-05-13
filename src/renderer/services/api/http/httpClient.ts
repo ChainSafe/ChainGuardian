@@ -10,7 +10,7 @@ export class HttpClient {
         }
         this.client = axios.create({
             baseURL,
-            ...options
+            ...options.axios
         });
     }
 
@@ -44,14 +44,11 @@ export class HttpClient {
 }
 
 const handleError = (error: AxiosError): Error => {
-    let message: string | number;
+    let message: string;
     if (error.response) {
-        message = error.response.status;
-    } else if (error.request) {
-        message = error.request;
+        message = error.response.data || error.response.statusText;
     } else {
-        message = error.message;
+        message = error.message.toString();
     }
-
-    return new Error(message.toString());
+    return new Error(message);
 };

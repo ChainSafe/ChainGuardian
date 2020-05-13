@@ -10,7 +10,7 @@ export enum LighthouseRoutes {
     //validator related
     GET_DUTIES = "/validator/duties",
     GET_ATTESTATION = "/validator/attestation",
-    PUBLISH_ATTESTATION = "/validator/attestation",
+    PUBLISH_ATTESTATION = "/validator/attestations",
     GET_BLOCK = "/validator/block",
     PUBLISH_BLOCK = "/validator/block",
     SUBSCRIBE_TO_COMMITTEE_SUBNET = "/validator/subscribe",

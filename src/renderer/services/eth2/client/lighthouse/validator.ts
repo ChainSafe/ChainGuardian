@@ -5,31 +5,35 @@ import {ILighthouseDutiesRequest, ILighthouseDutiesResponse} from "./types";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {
     AggregateAndProof,
-    Attestation, AttestationData,
+    Attestation,
+    AttestationData,
     AttesterDuty,
     BeaconBlock,
     BLSPubkey,
     BLSSignature,
     CommitteeIndex,
     Epoch,
-    ProposerDuty, SignedAggregateAndProof,
+    ProposerDuty,
+    SignedAggregateAndProof,
     SignedBeaconBlock,
     Slot
 } from "@chainsafe/lodestar-types";
-import {parse as bigIntParse} from "json-bigint";
 import {Json, toHexString} from "@chainsafe/ssz";
 import {LighthouseRoutes} from "./routes";
 import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {ZERO_HASH} from "@chainsafe/lodestar-beacon-state-transition";
+import {axiosConfig} from "./axios";
 
 export class LighthouseValidatorApiClient implements IValidatorApi {
 
     private readonly client: HttpClient;
     private readonly config: IBeaconConfig;
     private readonly beaconApi: IBeaconApi;
-    
+
     public constructor(options: IBeaconClientOptions, beaconApi: IBeaconApi) {
-        this.client = new HttpClient(options.baseUrl, {axios: {transformResponse: bigIntParse}});
+        this.client = new HttpClient(options.baseUrl, {
+            axios: axiosConfig
+        });
         this.config = options.config;
         this.beaconApi = beaconApi;
     }
@@ -69,7 +73,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
                 return {
                     proposerPubkey: this.config.types.BLSPubkey.fromJson(lhDuty.validator_pubkey, {case: "snake"}),
                     slot: proposalSlot
-                } as ProposerDuty;  
+                } as ProposerDuty;
             });
         });
     }
@@ -80,7 +84,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
         const response = await this.client.get<Json>(
             LighthouseRoutes.GET_ATTESTATION,
             {
-                params: 
+                params:
                     {
                         slot,
                         "committee_index": index
@@ -107,7 +111,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
     public async publishAttestation(attestation: Attestation): Promise<void> {
         await this.client.post(
             LighthouseRoutes.PUBLISH_ATTESTATION,
-            this.config.types.Attestation.toJson(attestation, {case: "snake"})
+            [this.config.types.Attestation.toJson(attestation, {case: "snake"})]
         );
     }
 
@@ -139,20 +143,20 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
     public async getWireAttestations(): Promise<Attestation[]> {
         throw new Error("Method not implemented.");
     }
-    
+
     public async publishAggregateAndProof(signedAggregateAndProof: SignedAggregateAndProof): Promise<void> {
         await this.client.post(LighthouseRoutes.PUBLISH_AGGREGATES_AND_PROOFS, [
             this.config.types.SignedAggregateAndProof.toJson(signedAggregateAndProof, {case: "snake"})
         ]);
     }
-    
+
     public async produceAggregateAndProof(
         attestationData: AttestationData, aggregator: BLSPubkey): Promise<AggregateAndProof> {
         const response = await this.client.get<Json>(
-            LighthouseRoutes.GET_AGGREGATED_ATTESTATION, 
+            LighthouseRoutes.GET_AGGREGATED_ATTESTATION,
             {
                 params: {
-                    "attestation_data": JSON.stringify(this.config.types.AttestationData.toJson(attestationData))   
+                    "attestation_data": toHexString(this.config.types.AttestationData.serialize(attestationData))
                 }
             });
         const validator = await this.beaconApi.getValidator(aggregator);
