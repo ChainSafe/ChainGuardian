@@ -10,7 +10,7 @@ export function getEth2ApiClient(url: string, network: string, logger?: ILogger)
         return undefined;
     }
     if(!logger) {
-        new WinstonLogger();
+        logger = new WinstonLogger();
     }
 
     switch(network) {
@@ -31,5 +31,15 @@ export function getEth2ApiClient(url: string, network: string, logger?: ILogger)
                 logger,
                 config: networkConfig.eth2Config
             });
+    }
+}
+
+export async function isSupportedBeaconChain(url: string, network: string): Promise<boolean> {
+    const client = getEth2ApiClient(url, network);
+    try {
+        const version = await client.getVersion();
+        return version.startsWith("Lighthouse");
+    } catch (e) {
+        return false;
     }
 }

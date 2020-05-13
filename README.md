@@ -54,7 +54,8 @@ By typing `docker-compose up` in terminal, you will get:
 - lighthouse eth2 private network
 
 Local testnet is started with 16 validators but only 15 are active (run using lighthouse docker validator).
-You can use this account to validate using ChainGuardian:
+Url of local testnet beacon node is: `http://localhost:5052`;
+You can use this account to validate using ChainGuardian (skip withdrawal key):
 - private key: `0x03cffafa1cbaa7e585eaee07a9d35ae57f6dfe19a9ea53af9c37e9f3dfac617c`
 - public key: `0x872c61b4a7f8510ec809e5b023f5fdda2105d024c470ddbbeca4bc74e8280af0d178d749853e8f6a841083ac1b4db98f`
 

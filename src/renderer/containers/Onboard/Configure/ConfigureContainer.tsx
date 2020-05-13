@@ -4,6 +4,8 @@ import {ButtonPrimary, ButtonSecondary} from "../../../components/Button/ButtonS
 import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {Dropdown} from "../../../components/Dropdown/Dropdown";
+import {IRootState} from "../../../reducers";
+import {isSupportedBeaconChain} from "../../../services/eth2/client";
 import {defaultNetworkIndex, networks, networksList} from "../../../services/eth2/networks";
 import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
@@ -11,18 +13,25 @@ import {setNetworkAction} from "../../../actions";
 import {saveBeaconNodeAction} from "../../../actions/network";
 import {Joi} from "../../../services/validation";
 
+type IStateProps = {
+    network: string;
+};
 type IOwnProps = Pick<RouteComponentProps, "history">;
 interface IInjectedProps {
     setNetwork: typeof setNetworkAction;
     saveBeaconNode: typeof saveBeaconNodeAction;
 }
 
-const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) => {
+const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProps> = (props) => {
     const [beaconNodeInput, setBeaconNodeInput] = useState("");
     const [selectedNetworkIndex, setSelectedNetworkIndex] = useState(defaultNetworkIndex);
     const [errorMessage, setErrorMessage] = useState("");
 
     const onBeaconNodeInput = (e: React.FormEvent<HTMLInputElement>): void => {
+        if (errorMessage !== "") {
+            setErrorMessage("");
+        }
+
         setBeaconNodeInput(e.currentTarget.value);
     };
 
@@ -35,7 +44,7 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
         props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE));
     };
 
-    const isValidBeaconNode = (): boolean => {
+    const isValidBeaconNode = async(): Promise<boolean> => {
         const beaconNodeInputSchema = Joi.string().uri();
         const validationResult = beaconNodeInputSchema.validate(beaconNodeInput);
         if (validationResult.error) {
@@ -43,12 +52,16 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
             return false;
         }
 
+        if (!(await isSupportedBeaconChain(beaconNodeInput, props.network))) {
+            setErrorMessage("Unsupported beacon chain or not working");
+            return false;
+        }
+
         return true;
-        // TODO: Validate if real beacon node here
     };
 
-    const onGoSubmit = (): void => {
-        if (isValidBeaconNode()) {
+    const onGoSubmit = async(): Promise<void> => {
+        if (await isValidBeaconNode()) {
             props.saveBeaconNode(beaconNodeInput);
             handleSubmit();
             props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
@@ -77,6 +90,7 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
                     placeholder="http://... beacon node URL"
                     inputId="beaconURL"
                     errorMessage={errorMessage}
+                    valid={errorMessage !== "" ? false : null}
                 />
 
                 <ButtonSecondary onClick={onGoSubmit} buttonId="go">GO</ButtonSecondary>
@@ -93,6 +107,10 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
     );
 };
 
+const mapStateToProps = (state: IRootState): IStateProps => ({
+    network: state.register.network,
+});
+
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
@@ -103,6 +121,6 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     );
 
 export const ConfigureContainer = connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(ConfigureContainerComponent);
