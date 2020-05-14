@@ -21,7 +21,6 @@ export const loadValidatorsAction = () => {
                 name: auth.account!.name,
                 status: "TODO status",
                 publicKey: v.publicKey.toHexString(),
-                deposit: 30,
                 network: auth.account!.getValidatorNetwork(v.publicKey.toHexString()),
                 privateKey: v.privateKey.toHexString()
             }));
