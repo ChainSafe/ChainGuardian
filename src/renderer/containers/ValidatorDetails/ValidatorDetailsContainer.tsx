@@ -13,7 +13,7 @@ export const ValidatorDetailsContainer = (): ReactElement => {
     const history = useHistory();
     const {id} = useParams();
     const validatorId = id ? parseInt(id) : 0;
-    const validators = useSelector((state: IRootState) => state.auth.validators);
+    const validators = Object.values(useSelector((state: IRootState) => state.validators));
     const beaconNodes = useSelector((state: IRootState) => state.network.validatorBeaconNodes);
     const validatorBeaconNodes = beaconNodes[validators[validatorId].publicKey] || [];
 

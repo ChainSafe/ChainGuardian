@@ -30,7 +30,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
         validatorBeaconNodes[props.publicKey] : [];
 
     const isLoaded = !!validators[props.publicKey];
-    const balance = isLoaded ? validators[props.publicKey].balance : 0n;
+    const balance = isLoaded ? validators[props.publicKey].balance || 0n : 0n;
     const ROI = calculateROI(balance, network);
     const dispatch = useDispatch();
 

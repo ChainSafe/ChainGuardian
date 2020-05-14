@@ -30,11 +30,11 @@ export interface IValidator {
     balance?: bigint;
 }
 
-
-const Dashboard: React.FunctionComponent<IOwnProps & IInjectedProps & Pick<IRootState, "auth">> = (props) => {
+type DashBoardProps = IOwnProps & IInjectedProps & Pick<IRootState, "auth" | "validators">;
+const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     const [confirmModal, setConfirmModal] = useState<boolean>(false);
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
-    const validators = props.auth.validators;
+    const validators = Object.values(props.validators);
 
     const onAddNewValidator = (): void => {
         props.startAddingNewValidator();
@@ -123,6 +123,7 @@ interface IInjectedProps{
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"> => ({
     auth: state.auth,
     network: state.network.selected,
+    validators: state.validators,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
