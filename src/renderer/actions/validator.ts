@@ -30,13 +30,13 @@ export const loadValidatorsAction = () => {
                 payload: validatorArray,
             });
 
-            const publicKeys = validatorArray.map((v) => v.publicKey);
             // Initialize all validator objects with API clients
-            await Promise.all(publicKeys.map(async (publicKey) => {
-                await loadValidatorBeaconNodes(publicKey, true)(dispatch, getState);
+            await Promise.all(validatorArray.map(async (v) => {
+                await loadValidatorBeaconNodes(v.publicKey, true)(dispatch, getState);
+                // Load validator state from chain for i.e. balance
+                // TODO: load all validators in one request per network
+                loadValidatorsFromChain([v.publicKey])(dispatch, getState);
             }));
-            // Load validator state from chain for i.e. balance
-            loadValidatorsFromChain(publicKeys)(dispatch, getState);
         }
     };
 };
