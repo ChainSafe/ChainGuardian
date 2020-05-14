@@ -67,6 +67,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
         <div className="validator-container">
             <div className="validator-simple-keys">
                 <h2>{props.name}</h2>
+                <h3>Status: TODO</h3>
                 <br />
 
                 <div className="row validator-stat-container ">

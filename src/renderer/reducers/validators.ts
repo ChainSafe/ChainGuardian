@@ -1,12 +1,10 @@
 import {ValidatorResponse} from "@chainsafe/lodestar-types";
 import {toHexString} from "@chainsafe/ssz";
 import {Action} from "redux";
-import {ILoadValidators} from "../actions";
-import {ILoadedValidatorsFromChainAction} from "../actions/validator";
 
+import {ILoadValidators, ILoadedValidatorsFromChainAction} from "../actions";
 import {ValidatorActionTypes} from "../constants/action-types";
 import {IValidator} from "../containers/Dashboard/DashboardContainer";
-import {toHex} from "@chainsafe/lodestar-utils";
 
 export interface IValidatorState {
     [validatorAddress: string]: IValidator,
@@ -22,7 +20,7 @@ export const validatorsReducer = (
     let payload: any;
     switch (action.type) {
         case ValidatorActionTypes.LOAD_VALIDATORS:
-            // eslint-disable no-case-declarations
+            /* eslint-disable no-case-declarations */
             const validatorMap: IValidatorState = {};
             (action as ILoadValidators).payload.forEach((v: IValidator) => {
                 validatorMap[v.publicKey] = v;
@@ -35,7 +33,7 @@ export const validatorsReducer = (
             payload.map((v: ValidatorResponse) => {
                 const publicKey = toHexString(v.pubkey);
                 // Take balance only
-                newState[publicKey] = {...state[publicKey], balance: v.balance}
+                newState[publicKey] = {...state[publicKey], balance: v.balance};
             });
             return newState;
         default:
