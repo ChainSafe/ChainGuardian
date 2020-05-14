@@ -1,8 +1,6 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React from "react";
+import {useSelector} from "react-redux";
 
-import {loadValidatorBeaconNodes} from "../../actions/network";
-import {loadValidatorBalance} from "../../actions/validator";
 import {IRootState} from "../../reducers";
 import {calculateROI} from "../../services/utils/math";
 import {AddButton} from "../../components/Button/ButtonAction";
@@ -32,17 +30,6 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     const isLoaded = !!validators[props.publicKey];
     const balance = isLoaded ? validators[props.publicKey].balance || 0n : 0n;
     const ROI = calculateROI(balance, network);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(loadValidatorBeaconNodes(props.publicKey, true));
-    }, [props.publicKey]);
-
-    useEffect(() => {
-        if (nodes.length > 0) {
-            dispatch(loadValidatorBalance(props.publicKey));
-        }
-    }, [props.publicKey, nodes.length]);
 
     const renderAddBeaconNodeButton = (): React.ReactElement => {
         // eslint-disable-next-line

@@ -105,6 +105,26 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
         return this.config.types.ValidatorResponse.fromJson(validatorResponse[0], {case: "snake"});
     }
 
+    public async getValidators(pubkeys: BLSPubkey[]): Promise<ValidatorResponse[]> {
+        const publicKeys = pubkeys.map(pubkey => (
+            this.config.types.BLSPubkey.toJson(pubkey, {case: "snake"}) as string
+        ));
+        const validatorResponse = await this.client.post<{pubkeys: string[]}, Json[]>(
+            LighthouseRoutes.GET_VALIDATORS,
+            {pubkeys: publicKeys}
+        );
+
+        // naming issues, hopefully removed with standardized api
+        validatorResponse.forEach((_, i) => {
+            // @ts-ignore
+            validatorResponse[i].index = validatorResponse[i].validator_index;
+        });
+
+        return validatorResponse.map(v => (
+            this.config.types.ValidatorResponse.fromJson(v, {case: "snake"})
+        ));
+    }
+
     public async getChainHead(): Promise<IEth2ChainHead> {
         return Eth2ChainHeadType.fromJson(
             await this.client.get<Json>(LighthouseRoutes.GET_HEAD),

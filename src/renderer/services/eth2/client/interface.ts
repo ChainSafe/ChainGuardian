@@ -8,6 +8,7 @@ import {ILogger} from "@chainsafe/lodestar-utils";
 
 export interface IEth2BeaconApi extends IBeaconApi {
     getValidator(pubkey: BLSPubkey): Promise<ValidatorResponse|null>;
+    getValidators(pubkeys: BLSPubkey[]): Promise<ValidatorResponse[]>;
     getChainHead(): Promise<IEth2ChainHead>;
 }
 
