@@ -95,10 +95,16 @@ export const startValidatorService = (publicKey: string) => {
     };
 };
 
-export const stopValidatorService = () => {
+export interface IStopValidatorServiceAction {
+    type: typeof ValidatorActionTypes.STOP_VALIDATOR_SERVICE,
+    payload: string,
+}
+
+export const stopValidatorService = (publicKey: string) => {
     return (dispatch: Dispatch<Action<ValidatorActionTypes>>): void => {
         dispatch({
-           type: ValidatorActionTypes.STOP_VALIDATOR_SERVICE,
+            type: ValidatorActionTypes.STOP_VALIDATOR_SERVICE,
+            payload: publicKey,
         });
     }
 };
