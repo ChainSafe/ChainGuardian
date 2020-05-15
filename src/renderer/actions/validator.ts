@@ -1,4 +1,5 @@
 import {ValidatorResponse} from "@chainsafe/lodestar-types";
+import {IValidatorOptions} from "@chainsafe/lodestar-validator/lib";
 import {Action, Dispatch} from "redux";
 
 import {ValidatorActionTypes} from "../constants/action-types";
@@ -59,4 +60,9 @@ export const loadValidatorsFromChain = (validators: string[]) => {
 export interface ILoadedValidatorsFromChainAction {
     type: typeof ValidatorActionTypes.LOADED_VALIDATORS_FROM_CHAIN;
     payload: ValidatorResponse[];
+}
+
+export interface IStartValidatorServiceAction {
+    type: typeof ValidatorActionTypes.START_VALIDATOR_SERVICE,
+    payload: IValidatorOptions,
 }

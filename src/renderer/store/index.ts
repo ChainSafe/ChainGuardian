@@ -4,9 +4,10 @@ import {IRootState, rootReducer} from "../reducers";
 import thunk from "redux-thunk";
 // Logger with default options
 import logger from "redux-logger";
+import {createValidatorMiddleware} from "./middleware/validator";
 
 const configureStore = (initialState?: IRootState): Store<IRootState | undefined> => {
-    const middlewares: Middleware[] = [thunk, logger],
+    const middlewares: Middleware[] = [thunk, logger, createValidatorMiddleware()],
         enhancer = composeWithDevTools(applyMiddleware(...middlewares));
     return createStore(rootReducer, initialState, enhancer);
 };
