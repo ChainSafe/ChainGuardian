@@ -1,17 +1,16 @@
 import {Validator} from "@chainsafe/lodestar-validator/lib";
-import {Action, Dispatch, Middleware, MiddlewareAPI} from "redux";
-import {IStartValidatorServiceAction} from "../../actions";
-import {IStopValidatorServiceAction} from "../../actions/validator";
+import {Action, Dispatch, Middleware} from "redux";
+import {IStartValidatorServiceAction, IStopValidatorServiceAction} from "../../actions";
 import {ValidatorActionTypes} from "../../constants/action-types";
 
-interface ValidatorServices {
+interface IValidatorServices {
     [validatorAddress: string]: Validator;
 }
 
 export const createValidatorMiddleware = (): Middleware => {
-    let validatorServices: ValidatorServices;
+    const validatorServices: IValidatorServices = {};
 
-    return (getState: MiddlewareAPI) => (next: Dispatch) => async (action: Action<ValidatorActionTypes>) => {
+    return () => (next: Dispatch) => async (action: Action<ValidatorActionTypes>): Promise<Middleware> => {
         let payload: any;
         let publicKey: string;
 

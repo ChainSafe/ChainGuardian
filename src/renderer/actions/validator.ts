@@ -3,7 +3,7 @@ import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
 import {ValidatorResponse} from "@chainsafe/lodestar-types";
 import {WinstonLogger} from "@chainsafe/lodestar-utils";
-import {IValidatorOptions, Validator} from "@chainsafe/lodestar-validator/lib";
+import {IValidatorOptions} from "@chainsafe/lodestar-validator/lib";
 import {Action, Dispatch} from "redux";
 
 import {ValidatorActionTypes} from "../constants/action-types";
@@ -82,13 +82,13 @@ export const startValidatorService = (publicKey: string) => {
 
         dispatch({
             type: ValidatorActionTypes.START_VALIDATOR_SERVICE,
-            payload: new Validator({
+            payload: {
                 db: new ValidatorDB(database),
                 api: eth2API,
                 config,
                 keypair: new Keypair(privateKey),
                 logger
-            }),
+            },
         });
     };
 };

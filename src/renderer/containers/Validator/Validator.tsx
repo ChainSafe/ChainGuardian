@@ -68,13 +68,13 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     const renderValidatorButtons = (): React.ReactElement => {
         const isRunning = validators[props.publicKey].isRunning;
         return (
-            <div className="flex">
+            <div className="flex validator-service-button">
                 {isRunning ?
-                    <ButtonDestructive onClick={(): void => {dispatch(stopValidatorService(props.publicKey))}}>
+                    <ButtonDestructive onClick={(): void => {dispatch(stopValidatorService(props.publicKey));}}>
                         Stop
                     </ButtonDestructive>
                     :
-                    <ButtonPrimary onClick={(): void => {dispatch(startValidatorService(props.publicKey))}}>
+                    <ButtonPrimary onClick={(): void => {dispatch(startValidatorService(props.publicKey));}}>
                         Start
                     </ButtonPrimary>
                 }
@@ -85,9 +85,12 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     return(
         <div className="validator-container">
             <div className="validator-simple-keys">
-                <h2>{props.name}</h2>
+                <div className="row">
+                    <h2>{props.name}</h2>
+                    {renderValidatorButtons()}
+                </div>
                 <h3>Status: TODO</h3>
-                {renderValidatorButtons()}
+
                 <br />
 
                 <div className="row validator-stat-container ">
