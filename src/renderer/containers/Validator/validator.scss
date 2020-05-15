@@ -22,13 +22,14 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: relative;
 }
 .node-container{
     padding: 24px;
     .add-button{
-        position: fixed;
-        margin-top: -40px;
-        margin-left: 640px;
+        position: absolute;
+        margin-top: -10px;
+        right: 10px;
     }
 }
 .node-grid-container{
@@ -65,10 +66,42 @@
         display: none;
     }
 }
+
+.validator-simple-keys{
+    // width: 50%;
+    width: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .validator-stat-container {
+        justify-content: space-evenly;
+
+        .validator-card-container:nth-child(2) {
+            margin: 75px 0 0;
+        }
+    }
+}
+.public-key{
+    padding: 32px 0 0 10px;
+}
+
+.validator-status{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    h2{
+        margin-bottom: 10px;
+        align-self: baseline;
+    }
+}
+
 .validator-buttons{
+    margin-top: 25px;
     display: flex;
     justify-content: flex-end;
-    padding-top: 32px;
     .button:nth-child(1){
         margin-right: 27px;
     }

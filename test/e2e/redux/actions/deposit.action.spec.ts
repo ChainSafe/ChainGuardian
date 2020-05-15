@@ -11,6 +11,7 @@ import {IRegisterState} from "../../../../src/renderer/reducers/register";
 import {IDepositState} from "../../../../src/renderer/reducers/deposit";
 import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
+import {IValidatorState} from "../../../../src/renderer/reducers/validators";
 import {DepositTx, generateDeposit} from "../../../../src/renderer/services/deposit";
 import {INetworkConfig} from "../../../../src/renderer/services/interfaces";
 import {ethers} from "ethers";
@@ -32,6 +33,7 @@ const initialState: IRootState = {
     auth: {} as IAuthState,
     notificationArray: {} as INotificationStateObject,
     network: {} as INetworkState,
+    validators: {} as IValidatorState,
 };
 
 

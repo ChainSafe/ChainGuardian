@@ -12,7 +12,6 @@ const account = new CGAccount({
 
 const initalState: IAuthState = {
     account: null,
-    validators: [],
 };
 
 describe("auth reducer", () => {

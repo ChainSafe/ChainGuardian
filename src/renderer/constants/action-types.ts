@@ -26,7 +26,6 @@ export enum DepositActionTypes {
 
 export enum AuthActionTypes {
     STORE_AUTH = "STORE_AUTH",
-    LOAD_VALIDATORS = "LOAD_VALIDATORS"
 }
 
 export enum NotificationActionTypes {
@@ -37,4 +36,9 @@ export enum NotificationActionTypes {
 export enum NetworkActionTypes {
     SELECT_NETWORK = "SELECT_NETWORK",
     LOADED_VALIDATOR_BEACON_NODES = "LOADED_VALIDATOR_BEACON_NODES",
+}
+
+export enum ValidatorActionTypes {
+    LOAD_VALIDATORS = "LOAD_VALIDATORS",
+    LOADED_VALIDATORS_FROM_CHAIN = "LOADED_VALIDATORS_FROM_CHAIN",
 }

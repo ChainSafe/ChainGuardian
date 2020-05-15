@@ -15,6 +15,7 @@ import {IDepositState} from "../../../../src/renderer/reducers/deposit";
 import {IAuthState} from "../../../../src/renderer/reducers/auth";
 import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
 import {INetworkState} from "../../../../src/renderer/reducers/network";
+import {IValidatorState} from "../../../../src/renderer/reducers/validators";
 
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
 const publicKeyStr =
@@ -29,6 +30,7 @@ export const initialState: IRootState = {
     auth: {} as IAuthState,
     notificationArray: {} as INotificationStateObject,
     network: {} as INetworkState,
+    validators: {} as IValidatorState,
 };
 
 
