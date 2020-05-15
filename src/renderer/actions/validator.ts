@@ -1,10 +1,18 @@
+import {Keypair} from "@chainsafe/bls";
+import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
+import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
 import {ValidatorResponse} from "@chainsafe/lodestar-types";
-import {IValidatorOptions} from "@chainsafe/lodestar-validator/lib";
+import {WinstonLogger} from "@chainsafe/lodestar-utils";
+import {IValidatorOptions, Validator} from "@chainsafe/lodestar-validator/lib";
 import {Action, Dispatch} from "redux";
 
 import {ValidatorActionTypes} from "../constants/action-types";
 import {IValidator} from "../containers/Dashboard/DashboardContainer";
 import {IRootState} from "../reducers";
+import database from "../services/db/api/database";
+import {ValidatorDB} from "../services/db/api/validator";
+import {getEth2ApiClient} from "../services/eth2/client";
+import {LighthouseEth2ApiClient} from "../services/eth2/client/lighthouse/lighthouse";
 import {fromHex} from "../services/utils/bytes";
 import {loadValidatorBeaconNodes} from "./network";
 
@@ -28,7 +36,7 @@ export const loadValidatorsAction = () => {
 
             dispatch({
                 type: ValidatorActionTypes.LOAD_VALIDATORS,
-                payload: validatorArray,
+                payload: validatorArray
             });
 
             // Initialize all validator objects with API clients
@@ -52,7 +60,7 @@ export const loadValidatorsFromChain = (validators: string[]) => {
 
         dispatch({
             type: ValidatorActionTypes.LOADED_VALIDATORS_FROM_CHAIN,
-            payload: response,
+            payload: response
         });
     };
 };
@@ -66,3 +74,31 @@ export interface IStartValidatorServiceAction {
     type: typeof ValidatorActionTypes.START_VALIDATOR_SERVICE,
     payload: IValidatorOptions,
 }
+
+export const startValidatorService = (publicKey: string) => {
+    return (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): void => {
+        const logger = new WinstonLogger({module: "ChainGuardian", level: "verbose"});
+        const privateKey = PrivateKey.fromHexString(getState().validators[publicKey].privateKey);
+        // TODO: Use beacon chain proxy instead of first node
+        const eth2API = getState().network.validatorBeaconNodes[publicKey][0].client;
+
+        dispatch({
+            type: ValidatorActionTypes.START_VALIDATOR_SERVICE,
+            payload: new Validator({
+                db: new ValidatorDB(database),
+                api: eth2API,
+                config,
+                keypair: new Keypair(privateKey),
+                logger
+            }),
+        });
+    };
+};
+
+export const stopValidatorService = () => {
+    return (dispatch: Dispatch<Action<ValidatorActionTypes>>): void => {
+        dispatch({
+           type: ValidatorActionTypes.STOP_VALIDATOR_SERVICE,
+        });
+    }
+};
