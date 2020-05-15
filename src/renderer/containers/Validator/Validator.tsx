@@ -70,9 +70,13 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
         return (
             <div className="flex">
                 {isRunning ?
-                    <ButtonPrimary onClick={() => dispatch(stopValidatorService(props.publicKey))}>Stop</ButtonPrimary>
+                    <ButtonDestructive onClick={(): void => {dispatch(stopValidatorService(props.publicKey))}}>
+                        Stop
+                    </ButtonDestructive>
                     :
-                    <ButtonPrimary onClick={() => dispatch(startValidatorService(props.publicKey))}>Start</ButtonPrimary>
+                    <ButtonPrimary onClick={(): void => {dispatch(startValidatorService(props.publicKey))}}>
+                        Start
+                    </ButtonPrimary>
                 }
             </div>
         );

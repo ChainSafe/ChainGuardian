@@ -11,8 +11,6 @@ import {IValidator} from "../containers/Dashboard/DashboardContainer";
 import {IRootState} from "../reducers";
 import database from "../services/db/api/database";
 import {ValidatorDB} from "../services/db/api/validator";
-import {getEth2ApiClient} from "../services/eth2/client";
-import {LighthouseEth2ApiClient} from "../services/eth2/client/lighthouse/lighthouse";
 import {fromHex} from "../services/utils/bytes";
 import {loadValidatorBeaconNodes} from "./network";
 
@@ -106,5 +104,5 @@ export const stopValidatorService = (publicKey: string) => {
             type: ValidatorActionTypes.STOP_VALIDATOR_SERVICE,
             payload: publicKey,
         });
-    }
+    };
 };

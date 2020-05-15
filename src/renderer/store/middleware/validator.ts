@@ -31,6 +31,6 @@ export const createValidatorMiddleware = (): Middleware => {
                 break;
         }
         return next(action);
-    }
+    };
 };
 
