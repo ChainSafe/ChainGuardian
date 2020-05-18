@@ -10,7 +10,7 @@ interface IValidatorServices {
 export const createValidatorMiddleware = (): Middleware => {
     const validatorServices: IValidatorServices = {};
 
-    return () => (next: Dispatch) => async (action: Action<ValidatorActionTypes>): Promise<Middleware> => {
+    return () => (next: Dispatch) => async (action: Action<ValidatorActionTypes>): Promise<Action> => {
         let payload: any;
         let publicKey: string;
 
