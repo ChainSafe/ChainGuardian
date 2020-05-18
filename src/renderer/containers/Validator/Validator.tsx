@@ -1,5 +1,6 @@
 import React from "react";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
+import {startValidatorService, stopValidatorService} from "../../actions";
 
 import {IRootState} from "../../reducers";
 import {calculateROI} from "../../services/utils/math";
@@ -21,6 +22,7 @@ export interface IValidatorSimpleProps {
 
 export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     props: IValidatorSimpleProps) => {
+    const dispatch = useDispatch();
     const validators = useSelector((state: IRootState) => state.validators);
     const network = useSelector((state: IRootState) => state.network.selected);
     const validatorBeaconNodes = useSelector((state: IRootState) => state.network.validatorBeaconNodes);
@@ -63,11 +65,32 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
         );
     };
 
+    const renderValidatorButtons = (): React.ReactElement => {
+        const isRunning = validators[props.publicKey].isRunning;
+        return (
+            <div className="flex validator-service-button">
+                {isRunning ?
+                    <ButtonDestructive onClick={(): void => {dispatch(stopValidatorService(props.publicKey));}}>
+                        Stop
+                    </ButtonDestructive>
+                    :
+                    <ButtonPrimary onClick={(): void => {dispatch(startValidatorService(props.publicKey));}}>
+                        Start
+                    </ButtonPrimary>
+                }
+            </div>
+        );
+    };
+
     return(
         <div className="validator-container">
             <div className="validator-simple-keys">
-                <h2>{props.name}</h2>
+                <div className="row">
+                    <h2>{props.name}</h2>
+                    {renderValidatorButtons()}
+                </div>
                 <h3>Status: TODO</h3>
+
                 <br />
 
                 <div className="row validator-stat-container ">
