@@ -1,41 +1,123 @@
-import {ILogger, LogLevel} from "@chainsafe/lodestar-utils";
-import * as electronLogger from "electron-log";
+import {PassThrough} from "stream";
+import {createLogger, format, Logger, transports} from "winston";
+import {defaultLogLevel, LogLevel, ILogger, ILoggerOptions} from "@chainsafe/lodestar-utils";
+import chalk from "chalk";
 
 export class ApiLogger implements ILogger {
-    
-    public level = LogLevel.info;
-    public silent = true;
+    private winston: Logger;
+    private _level: LogLevel;
+    private _silent: boolean;
+    private readonly _stream: PassThrough;
 
-    public child(): ILogger {
-        return this;
+    public constructor(options?: Partial<ILoggerOptions>) {
+        options = {
+            level: LogLevel[defaultLogLevel],
+            module: "",
+            ...options,
+        };
+        this._stream = new PassThrough();
+        this.winston = createLogger({
+            level: LogLevel[LogLevel.verbose], // log level switching handled in `createLogEntry`
+            defaultMeta: {
+                module: options.module || "",
+            },
+            transports: [
+                new transports.Stream({
+                    stream: this._stream,
+                }),
+            ],
+            exitOnError: false,
+            format: format.combine(
+                format.colorize(),
+                format.timestamp({
+                    format: "YYYY-MM-DD HH:mm:ss"
+                }),
+                format.printf((info) => {
+                    const paddingBetweenInfo = 30;
+
+                    const infoString = (info.module || info.namespace || "");
+                    const infoPad = paddingBetweenInfo - infoString.length;
+
+                    return (
+                        `${info.timestamp}  [${infoString.toUpperCase()}] ${info.level.padStart(infoPad)}: ${info.message}`
+                    );
+                })
+            ),
+        });
+        //@ts-ignore
+        this._level = LogLevel[options.level];
+        this._silent = false;
     }
 
     public debug(message: string | object, context?: object): void {
-        electronLogger.debug(message, context);
-    }
-
-    public error(message: string | object, context?: object): void {
-        electronLogger.error(message, context);
-    }
-
-    public important(message: string | object, context?: object): void {
-        electronLogger.warn(message, context);
+        this.createLogEntry(LogLevel.debug, message, context);
     }
 
     public info(message: string | object, context?: object): void {
-        electronLogger.info(message, context);
+        this.createLogEntry(LogLevel.info, message, context);
     }
 
-    public silly(message: string | object, context?: object): void {
-        electronLogger.verbose(message, context);
+    public important(message: string | object, context?: object): void {
+        this.createLogEntry(LogLevel.info, chalk.red(message as string), context);
     }
 
-    public verbose(message: string | object, context?: object): void {
-        electronLogger.verbose(message, context);
+    public error(message: string | object, context?: object): void {
+        this.createLogEntry(LogLevel.error, message, context);
     }
 
     public warn(message: string | object, context?: object): void {
-        electronLogger.warn(message, context);
+        this.createLogEntry(LogLevel.warn, message, context);
+    }
+
+    public verbose(message: string | object, context?: object): void {
+        this.createLogEntry(LogLevel.verbose, message, context);
+    }
+
+    public silly(message: string | object, context?: object): void {
+        this.createLogEntry(LogLevel.silly, message, context);
+    }
+
+    public set level(level: LogLevel) {
+        this.winston.level = LogLevel[level];
+        this._level = level;
+    }
+
+    public get level(): LogLevel {
+        return this._level;
+    }
+
+    public set silent(silent: boolean) {
+        this._silent = silent;
+    }
+
+    public get silent(): boolean {
+        return this._silent;
+    }
+
+    public child(options: ILoggerOptions): ApiLogger {
+        const logger = Object.create(ApiLogger.prototype);
+        const winston = this.winston.child({namespace: options.module});
+        return Object.assign(logger, {
+            winston,
+            _level: options.level,
+            _silent: this._silent,
+        });
+    }
+
+    public get stream(): PassThrough {
+        return this._stream;
+    }
+
+    private createLogEntry(level: LogLevel, message: string | object, context: object = {}): void {
+        if (this.silent || level > this._level) {
+            return;
+        }
+
+        if (typeof message === "object") {
+            this.winston.log(LogLevel[level], JSON.stringify(message));
+        } else {
+            this.winston.log(LogLevel[level], message, context);
+        }
     }
 
 }
