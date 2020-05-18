@@ -6,6 +6,7 @@ import {BackButton} from "../../components/Button/ButtonAction";
 import {TabNavigation} from "../../components/TabNavigation/TabNavigation";
 import {IRootState} from "../../reducers";
 import {BeaconNode} from "./BeaconNode/BeaconNode";
+import {ValidatorLogs} from "./ValidatorLogs";
 import {ValidatorStats} from "./ValidatorStats/ValidatorStats";
 
 export const ValidatorDetailsContainer = (): ReactElement => {
@@ -19,6 +20,7 @@ export const ValidatorDetailsContainer = (): ReactElement => {
 
     const tabs = [
         {tabId: 0, tabName: "Validator stats", index: validatorId},
+        {tabId: 1, tabName: "Validator logs", index: validatorId},
     ];
     // Load dynamically all validator's beacon node in tabs
     validatorBeaconNodes.forEach((node, index) => tabs.push({
@@ -37,6 +39,10 @@ export const ValidatorDetailsContainer = (): ReactElement => {
 
                 {currentTab === tabs[0].tabId ?
                     <ValidatorStats validator={validators[validatorId]} validatorId={validatorId} />
+                    : null}
+
+                {currentTab === tabs[1].tabId ?
+                    <ValidatorLogs />
                     : null}
 
                 {tabs.map(tab => (tab.tabName === "Beacon node" && currentTab === tab.tabId ?
