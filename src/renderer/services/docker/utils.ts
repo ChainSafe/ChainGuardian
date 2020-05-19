@@ -17,7 +17,8 @@ export function extractDockerVersion(dockerLog: string): string | null {
     return regexp ? regexp[1] : null;
 }
 
-export function getLogMessageType(message: string): "info"|"error"|"debug"|"warn" {
+export type LogType = "info"|"error"|"debug"|"warn";
+export function getLogMessageType(message: string): LogType {
     if (message.substr(0, 40).includes("level=")) {
         // Handle beacon node logs from docker
         const isInfo = message.substr(0, 40).includes("level=info");
