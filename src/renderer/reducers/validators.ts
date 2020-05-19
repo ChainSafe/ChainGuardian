@@ -30,7 +30,7 @@ export const validatorsReducer = (
             (action as ILoadValidators).payload.forEach((v: IValidator) => {
                 validatorMap[v.publicKey] = {
                     ...v,
-                    isRunning: false,
+                    isRunning: state[v.publicKey] ? state[v.publicKey].isRunning : false,
                 };
             });
 
