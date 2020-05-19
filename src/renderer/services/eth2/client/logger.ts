@@ -1,6 +1,6 @@
 import {PassThrough} from "stream";
 import {createLogger, format, Logger, transports} from "winston";
-import {defaultLogLevel, LogLevel, ILogger, ILoggerOptions, customColors} from "@chainsafe/lodestar-utils";
+import {defaultLogLevel, LogLevel, ILogger, ILoggerOptions} from "@chainsafe/lodestar-utils";
 import chalk from "chalk";
 
 export class ApiLogger implements ILogger {
