@@ -6,10 +6,12 @@ import {ILoadValidators, ILoadedValidatorsFromChainAction, IStopValidatorService
 import {IStartValidatorServiceAction} from "../actions/validator";
 import {ValidatorActionTypes} from "../constants/action-types";
 import {IValidator} from "../containers/Dashboard/DashboardContainer";
+import {ApiLogger} from "../services/eth2/client/logger";
 
 export interface IValidatorState {
     [validatorAddress: string]: IValidator & {
         isRunning: boolean,
+        logger?: ApiLogger,
     },
 }
 
@@ -49,7 +51,11 @@ export const validatorsReducer = (
             const publicKey = payload.keypair.publicKey.toHexString();
             return {
                 ...state,
-                [publicKey]: {...state[publicKey], isRunning: true}
+                [publicKey]: {
+                    ...state[publicKey],
+                    isRunning: true,
+                    logger: payload.logger,
+                }
             };
 
         case ValidatorActionTypes.STOP_VALIDATOR_SERVICE:

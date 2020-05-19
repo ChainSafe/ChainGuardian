@@ -42,7 +42,7 @@ export const ValidatorDetailsContainer = (): ReactElement => {
                     : null}
 
                 {currentTab === tabs[1].tabId ?
-                    <ValidatorLogs />
+                    <ValidatorLogs logger={validators[validatorId].logger}/>
                     : null}
 
                 {tabs.map(tab => (tab.tabName === "Beacon node" && currentTab === tab.tabId ?
