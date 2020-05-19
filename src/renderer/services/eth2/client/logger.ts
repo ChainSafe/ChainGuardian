@@ -1,6 +1,6 @@
 import {PassThrough} from "stream";
 import {createLogger, format, Logger, transports} from "winston";
-import {defaultLogLevel, LogLevel, ILogger, ILoggerOptions} from "@chainsafe/lodestar-utils";
+import {defaultLogLevel, LogLevel, ILogger, ILoggerOptions, customColors} from "@chainsafe/lodestar-utils";
 import chalk from "chalk";
 
 export class ApiLogger implements ILogger {
@@ -13,13 +13,13 @@ export class ApiLogger implements ILogger {
         options = {
             level: LogLevel[defaultLogLevel],
             module: "",
-            ...options,
+            ...options
         };
         this._stream = new PassThrough();
         this.winston = createLogger({
             level: LogLevel[LogLevel.verbose], // log level switching handled in `createLogEntry`
             defaultMeta: {
-                module: options.module,
+                module: options.module
             },
             transports: [
                 new transports.Stream({
@@ -39,10 +39,10 @@ export class ApiLogger implements ILogger {
                             );
                         }),
                         format.colorize(),
-                    ),
-                }),
+                    )
+                })
             ],
-            exitOnError: false,
+            exitOnError: false
         });
         //@ts-ignore
         this._level = LogLevel[options.level];
@@ -100,7 +100,7 @@ export class ApiLogger implements ILogger {
         return Object.assign(logger, {
             winston,
             _level: options.level,
-            _silent: this._silent,
+            _silent: this._silent
         });
     }
 

@@ -6,7 +6,27 @@
     color: $neutral-200;
     background: transparent;
 
-    .error {
+    &.error {
         color: $system-error-500;
+    }
+
+    &.warn {
+        color: darkorange;;
+    }
+
+    &.debug {
+        color: dodgerblue;
+    }
+}
+
+.log-stream-container {
+    padding: 16px;
+    margin: 32px 0;
+    max-width: 100%;
+    height: 280px;
+    overflow-y: scroll;
+
+    h4 {
+        margin-bottom: 16px;
     }
 }

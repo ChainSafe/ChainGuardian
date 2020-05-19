@@ -17,7 +17,22 @@ export function extractDockerVersion(dockerLog: string): string | null {
     return regexp ? regexp[1] : null;
 }
 
-export function getLogMessageType(message: string): "info"|"error" {
-    const isInfo = message.substr(0, 40).includes("level=info");
-    return isInfo ? "info" : "error";
+export function getLogMessageType(message: string): "info"|"error"|"debug"|"warn" {
+    if (message.substr(0, 40).includes("level=")) {
+        // Handle beacon node logs from docker
+        const isInfo = message.substr(0, 40).includes("level=info");
+        return isInfo ? "info" : "error";
+    }
+
+    // Handle validator logs from ApiLogger
+    if (message.includes("debug:")) {
+        return "debug";
+    } else if (message.includes("warn:")) {
+        return "warn";
+    } else if (message.includes("error:")) {
+        return "error";
+    } else {
+        return "info";
+    }
+
 }
