@@ -19,30 +19,30 @@ export class ApiLogger implements ILogger {
         this.winston = createLogger({
             level: LogLevel[LogLevel.verbose], // log level switching handled in `createLogEntry`
             defaultMeta: {
-                module: options.module || "",
+                module: options.module,
             },
             transports: [
                 new transports.Stream({
                     stream: this._stream,
+                    format: format.combine(
+                        format.timestamp({
+                            format: "YYYY-MM-DD HH:mm:ss"
+                        }),
+                        format.printf((info) => {
+                            const paddingBetweenInfo = 30;
+
+                            const infoString = (info.module || info.namespace || "");
+                            const infoPad = paddingBetweenInfo - infoString.length;
+
+                            return (
+                                `${info.timestamp} ${info.level.padStart(infoPad)}: ${info.message}`
+                            );
+                        }),
+                        format.colorize(),
+                    ),
                 }),
             ],
             exitOnError: false,
-            format: format.combine(
-                format.colorize(),
-                format.timestamp({
-                    format: "YYYY-MM-DD HH:mm:ss"
-                }),
-                format.printf((info) => {
-                    const paddingBetweenInfo = 30;
-
-                    const infoString = (info.module || info.namespace || "");
-                    const infoPad = paddingBetweenInfo - infoString.length;
-
-                    return (
-                        `${info.timestamp}  [${infoString.toUpperCase()}] ${info.level.padStart(infoPad)}: ${info.message}`
-                    );
-                })
-            ),
         });
         //@ts-ignore
         this._level = LogLevel[options.level];

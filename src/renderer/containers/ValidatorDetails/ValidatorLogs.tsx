@@ -11,7 +11,7 @@ export const ValidatorLogs = (props: ValidatorLogsProps): ReactElement => {
       <div>
           <div className="box log-stream-container">
               <h3>Log Stream</h3>
-              <LogStream stream={props.logger.stream} />
+              <LogStream stream={props.logger ? props.logger.stream : undefined} />
           </div>
       </div>
     );
