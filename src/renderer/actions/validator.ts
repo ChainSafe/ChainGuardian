@@ -2,7 +2,6 @@ import {Keypair} from "@chainsafe/bls";
 import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
 import {ValidatorResponse} from "@chainsafe/lodestar-types";
-import {WinstonLogger} from "@chainsafe/lodestar-utils";
 import {IValidatorOptions} from "@chainsafe/lodestar-validator/lib";
 import {Action, Dispatch} from "redux";
 
@@ -11,6 +10,7 @@ import {IValidator} from "../containers/Dashboard/DashboardContainer";
 import {IRootState} from "../reducers";
 import database from "../services/db/api/database";
 import {ValidatorDB} from "../services/db/api/validator";
+import {ValidatorLogger} from "../services/eth2/client/logger";
 import {fromHex} from "../services/utils/bytes";
 import {loadValidatorBeaconNodes} from "./network";
 
@@ -75,7 +75,7 @@ export interface IStartValidatorServiceAction {
 
 export const startValidatorService = (publicKey: string) => {
     return (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): void => {
-        const logger = new WinstonLogger({module: "ChainGuardian", level: "verbose"});
+        const logger = new ValidatorLogger();
         const privateKey = PrivateKey.fromHexString(getState().validators[publicKey].privateKey);
         // TODO: Use beacon chain proxy instead of first node
         const eth2API = getState().network.validatorBeaconNodes[publicKey][0].client;

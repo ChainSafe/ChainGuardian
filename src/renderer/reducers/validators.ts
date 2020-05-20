@@ -6,10 +6,12 @@ import {ILoadValidators, ILoadedValidatorsFromChainAction, IStopValidatorService
 import {IStartValidatorServiceAction} from "../actions/validator";
 import {ValidatorActionTypes} from "../constants/action-types";
 import {IValidator} from "../containers/Dashboard/DashboardContainer";
+import {ValidatorLogger} from "../services/eth2/client/logger";
 
 export interface IValidatorState {
     [validatorAddress: string]: IValidator & {
         isRunning: boolean,
+        logger?: ValidatorLogger,
     },
 }
 
@@ -28,7 +30,7 @@ export const validatorsReducer = (
             (action as ILoadValidators).payload.forEach((v: IValidator) => {
                 validatorMap[v.publicKey] = {
                     ...v,
-                    isRunning: false,
+                    isRunning: state[v.publicKey] ? state[v.publicKey].isRunning : false,
                 };
             });
 
@@ -49,7 +51,11 @@ export const validatorsReducer = (
             const publicKey = payload.keypair.publicKey.toHexString();
             return {
                 ...state,
-                [publicKey]: {...state[publicKey], isRunning: true}
+                [publicKey]: {
+                    ...state[publicKey],
+                    isRunning: true,
+                    logger: payload.logger,
+                }
             };
 
         case ValidatorActionTypes.STOP_VALIDATOR_SERVICE:

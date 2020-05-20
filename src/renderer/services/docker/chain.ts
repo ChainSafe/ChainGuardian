@@ -7,9 +7,8 @@ import {SupportedNetworks} from "../eth2/supportedNetworks";
 import {Container} from "./container";
 import {DockerRegistry} from "./docker-registry";
 import {DockerPort} from "./type";
-import {getLogMessageType} from "./utils";
+import {getLogMessageType, LogType} from "./utils";
 
-type LogType = "info" | "error";
 type LogCallbackFunc = (type: LogType, message: string) => void;
 
 export class BeaconChain extends Container {
