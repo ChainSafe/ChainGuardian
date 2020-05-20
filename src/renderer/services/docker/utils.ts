@@ -1,5 +1,3 @@
-import {ValidatorLogger} from "../eth2/client/logger";
-
 // docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND]
 import {IDockerRunParams} from "./type";
 
