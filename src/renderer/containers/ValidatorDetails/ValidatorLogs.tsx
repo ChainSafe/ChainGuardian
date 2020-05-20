@@ -1,9 +1,9 @@
 import React, {ReactElement} from "react";
 import {LogStream} from "../../components/LogStream/LogStream";
-import {ApiLogger} from "../../services/eth2/client/logger";
+import {ValidatorLogger} from "../../services/eth2/client/logger";
 
 type ValidatorLogsProps = {
-    logger?: ApiLogger,
+    logger?: ValidatorLogger,
 };
 
 export const ValidatorLogs = (props: ValidatorLogsProps): ReactElement => {

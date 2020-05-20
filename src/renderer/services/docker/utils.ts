@@ -1,3 +1,5 @@
+import {ValidatorLogger} from "../eth2/client/logger";
+
 // docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND]
 import {IDockerRunParams} from "./type";
 
@@ -25,7 +27,7 @@ export function getLogMessageType(message: string): LogType {
         return isInfo ? "info" : "error";
     }
 
-    // Handle validator logs from ApiLogger
+    // Handle validator logs from ValidatorLogger
     if (message.includes("debug:")) {
         return "debug";
     } else if (message.includes("warn:")) {

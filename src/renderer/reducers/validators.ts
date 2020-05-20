@@ -6,12 +6,12 @@ import {ILoadValidators, ILoadedValidatorsFromChainAction, IStopValidatorService
 import {IStartValidatorServiceAction} from "../actions/validator";
 import {ValidatorActionTypes} from "../constants/action-types";
 import {IValidator} from "../containers/Dashboard/DashboardContainer";
-import {ApiLogger} from "../services/eth2/client/logger";
+import {ValidatorLogger} from "../services/eth2/client/logger";
 
 export interface IValidatorState {
     [validatorAddress: string]: IValidator & {
         isRunning: boolean,
-        logger?: ApiLogger,
+        logger?: ValidatorLogger,
     },
 }
 

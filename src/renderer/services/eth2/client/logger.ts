@@ -3,7 +3,7 @@ import {createLogger, format, Logger, transports} from "winston";
 import {defaultLogLevel, LogLevel, ILogger, ILoggerOptions} from "@chainsafe/lodestar-utils";
 import chalk from "chalk";
 
-export class ApiLogger implements ILogger {
+export class ValidatorLogger implements ILogger {
     private winston: Logger;
     private _level: LogLevel;
     private _silent: boolean;
@@ -94,8 +94,8 @@ export class ApiLogger implements ILogger {
         return this._silent;
     }
 
-    public child(options: ILoggerOptions): ApiLogger {
-        const logger = Object.create(ApiLogger.prototype);
+    public child(options: ILoggerOptions): ValidatorLogger {
+        const logger = Object.create(ValidatorLogger.prototype);
         const winston = this.winston.child({namespace: options.module});
         return Object.assign(logger, {
             winston,
