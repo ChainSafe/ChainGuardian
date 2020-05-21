@@ -24,8 +24,8 @@ export const loadValidatorsAction = () => {
         const auth = getState().auth;
         if (auth && auth.account) {
             const validators = auth.account.getValidators();
-            const validatorArray = validators.map((v) => ({
-                name: auth.account!.name,
+            const validatorArray = validators.map((v, index) => ({
+                name: `Validator ${index+1}`,
                 status: "TODO status",
                 publicKey: v.publicKey.toHexString(),
                 network: auth.account!.getValidatorNetwork(v.publicKey.toHexString()),
