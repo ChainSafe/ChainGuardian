@@ -10,8 +10,12 @@ import {IValidator} from "../containers/Dashboard/DashboardContainer";
 import {IRootState} from "../reducers";
 import database from "../services/db/api/database";
 import {ValidatorDB} from "../services/db/api/validator";
+import {EthersNotifier} from "../services/deposit/ethers";
 import {ValidatorLogger} from "../services/eth2/client/logger";
+import {getNetworkConfig} from "../services/eth2/networks";
 import {fromHex} from "../services/utils/bytes";
+import {getValidatorStatus} from "../services/validator/status";
+import {ValidatorStatus} from "../services/validator/status/statuses";
 import {loadValidatorBeaconNodes} from "./network";
 
 export interface ILoadValidators {
@@ -26,7 +30,7 @@ export const loadValidatorsAction = () => {
             const validators = auth.account.getValidators();
             const validatorArray = validators.map((v) => ({
                 name: auth.account!.name,
-                status: "TODO status",
+                status: undefined,
                 publicKey: v.publicKey.toHexString(),
                 network: auth.account!.getValidatorNetwork(v.publicKey.toHexString()),
                 privateKey: v.privateKey.toHexString()
@@ -43,6 +47,7 @@ export const loadValidatorsAction = () => {
                 // Load validator state from chain for i.e. balance
                 // TODO: load all validators in one request per network
                 loadValidatorsFromChain([v.publicKey])(dispatch, getState);
+                loadValidatorStatus(v.publicKey)(dispatch, getState);
             }));
         }
     };
@@ -62,6 +67,34 @@ export const loadValidatorsFromChain = (validators: string[]) => {
         });
     };
 };
+
+export const loadValidatorStatus = (validatorAddress: string) => {
+    return async (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): Promise<void> => {
+        const beaconNodes = getState().network.validatorBeaconNodes[validatorAddress];
+        // TODO: Use any working beacon node instead of first one
+        const eth2 = beaconNodes[0].client;
+        const network = getState().validators[validatorAddress].network;
+        const networkConfig = getNetworkConfig(network);
+        const eth1 = new EthersNotifier(networkConfig, networkConfig.eth1Provider);
+        const status = await getValidatorStatus(fromHex(validatorAddress), eth2, eth1);
+
+        dispatch({
+            type: ValidatorActionTypes.LOAD_STATUS,
+            payload: {
+                validator: validatorAddress,
+                status,
+            },
+        });
+    };
+};
+
+export interface ILoadValidatorStatusAction {
+    type: typeof ValidatorActionTypes.LOAD_STATUS,
+    payload: {
+        validator: string;
+        status: ValidatorStatus;
+    },
+}
 
 export interface ILoadedValidatorsFromChainAction {
     type: typeof ValidatorActionTypes.LOADED_VALIDATORS_FROM_CHAIN;

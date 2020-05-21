@@ -3,7 +3,7 @@ import {toHexString} from "@chainsafe/ssz";
 import {Action} from "redux";
 
 import {ILoadValidators, ILoadedValidatorsFromChainAction, IStopValidatorServiceAction} from "../actions";
-import {IStartValidatorServiceAction} from "../actions/validator";
+import {ILoadValidatorStatusAction, IStartValidatorServiceAction} from "../actions/validator";
 import {ValidatorActionTypes} from "../constants/action-types";
 import {IValidator} from "../containers/Dashboard/DashboardContainer";
 import {ValidatorLogger} from "../services/eth2/client/logger";
@@ -63,6 +63,16 @@ export const validatorsReducer = (
             return {
                 ...state,
                 [payload]: {...state[payload], isRunning: false}
+            };
+
+        case ValidatorActionTypes.LOAD_STATUS:
+            payload = (action as ILoadValidatorStatusAction).payload;
+            return {
+                ...state,
+                [payload.validator]: {
+                    ...state[payload.validator],
+                    status: payload.status
+                },
             };
         default:
             return state;
