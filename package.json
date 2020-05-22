@@ -11,9 +11,11 @@
     "typescript"
   ],
   "main": "./dist/main.js",
-  "contributors": [
-    "NodeFactory <info@nodefactory.io>"
-  ],
+  "author": {
+    "name": "NodeFactory",
+    "email": "info@nodefactory.io",
+    "url": "https://nodefactory.io"
+  },
   "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/nodefactoryio/ChainGuardian/issues"
