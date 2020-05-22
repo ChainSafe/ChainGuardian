@@ -29,8 +29,9 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     const nodes = Object.prototype.hasOwnProperty.call(validatorBeaconNodes, props.publicKey) ?
         validatorBeaconNodes[props.publicKey] : [];
 
-    const isLoaded = !!validators[props.publicKey];
-    const balance = isLoaded ? validators[props.publicKey].balance || 0n : 0n;
+    const validator = validators[props.publicKey];
+    const isLoaded = !!validator;
+    const balance = isLoaded ? validator.balance || 0n : 0n;
     const ROI = calculateROI(balance, network);
 
     const renderAddBeaconNodeButton = (): React.ReactElement => {
@@ -89,7 +90,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
                     <h2>{props.name}</h2>
                     {renderValidatorButtons()}
                 </div>
-                <h3>Status: TODO</h3>
+                <h3>Status: {validator.status || "N/A"}</h3>
 
                 <br />
 
