@@ -33,4 +33,9 @@ jobs:
         run: yarn run test:e2e
 
       - name: Publish code coverage
-        run: yarn run codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage/lcov.info
+          flags: unit
+          fail_ci_if_error: false
+
