@@ -35,13 +35,17 @@ jobs:
         run: yarn run test:unit && yarn run test:components && yarn run test:e2e
 
       - name: Run screen tests
-        - if: ${{ matrix.os  != 'ubuntu-18.04' }}
-          run: yarn run test:screens
-        - if: ${{ matrix.os  == 'ubuntu-18.04' }}
-          run: |
-            export DISPLAY=':99.0'
-            Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-            xvfb-run -a yarn run test:screens
+        if: ${{ matrix.os  != 'ubuntu-18.04' }}
+        run: yarn run test:screens
+        env:
+          NODE_ENV: test
+
+      - name: Run screen tests (with xvbf)
+        if: ${{ matrix.os  == 'ubuntu-18.04' }}
+        run: |
+          export DISPLAY=':99.0'
+          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          xvfb-run -a yarn run test:screens
         env:
           NODE_ENV: test
 
