@@ -19,7 +19,12 @@ export async function createWindow(): Promise<void> {
     );
     // eslint-disable-next-line require-atomic-updates
     win = new BrowserWindow({
-        webPreferences: {nodeIntegration: true, webSecurity: false},
+        webPreferences: {
+            nodeIntegration: true,
+            nodeIntegrationInWorker: true,
+            nodeIntegrationInSubFrames: true,
+            webSecurity: false
+        },
         backgroundColor: "#052437",
         show: false,
         icon: iconPath,
@@ -39,6 +44,7 @@ export async function createWindow(): Promise<void> {
         process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "1";
         win.loadURL("http://localhost:2003");
     } else {
+        console.log("setting route");
         let append = "";
         if(process.env.CG_INITIAL_ROUTE) {
             append += "#" + process.env.CG_INITIAL_ROUTE;
