@@ -36,10 +36,14 @@ jobs:
 
       - name: Run screen tests
         if: runner.os  != 'ubuntu-18.04'
+        env:
+          NODE_ENV: test
         run: yarn run test:screens
 
       - name: Run screen tests (with xvbf)
         if: runner.os  == 'ubuntu-18.04'
+        env:
+          NODE_ENV: test
         run: |
           export DISPLAY=':99.0'
           Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
