@@ -35,13 +35,13 @@ jobs:
         run: yarn run test:unit && yarn run test:components && yarn run test:e2e
 
       - name: Run screen tests
-        if: runner.os  != 'ubuntu-18.04'
+        if: ${{ runner.os  != 'ubuntu-18.04' }}
         env:
           NODE_ENV: test
         run: yarn run test:screens
 
       - name: Run screen tests (with xvbf)
-        if: runner.os  == 'ubuntu-18.04'
+        if: ${{ runner.os  == 'ubuntu-18.04' }}
         env:
           NODE_ENV: test
         run: |
