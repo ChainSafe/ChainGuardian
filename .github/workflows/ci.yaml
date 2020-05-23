@@ -1,0 +1,46 @@
+# workflow name
+name: ci
+
+# on events
+on: [push, pull_request]
+
+
+# jobs to run
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, windows-2019, macos-10.15]
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install dependencies
+        run: |
+          yarn policies set-version
+          yarn install --frozen-lockfile --network-timeout 1000000
+
+      - name: Lint style and types
+        run: yarn run lint && yarn run check-types
+
+      - name: Run unit/components/e2e tests
+        run: yarn run test:unit && yarn run test:components && yarn run test:e2e
+
+      - name: Run screen tests
+        if: runner.os  == 'ubuntu-18.04'
+        run: xvfb-run -a yarn run test:screens
+
+      - name: Run screen tests
+        if: runner.os  != 'ubuntu-18.04'
+        run: yarn run test:screens
+
+
+
