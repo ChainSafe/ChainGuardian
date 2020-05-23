@@ -1,6 +1,6 @@
 {
   "name": "chain-guardian",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "Eth2.0 desktop validator client",
   "keywords": [
     "eth2",
@@ -76,10 +76,10 @@
     }
   },
   "build": {
-    "productName": "ProductName",
+    "productName": "ChainGuardian",
     "buildDependenciesFromSource": true,
     "npmRebuild": true,
-    "appId": "org.your.productname",
+    "appId": "io.nodefactoryio.chainguardian",
     "mac": {
       "category": "your.app.category.type"
     },
@@ -92,7 +92,8 @@
       "package.json"
     ],
     "linux": {
-      "target": "deb"
+      "target": "deb",
+      "category": "System"
     },
     "win": {
       "target": "nsis"
