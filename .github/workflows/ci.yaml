@@ -8,12 +8,7 @@ on: [push, pull_request]
 # jobs to run
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-18.04,windows-2019,macos-10.15]
-
+    runs-on: ubuntu-18.04
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
@@ -38,5 +33,4 @@ jobs:
         run: yarn run test:e2e
 
       - name: Publish code coverage
-        if: ${{ matrix.os == 'ubuntu-18.04' }}
         run: yarn run codecov
