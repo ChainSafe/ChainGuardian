@@ -2,7 +2,10 @@
 name: ci
 
 # on events
-on: [push, pull_request]
+on:
+  create:
+    tags:
+      - v*
 
 
 # jobs to run
@@ -28,15 +31,13 @@ jobs:
           yarn policies set-version
           yarn install --frozen-lockfile --network-timeout 1000000
 
-      - name: Lint style and types
-        run: yarn run lint && yarn run check-types
+      - name: Build/release Electron app
+          uses: samuelmeuli/action-electron-builder@v1.5.0
+          with:
+            # GitHub token, automatically provided to the action
+            # (No need to define this secret in the repo settings)
+            github_token: ${{ secrets.github_token }}
 
-      - name: Run unit tests
-        run: yarn run test:unit && yarn run test:components
-
-      - name: Run e2e tests
-        run: yarn run test:e2e
-
-      - name: Publish code coverage
-        if: ${{ matrix.os == 'ubuntu-18.04' }}
-        run: yarn run codecov
+            # If the commit is tagged with a version (e.g. "v1.0.0"),
+            # release the app after building
+            release: ${{ startsWith(github.ref, 'refs/tags/v') }}
