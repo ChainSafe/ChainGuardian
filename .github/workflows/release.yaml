@@ -10,7 +10,7 @@ on:
 
 # jobs to run
 jobs:
-  test:
+  release:
     runs-on: ${{ matrix.os }}
 
     strategy:
