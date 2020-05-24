@@ -9,6 +9,8 @@ appId: io.nodefactory.chainguardian
 files:
   - filter:
       - dist/
+      - assets
+      - LICENSE
       - node_modules/
       - package.json
 mac:
