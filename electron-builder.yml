@@ -1,0 +1,27 @@
+directories:
+  output: release
+  buildResources: build
+productName: ChainGuardian
+buildDependenciesFromSource: true
+npmRebuild: true
+copyright: 'Copyright © year ${author}'
+appId: io.nodefactory.chainguardian
+files:
+  - filter:
+      - dist/
+      - node_modules/
+      - package.json
+mac:
+  icon: ./assets/logo.icns
+  category: public.app-category.finance
+  target: dmg
+linux:
+  synopsis: Eth2.0 desktop validator client
+  category: System
+  mimeTypes:
+    - json
+  target:
+    - target: deb
+    - target: snap
+win:
+  target: nsis
