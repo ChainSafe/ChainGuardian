@@ -21,6 +21,11 @@ mac:
   icon: ./assets/logo.icns
   category: public.app-category.finance
   target: dmg
+
+dmg:
+  background: ./assets/background-mac.tiff
+  backgroundColor: #052437
+
 linux:
   synopsis: Eth2.0 desktop validator client
   category: System
