@@ -21,6 +21,8 @@ export async function createWindow(): Promise<void> {
     win = new BrowserWindow({
         webPreferences: {
             nodeIntegration: true,
+            nodeIntegrationInWorker: true,
+            nodeIntegrationInSubFrames: true,
             webSecurity: false,
             devTools: process.env.NODE_ENV !== "production"
         },
