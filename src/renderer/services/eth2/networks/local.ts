@@ -17,5 +17,6 @@ export const LocalhostConfig: INetworkConfig = Object.freeze({
     dockerConfig: {
         name: "lighthouse_validators",
         image: "sigp/lighthouse:latest",
+        volumeName: "lighthouse-local-volume",
     }
 });
