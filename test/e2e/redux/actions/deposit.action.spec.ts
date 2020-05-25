@@ -75,6 +75,7 @@ describe("deposit actions", () => {
             dockerConfig: {
                 name: "DepositActionTest",
                 image: "not-important",
+                volumeName: "not-important",
             }
         };
 
