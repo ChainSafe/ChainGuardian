@@ -44,7 +44,7 @@ export class Command {
     }
 
     public static lsContainer(): string {
-        return `docker container ls -a`;
+        return "docker container ls -a";
     }
 
     public static removeVolume(volumeName: string): string {

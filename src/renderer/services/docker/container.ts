@@ -20,8 +20,8 @@ export interface IDocker {
  * Instance of @{DockerRunParams} is passed in constructor to define docker image that is going to be used.
  */
 export abstract class Container {
-    private docker: IDocker | null;
     protected readonly params: IDockerRunParams;
+    private docker: IDocker | null;
 
     protected constructor(params: IDockerRunParams) {
         this.docker = null;
