@@ -26,9 +26,13 @@ class DockerRegistryClass {
     }
 
     public async removeContainerPermanently(name: string): Promise<void> {
-        const container = this.DockerRegistry[name];
-        await container.stop();
-        await container.remove();
+        const container = this.getContainer(name);
+        if (container) {
+            await container.stop();
+            await container.remove();
+        } else {
+            throw new Error(`Docker container ${name} not found`);
+        }
     }
 }
 

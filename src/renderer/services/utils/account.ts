@@ -19,6 +19,7 @@ export const cleanUpAccount = async(): Promise<void> => {
         await Promise.all([
             removeDirRecursive(config.storage.dataDir),
             removeDirRecursive(config.db.name),
+            deleteBeaconNodeContainers(),
         ]);
     } catch (e) {
         logger.error("Error occurred while cleaning up account: ", e.message);
@@ -32,14 +33,18 @@ export const deleteKeystore = (directory: string, publicKey: string): void => {
 
 export const deleteBeaconNodeContainers = async(): Promise<void> => {
     // Remove containers
-    await Promise.all(networks.map(network =>
-        DockerRegistry.removeContainerPermanently(network.dockerConfig.name)
-    ));
+    await Promise.all(networks.map(async(network) => {
+        if (network.networkName !== "localhost") {
+            await DockerRegistry.removeContainerPermanently(network.dockerConfig.name);
+        }
+    }));
 
     // Remove volumes
-    await Promise.all(networks.map(network =>
-        runCmdAsync(Command.removeVolume(network.dockerConfig.volumeName))
-    ));
+    await Promise.all(networks.map(async(network) => {
+        if (network.networkName !== "localhost") {
+            await runCmdAsync(Command.removeVolume(network.dockerConfig.volumeName));
+        }
+    }));
 };
 
 export interface IExportStatus {
