@@ -6,6 +6,10 @@ buildDependenciesFromSource: true
 npmRebuild: true
 copyright: 'Copyright © year ${author}'
 appId: io.nodefactory.chainguardian
+asart: true
+asarUnpack:
+  - '**/node_modules/bcrypto/**/*'
+  - '**/node_modules/secp256k1/**/*'
 files:
   - filter:
       - dist/
@@ -26,4 +30,10 @@ linux:
     - target: deb
     - target: snap
 win:
+  icon: ./assets/logo.png
   target: nsis
+
+nsis:
+  oneClick: false
+  perMachine: false
+  runAfterFinish: false
