@@ -44,7 +44,6 @@ export async function createWindow(): Promise<void> {
         process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "1";
         win.loadURL("http://localhost:2003");
     } else {
-        console.log("setting route");
         let append = "";
         if(process.env.CG_INITIAL_ROUTE) {
             append += "#" + process.env.CG_INITIAL_ROUTE;
