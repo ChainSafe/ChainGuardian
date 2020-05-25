@@ -6,8 +6,12 @@ import {getConfig} from "../../../config/config";
 import {Level} from "../../components/Notification/NotificationEnums";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
 import {IValidator} from "../../containers/Dashboard/DashboardContainer";
+import {Command} from "../docker/command";
+import {DockerRegistry} from "../docker/docker-registry";
 import {V4Keystore} from "../keystore";
+import {runCmdAsync} from "./cmd";
 import {copyFile, removeDirRecursive} from "./file";
+import {networks} from "../eth2/networks";
 
 export const cleanUpAccount = async(): Promise<void> => {
     const config = getConfig(electron.remote.app);
@@ -24,6 +28,18 @@ export const cleanUpAccount = async(): Promise<void> => {
 export const deleteKeystore = (directory: string, publicKey: string): void => {
     const selectedV4Keystore = new V4Keystore(path.join(directory, `${publicKey}.json`));
     selectedV4Keystore.destroy();
+};
+
+export const deleteBeaconNodeContainers = async(): Promise<void> => {
+    // Remove containers
+    await Promise.all(networks.map(network =>
+        DockerRegistry.removeContainerPermanently(network.dockerConfig.name)
+    ));
+
+    // Remove volumes
+    await Promise.all(networks.map(network =>
+        runCmdAsync(Command.removeVolume(network.dockerConfig.volumeName))
+    ));
 };
 
 export interface IExportStatus {

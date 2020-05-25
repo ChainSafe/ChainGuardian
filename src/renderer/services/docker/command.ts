@@ -38,4 +38,12 @@ export class Command {
     public static kill(containerName: string): string {
         return `docker kill ${containerName}`;
     }
+
+    public static removeContainer(containerName: string): string {
+        return `docker container rm ${containerName}`;
+    }
+
+    public static removeVolume(volumeName: string): string {
+        return `docker volume rm ${volumeName}`;
+    }
 }

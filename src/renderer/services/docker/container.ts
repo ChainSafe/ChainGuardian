@@ -202,4 +202,17 @@ export abstract class Container {
         }
         return false;
     }
+
+    public async remove(): Promise<boolean> {
+        if (this.docker && this.docker.name) {
+            try {
+                runCmd(Command.removeContainer(this.docker.name));
+                logger.info(`Docker container ${this.docker.name} removed.`);
+                return true;
+            } catch (e) {
+                logger.error(`Failed to remove docker container ${this.docker.name} because ${e.message}.`);
+            }
+        }
+        return false;
+    }
 }
