@@ -21,7 +21,7 @@ export interface IDocker {
  */
 export abstract class Container {
     private docker: IDocker | null;
-    private readonly params: IDockerRunParams;
+    protected readonly params: IDockerRunParams;
 
     protected constructor(params: IDockerRunParams) {
         this.docker = null;
@@ -61,13 +61,25 @@ export abstract class Container {
         }
     }
 
-    public async startStoppedContainer(): Promise<void> {
+    public static async exists(name: string): Promise<boolean> {
+        const cmdResult = (await runCmdAsync(Command.lsContainer())).stdout.split("\n");
+        for (let i = 0 ; i < cmdResult.length; i++) {
+            // check last column for name
+            if (cmdResult[i].includes(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public async startStoppedContainer(): Promise<IDocker> {
         if (!(await Container.isContainerRunning(this.params.name))) {
             runCmd(Command.start(this.params.name));
         }
         // Use the same way as docker run
         const logs = runCmd(Command.logs(this.params.name, true));
         this.docker = {name: this.params.name, stdout: logs.stdout, stderr: logs.stderr};
+        return this.docker;
     }
 
     public getName(): string | undefined {
