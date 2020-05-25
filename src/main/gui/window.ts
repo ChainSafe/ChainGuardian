@@ -23,7 +23,8 @@ export async function createWindow(): Promise<void> {
             nodeIntegration: true,
             nodeIntegrationInWorker: true,
             nodeIntegrationInSubFrames: true,
-            webSecurity: false
+            webSecurity: false,
+            devTools: process.env.NODE_ENV !== "production"
         },
         backgroundColor: "#052437",
         show: false,
