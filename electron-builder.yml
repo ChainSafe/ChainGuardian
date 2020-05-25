@@ -42,6 +42,7 @@ nsis:
   oneClick: false
   perMachine: false
   runAfterFinish: false
-  installerIcon: ./build/logo.ico
-  uninstallerIcon: ./build/logo.ico
-  installerHeaderIcon: ./build/logo.ico
+  allowToChangeInstallationDirectory: true
+  installerIcon: ./assets/logo.ico
+  uninstallerIcon: ./assets/logo.ico
+  installerHeaderIcon: ./assets/logo.ico
