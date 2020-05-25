@@ -6,6 +6,10 @@ buildDependenciesFromSource: true
 npmRebuild: true
 copyright: 'Copyright © year ${author}'
 appId: io.nodefactory.chainguardian
+asar: true
+asarUnpack:
+  - '**/node_modules/bcrypto/**/*'
+  - '**/node_modules/secp256k1/**/*'
 files:
   - filter:
       - dist/
@@ -17,6 +21,11 @@ mac:
   icon: ./assets/logo.icns
   category: public.app-category.finance
   target: dmg
+
+dmg:
+  background: ./assets/background-mac.tiff
+  backgroundColor: #052437
+
 linux:
   synopsis: Eth2.0 desktop validator client
   category: System
@@ -26,4 +35,14 @@ linux:
     - target: deb
     - target: snap
 win:
+  icon: ./assets/logo.png
   target: nsis
+
+nsis:
+  oneClick: false
+  perMachine: false
+  runAfterFinish: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: ./assets/logo.ico
+  uninstallerIcon: ./assets/logo.ico
+  installerHeaderIcon: ./assets/logo.ico
