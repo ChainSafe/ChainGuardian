@@ -16,7 +16,7 @@ export const MultipleInputVertical: React.FunctionComponent<IMultipleFormProps> 
     };
 
     return(
-        <form className="form-vertical">
+        <div className="form-vertical">
             {props.inputs.map((p, index) => {
                 return <div key={index} className="inputrow-vertical">
                     <div className="label">{p.label}</div>
@@ -34,6 +34,6 @@ export const MultipleInputVertical: React.FunctionComponent<IMultipleFormProps> 
                         {p.valid === false && p.errorMessage}</div>
                 </div>;
             })}
-        </form>
+        </div>
     );
 };

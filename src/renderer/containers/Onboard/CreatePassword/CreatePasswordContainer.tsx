@@ -57,14 +57,16 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
                 <h1>Create a password</h1>
                 <p>You will use this password to unlock applications and keys.</p>
                 <div className="input-container input-container-vertical">
-                    <MultipleInputVertical inputs={inputs}/>
-                    <ButtonPrimary
-                        buttonId="next"
-                        disabled={ this.state.errorMessages.password !== "" || this.state.errorMessages.confirm !== ""}
-                        onClick={this.handleSubmit}
-                    >
-                        NEXT
-                    </ButtonPrimary>
+                    <form onSubmit={this.handleSubmit} className="flex-column">
+                        <MultipleInputVertical inputs={inputs}/>
+                        <ButtonPrimary
+                            buttonId="next"
+                            disabled={ this.state.errorMessages.password !== "" || this.state.errorMessages.confirm !== ""}
+                            type="submit"
+                        >
+                            NEXT
+                        </ButtonPrimary>
+                    </form>
                 </div>
             </>
         );

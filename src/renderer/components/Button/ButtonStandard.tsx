@@ -7,6 +7,7 @@ export interface IButtonProps {
     large?: boolean;
     buttonId?: string;
     datafield?: string | number;
+    type?: string;
 }
 export interface IBaseButtonProps extends IButtonProps{
     buttonType?: string;
@@ -46,7 +47,7 @@ function getButton(props: React.PropsWithChildren<IBaseButtonProps>, type: TYPES
     );
 }
 
-export const ButtonPrimitive: 
+export const ButtonPrimitive:
 React.FunctionComponent<React.PropsWithChildren<IButtonProps>> = (props) => {
     return(
         getButton(props, TYPES.PRIMITIVE)
