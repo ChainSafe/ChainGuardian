@@ -6,7 +6,7 @@ buildDependenciesFromSource: true
 npmRebuild: true
 copyright: 'Copyright © year ${author}'
 appId: io.nodefactory.chainguardian
-asart: true
+asar: true
 asarUnpack:
   - '**/node_modules/bcrypto/**/*'
   - '**/node_modules/secp256k1/**/*'
@@ -42,3 +42,6 @@ nsis:
   oneClick: false
   perMachine: false
   runAfterFinish: false
+  installerIcon: ./build/logo.ico
+  uninstallerIcon: ./build/logo.ico
+  installerHeaderIcon: ./build/logo.ico
