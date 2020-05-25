@@ -88,27 +88,6 @@
     &.center-vertical{
         top: calc(50vh - 100px);
     }
-
-    //level style-----------------------
-    &.info{
-        border-top: 4px solid $secondary-blue-400;
-    }
-    &.error{
-        border-top: 4px solid $system-error-500;
-    }
-    &.info .notification-title{
-        color: $secondary-blue-100;
-    }
-    &.error .notification-title{
-        color: $system-error-100;
-    }
-    &.info .notification-content{
-        color: $secondary-blue-200;
-    }
-    &.error .notification-content{
-        color: $system-error-200;
-    }
-
 }
 .notification-title{
     font-weight: 500;
@@ -130,7 +109,23 @@
 }
 .notification-level-info{
     background-color: $secondary-blue-600;
+    border-top: 4px solid $secondary-blue-400;
+
+    .notification-content{
+        color: $secondary-blue-200;
+    }
+    .notification-title{
+        color: $secondary-blue-100;
+    }
 }
 .notification-level-error{
     background-color: $system-error-700;
+    border-top: 4px solid $system-error-500;
+
+    .notification-content{
+        color: $system-error-200;
+    }
+    .notification-title{
+        color: $system-error-100;
+    }
 }
