@@ -17,8 +17,8 @@ import {addNewValidatorAction} from "../../actions";
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
 const CheckPassword: React.FunctionComponent<
-IOwnProps & 
-IInjectedProps & 
+IOwnProps &
+IInjectedProps &
 Pick<IRootState, "register" | "auth">> = (props) => {
     const [input, setInput] = useState<string>("");
     const [inputStatus, setInputStatus] = useState<boolean | undefined>();
@@ -26,14 +26,14 @@ Pick<IRootState, "register" | "auth">> = (props) => {
     const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
         setInput(e.currentTarget.value);
     };
-    
+
     const handleSubmit = async (): Promise<void> => {
         const accounts = await database.account.get(DEFAULT_ACCOUNT);
         if (accounts != null){
             const isCorrectValue = await accounts.isCorrectPassword(input);
             if (isCorrectValue) {
                 props.addNewValidator(input);
-                
+
                 setInputStatus(true);
                 setTimeout(props.history.push,500, Routes.DASHBOARD_ROUTE);
             }
@@ -46,20 +46,22 @@ Pick<IRootState, "register" | "auth">> = (props) => {
     const handleCancel = (): void => {
         props.history.push(Routes.DASHBOARD_ROUTE);
     };
+
     useEffect(()=>{
         setInputStatus(undefined);
     },[input]);
-        
+
     return (
         <Background>
             <Modal>
-                <h1 id="checkpassword-heading" >Confirm password</h1>
+                <h1 id="checkpassword-heading">Confirm password</h1>
                 <InputForm
                     focused
                     onChange={handleChange}
                     type="password"
                     valid={inputStatus}
                     errorMessage={"Incorrect password"}
+                    onSubmit={(e): Promise<void> => {e.preventDefault(); return handleSubmit();}}
                 />
                 <div className="checkpassword-buttons">
                     <ButtonPrimary onClick={handleSubmit}>Submit</ButtonPrimary>

@@ -8,7 +8,9 @@ Array [
   <div
     className="key-input-container mt-32"
   >
-    <form>
+    <form
+      onSubmit={[Function]}
+    >
       <div
         className="label"
       />
@@ -62,7 +64,9 @@ Array [
   <div
     className="key-input-container "
   >
-    <form>
+    <form
+      onSubmit={[Function]}
+    >
       <div
         className="label"
       />

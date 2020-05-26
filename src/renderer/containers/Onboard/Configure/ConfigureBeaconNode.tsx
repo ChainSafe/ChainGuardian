@@ -46,6 +46,7 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProp
                 <InputForm
                     onChange={(e): void => setRpcPort(e.currentTarget.value)}
                     inputValue={rpcPort}
+                    onSubmit={(e): void => {e.preventDefault(); onSubmit();}}
                 />
             </div>
 
@@ -56,6 +57,7 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProp
                 <InputForm
                     onChange={(e): void => setLibp2pPort(e.currentTarget.value)}
                     inputValue={libp2pPort}
+                    onSubmit={(e): void => {e.preventDefault(); onSubmit();}}
                 />
             </div>
 
