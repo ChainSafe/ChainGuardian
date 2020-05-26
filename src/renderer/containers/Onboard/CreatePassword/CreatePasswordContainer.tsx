@@ -52,6 +52,9 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
                 errorMessage: this.state.errorMessages.confirm
             }
         ];
+
+        const {errorMessages} = this.state;
+
         return (
             <>
                 <h1>Create a password</h1>
@@ -61,7 +64,7 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
                         <MultipleInputVertical inputs={inputs}/>
                         <ButtonPrimary
                             buttonId="next"
-                            disabled={ this.state.errorMessages.password !== "" || this.state.errorMessages.confirm !== ""}
+                            disabled={errorMessages.password !== "" || errorMessages.confirm !== ""}
                             type="submit"
                         >
                             NEXT
