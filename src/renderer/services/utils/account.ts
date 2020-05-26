@@ -34,7 +34,11 @@ export const deleteKeystore = (directory: string, publicKey: string): void => {
 export const deleteBeaconNodeContainers = async(): Promise<void> => {
     await Promise.all(networks.map(async(network) => {
         if (network.networkName !== "localhost") {
-            return await DockerRegistry.removeContainerPermanently(network.dockerConfig.name);
+            try {
+                await DockerRegistry.removeContainerPermanently(network.dockerConfig.name);
+            } catch (e) {
+                logger.error(`Failed to remove Docker container: ${e.message}`);
+            }
         }
     }));
 };
