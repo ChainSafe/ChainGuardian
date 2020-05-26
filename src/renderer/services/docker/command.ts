@@ -2,8 +2,8 @@ import {IDockerRunParams} from "./type";
 import {generateRunCommand} from "./utils";
 
 export class Command {
-    public static run(params: IDockerRunParams): string {
-        return `docker run ${generateRunCommand(params)}`;
+    public static run(params: IDockerRunParams, path = "docker"): string {
+        return `${path} run ${generateRunCommand(params)}`;
     }
 
     public static ps(
@@ -15,8 +15,8 @@ export class Command {
         return `docker ps -a${nameFilter}${statusFilter}`;
     }
 
-    public static version(): string {
-        return "docker -v";
+    public static version(path = "docker"): string {
+        return `${path} -v`;
     }
 
     public static stop(containerName: string): string {
