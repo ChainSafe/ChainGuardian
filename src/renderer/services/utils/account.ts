@@ -6,10 +6,8 @@ import {getConfig} from "../../../config/config";
 import {Level} from "../../components/Notification/NotificationEnums";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
 import {IValidator} from "../../containers/Dashboard/DashboardContainer";
-import {Command} from "../docker/command";
 import {DockerRegistry} from "../docker/docker-registry";
 import {V4Keystore} from "../keystore";
-import {runCmdAsync} from "./cmd";
 import {copyFile, removeDirRecursive} from "./file";
 import {networks} from "../eth2/networks";
 
