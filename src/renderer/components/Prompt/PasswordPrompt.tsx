@@ -28,7 +28,7 @@ export const PasswordPrompt: React.FunctionComponent<IPasswordPromptProps> = (pr
             onChange={props.onChange}
             display={props.display}
             title={"Confirm password"}
-            placeholder={"Please renter your password..."}
+            placeholder={"Please reenter your password..."}
             inputType={"password"}
         />
     );
