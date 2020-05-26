@@ -49,7 +49,7 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
                             inputValue={this.state.input}
                             placeholder="Enter password"
                             type="password"
-                            onSubmit={this.handleSubmit}
+                            onSubmit={(e): Promise<void> => {e.preventDefault(); return this.handleSubmit();}}
                         />
                         <ButtonSecondary
                             buttonId="go"
