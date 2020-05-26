@@ -7,7 +7,7 @@ export interface IButtonProps {
     large?: boolean;
     buttonId?: string;
     datafield?: string | number;
-    type?: string;
+    type?: "reset" | "button" | "submit";
 }
 export interface IBaseButtonProps extends IButtonProps{
     buttonType?: string;
