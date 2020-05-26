@@ -1,14 +1,14 @@
-const path = require('path');
-const webpack = require('webpack');
-const merge = require('webpack-merge');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const path = require("path");
+const webpack = require("webpack");
+const merge = require("webpack-merge");
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
-const baseConfig = require('./webpack.base.config');
+const baseConfig = require("./webpack.base.config");
 
 module.exports = merge.smart(baseConfig, {
-    target: 'electron-main',
+    target: "electron-main",
     entry: {
-        main: './src/main/main.ts'
+        main: "./src/main/main.ts"
     },
     module: {
         rules: [
@@ -16,21 +16,21 @@ module.exports = merge.smart(baseConfig, {
                 test: /\.tsx?$/,
                 exclude: [
                     /node_modules/,
-                    '/src/**/*.stories.tsx'
+                    "/src/**/*.stories.tsx"
                 ],
-                loader: 'babel-loader',
+                loader: "babel-loader",
                 options: {
                     cacheDirectory: true,
                     babelrc: false,
                     presets: [
                         [
-                            '@babel/preset-env',
-                            { targets: 'maintained node versions' }
+                            "@babel/preset-env",
+                            {targets: "maintained node versions"}
                         ],
-                        '@babel/preset-typescript'
+                        "@babel/preset-typescript"
                     ],
                     plugins: [
-                        ['@babel/plugin-proposal-class-properties', { loose: true }]
+                        ["@babel/plugin-proposal-class-properties", {loose: true}]
                     ]
                 }
             }
@@ -38,10 +38,10 @@ module.exports = merge.smart(baseConfig, {
     },
     plugins: [
         new ForkTsCheckerWebpackPlugin({
-            reportFiles: ['src/main/**/*']
+            reportFiles: ["src/main/**/*"]
         }),
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+            "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development")
         })
     ]
 });
