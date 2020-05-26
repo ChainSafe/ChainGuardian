@@ -62,7 +62,6 @@ describe("Deposit transaction service unit tests", () => {
             dockerConfig: {
                 name: "UserDepositTest",
                 image: "not-important",
-                volumeName: "not-important",
             }
         };
     });
