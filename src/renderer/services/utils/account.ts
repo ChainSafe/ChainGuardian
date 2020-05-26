@@ -32,17 +32,9 @@ export const deleteKeystore = (directory: string, publicKey: string): void => {
 };
 
 export const deleteBeaconNodeContainers = async(): Promise<void> => {
-    // Remove containers
     await Promise.all(networks.map(async(network) => {
         if (network.networkName !== "localhost") {
-            await DockerRegistry.removeContainerPermanently(network.dockerConfig.name);
-        }
-    }));
-
-    // Remove volumes
-    await Promise.all(networks.map(async(network) => {
-        if (network.networkName !== "localhost") {
-            await runCmdAsync(Command.removeVolume(network.dockerConfig.volumeName));
+            return await DockerRegistry.removeContainerPermanently(network.dockerConfig.name);
         }
     }));
 };

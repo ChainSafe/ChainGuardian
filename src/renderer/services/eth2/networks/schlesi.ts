@@ -1,18 +1,15 @@
 import {config as mainnetBeaconConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {ethers} from "ethers";
+import {IDockerRunParams} from "../../docker/type";
 import {SupportedNetworks} from "../supportedNetworks";
-import {IDockerConfig, INetworkConfig} from "../../interfaces";
+import {INetworkConfig} from "../../interfaces";
 
-
-const volumeName = `${SupportedNetworks.SCHLESI}-chain-data`;
-
-const dockerConfig: IDockerConfig = {
+const dockerConfig: IDockerRunParams = {
     name: "Schlesi-beacon-node",
-    volumeName,
     image: "sigp/lighthouse:latest",
     restart: "unless-stopped",
     cmd: "lighthouse beacon --http --http-address 0.0.0.0",
-    volume: `${volumeName}:/root/.lighthouse`,
+    volume: "/root/.lighthouse",
     ports: [
         {
             local: "9000",

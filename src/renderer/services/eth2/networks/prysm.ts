@@ -1,17 +1,15 @@
 import {config as mainnetBeaconConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {ethers} from "ethers";
 import {BeaconChain} from "../../docker/chain";
+import {IDockerRunParams} from "../../docker/type";
 import {SupportedNetworks} from "../supportedNetworks";
-import {IDockerConfig, INetworkConfig} from "../../interfaces";
+import {INetworkConfig} from "../../interfaces";
 
-const volumeName = `${SupportedNetworks.PRYSM}-chain-data`;
-
-const dockerConfig: IDockerConfig = {
+const dockerConfig: IDockerRunParams = {
     name: BeaconChain.getContainerName(SupportedNetworks.PRYSM),
-    volumeName,
     image: "gcr.io/prysmaticlabs/prysm/beacon-chain:latest",
     restart: "unless-stopped",
-    volume: `${volumeName}:/data`,
+    volume: "/data",
     cmd: "--datadir=/data --grpc-gateway-port 4001",
     ports: [
         {

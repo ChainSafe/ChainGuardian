@@ -64,10 +64,6 @@ export interface IV3Keystore {
 }
 /************************/
 
-export interface IDockerConfig extends IDockerRunParams {
-    volumeName: string;
-}
-
 export interface INetworkConfig {
     eth2Config: IBeaconConfig;
     networkId: number;
@@ -79,7 +75,7 @@ export interface INetworkConfig {
         depositAmount: string|number;
         deployedAtBlock: number
     };
-    dockerConfig: IDockerConfig;
+    dockerConfig: IDockerRunParams;
 }
 
 export interface IIpcDatabaseEntry {

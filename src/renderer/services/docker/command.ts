@@ -40,14 +40,10 @@ export class Command {
     }
 
     public static removeContainer(containerName: string): string {
-        return `docker container rm ${containerName}`;
+        return `docker container rm -v ${containerName}`;
     }
 
     public static lsContainer(): string {
         return "docker container ls -a";
-    }
-
-    public static removeVolume(volumeName: string): string {
-        return `docker volume rm ${volumeName}`;
     }
 }
