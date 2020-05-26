@@ -9,7 +9,7 @@ const dockerConfig: IDockerRunParams = {
     image: "sigp/lighthouse:latest",
     restart: "unless-stopped",
     cmd: "lighthouse beacon --http --http-address 0.0.0.0 --eth1-endpoint https://goerli.prylabs.net",
-    volume: `${SupportedNetworks.SCHLESI}-chain-data:/root/.lighthouse`,
+    volume: "/root/.lighthouse",
     ports: [
         {
             local: "9000",

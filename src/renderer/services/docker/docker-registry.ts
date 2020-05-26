@@ -24,6 +24,16 @@ class DockerRegistryClass {
             Object.values(this.DockerRegistry).map(container => container.stop())
         );
     }
+
+    public async removeContainerPermanently(name: string): Promise<void> {
+        const container = this.getContainer(name);
+        if (container) {
+            await container.stop();
+            await container.remove();
+        } else {
+            throw new Error(`Docker container ${name} not found`);
+        }
+    }
 }
 
 export const DockerRegistry = new DockerRegistryClass();

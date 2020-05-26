@@ -4,7 +4,7 @@ import {Readable} from "stream";
 import database from "../db/api/database";
 import {getNetworkConfig} from "../eth2/networks";
 import {SupportedNetworks} from "../eth2/supportedNetworks";
-import {Container} from "./container";
+import {Container, IDocker} from "./container";
 import {DockerRegistry} from "./docker-registry";
 import {DockerPort} from "./type";
 import {getLogMessageType, LogType} from "./utils";
@@ -31,7 +31,9 @@ export class BeaconChain extends Container {
         });
         DockerRegistry.addContainer(imageName, bc);
 
+        logger.info(`Going to run docker beacon chain ${imageName}...`);
         await bc.run();
+        logger.info(`${imageName} docker beacon chain should be up!`);
         if (waitUntilReady) {
             while (!(await bc.isRunning())) { /* */ }
         }
@@ -48,7 +50,7 @@ export class BeaconChain extends Container {
                     if (image) {
                         await BeaconChain.restartBeaconChainContainer(node.localDockerId, image);
                     } else {
-                        logger.info(`Image for container ${node.localDockerId} not found.`);
+                        logger.info(`Container ${node.localDockerId} not found.`);
                     }
                 }
             });
@@ -85,5 +87,13 @@ export class BeaconChain extends Container {
     public getLogStream(): Readable|null {
         const logs = this.getLogs();
         return logs ? logs.stderr : null;
+    }
+
+    public async run(): Promise<IDocker> {
+        if (await Container.exists(this.params.name)) {
+            logger.info(`Going to start existing container ${this.params.name}`);
+            return await super.startStoppedContainer();
+        }
+        return await super.run();
     }
 }

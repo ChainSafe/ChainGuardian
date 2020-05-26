@@ -9,7 +9,7 @@ const dockerConfig: IDockerRunParams = {
     name: BeaconChain.getContainerName(SupportedNetworks.PRYSM),
     image: "gcr.io/prysmaticlabs/prysm/beacon-chain:latest",
     restart: "unless-stopped",
-    volume: `${SupportedNetworks.PRYSM}-chain-data:/data`,
+    volume: "/data",
     cmd: "--datadir=/data --grpc-gateway-port 4001",
     ports: [
         {
