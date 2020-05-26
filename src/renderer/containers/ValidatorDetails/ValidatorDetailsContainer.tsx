@@ -8,9 +8,11 @@ import {IRootState} from "../../reducers";
 import {BeaconNode} from "./BeaconNode/BeaconNode";
 import {ValidatorLogs} from "./ValidatorLogs";
 import {ValidatorStats} from "./ValidatorStats/ValidatorStats";
+import {RouteComponentProps} from "react-router-dom";
 
-export const ValidatorDetailsContainer = (): ReactElement => {
-    const [currentTab, setCurrentTab] = useState(0);
+export const ValidatorDetailsContainer = (props: RouteComponentProps): ReactElement => {
+    console.log("location", props.location);
+    const [currentTab, setCurrentTab] = useState(props.location?.state?.tab! === "BN" ? 2 : 0);
     const history = useHistory();
     const {id} = useParams();
     const validatorId = id ? parseInt(id) : 0;
