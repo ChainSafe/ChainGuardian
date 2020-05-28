@@ -94,7 +94,6 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
                                 status={v.status}
                                 publicKey={v.publicKey}
                                 onBeaconNodeClick={(() => (): void => {
-                                    console.log("load bn tab");
                                     props.history.push(
                                         Routes.VALIDATOR_DETAILS.replace(":id", index.toString()),
                                         {tab: "BN"}
