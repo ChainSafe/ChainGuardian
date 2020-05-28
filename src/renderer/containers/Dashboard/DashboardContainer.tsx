@@ -93,6 +93,12 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
                                 name={v.name}
                                 status={v.status}
                                 publicKey={v.publicKey}
+                                onBeaconNodeClick={(() => (): void => {
+                                    props.history.push(
+                                        Routes.VALIDATOR_DETAILS.replace(":id", index.toString()),
+                                        {tab: "BN"}
+                                    );
+                                })}
                                 onRemoveClick={(): void => {onRemoveValidator(index);}}
                                 onDetailsClick={(): void =>
                                     props.history.push(Routes.VALIDATOR_DETAILS.replace(":id", index.toString()))}
