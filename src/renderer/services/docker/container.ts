@@ -36,7 +36,7 @@ export abstract class Container {
      */
     public static async isDockerInstalled(version?: string): Promise<boolean> {
         try {
-            const cmdResult = await runCmdAsync(Command.version());
+            const cmdResult = await runCmdAsync(await Command.version());
             const dockerVersion = extractDockerVersion(cmdResult.stdout);
             return version ? version === dockerVersion : !!dockerVersion;
         } catch (e) {
@@ -46,14 +46,14 @@ export abstract class Container {
     }
 
     public static async isContainerRunning(name: string): Promise<boolean> {
-        const cmdResult = await runCmdAsync(Command.ps(name, "running"));
+        const cmdResult = await runCmdAsync(await Command.ps(name, "running"));
         // first line of output is header line, second line is definition of found docker instance
         const runningInstance = cmdResult.stdout.split("\n")[1];
         return runningInstance !== "";
     }
 
     public static async getImageName(dockerId: string): Promise<string|undefined> {
-        const cmdResult = await runCmdAsync(Command.ps(dockerId));
+        const cmdResult = await runCmdAsync(await Command.ps(dockerId));
         const instance = cmdResult.stdout.split("\n")[1];
         if (instance) {
             const values = instance.split("   ");
@@ -63,10 +63,10 @@ export abstract class Container {
 
     public async startStoppedContainer(): Promise<void> {
         if (!(await Container.isContainerRunning(this.params.name))) {
-            runCmd(Command.start(this.params.name));
+            runCmd(await Command.start(this.params.name));
         }
         // Use the same way as docker run
-        const logs = runCmd(Command.logs(this.params.name, true));
+        const logs = runCmd(await Command.logs(this.params.name, true));
         this.docker = {name: this.params.name, stdout: logs.stdout, stderr: logs.stderr};
     }
 
@@ -100,7 +100,7 @@ export abstract class Container {
             }
             try {
                 // start new docker instance
-                const run = runDetached(Command.run(this.params));
+                const run = runDetached(await Command.run(this.params));
                 this.docker = {name: this.params.name, stdout: run.stdout, stderr: run.stderr};
                 logger.info(`Docker instance ${this.docker.name} started.`);
                 return this.docker;
@@ -143,7 +143,7 @@ export abstract class Container {
     public async stop(): Promise<boolean> {
         if (this.docker && this.docker.name) {
             try {
-                await runCmdAsync(Command.stop(this.docker.name));
+                await runCmdAsync(await Command.stop(this.docker.name));
                 const stopped = !(await this.isRunning());
                 if (stopped) {
                     logger.info(`Docker instance ${this.docker.name} stopped.`);
@@ -165,7 +165,7 @@ export abstract class Container {
     public async kill(): Promise<void> {
         if (this.docker && this.docker.name) {
             try {
-                await runCmdAsync(Command.kill(this.docker.name));
+                await runCmdAsync(await Command.kill(this.docker.name));
                 logger.info(`Docker instance ${this.docker.name} killed.`);
             } catch (e) {
                 logger.error(`Failed to execute kill docker container ${this.docker.name} because ${e.message}.`);
@@ -189,10 +189,10 @@ export abstract class Container {
             try {
                 if (await this.isRunning()) {
                     // docker instance running, call restart command
-                    runCmd(Command.restart(this.docker.name));
+                    runCmd(await Command.restart(this.docker.name));
                 } else {
                     // docker instance stopped, call start command
-                    runCmd(Command.start(this.docker.name));
+                    runCmd(await Command.start(this.docker.name));
                 }
                 logger.info(`Docker instance ${this.docker.name} restared.`);
                 return true;

@@ -20,7 +20,7 @@ class DockerPath {
 
         for (let i = 0; i < this.defaultPaths.length; i ++) {
             try {
-                const result = await runCmdAsync(Command.version(this.defaultPaths[i]));
+                const result = await runCmdAsync(await Command.version(this.defaultPaths[i]));
                 if (extractDockerVersion(result.stdout)) {
                     this.path = this.defaultPaths[i];
                     return this.path;
