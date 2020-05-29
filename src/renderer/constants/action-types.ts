@@ -45,3 +45,7 @@ export enum ValidatorActionTypes {
     STOP_VALIDATOR_SERVICE = "STOP_VALIDATOR_SERVICE",
     LOAD_STATUS = "LOAD_STATUS",
 }
+
+export enum AccountSettingsActionTypes {
+    SAVE_SETTINGS = "SAVE_SETTINGS",
+}
