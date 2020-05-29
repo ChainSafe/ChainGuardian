@@ -17,6 +17,7 @@ export interface IValidatorSimpleProps {
     publicKey: string,
     onRemoveClick: () => void;
     onDetailsClick: () => void;
+    onBeaconNodeClick: (id: string) => () => void;
     privateKey: string;
 }
 
@@ -50,8 +51,8 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
                             return (
                                 <NodeCard
                                     key={node.url}
-                                    onClick={(): void => {
-                                    }}
+                                    //TODO: change to some other id when multinode is enabled
+                                    onClick={props.onBeaconNodeClick(node.url)}
                                     title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
                                     url={node.url}
                                     isSyncing={node.isSyncing}

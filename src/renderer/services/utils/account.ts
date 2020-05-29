@@ -6,8 +6,10 @@ import {getConfig} from "../../../config/config";
 import {Level} from "../../components/Notification/NotificationEnums";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
 import {IValidator} from "../../containers/Dashboard/DashboardContainer";
+import {DockerRegistry} from "../docker/docker-registry";
 import {V4Keystore} from "../keystore";
 import {copyFile, removeDirRecursive} from "./file";
+import {networks} from "../eth2/networks";
 
 export const cleanUpAccount = async(): Promise<void> => {
     const config = getConfig(electron.remote.app);
@@ -15,6 +17,7 @@ export const cleanUpAccount = async(): Promise<void> => {
         await Promise.all([
             removeDirRecursive(config.storage.dataDir),
             removeDirRecursive(config.db.name),
+            deleteBeaconNodeContainers(),
         ]);
     } catch (e) {
         logger.error("Error occurred while cleaning up account: ", e.message);
@@ -24,6 +27,18 @@ export const cleanUpAccount = async(): Promise<void> => {
 export const deleteKeystore = (directory: string, publicKey: string): void => {
     const selectedV4Keystore = new V4Keystore(path.join(directory, `${publicKey}.json`));
     selectedV4Keystore.destroy();
+};
+
+export const deleteBeaconNodeContainers = async(): Promise<void> => {
+    await Promise.all(networks.map(async(network) => {
+        if (network.networkName !== "localhost") {
+            try {
+                await DockerRegistry.removeContainerPermanently(network.dockerConfig.name);
+            } catch (e) {
+                logger.error(`Failed to remove Docker container: ${e.message}`);
+            }
+        }
+    }));
 };
 
 export interface IExportStatus {

@@ -30,7 +30,7 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
             setErrorMessage(result.errorMessage);
         }
         else {
-            setTimeout(setInputData,500,""); /** Prompt reset */ 
+            setTimeout(setInputData,500,""); /** Prompt reset */
             setTimeout(setValid,500,undefined);
         }
     }
@@ -55,7 +55,7 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
                     errorMessage={errorMessage}
                     valid={valid}
                     onChange={handleOnChange}
-                    onSubmit={(e): void => {e.preventDefault();}} /** Disable submit on enter **/
+                    onSubmit={(e): Promise<void> => {e.preventDefault(); return onSubmitWrapper();}}
                     type={props.inputType}
                 />
                 <div className={"button-control"}>

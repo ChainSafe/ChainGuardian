@@ -48,4 +48,12 @@ export class Command {
         const path = await dockerPath.getPath();
         return `${path} kill ${containerName}`;
     }
+
+    public static removeContainer(containerName: string): string {
+        return `docker container rm -v ${containerName}`;
+    }
+
+    public static lsContainer(): string {
+        return "docker container ls -a";
+    }
 }

@@ -62,7 +62,9 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
                     inputValue={input}
                     valid={errorMessage === "" && valid === false ? undefined : valid}
                     errorMessage={errorMessage}
-                    placeholder={props.placeholder} />
+                    placeholder={props.placeholder}
+                    onSubmit={(e): void => {e.preventDefault(); handleSubmit();}}
+                />
                 <span className="submit-button-container">
                     <ButtonPrimary buttonId="submit" disabled={!valid} onClick={handleSubmit}>Submit</ButtonPrimary>
                 </span>

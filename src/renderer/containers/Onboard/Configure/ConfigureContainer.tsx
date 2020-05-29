@@ -97,6 +97,7 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
                     inputId="beaconURL"
                     errorMessage={errorMessage}
                     valid={errorMessage !== "" ? false : null}
+                    onSubmit={onGoSubmit}
                 />
 
                 <ButtonSecondary onClick={onGoSubmit} buttonId="go">GO</ButtonSecondary>

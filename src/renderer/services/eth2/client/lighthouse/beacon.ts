@@ -57,7 +57,7 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
 
     public async getGenesisTime(): Promise<Number64> {
         try {
-            const result =  await this.client.get<number>(LighthouseRoutes.GET_GENESIS_TIME);
+            const result = await this.client.get<number>(LighthouseRoutes.GET_GENESIS_TIME);
             return result;
         } catch (e) {
             this.logger.warn("Failed to get genesis time. Error: " + e.message);
@@ -67,17 +67,17 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
 
     public async getSyncingStatus(): Promise<boolean | SyncingStatus> {
         const response = await this.client.get<ILighthouseSyncResponse>(LighthouseRoutes.GET_SYNC_STATUS);
-        if(Object.keys(response).includes("Synced")) {
+        if (Object.keys(response).includes("Synced")) {
             return false;
         }
-        if(response.SyncingFinalized) {
+        if (response.SyncingFinalized) {
             return {
                 currentBlock: BigInt(response.SyncingFinalized.head_slot),
                 highestBlock: BigInt(response.SyncingFinalized.head_slot),
                 startingBlock: BigInt(response.SyncingFinalized.start_slot)
             };
         }
-        if(response.SyncingHead) {
+        if (response.SyncingHead) {
             return {
                 currentBlock: BigInt(response.SyncingHead.head_slot),
                 highestBlock: BigInt(response.SyncingHead.head_slot),
@@ -87,7 +87,7 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
     }
 
     public async getValidator(pubkey: BLSPubkey): Promise<ValidatorResponse | null> {
-        const validatorResponse = await this.client.post<{pubkeys: string[]}, Json[]>(
+        const validatorResponse = await this.client.post<{ pubkeys: string[] }, Json[]>(
             LighthouseRoutes.GET_VALIDATORS,
             {pubkeys: [this.config.types.BLSPubkey.toJson(pubkey, {case: "snake"}) as string]}
         );
@@ -96,7 +96,7 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
             validatorJson.pubkey === toHexString(pubkey)
         );
         // @ts-ignore
-        if(!validator || !validator.validator) {
+        if (!validator || !validator.validator) {
             return null;
         }
         //naming issues, hopefully removed with standardized api
@@ -109,12 +109,14 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
         const publicKeys = pubkeys.map(pubkey => (
             this.config.types.BLSPubkey.toJson(pubkey, {case: "snake"}) as string
         ));
-        const validatorResponse = await this.client.post<{pubkeys: string[]}, Json[]>(
+        const validatorResponse = (await this.client.post<{ pubkeys: string[] }, Json[]>(
             LighthouseRoutes.GET_VALIDATORS,
             {pubkeys: publicKeys}
-        );
+        ))
+        // remove null validators
+        // @ts-ignore
+            .filter((v) => !!v.validator_index);
 
-        // naming issues, hopefully removed with standardized api
         validatorResponse.forEach((_, i) => {
             // @ts-ignore
             validatorResponse[i].index = validatorResponse[i].validator_index;
