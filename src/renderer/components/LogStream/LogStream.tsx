@@ -1,20 +1,31 @@
 import * as React from "react";
-import {useState, useEffect} from "react";
-import {Readable} from "stream";
+import {useCallback, useEffect, useState} from "react";
 import {getLogMessageType} from "../../services/docker/utils";
+import {ILogRecord} from "../../services/utils/logging/interface";
 
 export interface ILogStreamProps {
-    stream?: Readable;
+    source?: AsyncIterable<ILogRecord[]>;
 }
 
 export const LogStream: React.FunctionComponent<ILogStreamProps> = (props: ILogStreamProps) => {
     const [logs, setLogs] = useState<string[]>([]);
 
+    const addLogs = useCallback((logRecords: ILogRecord[]) => {
+        setLogs((logs) => logs.concat(logRecords.map(l => l.log)));
+    }, [setLogs]);
+
     useEffect(()=> {
-        props.stream && props.stream.on("data", (chunk: Buffer)=>{
-            setLogs(logs.concat([chunk.toString()]));
-        });
-    },[logs]);
+        if(props.source) {
+            (async function(): Promise<void> {
+                for await (const logRecords of props.source) {
+                    addLogs(logRecords);
+                }
+            })();
+        }
+        return (): void => {
+            setLogs([]);
+        };
+    }, []);
 
     return(
         <React.Fragment>
