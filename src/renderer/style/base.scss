@@ -72,6 +72,12 @@ p.small {
     padding-top: 16px;
 }
 
+a {
+    color: $secondary-green-400;
+    text-decoration: none;
+    font-weight: bold;
+}
+
 /**
  * Global scrollbar styling
  */

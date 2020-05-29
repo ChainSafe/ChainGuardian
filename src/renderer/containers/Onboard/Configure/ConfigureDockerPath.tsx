@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {RouteComponentProps} from "react-router-dom";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
-import {ButtonSecondary} from "../../../components/Button/ButtonStandard";
+import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
 import {InputForm} from "../../../components/Input/InputForm";
 
 type IOwnProps =  Pick<RouteComponentProps, "history">;
@@ -16,40 +16,32 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
 
     return (
         <>
-            <h1>Configure Docker</h1>
-            <p>Docker application not found.</p>
+            <h1>Docker application not found</h1><br />
 
-            <div className="input-container">
-                <div className="row">
-                    <p>
-                        Please
-                        <a href="https://www.docker.com/products/docker-desktop" target="_blank">
-                            install Docker
-                        </a> to be able to run beacon node on your PC.
-                    </p>
-                </div>
+            <p>
+                Please
+                <a href="https://www.docker.com/products/docker-desktop" target="_blank"> install Docker </a>
+                to be able to run beacon node on your PC.
+            </p>
 
-                <div className="row">
-                    <h5 className="input-or">OR</h5>
-                </div>
+            <h5 className="input-or">OR</h5>
 
-                <div className="row">
-                    <p>Input Docker path: </p><br />
+            <p>Input Docker path: </p>
 
-                    <InputForm
-                        focused
-                        onChange={(e: React.FormEvent<HTMLInputElement>) => setPath(e.currentTarget.value)}
-                        type="password"
-                        valid={valid}
-                        errorMessage={"Incorrect password"}
-                    />
-                    <ButtonSecondary
-                        buttonId="go"
-                        onClick={savePath}
-                    >
-                        Set path
-                    </ButtonSecondary>
-                </div>
+            <div className="action-buttons no-margin">
+                <InputForm
+                    focused
+                    onChange={(e: React.FormEvent<HTMLInputElement>) => setPath(e.currentTarget.value)}
+                    type="password"
+                    valid={valid}
+                    errorMessage={"Incorrect password"}
+                />
+                <ButtonPrimary
+                    buttonId="go"
+                    onClick={savePath}
+                >
+                    Set path
+                </ButtonPrimary>
             </div>
         </>
     );
