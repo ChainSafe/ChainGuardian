@@ -4,6 +4,7 @@ import {extractDockerVersion} from "./utils";
 
 class DockerPath {
     private defaultPaths = [
+        "docker",
         "/usr/bin/docker",
         "/usr/local/bin/docker",
         "C:\Program Files\Docker Toolbox\docker.exe",

@@ -35,6 +35,7 @@ export abstract class Container {
      * @param version - check if this specific version is installed.
      */
     public static async isDockerInstalled(version?: string): Promise<boolean> {
+        return false;
         try {
             const cmdResult = await runCmdAsync(await Command.version());
             const dockerVersion = extractDockerVersion(cmdResult.stdout);
