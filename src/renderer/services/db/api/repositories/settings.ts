@@ -11,27 +11,16 @@ export class SettingsRepository extends Repository<Settings> {
         super(db, JSONSerializer, Bucket.settings, SettingsType);
     }
 
-    public async get(id: string): Promise<Settings | null> {
-        const key = this.getKeyName(id);
-        return super.get(key);
+    public async get(id = DEFAULT_ACCOUNT): Promise<Settings | null> {
+        return super.get(id);
     }
 
-    public async has(id: string): Promise<boolean> {
-        const key = this.getKeyName(id);
-        return super.has(key);
+    // TODO: Should merge with existing settings
+    public async set(id = DEFAULT_ACCOUNT, value: Settings): Promise<void> {
+        await super.set(id, value);
     }
 
-    public async set(id: string, value: Settings): Promise<void> {
-        const key = this.getKeyName(id);
-        await super.set(key, value);
-    }
-
-    public async delete(id: string): Promise<void> {
-        const key = this.getKeyName(id);
-        await super.delete(key);
-    }
-
-    private getKeyName(account = DEFAULT_ACCOUNT): string {
-        return account;
+    public async delete(id = DEFAULT_ACCOUNT): Promise<void> {
+        await super.delete(id);
     }
 }

@@ -2,16 +2,27 @@ import React, {useState} from "react";
 import {RouteComponentProps} from "react-router-dom";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
+import {saveAccountSettings} from "../../../actions/settings";
 import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
 import {InputForm} from "../../../components/Input/InputForm";
+import {OnBoardingRoutes, Routes} from "../../../constants/routes";
+import {DockerPath} from "../../../services/docker/path";
 
 type IOwnProps =  Pick<RouteComponentProps, "history">;
 const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) => {
     const [path, setPath] = useState("");
-    const [valid, isValid] = useState(null);
+    const [valid, setValid] = useState(null);
 
-    const savePath = (): void => {
-
+    const savePath = async(): Promise<void> => {
+        if (await DockerPath.isValidPath(path)) {
+            props.saveSettings({
+                dockerPath: path,
+            });
+            setValid(true);
+            props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE));
+        } else {
+            setValid(false);
+        }
     };
 
     return (
@@ -20,7 +31,8 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
 
             <p>
                 Please
-                <a href="https://www.docker.com/products/docker-desktop" target="_blank"> install Docker </a>
+                <a href="https://www.docker.com/products/docker-desktop"
+                    target="_blank" rel="noopener noreferrer"> install Docker </a>
                 to be able to run beacon node on your PC.
             </p>
 
@@ -31,8 +43,7 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
             <div className="action-buttons no-margin">
                 <InputForm
                     focused
-                    onChange={(e: React.FormEvent<HTMLInputElement>) => setPath(e.currentTarget.value)}
-                    type="password"
+                    onChange={(e: React.FormEvent<HTMLInputElement>): void => setPath(e.currentTarget.value)}
                     valid={valid}
                     errorMessage={"Incorrect password"}
                 />
@@ -49,11 +60,13 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
 
 
 interface IInjectedProps {
+    saveSettings: typeof saveAccountSettings,
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
+            saveSettings: saveAccountSettings,
         },
         dispatch
     );

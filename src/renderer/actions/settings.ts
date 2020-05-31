@@ -1,4 +1,3 @@
-import {Promise} from "q";
 import {Action, Dispatch} from "redux";
 import {DEFAULT_ACCOUNT} from "../constants/account";
 import {AccountSettingsActionTypes} from "../constants/action-types";
@@ -15,6 +14,6 @@ export const saveAccountSettings = (settings: ISettings) => {
         dispatch({
             type: AccountSettingsActionTypes.SAVE_SETTINGS,
             payload: settings,
-        })
+        });
     };
 };
