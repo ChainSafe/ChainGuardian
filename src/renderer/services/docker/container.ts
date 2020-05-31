@@ -1,3 +1,4 @@
+import {dockerPath} from "./path";
 import {IDockerRunParams} from "./type";
 import {Command} from "./command";
 import {ICmdRun, runCmd, runCmdAsync, runDetached} from "../utils/cmd";
@@ -35,8 +36,12 @@ export abstract class Container {
      * @param version - check if this specific version is installed.
      */
     public static async isDockerInstalled(version?: string): Promise<boolean> {
-        return false;
         try {
+            if (!(await dockerPath.loadPath())) {
+                logger.info("Docker path loading failed, Docker not found.");
+                return false;
+            }
+
             const cmdResult = await runCmdAsync(await Command.version());
             const dockerVersion = extractDockerVersion(cmdResult.stdout);
             return version ? version === dockerVersion : !!dockerVersion;
