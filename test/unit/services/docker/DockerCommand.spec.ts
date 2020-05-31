@@ -1,7 +1,19 @@
+import {dockerPath} from "../../../../src/renderer/services/docker/path";
 import {IDockerRunParams} from "../../../../src/renderer/services/docker/type";
 import {Command} from "../../../../src/renderer/services/docker/command";
+import sinon from "sinon";
 
 describe("DockerCommand unit tests", () => {
+    let sandbox: sinon.SinonSandbox;
+    beforeAll(async () => {
+        sandbox = sinon.createSandbox();
+        sandbox.stub(dockerPath, "getPath").resolves("docker");
+    });
+
+    afterAll(() => {
+        sandbox.restore();
+    });
+
     // run command
     it("should check if docker run command generating properly", async() => {
         const params: IDockerRunParams = {name: "test-image", image: "test-image"};
