@@ -15,8 +15,16 @@ export class SettingsRepository extends Repository<Settings> {
         return super.get(id);
     }
 
-    // TODO: Should merge with existing settings
     public async set(id = DEFAULT_ACCOUNT, value: Settings): Promise<void> {
+        // Merge new values with possible existing settings
+        const existingRecord = await this.get(id);
+        if (existingRecord) {
+            return super.set(id, {
+                ...existingRecord,
+                ...value,
+            });
+        }
+
         await super.set(id, value);
     }
 
