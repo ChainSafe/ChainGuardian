@@ -2,8 +2,10 @@ import React, {useState} from "react";
 import {RouteComponentProps} from "react-router-dom";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
+import {remote} from "electron";
+
 import {saveAccountSettings} from "../../../actions/settings";
-import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
+import {ButtonPrimary, ButtonSecondary} from "../../../components/Button/ButtonStandard";
 import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {DockerPath} from "../../../services/docker/path";
@@ -14,9 +16,15 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
     const [valid, setValid] = useState(null);
 
     const savePath = async(): Promise<void> => {
-        if (await DockerPath.isValidPath(path)) {
+        const {filePaths} = await remote.dialog.showOpenDialog({
+            title:"Select Docker binary",
+            properties: ['openFile']
+        });
+        setPath(filePaths[0]);
+
+        if (filePaths[0] && await DockerPath.isValidPath(filePaths[0])) {
             props.saveSettings({
-                dockerPath: path,
+                dockerPath: filePaths[0],
             });
             setValid(true);
             props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE));
@@ -40,18 +48,29 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
 
             <p>Input Docker path: </p>
 
-            <div className="action-buttons no-margin">
-                <InputForm
-                    focused
-                    onChange={(e: React.FormEvent<HTMLInputElement>): void => setPath(e.currentTarget.value)}
-                    valid={valid}
-                    errorMessage={"Incorrect password"}
-                />
+            <div className="flex-column">
+                <div className="action-buttons no-margin">
+                    <InputForm
+                        focused
+                        readOnly
+                        inputValue={path}
+                        valid={valid}
+                        errorMessage={"Invalid path"}
+                    />
+                    <ButtonSecondary
+                        buttonId="go"
+                        onClick={savePath}
+                    >
+                        Choose
+                    </ButtonSecondary>
+                </div>
+
                 <ButtonPrimary
-                    buttonId="go"
-                    onClick={savePath}
+                    buttonId="next"
+                    disabled={!valid}
+                    type="submit"
                 >
-                    Set path
+                    NEXT
                 </ButtonPrimary>
             </div>
         </>
