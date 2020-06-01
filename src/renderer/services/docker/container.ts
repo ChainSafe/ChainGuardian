@@ -68,7 +68,7 @@ export abstract class Container {
     }
 
     public static async exists(name: string): Promise<boolean> {
-        const cmdResult = (await runCmdAsync(Command.lsContainer())).stdout.split("\n");
+        const cmdResult = (await runCmdAsync(await Command.lsContainer())).stdout.split("\n");
         for (let i = 0 ; i < cmdResult.length; i++) {
             // check last column for name
             if (cmdResult[i].includes(name)) {
@@ -224,7 +224,7 @@ export abstract class Container {
     public async remove(): Promise<boolean> {
         if (this.docker && this.docker.name) {
             try {
-                runCmd(Command.removeContainer(this.docker.name));
+                runCmd(await Command.removeContainer(this.docker.name));
                 logger.info(`Docker container ${this.docker.name} removed.`);
                 return true;
             } catch (e) {
