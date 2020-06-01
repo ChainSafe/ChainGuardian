@@ -18,7 +18,7 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
     const savePath = async(): Promise<void> => {
         const {filePaths} = await remote.dialog.showOpenDialog({
             title:"Select Docker binary",
-            properties: ['openFile']
+            properties: ["openFile"]
         });
         setPath(filePaths[0]);
 
@@ -27,10 +27,13 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
                 dockerPath: filePaths[0],
             });
             setValid(true);
-            props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE));
         } else {
             setValid(false);
         }
+    };
+
+    const onNextClick = (): void => {
+        props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE));
     };
 
     return (
@@ -48,7 +51,7 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
 
             <p>Input Docker path: </p>
 
-            <div className="flex-column">
+            <div className="input-container">
                 <div className="action-buttons no-margin">
                     <InputForm
                         focused
@@ -60,19 +63,21 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
                     <ButtonSecondary
                         buttonId="go"
                         onClick={savePath}
+                        className="no-margin"
                     >
                         Choose
                     </ButtonSecondary>
                 </div>
-
-                <ButtonPrimary
-                    buttonId="next"
-                    disabled={!valid}
-                    type="submit"
-                >
-                    NEXT
-                </ButtonPrimary>
             </div>
+
+            <ButtonPrimary
+                buttonId="next"
+                disabled={!valid}
+                type="submit"
+                onClick={onNextClick}
+            >
+                NEXT
+            </ButtonPrimary>
         </>
     );
 };

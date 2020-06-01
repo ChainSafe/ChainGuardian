@@ -44,7 +44,7 @@ export class DockerPath {
         for (let i = 0; i < this.defaultPaths.length; i++) {
             if (await DockerPath.isValidPath(this.defaultPaths[i])) {
                 logger.info(`Found Docker at default path: ${this.defaultPaths[i]}`);
-                return this.path;
+                return this.defaultPaths[i];
             }
         }
     }
