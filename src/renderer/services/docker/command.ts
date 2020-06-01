@@ -1,49 +1,61 @@
+import {dockerPath} from "./path";
 import {IDockerRunParams} from "./type";
 import {generateRunCommand} from "./utils";
 
 export class Command {
-    public static run(params: IDockerRunParams): string {
-        return `docker run ${generateRunCommand(params)}`;
+    public static async run(params: IDockerRunParams): Promise<string> {
+        const path = await dockerPath.getPath();
+        return `"${path}" run ${generateRunCommand(params)}`;
     }
 
-    public static ps(
+    public static async ps(
         containerName?: string,
         status?: "created" | "restarting" | "running" | "removing" | "paused" | "exited" | "dead"
-    ): string {
+    ): Promise<string> {
         const nameFilter = containerName ? ` --no-trunc --filter name=^/${containerName}$` : "";
         const statusFilter = status ? ` --filter status=${status}` : "";
-        return `docker ps -a${nameFilter}${statusFilter}`;
+        const path = await dockerPath.getPath();
+        return `"${path}" ps -a${nameFilter}${statusFilter}`;
     }
 
-    public static version(): string {
-        return "docker -v";
+    // Passed argument is used to check installation and path correctness
+    public static async version(defaultPath?: string): Promise<string> {
+        const path = defaultPath || await dockerPath.getPath();
+        return `"${path}" -v`;
     }
 
-    public static stop(containerName: string): string {
-        return `docker stop ${containerName}`;
+    public static async stop(containerName: string): Promise<string> {
+        const path = await dockerPath.getPath();
+        return `"${path}" stop ${containerName}`;
     }
 
-    public static start(containerName: string): string {
-        return `docker start ${containerName}`;
+    public static async start(containerName: string): Promise<string> {
+        const path = await dockerPath.getPath();
+        return `"${path}" start ${containerName}`;
     }
 
-    public static restart(containerName: string): string {
-        return `docker restart ${containerName}`;
+    public static async restart(containerName: string): Promise<string> {
+        const path = await dockerPath.getPath();
+        return `"${path}" restart ${containerName}`;
     }
 
-    public static logs(containerName: string, follow?: boolean): string {
-        return `docker logs${follow ? " --follow" : ""} ${containerName}`;
+    public static async logs(containerName: string, follow?: boolean): Promise<string> {
+        const path = await dockerPath.getPath();
+        return `"${path}" logs${follow ? " --follow" : ""} ${containerName}`;
     }
 
-    public static kill(containerName: string): string {
-        return `docker kill ${containerName}`;
+    public static async kill(containerName: string): Promise<string> {
+        const path = await dockerPath.getPath();
+        return `"${path}" kill ${containerName}`;
     }
 
-    public static removeContainer(containerName: string): string {
-        return `docker container rm -v ${containerName}`;
+    public static async removeContainer(containerName: string): Promise<string> {
+        const path = await dockerPath.getPath();
+        return `"${path}" container rm -v ${containerName}`;
     }
 
-    public static lsContainer(): string {
-        return "docker container ls -a";
+    public static async lsContainer(): Promise<string> {
+        const path = await dockerPath.getPath();
+        return `"${path}" container ls -a`;
     }
 }

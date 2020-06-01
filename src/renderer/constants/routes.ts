@@ -17,6 +17,7 @@ export enum OnBoardingRoutes {
     WITHDRAWAL_KEY_GENERATE ="2_wkg",
     WITHDRAWAL_KEY_VALIDATE ="2_wkv",
     CONFIGURE = "3_0",
+    CONFIGURE_DOCKER_PATH = "3_0_1",
     CONFIGURE_BEACON_NODE = "3_1",
     DEPOSIT_TX = "4_0",
     PASSWORD = "5_ps",

@@ -5,6 +5,7 @@ import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {Dropdown} from "../../../components/Dropdown/Dropdown";
 import {IRootState} from "../../../reducers";
+import {Container} from "../../../services/docker/container";
 import {isSupportedBeaconChain} from "../../../services/eth2/client";
 import {defaultNetworkIndex, networks, networksList} from "../../../services/eth2/networks";
 import {bindActionCreators, Dispatch} from "redux";
@@ -39,9 +40,14 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
         props.setNetwork(networks[selectedNetworkIndex].networkName);
     };
 
-    const onRunNodeSubmit = (): void => {
+    const onRunNodeSubmit = async(): Promise<void> => {
         handleSubmit();
-        props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE));
+
+        if (await Container.isDockerInstalled()) {
+            props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE));
+        } else {
+            props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_DOCKER_PATH));
+        }
     };
 
     const isValidBeaconNode = async(): Promise<boolean> => {

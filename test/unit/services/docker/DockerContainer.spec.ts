@@ -1,8 +1,19 @@
 import {Container} from "../../../../src/renderer/services/docker/container";
+import {dockerPath} from "../../../../src/renderer/services/docker/path";
 import * as cmdUtils from "../../../../src/renderer/services/utils/cmd";
-import * as sinon from "sinon";
+import sinon from "sinon";
 
 describe("docker container isDockerInstalled method unit tests", () => {
+    let sandbox: sinon.SinonSandbox;
+    beforeAll(async () => {
+        sandbox = sinon.createSandbox();
+        sandbox.stub(dockerPath, "getDockerBinary").resolves("docker");
+    });
+
+    afterAll(() => {
+        sandbox.restore();
+    });
+
     const runCmdStub = sinon.stub(cmdUtils, "runCmdAsync");
 
     it("should successfully check if docker is installed", async () => {

@@ -8,6 +8,7 @@ export interface IButtonProps {
     buttonId?: string;
     datafield?: string | number;
     type?: "reset" | "button" | "submit";
+    className?: string;
 }
 export interface IBaseButtonProps extends IButtonProps{
     buttonType?: string;
@@ -28,10 +29,11 @@ const BaseButton: React.FunctionComponent<IBaseButtonProps> = ({
     buttonType,
     large,
     buttonId,
+    className,
     ...props
 }) => (<button
     id={buttonId}
-    className={`button btn-${buttonType} ${focused ? "focused" : ""}`}
+    className={`button btn-${buttonType} ${focused ? "focused" : ""} ${className || ""}`}
     disabled={disabled}
     onClick={onClick}
     {...props}>
