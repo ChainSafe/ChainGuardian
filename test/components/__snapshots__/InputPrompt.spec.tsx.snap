@@ -42,7 +42,7 @@ exports[`Input prompt renders correctly 1`] = `
         className="prompt-cancel-button"
       >
         <button
-          className="button btn-destructive "
+          className="button btn-destructive  "
           onClick={[Function]}
         >
           <div
@@ -56,7 +56,7 @@ exports[`Input prompt renders correctly 1`] = `
         className="prompt-confirm-button"
       >
         <button
-          className="button btn-primary "
+          className="button btn-primary  "
           onClick={[Function]}
         >
           <div

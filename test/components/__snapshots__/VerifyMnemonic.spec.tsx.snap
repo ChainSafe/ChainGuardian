@@ -11,7 +11,7 @@ exports[`Verify Mnemonic renders correctly 1`] = `
     className="verify-button-container"
   >
     <button
-      className="button btn-inverted "
+      className="button btn-inverted  "
       datafield="false"
       disabled={false}
       onClick={[Function]}
@@ -23,7 +23,7 @@ exports[`Verify Mnemonic renders correctly 1`] = `
       </div>
     </button>
     <button
-      className="button btn-inverted "
+      className="button btn-inverted  "
       datafield="false"
       disabled={false}
       onClick={[Function]}
@@ -35,7 +35,7 @@ exports[`Verify Mnemonic renders correctly 1`] = `
       </div>
     </button>
     <button
-      className="button btn-inverted "
+      className="button btn-inverted  "
       datafield="true"
       disabled={false}
       onClick={[Function]}
