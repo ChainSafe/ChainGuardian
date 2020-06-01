@@ -22,7 +22,7 @@ export class DockerPath {
             const result = await runCmdAsync(await Command.version(path));
             return !!extractDockerVersion(result.stdout);
         } catch (e) {
-            logger.error(`Error while checking if Docker path is valid: ${e.message}`);
+            logger.warn(`Error while checking if Docker path is valid: ${e.message}`);
             return false;
         }
     }
@@ -40,20 +40,13 @@ export class DockerPath {
         throw new Error("Docker path is not set.");
     }
 
-    public async findPath(): Promise<string|null> {
-        for (let i = 0; i < this.defaultPaths.length; i ++) {
-            try {
-                if (DockerPath.isValidPath(this.defaultPaths[i])) {
-                    this.path = this.defaultPaths[i];
-                    return this.path;
-                }
-            } catch {
-                // If all default paths are not working return null
-                if (i === this.defaultPaths.length - 1) {
-                    return null;
-                }
+    public async findPath(): Promise<string|undefined> {
+        return this.defaultPaths.find((path) => {
+            if (DockerPath.isValidPath(path)) {
+                this.path = path;
+                return this.path;
             }
-        }
+        });
     }
 
     public async loadPath(): Promise<string|null> {
