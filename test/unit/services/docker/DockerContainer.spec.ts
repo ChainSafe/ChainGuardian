@@ -7,7 +7,7 @@ describe("docker container isDockerInstalled method unit tests", () => {
     let sandbox: sinon.SinonSandbox;
     beforeAll(async () => {
         sandbox = sinon.createSandbox();
-        sandbox.stub(dockerPath, "loadPath").resolves("docker");
+        sandbox.stub(dockerPath, "getDockerBinary").resolves("docker");
     });
 
     afterAll(() => {

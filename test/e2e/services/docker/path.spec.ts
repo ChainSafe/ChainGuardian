@@ -8,8 +8,8 @@ else
     describe.skip("skipping docker container e2e tests", tests);
 
 function tests(): void {
-    it("should find a working default path", async () => {
-        const path = await dockerPath.findPath();
+    it("should find a working default binary", async () => {
+        const path = await dockerPath.getDefaultBinary();
         assert.isNotNull(path, "path should not be null");
     });
 }

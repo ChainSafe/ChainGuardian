@@ -37,8 +37,8 @@ export abstract class Container {
      */
     public static async isDockerInstalled(version?: string): Promise<boolean> {
         try {
-            if (!(await dockerPath.loadPath())) {
-                logger.info("Docker path loading failed, Docker not found.");
+            if (!(await dockerPath.getDockerBinary())) {
+                logger.info("Docker binary loading failed, Docker not found.");
                 return false;
             }
 
