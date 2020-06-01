@@ -1,5 +1,4 @@
 import * as logger from "electron-log";
-import {Readable} from "stream";
 
 import database from "../db/api/database";
 import {getNetworkConfig} from "../eth2/networks";

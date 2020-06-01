@@ -47,7 +47,7 @@ function tests(): void {
      * 2) check if logs are pipes to instance
      * NOTE: All logs go to stderr
      */
-    it("should read logs using listenToLogs", async done => {
+    it("should read logs using listenToLogs", async () => {
         if (await BeaconChain.isDockerInstalled()) {
             beaconChain = await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI);
             // wait for docker instance to start
