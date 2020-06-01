@@ -20,15 +20,18 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
             title:"Select Docker binary",
             properties: ["openFile"]
         });
-        setPath(filePaths[0]);
 
-        if (filePaths[0] && await DockerPath.isValidPath(filePaths[0])) {
-            props.saveSettings({
-                dockerPath: filePaths[0],
-            });
-            setValid(true);
-        } else {
-            setValid(false);
+        if (filePaths[0]) {
+            setPath(filePaths[0]);
+
+            if (filePaths[0] && await DockerPath.isValidPath(filePaths[0])) {
+                props.saveSettings({
+                    dockerPath: filePaths[0],
+                });
+                setValid(true);
+            } else {
+                setValid(false);
+            }
         }
     };
 
