@@ -2,12 +2,14 @@ import {PassThrough} from "stream";
 import {createLogger, format, Logger, transports} from "winston";
 import {defaultLogLevel, LogLevel, ILogger, ILoggerOptions} from "@chainsafe/lodestar-utils";
 import chalk from "chalk";
+import {ICGLogger, ILogRecord} from "../../utils/logging/interface";
+import {BufferedLogger} from "../../utils/logging/buffered";
 
 export class ValidatorLogger implements ILogger {
     private winston: Logger;
     private _level: LogLevel;
     private _silent: boolean;
-    private readonly _stream: PassThrough;
+    private bufferedLogger: ICGLogger;
 
     public constructor(options?: Partial<ILoggerOptions>) {
         options = {
@@ -15,7 +17,9 @@ export class ValidatorLogger implements ILogger {
             module: "",
             ...options
         };
-        this._stream = new PassThrough();
+        const stream = new PassThrough();
+        this.bufferedLogger = new BufferedLogger({maxCache: 1000});
+        this.bufferedLogger.addStreamSource(stream);
         this.winston = createLogger({
             level: LogLevel[LogLevel.verbose], // log level switching handled in `createLogEntry`
             defaultMeta: {
@@ -23,7 +27,7 @@ export class ValidatorLogger implements ILogger {
             },
             transports: [
                 new transports.Stream({
-                    stream: this._stream,
+                    stream,
                     format: format.combine(
                         format.timestamp({
                             format: "YYYY-MM-DD HH:mm:ss"
@@ -104,8 +108,8 @@ export class ValidatorLogger implements ILogger {
         });
     }
 
-    public get stream(): PassThrough {
-        return this._stream;
+    public getLogIterator(): AsyncIterable<ILogRecord[]> {
+        return this.bufferedLogger.getLogIterator();
     }
 
     private createLogEntry(level: LogLevel, message: string | object, context: object = {}): void {

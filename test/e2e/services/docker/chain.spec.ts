@@ -47,21 +47,15 @@ function tests(): void {
      * 2) check if logs are pipes to instance
      * NOTE: All logs go to stderr
      */
-    it("should read logs using listenToLogs", async done => {
+    it("should read logs using listenToLogs", async () => {
         if (await BeaconChain.isDockerInstalled()) {
             beaconChain = await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI);
             // wait for docker instance to start
             while (!(await beaconChain.isRunning())) { /* */ }
-            const logs = beaconChain.getLogs();
-            if (!logs) {
-                return assert(false, "Logs not found");
+            for await (const logs of beaconChain.getLogs()) {
+                assert(logs.length > 0);
+                break;
             }
-
-            beaconChain.listenToLogs(function(type: string, message: string) {
-                assert(type === "info" || type === "error");
-                assert(message);
-                done();
-            });
         }
     }, 10000);
 }

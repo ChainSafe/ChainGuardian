@@ -1,10 +1,12 @@
 import {dockerPath} from "./path";
 import {IDockerRunParams} from "./type";
 import {Command} from "./command";
-import {ICmdRun, runCmd, runCmdAsync, runDetached} from "../utils/cmd";
+import {runCmd, runCmdAsync, runDetached} from "../utils/cmd";
 import * as logger from "electron-log";
 import {Readable} from "stream";
 import {extractDockerVersion} from "./utils";
+import {ICGLogger, ILogRecord} from "../utils/logging/interface";
+import {BufferedLogger} from "../utils/logging/buffered";
 
 /**
  * Interface defining started docker instance.
@@ -22,11 +24,13 @@ export interface IDocker {
  */
 export abstract class Container {
     protected readonly params: IDockerRunParams;
-    private docker: IDocker | null;
+    protected docker: IDocker | null;
+    protected logger: ICGLogger;
 
     protected constructor(params: IDockerRunParams) {
         this.docker = null;
         this.params = params;
+        this.logger = new BufferedLogger({maxCache: 1000});
     }
 
     /**
@@ -85,6 +89,8 @@ export abstract class Container {
         // Use the same way as docker run
         const logs = runCmd(await Command.logs(this.params.name, true));
         this.docker = {name: this.params.name, stdout: logs.stdout, stderr: logs.stderr};
+        this.logger.addStreamSource(logs.stdout, "stdout");
+        this.logger.addStreamSource(logs.stderr, "stderr");
         return this.docker;
     }
 
@@ -95,12 +101,9 @@ export abstract class Container {
         return undefined;
     }
 
-    public getLogs(): ICmdRun | undefined {
+    public getLogs(): AsyncIterable<ILogRecord[]> {
         if (this.docker) {
-            return {
-                stdout: this.docker.stdout,
-                stderr: this.docker.stderr,
-            } as ICmdRun;
+            return this.logger.getLogIterator();
         }
     }
 
@@ -120,6 +123,8 @@ export abstract class Container {
                 // start new docker instance
                 const run = runDetached(await Command.run(this.params));
                 this.docker = {name: this.params.name, stdout: run.stdout, stderr: run.stderr};
+                this.logger.addStreamSource(run.stdout, "stdout");
+                this.logger.addStreamSource(run.stderr, "stderr");
                 logger.info(`Docker instance ${this.docker.name} started.`);
                 return this.docker;
             } catch (e) {

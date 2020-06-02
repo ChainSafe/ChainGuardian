@@ -1,5 +1,4 @@
 import * as logger from "electron-log";
-import {Readable} from "stream";
 
 import database from "../db/api/database";
 import {getNetworkConfig} from "../eth2/networks";
@@ -7,9 +6,6 @@ import {SupportedNetworks} from "../eth2/supportedNetworks";
 import {Container, IDocker} from "./container";
 import {DockerRegistry} from "./docker-registry";
 import {DockerPort} from "./type";
-import {getLogMessageType, LogType} from "./utils";
-
-type LogCallbackFunc = (type: LogType, message: string) => void;
 
 export class BeaconChain extends Container {
     public static async startBeaconChain(
@@ -70,25 +66,6 @@ export class BeaconChain extends Container {
         DockerRegistry.addContainer(name, bc);
         logger.info(`Started ${name} local beacon node.`);
     }
-
-    public listenToLogs(callback: LogCallbackFunc): void {
-        const logs = this.getLogs();
-        if (!logs) {
-            throw new Error("Logs not found");
-        }
-
-        logs.stderr.on("data", function(output: Buffer) {
-            const message = output.toString();
-            const type = getLogMessageType(message);
-            callback(type, message);
-        });
-    }
-
-    public getLogStream(): Readable|null {
-        const logs = this.getLogs();
-        return logs ? logs.stderr : null;
-    }
-
     public async run(): Promise<IDocker> {
         if (await Container.exists(this.params.name)) {
             logger.info(`Going to start existing container ${this.params.name}`);
