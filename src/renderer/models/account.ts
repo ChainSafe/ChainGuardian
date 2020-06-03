@@ -19,7 +19,7 @@ export class CGAccount implements IAccount {
     public directory: string;
     public sendStats: boolean | null;
 
-    private validators: Keypair[] = [];
+    private validators: ICGKeystore[] = [];
     private keystoreTarget: ICGKeystoreFactory;
     private validatorsNetwork: IValidatorNetwork = {};
 
@@ -49,13 +49,20 @@ export class CGAccount implements IAccount {
     }
 
     /**
-   * returns all validator keypairs or throws if not unlocked
-   * @param password decryption password of the keystore
+   * returns all validators addresses
    */
-    public getValidators(): Keypair[] {
-        if (!this.isUnlocked()) {
-            throw new Error("Keystore locked.");
+    public getValidators(): ICGKeystore[] {
+        return this.validators;
+    }
+
+    public async loadValidators(): Promise<ICGKeystore[]> {
+        this.validators = this.getKeystoreFiles();
+
+        for (const validator of this.validators) {
+            const validatorAddress = validator.getPublicKey();
+            await this.loadValidatorNetwork(validatorAddress);
         }
+
         return this.validators;
     }
 
@@ -138,33 +145,17 @@ export class CGAccount implements IAccount {
                 return undefined;
             }
         });
-        for (const validatorIdx in validators) {
-            const validator = await validators[validatorIdx];
-            if (validator !== undefined) {
-                const validatorAddress = validator.publicKey.toHexString();
-                await this.loadValidatorNetwork(validatorAddress);
-                this.validators.push(validator);
-            }
-        }
     }
 
-    public addValidator(validator: Keypair): void {
-        this.validators.push(validator);
-    }
     public removeValidator(index: number): void {
         this.validators.splice(index, 1);
     }
 
     /**
-   * delete all unlocked keypairs from object
+   * delete all keystores from object
    */
     public lock(): void {
-        // Clear validator Keypairs
         this.validators = [];
-    }
-
-    private isUnlocked(): boolean {
-        return this.validators.length > 0;
     }
 
     private getKeystoreFiles(): ICGKeystore[] {

@@ -11,10 +11,10 @@ import {ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {deleteKeystore} from "../../services/utils/account";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 import {IRootState} from "../../reducers";
-import {loadValidatorsAction, storeNotificationAction} from "../../actions";
+import {loadAccountAction, loadValidatorsAction, storeNotificationAction} from "../../actions";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
-import {storeAuthAction, startAddingNewValidator as startAddingNewValidatorAction} from "../../actions";
+import {startAddingNewValidator as startAddingNewValidatorAction} from "../../actions";
 
 type IOwnProps = {
     network: string;
@@ -51,7 +51,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
             const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey;
             deleteKeystore(props.auth.account.directory, selectedValidatorPublicKey);
             props.auth.account.removeValidator(selectedValidatorIndex);
-            props.storeAuth(props.auth.account);
+            // props.storeAuth(props.auth.account);
             props.loadValidators();
         }
         setConfirmModal(false);
@@ -65,12 +65,12 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     };
 
     useEffect(()=> {
-        if (!props.auth.account) {
-            return props.history.push(Routes.LOGIN_ROUTE);
-        }
-
         props.loadValidators();
     },[props.auth.account && props.auth.account.getValidators().length]);
+
+    useEffect(()=> {
+        props.loadAccount();
+    },[]);
 
     const topBar =
             <div className={"validator-top-bar"}>
@@ -120,10 +120,11 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
 
 
 interface IInjectedProps{
-    storeAuth: typeof storeAuthAction;
+    // storeAuth: typeof storeAuthAction;
     notification: typeof storeNotificationAction;
     startAddingNewValidator: typeof startAddingNewValidatorAction;
     loadValidators: typeof loadValidatorsAction;
+    loadAccount: typeof loadAccountAction;
 }
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"> => ({
@@ -135,10 +136,11 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            storeAuth: storeAuthAction,
+            // storeAuth: storeAuthAction,
             notification: storeNotificationAction,
             startAddingNewValidator: startAddingNewValidatorAction,
             loadValidators: loadValidatorsAction,
+            loadAccount: loadAccountAction,
         },
         dispatch
     );

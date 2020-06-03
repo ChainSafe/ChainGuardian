@@ -70,7 +70,7 @@ export class V4Keystore implements ICGKeystore {
     }
 
     public getPublicKey(): string {
-        return this.keystore.pubkey;
+        return `0x${this.keystore.pubkey}`;
     }
 
     /**

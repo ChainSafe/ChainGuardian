@@ -9,7 +9,7 @@ import {InputForm} from "../../components/Input/InputForm";
 import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
 import {Routes, OnBoardingRoutes} from "../../constants/routes";
 import database from "../../services/db/api/database";
-import {storeAuthAction, storeNotificationAction} from "../../actions";
+import {storeNotificationAction} from "../../actions";
 import {IRootState} from "../../reducers";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
@@ -23,7 +23,7 @@ interface IState {
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
 interface IInjectedProps{
-    storeAuth: typeof storeAuthAction;
+    // storeAuth: typeof storeAuthAction;
     notification: typeof storeNotificationAction;
 }
 
@@ -89,7 +89,7 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
             const isCorrectValue = await account.isCorrectPassword(this.state.input);
             if (isCorrectValue) {
                 await account.unlock(this.state.input);
-                this.props.storeAuth(account);
+                // this.props.storeAuth(account);
                 this.props.history.push(Routes.DASHBOARD_ROUTE);
             } else {
                 this.displayNotification("Incorrect password", "Try again");
@@ -126,7 +126,7 @@ IOwnProps & IInjectedProps & Pick<IRootState, "auth">, IState> {
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            storeAuth: storeAuthAction,
+            // storeAuth: storeAuthAction,
             notification: storeNotificationAction,
         },
         dispatch

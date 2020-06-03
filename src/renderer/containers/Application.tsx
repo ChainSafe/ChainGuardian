@@ -4,7 +4,6 @@ import {MemoryRouter as Router, Switch, Route, Redirect} from "react-router-dom"
 import {ReactElement} from "react";
 import OnboardContainer from "../containers/Onboard/OnboardContainer";
 import {BeaconChain} from "../services/docker/chain";
-import {LoginContainer} from "./Login/LoginContainer";
 import {Routes} from "../constants/routes";
 import {DashboardContainer} from "./Dashboard/DashboardContainer";
 import {CheckPasswordContainer} from "./AddValidator/CheckPassword";
@@ -24,11 +23,10 @@ const Application = (): ReactElement => {
             <Router>
                 <Switch>
                     <Route path={Routes.ONBOARD_ROUTE} component={OnboardContainer}/>
-                    <Route path={Routes.LOGIN_ROUTE} component={LoginContainer}/>
                     <Route path={Routes.DASHBOARD_ROUTE} component={DashboardContainer}/>
                     <Route path={Routes.CHECK_PASSWORD} component={CheckPasswordContainer}/>
                     <Route path={Routes.VALIDATOR_DETAILS} component={ValidatorDetailsContainer}/>
-                    <Redirect from="/" to={Routes.LOGIN_ROUTE}/>
+                    <Redirect from="/" to={Routes.DASHBOARD_ROUTE}/>
                 </Switch>
             </Router>
         </div>

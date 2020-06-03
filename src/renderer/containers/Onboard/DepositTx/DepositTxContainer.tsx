@@ -33,7 +33,6 @@ interface IInjectedState {
     isDepositDetected: boolean;
     networkIndex: number;
     canDeposit: boolean;
-    isAddingNewValidator: boolean;
 }
 
 /**
@@ -110,12 +109,8 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps> {
     }
 
     private onwards = (): void => {
-        const {isAddingNewValidator, history} = this.props;
-        if (isAddingNewValidator) {
-            return history.push(Routes.CHECK_PASSWORD);
-        } else {
-            return history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
-        }
+        const {history} = this.props;
+        return history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
     };
 
     private handleVerify = (): void => {
@@ -135,7 +130,6 @@ const mapStateToProps = (state: IRootState): IInjectedState => {
         isDepositGenerated: deposit.depositTxData !== null,
         isDepositDetected: deposit.isDepositDetected,
         canDeposit: !!register.withdrawalKey || !!register.withdrawalMnemonic,
-        isAddingNewValidator: register.registerType === RegisterType.ADD,
     };
 };
 

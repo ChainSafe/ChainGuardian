@@ -27,13 +27,12 @@ export const loadValidatorsAction = () => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const auth = getState().auth;
         if (auth && auth.account) {
-            const validators = auth.account.getValidators();
+            const validators = await auth.account.loadValidators();
             const validatorArray = validators.map((v, index) => ({
                 name: `Validator ${index+1}`,
                 status: undefined,
-                publicKey: v.publicKey.toHexString(),
-                network: auth.account!.getValidatorNetwork(v.publicKey.toHexString()),
-                privateKey: v.privateKey.toHexString()
+                publicKey: v.getPublicKey(),
+                network: auth.account!.getValidatorNetwork(v.getPublicKey()),
             }));
 
             dispatch({
@@ -56,35 +55,39 @@ export const loadValidatorsAction = () => {
 export const loadValidatorsFromChain = (validators: string[]) => {
     return async (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): Promise<void> => {
         const beaconNodes = getState().network.validatorBeaconNodes[validators[0]];
-        // TODO: Use any working beacon node instead of first one
-        const client = beaconNodes[0].client;
-        const pubKeys = validators.map(address => fromHex(address));
-        const response = await client.beacon.getValidators(pubKeys);
+        if (beaconNodes.length > 0) {
+            // TODO: Use any working beacon node instead of first one
+            const client = beaconNodes[0].client;
+            const pubKeys = validators.map(address => fromHex(address));
+            const response = await client.beacon.getValidators(pubKeys);
 
-        dispatch({
-            type: ValidatorActionTypes.LOADED_VALIDATORS_FROM_CHAIN,
-            payload: response
-        });
+            dispatch({
+                type: ValidatorActionTypes.LOADED_VALIDATORS_FROM_CHAIN,
+                payload: response
+            });
+        }
     };
 };
 
 export const loadValidatorStatus = (validatorAddress: string) => {
     return async (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): Promise<void> => {
         const beaconNodes = getState().network.validatorBeaconNodes[validatorAddress];
-        // TODO: Use any working beacon node instead of first one
-        const eth2 = beaconNodes[0].client;
-        const network = getState().validators[validatorAddress].network;
-        const networkConfig = getNetworkConfig(network);
-        const eth1 = new EthersNotifier(networkConfig, networkConfig.eth1Provider);
-        const status = await getValidatorStatus(fromHex(validatorAddress), eth2, eth1);
+        if (beaconNodes.length > 0) {
+            // TODO: Use any working beacon node instead of first one
+            const eth2 = beaconNodes[0].client;
+            const network = getState().validators[validatorAddress].network;
+            const networkConfig = getNetworkConfig(network);
+            const eth1 = new EthersNotifier(networkConfig, networkConfig.eth1Provider);
+            const status = await getValidatorStatus(fromHex(validatorAddress), eth2, eth1);
 
-        dispatch({
-            type: ValidatorActionTypes.LOAD_STATUS,
-            payload: {
-                validator: validatorAddress,
-                status,
-            },
-        });
+            dispatch({
+                type: ValidatorActionTypes.LOAD_STATUS,
+                payload: {
+                    validator: validatorAddress,
+                    status,
+                },
+            });
+        }
     };
 };
 
