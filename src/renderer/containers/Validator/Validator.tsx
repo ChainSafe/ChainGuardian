@@ -113,7 +113,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
 
                 <PrivateKeyField
                     label="PRIVATE KEY"
-                    inputValue={props.privateKey}
+                    keystore={validator.keystore}
                 />
             </div>
             <div className="validator-status">

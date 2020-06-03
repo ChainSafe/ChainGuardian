@@ -20,16 +20,6 @@ type IOwnProps = {
     network: string;
 } & Pick<RouteComponentProps, "history" | "location">;
 
-export interface IValidator {
-    name: string;
-    status: string;
-    publicKey: string;
-    deposit: number;
-    network: string;
-    privateKey: string;
-    balance?: bigint;
-}
-
 type DashBoardProps = IOwnProps & IInjectedProps & Pick<IRootState, "auth" | "validators">;
 const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     const [confirmModal, setConfirmModal] = useState<boolean>(false);

@@ -1,4 +1,5 @@
-import * as React from "react";
+import React from "react";
+import {ICGKeystore} from "../../services/keystore";
 import {InputForm, IInputFormProps} from "../Input/InputForm";
 import {useState} from "react";
 import {PasswordPrompt} from "../Prompt/PasswordPrompt";
@@ -6,19 +7,22 @@ import {ISubmitStatus} from "../Prompt/InputPrompt";
 import database from "../../services/db/api/database";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
 
-export const PrivateKeyField: React.FunctionComponent<IInputFormProps> = (props: IInputFormProps) => {
-    const[showPrompt,setShowPrompt]=useState<boolean>(false);
-    const[passwordType, setPasswordType]=useState<string>("password");
-    const[eyeSlash, setEyeSlash]=useState<boolean>(false);
+interface IPrivateKeyFieldProps extends IInputFormProps {
+    keystore: ICGKeystore;
+}
 
-    const privateKey = props.inputValue;
+export const PrivateKeyField: React.FunctionComponent<IPrivateKeyFieldProps> = (props: IPrivateKeyFieldProps) => {
+    const [showPrompt,setShowPrompt] = useState<boolean>(false);
+    const [passwordType, setPasswordType] = useState<string>("password");
+    const [eyeSlash, setEyeSlash] = useState<boolean>(false);
+    const [privateKey, setPrivateKey] = useState<string>("encrypted");
 
     const handlePromptSubmit = async (promptPassword: string): Promise<ISubmitStatus> => {
-
-        const accounts = await database.account.get(DEFAULT_ACCOUNT);
-        if(accounts != null){
-            const isCorrectValue = await accounts.isCorrectPassword(promptPassword);
-            if(isCorrectValue){
+        const account = await database.account.get(DEFAULT_ACCOUNT);
+        if (account != null) {
+            const keyPair = await account.unlockKeystore(promptPassword, props.keystore);
+            if(keyPair){
+                setPrivateKey(keyPair.privateKey.toHexString());
                 setTimeout(setShowPrompt,400,false);
                 setPasswordType("text");
                 setEyeSlash(true);
@@ -29,10 +33,10 @@ export const PrivateKeyField: React.FunctionComponent<IInputFormProps> = (props:
                     errorMessage: "Invalid password"
                 };
             }
-        } else{
+        } else {
             return {
                 valid: false,
-                errorMessage: "Error"
+                errorMessage: "Error, account not found"
             };
         }
     };

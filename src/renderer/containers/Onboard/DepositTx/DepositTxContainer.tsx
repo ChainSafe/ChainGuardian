@@ -4,7 +4,6 @@ import {CopyField} from "../../../components/CopyField/CopyField";
 import {Dropdown} from "../../../components/Dropdown/Dropdown";
 import {connect} from "react-redux";
 import {RouteComponentProps} from "react-router";
-import {RegisterType} from "../../../reducers/register";
 import {copyToClipboard} from "../../../services/utils/clipboard";
 import {bindActionCreators, Dispatch} from "redux";
 import {generateDepositAction, resetDepositData, verifyDepositAction} from "../../../actions";

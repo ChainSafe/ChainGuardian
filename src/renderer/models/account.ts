@@ -96,66 +96,21 @@ export class CGAccount implements IAccount {
     }
 
     /**
-   * Check if password is valid
-   * @param password decryption password of the keystore
-   */
-    public async isCorrectPassword(password: string): Promise<boolean> {
-        /**
-         * ? As there can be multiple keystore files there can also be
-         * ? different passwords that these keystores use, we need to
-         * ? define how are we going to handle these situations.
-         * * Currently, if any of the keystores matches the provided
-         * * password this method returns true.
-         */
-
-        const keystoreFiles = this.getKeystoreFiles();
-
-        if (keystoreFiles.length <= 0) {
-            return false;
-        }
-
-        /**
-     * Check only first file as we assume that all keystores
-     * have the same password.
-     */
-        const keystore = keystoreFiles[0];
-        try {
-            await keystore.decrypt(password);
-        } catch (e) {
-            // wrong password
-            return false;
-        }
-        // error not detected, password correct
-        return true;
-    }
-
-    /**
    * should try to decrypt keystores using given password,
    * throw exception if wrong password (save unlocked keypairs into private field)
    * @param password decryption password of the keystore
+   * @param keystore keystore that should be descryted
    */
-    public async unlock(password: string): Promise<void> {
-        this.validators = [];
-        const keystoreFiles = this.getKeystoreFiles();
-
-        const validators: Promise<Keypair | undefined>[] = keystoreFiles.map(async keystore => {
-            try {
-                return await keystore.decrypt(password);
-            } catch (e) {
-                return undefined;
-            }
-        });
+    public async unlockKeystore(password: string, keystore: ICGKeystore): Promise<Keypair|undefined> {
+        try {
+            return await keystore.decrypt(password);
+        } catch (e) {
+            return undefined;
+        }
     }
 
     public removeValidator(index: number): void {
         this.validators.splice(index, 1);
-    }
-
-    /**
-   * delete all keystores from object
-   */
-    public lock(): void {
-        this.validators = [];
     }
 
     private getKeystoreFiles(): ICGKeystore[] {

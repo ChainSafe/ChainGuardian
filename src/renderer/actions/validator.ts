@@ -6,13 +6,13 @@ import {IValidatorOptions} from "@chainsafe/lodestar-validator/lib";
 import {Action, Dispatch} from "redux";
 
 import {ValidatorActionTypes} from "../constants/action-types";
-import {IValidator} from "../containers/Dashboard/DashboardContainer";
 import {IRootState} from "../reducers";
 import database from "../services/db/api/database";
 import {ValidatorDB} from "../services/db/api/validator";
 import {EthersNotifier} from "../services/deposit/ethers";
 import {ValidatorLogger} from "../services/eth2/client/logger";
 import {getNetworkConfig} from "../services/eth2/networks";
+import {ICGKeystore} from "../services/keystore";
 import {fromHex} from "../services/utils/bytes";
 import {getValidatorStatus} from "../services/validator/status";
 import {ValidatorStatus} from "../services/validator/status/statuses";
@@ -21,6 +21,17 @@ import {loadValidatorBeaconNodes} from "./network";
 export interface ILoadValidators {
     type: typeof ValidatorActionTypes.LOAD_VALIDATORS,
     payload: Array<IValidator>,
+}
+
+export interface IValidator {
+    name: string;
+    status: string;
+    publicKey: string;
+    deposit: number;
+    network: string;
+    privateKey: string;
+    balance?: bigint;
+    keystore: ICGKeystore;
 }
 
 export const loadValidatorsAction = () => {
@@ -33,6 +44,7 @@ export const loadValidatorsAction = () => {
                 status: undefined,
                 publicKey: v.getPublicKey(),
                 network: auth.account!.getValidatorNetwork(v.getPublicKey()),
+                keystore: v,
             }));
 
             dispatch({

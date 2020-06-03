@@ -75,63 +75,30 @@ describe("CGAccount tests", () => {
 
     it("should be able to get validator addresses from keystores", async () => {
         const account = createTestAccount();
-        await account.unlock(PRIMARY_KEYSTORE_PASSWORD);
         const validatorsAddresses = account.getValidatorsAddresses();
-        account.lock();
         expect(validatorsAddresses.length).toEqual(2);
     });
 
-    it("should be able to get validator keypairs if the account is unlocked", async () => {
+    it("should be able to get validator keystores", async () => {
         const account = createTestAccount();
-
-        await account.unlock(PRIMARY_KEYSTORE_PASSWORD);
         const validatorKeypairs = account.getValidators();
-
         expect(validatorKeypairs.length).toEqual(2);
-
-        account.lock();
-
-        expect(() => {
-            account.getValidators();
-        }).toThrowError();
     });
 
-    it("should not be able to get validator keypairs if the account is locked", () => {
+    it("should be able to retreive private key if keystore unlocked", async () => {
         const account = createTestAccount();
+        const validators = await account.loadValidators();
 
-        expect(() => {
-            account.getValidators();
-        }).toThrowError();
+        const keypair = await account.unlockKeystore(PRIMARY_KEYSTORE_PASSWORD, validators[0]);
+        expect(keypair.privateKey).not.toBeUndefined();
     });
 
-    it("should be able to lock account", async () => {
+    it("should not be able to unlock keystore with wrong password", async () => {
         const account = createTestAccount();
+        const validators = await account.loadValidators();
 
-        await account.unlock(PRIMARY_KEYSTORE_PASSWORD);
-        account.lock();
-        expect(() => {
-            account.getValidators();
+        expect(async () => {
+            await account.unlockKeystore("wrongPassword", validators[0]);
         }).toThrowError();
-    });
-
-    it("should not be able to unlock with wrong password", async () => {
-        const account = createTestAccount();
-
-        await account.unlock("wrongPassword");
-
-        expect(() => {
-            account.getValidators();
-        }).toThrowError();
-    });
-
-    it("should be able to verify correct password", async () => {
-        const account = createTestAccount();
-
-        const isCorrectTrue = await account.isCorrectPassword(PRIMARY_KEYSTORE_PASSWORD);
-        expect(isCorrectTrue).toEqual(true);
-
-        const isCorrectFalse = await account.isCorrectPassword("wrongPassword");
-        expect(isCorrectFalse).toEqual(false);
-
     });
 });

@@ -1,6 +1,6 @@
 import configureStore from "redux-mock-store";
 import thunk from "redux-thunk";
-import {setAuth, storeAuthAction} from "../../../../src/renderer/actions";
+import {loadAccountAction, setAuth} from "../../../../src/renderer/actions";
 import {IRootState} from "../../../../src/renderer/reducers";
 import {IRegisterState} from "../../../../src/renderer/reducers/register";
 import {IDepositState} from "../../../../src/renderer/reducers/deposit";
@@ -37,7 +37,7 @@ describe("auth actions", () => {
         const expectedActions = [
             setAuth(account)
         ];
-        reduxStore.dispatch<any>(storeAuthAction(account));
+        reduxStore.dispatch<any>(loadAccountAction());
 
         expect(reduxStore.getActions()).toEqual(expectedActions);
     });

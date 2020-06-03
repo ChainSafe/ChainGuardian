@@ -6,7 +6,6 @@ import OnboardContainer from "../containers/Onboard/OnboardContainer";
 import {BeaconChain} from "../services/docker/chain";
 import {Routes} from "../constants/routes";
 import {DashboardContainer} from "./Dashboard/DashboardContainer";
-import {CheckPasswordContainer} from "./AddValidator/CheckPassword";
 import {ValidatorDetailsContainer} from "./ValidatorDetails/ValidatorDetailsContainer";
 
 const Application = (): ReactElement => {
@@ -24,7 +23,6 @@ const Application = (): ReactElement => {
                 <Switch>
                     <Route path={Routes.ONBOARD_ROUTE} component={OnboardContainer}/>
                     <Route path={Routes.DASHBOARD_ROUTE} component={DashboardContainer}/>
-                    <Route path={Routes.CHECK_PASSWORD} component={CheckPasswordContainer}/>
                     <Route path={Routes.VALIDATOR_DETAILS} component={ValidatorDetailsContainer}/>
                     <Redirect from="/" to={Routes.DASHBOARD_ROUTE}/>
                 </Switch>
