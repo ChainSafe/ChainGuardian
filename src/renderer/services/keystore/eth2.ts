@@ -7,7 +7,7 @@ import bech32 from "bech32";
 import {dirname} from "path";
 import {warn} from "electron-log";
 
-const KEY_PATH = "m/12381/60/0/0";
+const KEY_PATH = "m/12381/3600/i/0/0";
 const ETH2_ADDRESS_PREFIX="eth2";
 export class V4Keystore implements ICGKeystore {
     private keystore: IKeystore;
