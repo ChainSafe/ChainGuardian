@@ -3,7 +3,6 @@ import {Keypair} from "@chainsafe/bls";
 import {existsSync, readFileSync, unlinkSync, writeFileSync,mkdirSync} from "fs";
 import {PrivateKey} from "@chainsafe/bls";
 import {Keystore, IKeystore} from "@nodefactory/bls-keystore";
-import bech32 from "bech32";
 import {dirname} from "path";
 import {warn} from "electron-log";
 
