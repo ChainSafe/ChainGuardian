@@ -53,14 +53,6 @@ describe("V4Keystore", () => {
         expect(keypair.privateKey.toHexString()).toEqual(privateKeyStr);
     });
 
-
-    it("should get address", async () => {
-        const address = await v4Keystore.getAddress();
-        expect(address).toEqual(
-            "eth215ykgv2ju99dkvkvf4jg9yvtk046jmuq0htfnx79g873vft8al7sy6thglx4fhf2qd6jlxhpgykcnvr0gdrz"
-        );
-    });
-
     it("should fail on decrypt with wrong password", async () => {
         await expect(v4Keystore.decrypt("wrongPassword"))
             .rejects

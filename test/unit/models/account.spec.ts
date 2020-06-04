@@ -52,7 +52,7 @@ describe("CGAccount tests", () => {
 
         sandbox = sinon.createSandbox();
         sandbox
-            .stub(V4KeystoreFactory.prototype, "getAddress")
+            .stub(V4KeystoreFactory.prototype, "getPublicKey")
             .returns("0x001");
         sandbox
             .stub(V4KeystoreFactory.prototype, "decrypt")

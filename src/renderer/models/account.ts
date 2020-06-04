@@ -43,7 +43,7 @@ export class CGAccount implements IAccount {
         const keystoreFiles: ICGKeystore[] = this.getKeystoreFiles();
 
         const validatorAddresses: string[] = keystoreFiles
-            .map(keystore => keystore.getAddress());
+            .map(keystore => keystore.getPublicKey());
 
         return validatorAddresses;
     }

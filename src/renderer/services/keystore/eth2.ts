@@ -8,7 +8,6 @@ import {dirname} from "path";
 import {warn} from "electron-log";
 
 const KEY_PATH = "m/12381/3600/i/0/0";
-const ETH2_ADDRESS_PREFIX="eth2";
 export class V4Keystore implements ICGKeystore {
     private keystore: IKeystore;
     private readonly file: string;
@@ -62,11 +61,6 @@ export class V4Keystore implements ICGKeystore {
         } catch (err) {
             throw new Error(`Failed to write to ${this.file}: ${err}`);
         }
-    }
-
-    public getAddress(): string {
-        const words = bech32.toWords(Buffer.from(this.getPublicKey(), "hex"));
-        return bech32.encode(ETH2_ADDRESS_PREFIX, words);
     }
 
     public getPublicKey(): string {

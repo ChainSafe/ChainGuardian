@@ -42,16 +42,12 @@ describe("auth actions", () => {
         dbSandbox.restore();
     });
 
-    it("should dispatch store auth action if account exists", () => {
-        dbSandbox.stub(database.account, "get").resolves(new CGAccount({
-            name: "test",
-            directory: "test",
-            sendStats: false,
-        }));
+    it("should dispatch store auth action if account exists", async () => {
+        dbSandbox.stub(database.account, "get").resolves(account);
         const expectedActions = [
             setAuth(account)
         ];
-        reduxStore.dispatch<any>(loadAccountAction());
+        await reduxStore.dispatch<any>(loadAccountAction());
 
         expect(reduxStore.getActions()).toEqual(expectedActions);
     });
