@@ -1,11 +1,10 @@
 import React from "react";
+import {useState} from "react";
+import {Keypair} from "@chainsafe/bls";
+
 import {ICGKeystore} from "../../services/keystore";
 import {InputForm, IInputFormProps} from "../Input/InputForm";
-import {useState} from "react";
 import {PasswordPrompt} from "../Prompt/PasswordPrompt";
-import {ISubmitStatus} from "../Prompt/InputPrompt";
-import database from "../../services/db/api/database";
-import {DEFAULT_ACCOUNT} from "../../constants/account";
 
 interface IPrivateKeyFieldProps extends IInputFormProps {
     keystore: ICGKeystore;
@@ -17,28 +16,11 @@ export const PrivateKeyField: React.FunctionComponent<IPrivateKeyFieldProps> = (
     const [eyeSlash, setEyeSlash] = useState<boolean>(false);
     const [privateKey, setPrivateKey] = useState<string>("encrypted");
 
-    const handlePromptSubmit = async (promptPassword: string): Promise<ISubmitStatus> => {
-        const account = await database.account.get(DEFAULT_ACCOUNT);
-        if (account != null) {
-            const keyPair = await account.unlockKeystore(promptPassword, props.keystore);
-            if(keyPair){
-                setPrivateKey(keyPair.privateKey.toHexString());
-                setTimeout(setShowPrompt,400,false);
-                setPasswordType("text");
-                setEyeSlash(true);
-                return {valid: true};
-            } else {
-                return {
-                    valid: false,
-                    errorMessage: "Invalid password"
-                };
-            }
-        } else {
-            return {
-                valid: false,
-                errorMessage: "Error, account not found"
-            };
-        }
+    const handlePromptSubmit = async (keypair: Keypair): Promise<void> => {
+        setPrivateKey(keypair.privateKey.toHexString());
+        setTimeout(setShowPrompt,400,false);
+        setPasswordType("text");
+        setEyeSlash(true);
     };
 
     const handleEyeClick = (): void => {
@@ -53,6 +35,7 @@ export const PrivateKeyField: React.FunctionComponent<IPrivateKeyFieldProps> = (
     return(
         <>
             <PasswordPrompt
+                keystore={props.keystore}
                 display={showPrompt}
                 onSubmit={handlePromptSubmit}
                 onCancel={(): void=>{setShowPrompt(false);}}
