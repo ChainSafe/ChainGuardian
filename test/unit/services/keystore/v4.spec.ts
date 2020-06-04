@@ -6,7 +6,7 @@ import sinon from "sinon";
 import {ICGKeystore, V4Keystore} from "../../../../src/renderer/services/keystore";
 import example from "./example.v4.json";
 
-const privateKey = "0e43429c844ccedd4aff7aaa05fe996f41f9464b360ca03a4349387ba49b3e18";
+const privateKey = "1c42e21991705982c6bbd771953fb3a2204b8e01fc7bf075bf4c26fa0aa3ee62";
 const privateKeyStr = `0x${privateKey}`;
 
 const keyStoreFilePath = `keystore-${Math.random() * 1000}.json`;

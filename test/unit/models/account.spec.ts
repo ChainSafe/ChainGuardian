@@ -81,6 +81,7 @@ describe("CGAccount tests", () => {
 
     it("should be able to get validator keystores", async () => {
         const account = createTestAccount();
+        await account.loadValidators();
         const validatorKeypairs = account.getValidators();
         expect(validatorKeypairs.length).toEqual(2);
     });
@@ -97,8 +98,7 @@ describe("CGAccount tests", () => {
         const account = createTestAccount();
         const validators = await account.loadValidators();
 
-        expect(async () => {
-            await account.unlockKeystore("wrongPassword", validators[0]);
-        }).toThrowError();
+        const keystore = await account.unlockKeystore("wrongPassword", validators[0]);
+        expect(keystore).toBeUndefined();
     });
 });
