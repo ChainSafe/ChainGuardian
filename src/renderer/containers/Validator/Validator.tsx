@@ -25,7 +25,7 @@ export interface IValidatorSimpleProps {
 
 export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     props: IValidatorSimpleProps) => {
-    const [askPassword, setAskPassword] = useState<boolean>(false);
+    const [askPassword, setAskPassword] = useState<string>(null);
     const dispatch = useDispatch();
     const validators = useSelector((state: IRootState) => state.validators);
     const network = useSelector((state: IRootState) => state.network.selected);
@@ -71,12 +71,14 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     };
 
     const controlValidator = async(keypair: Keypair): Promise<void> => {
-        if (validators[props.publicKey].isRunning) {
+        if (askPassword === "stop") {
             dispatch(stopValidatorService(keypair));
-        } else {
+        } else if (askPassword === "start") {
             dispatch(startValidatorService(keypair));
+        } else if (askPassword === "remove") {
+            props.onRemoveClick();
         }
-        setAskPassword(false);
+        setAskPassword(null);
     };
 
     const renderValidatorButtons = (): React.ReactElement => {
@@ -84,11 +86,11 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
         return (
             <div className="flex validator-service-button">
                 {isRunning ?
-                    <ButtonDestructive onClick={(): void => setAskPassword(true)}>
+                    <ButtonDestructive onClick={(): void => setAskPassword("stop")}>
                         Stop
                     </ButtonDestructive>
                     :
-                    <ButtonPrimary onClick={(): void => setAskPassword(true)}>
+                    <ButtonPrimary onClick={(): void => setAskPassword("start")}>
                         Start
                     </ButtonPrimary>
                 }
@@ -132,7 +134,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
                 <div className="validator-status">
                     {renderBeaconNodes()}
                     <div className="validator-buttons">
-                        <ButtonDestructive onClick={props.onRemoveClick}>REMOVE</ButtonDestructive>
+                        <ButtonDestructive onClick={(): void => setAskPassword("remove")}>REMOVE</ButtonDestructive>
                         <ButtonPrimary onClick={props.onDetailsClick}>DETAILS</ButtonPrimary>
                     </div>
                 </div>
@@ -140,9 +142,9 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
 
             <PasswordPrompt
                 keystore={validator.keystore}
-                display={askPassword}
+                display={!!askPassword}
                 onSubmit={controlValidator}
-                onCancel={(): void=> setAskPassword(false)}
+                onCancel={(): void=> setAskPassword(null)}
             />
         </>
     );
