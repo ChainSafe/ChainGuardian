@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {startValidatorService, stopValidatorService} from "../../actions";
+import {PasswordPrompt} from "../../components/Prompt/PasswordPrompt";
 
 import {IRootState} from "../../reducers";
 import {calculateROI} from "../../services/utils/math";
@@ -10,6 +11,7 @@ import {ValidatorStat} from "../../components/Cards/ValidatorStat";
 import {PrivateKeyField} from "../../components/PrivateKeyField/PrivateKeyField";
 import {InputForm} from "../../components/Input/InputForm";
 import {NodeCard} from "../../components/Cards/NodeCard";
+import {Keypair} from "@chainsafe/bls";
 
 export interface IValidatorSimpleProps {
     name: string,
@@ -23,6 +25,7 @@ export interface IValidatorSimpleProps {
 
 export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     props: IValidatorSimpleProps) => {
+    const [askPassword, setAskPassword] = useState<boolean>(false);
     const dispatch = useDispatch();
     const validators = useSelector((state: IRootState) => state.validators);
     const network = useSelector((state: IRootState) => state.network.selected);
@@ -67,16 +70,25 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
         );
     };
 
+    const controlValidator = async(keypair: Keypair): Promise<void> => {
+        if (validators[props.publicKey].isRunning) {
+            dispatch(stopValidatorService(keypair));
+        } else {
+            dispatch(startValidatorService(keypair));
+        }
+        setAskPassword(false);
+    };
+
     const renderValidatorButtons = (): React.ReactElement => {
         const isRunning = validators[props.publicKey].isRunning;
         return (
             <div className="flex validator-service-button">
                 {isRunning ?
-                    <ButtonDestructive onClick={(): void => {dispatch(stopValidatorService(props.publicKey));}}>
+                    <ButtonDestructive onClick={(): void => setAskPassword(true)}>
                         Stop
                     </ButtonDestructive>
                     :
-                    <ButtonPrimary onClick={(): void => {dispatch(startValidatorService(props.publicKey));}}>
+                    <ButtonPrimary onClick={(): void => setAskPassword(true)}>
                         Start
                     </ButtonPrimary>
                 }
@@ -85,44 +97,53 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     };
 
     return(
-        <div className="validator-container">
-            <div className="validator-simple-keys">
-                <div className="row">
-                    <h2>{props.name}</h2>
-                    {renderValidatorButtons()}
+        <>
+            <div className="validator-container">
+                <div className="validator-simple-keys">
+                    <div className="row">
+                        <h2>{props.name}</h2>
+                        {renderValidatorButtons()}
+                    </div>
+                    <h3>Status: {validator.status || "N/A"}</h3>
+
+                    <br />
+
+                    <div className="row validator-stat-container ">
+                        <ValidatorStat title="Balance" type="ETH" value={balance}/>
+                        <ValidatorStat title="Return (ETH)" type="ROI" value={ROI}/>
+                        <ValidatorStat title="Validator" type="Status" value={props.status}/>
+                    </div>
+
+                    <br />
+
+                    <InputForm
+                        label="PUBLIC KEY"
+                        focused={false}
+                        inputValue={props.publicKey}
+                        readOnly={true}
+                        type="text"
+                    />
+
+                    <PrivateKeyField
+                        label="PRIVATE KEY"
+                        keystore={validator.keystore}
+                    />
                 </div>
-                <h3>Status: {validator.status || "N/A"}</h3>
-
-                <br />
-
-                <div className="row validator-stat-container ">
-                    <ValidatorStat title="Balance" type="ETH" value={balance}/>
-                    <ValidatorStat title="Return (ETH)" type="ROI" value={ROI}/>
-                    <ValidatorStat title="Validator" type="Status" value={props.status}/>
+                <div className="validator-status">
+                    {renderBeaconNodes()}
+                    <div className="validator-buttons">
+                        <ButtonDestructive onClick={props.onRemoveClick}>REMOVE</ButtonDestructive>
+                        <ButtonPrimary onClick={props.onDetailsClick}>DETAILS</ButtonPrimary>
+                    </div>
                 </div>
-
-                <br />
-
-                <InputForm
-                    label="PUBLIC KEY"
-                    focused={false}
-                    inputValue={props.publicKey}
-                    readOnly={true}
-                    type="text"
-                />
-
-                <PrivateKeyField
-                    label="PRIVATE KEY"
-                    keystore={validator.keystore}
-                />
             </div>
-            <div className="validator-status">
-                {renderBeaconNodes()}
-                <div className="validator-buttons">
-                    <ButtonDestructive onClick={props.onRemoveClick}>REMOVE</ButtonDestructive>
-                    <ButtonPrimary onClick={props.onDetailsClick}>DETAILS</ButtonPrimary>
-                </div>
-            </div>
-        </div>
+
+            <PasswordPrompt
+                keystore={validator.keystore}
+                display={askPassword}
+                onSubmit={controlValidator}
+                onCancel={(): void=> setAskPassword(false)}
+            />
+        </>
     );
 };

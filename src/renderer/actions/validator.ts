@@ -121,12 +121,11 @@ export interface IStartValidatorServiceAction {
     payload: IValidatorOptions,
 }
 
-export const startValidatorService = (publicKey: string) => {
+export const startValidatorService = (keypair: Keypair) => {
     return (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): void => {
         const logger = new ValidatorLogger();
-        const privateKey = PrivateKey.fromHexString(getState().validators[publicKey].privateKey);
         // TODO: Use beacon chain proxy instead of first node
-        const eth2API = getState().network.validatorBeaconNodes[publicKey][0].client;
+        const eth2API = getState().network.validatorBeaconNodes[keypair.publicKey.toHexString()][0].client;
 
         dispatch({
             type: ValidatorActionTypes.START_VALIDATOR_SERVICE,
@@ -134,7 +133,7 @@ export const startValidatorService = (publicKey: string) => {
                 db: new ValidatorDB(database),
                 api: eth2API,
                 config,
-                keypair: new Keypair(privateKey),
+                keypair,
                 logger
             },
         });
@@ -146,11 +145,11 @@ export interface IStopValidatorServiceAction {
     payload: string,
 }
 
-export const stopValidatorService = (publicKey: string) => {
+export const stopValidatorService = (keypair: Keypair) => {
     return (dispatch: Dispatch<Action<ValidatorActionTypes>>): void => {
         dispatch({
             type: ValidatorActionTypes.STOP_VALIDATOR_SERVICE,
-            payload: publicKey,
+            payload: keypair.publicKey.toHexString(),
         });
     };
 };
