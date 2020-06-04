@@ -171,19 +171,9 @@ export const addNewValidatorAction = (password: string) => {
             // Reload validators and beacon nodes
             loadAccountAction()(dispatch);
         }
-
-        dispatch(completeAddingNewValidator());
     };
 };
 
-
-export const startAddingNewValidator = (): Action<RegisterActionTypes> => ({
-    type: RegisterActionTypes.START_ADDING_NEW_VALIDATOR
-});
-
-export const completeAddingNewValidator = (): Action<RegisterActionTypes> => ({
-    type: RegisterActionTypes.COMPLETE_ADDING_NEW_VALIDATOR
-});
 
 export interface ISetNetworkAction {
     type: typeof RegisterActionTypes.SET_NETWORK;

@@ -18,7 +18,7 @@ export const PrivateKeyField: React.FunctionComponent<IPrivateKeyFieldProps> = (
 
     const handlePromptSubmit = async (keypair: Keypair): Promise<void> => {
         setPrivateKey(keypair.privateKey.toHexString());
-        setTimeout(setShowPrompt,400,false);
+        setTimeout(setShowPrompt,200,false);
         setPasswordType("text");
         setEyeSlash(true);
     };

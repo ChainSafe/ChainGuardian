@@ -11,7 +11,6 @@ export interface IPasswordPromptProps {
      * Called on submit password confirmation.
      *
      * @param password - that is entered in password prompt dialog
-     * @return ISubmitStatus - containing information on validation success and errorMessage if any.
      */
     onSubmit: (keypair: Keypair) => Promise<void>;
     onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
@@ -27,7 +26,7 @@ export interface IPasswordPromptProps {
 }
 
 export const PasswordPrompt: React.FunctionComponent<IPasswordPromptProps> = (props: IPasswordPromptProps) => {
-    const onSubmit = async(promptPassword: string) => {
+    const onSubmit = async(promptPassword: string): Promise<ISubmitStatus> => {
         const account = await database.account.get(DEFAULT_ACCOUNT);
         if (account != null) {
             const keyPair = await account.unlockKeystore(promptPassword, props.keystore);

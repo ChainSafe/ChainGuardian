@@ -1,5 +1,4 @@
 import {Keypair} from "@chainsafe/bls";
-import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
 import {ValidatorResponse} from "@chainsafe/lodestar-types";
 import {IValidatorOptions} from "@chainsafe/lodestar-validator/lib";
