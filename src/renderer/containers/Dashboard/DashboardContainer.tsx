@@ -65,9 +65,10 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
             topBar={<Topbar />}
             scrollable={true}
         >
-            <div className={"validators-display"}>
-                {currentValidatorsList.length > 0 ?
-                    currentValidatorsList.map((v, index) => {
+
+            {currentValidatorsList.length > 0 ?
+                <div className={"validators-display"}>
+                    {currentValidatorsList.map((v, index) => {
                         return <div key={index} className={"validator-wrapper"}>
                             <Validator
                                 name={v.name}
@@ -85,8 +86,9 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
                                 privateKey={v.privateKey}
                             />
                         </div>;
-                    }) : <EmptyValidatorsList />}
-            </div>
+                    })}
+                </div>
+                : <EmptyValidatorsList />}
 
             <ConfirmModal
                 showModal={confirmModal}
