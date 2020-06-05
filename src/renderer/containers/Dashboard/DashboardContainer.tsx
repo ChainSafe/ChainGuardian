@@ -62,7 +62,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
 
     return (
         <Background
-            topBar={<Topbar hideButton={currentValidatorsList.length === 0} />}
+            topBar={<Topbar />}
             scrollable={true}
         >
             <div className={"validators-display"}>

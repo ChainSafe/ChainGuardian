@@ -5,11 +5,8 @@ import {OnBoardingRoutes, Routes} from "../../constants/routes";
 import {ButtonPrimary} from "../Button/ButtonStandard";
 import {NetworkDropdown} from "../NetworkDropdown/NetworkDropdown";
 
-interface ITopbarProps {
-    hideButton: boolean;
-}
 
-export const Topbar = ({hideButton}: ITopbarProps): ReactElement => {
+export const Topbar = (): ReactElement => {
     const history = useHistory();
     const onAddNewValidator = (): void => {
         history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
@@ -19,11 +16,9 @@ export const Topbar = ({hideButton}: ITopbarProps): ReactElement => {
         <div className={"validator-top-bar"}>
             <NetworkDropdown/>
 
-            {hideButton ? null :
-                <ButtonPrimary onClick={onAddNewValidator} buttonId={"add-validator"}>
-                    ADD NEW VALIDATOR
-                </ButtonPrimary>
-            }
+            <ButtonPrimary onClick={onAddNewValidator} buttonId={"add-validator"}>
+                ADD NEW VALIDATOR
+            </ButtonPrimary>
         </div>
     );
 };
