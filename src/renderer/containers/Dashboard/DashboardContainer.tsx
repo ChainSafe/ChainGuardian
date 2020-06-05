@@ -83,7 +83,6 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
                                 onRemoveClick={(): void => {onRemoveValidator(index);}}
                                 onDetailsClick={(): void =>
                                     props.history.push(Routes.VALIDATOR_DETAILS.replace(":id", index.toString()))}
-                                privateKey={v.privateKey}
                             />
                         </div>;
                     })}

@@ -20,7 +20,6 @@ export interface IValidatorSimpleProps {
     onRemoveClick: () => void;
     onDetailsClick: () => void;
     onBeaconNodeClick: (id: string) => () => void;
-    privateKey: string;
 }
 
 export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
