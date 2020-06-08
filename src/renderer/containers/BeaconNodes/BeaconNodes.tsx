@@ -7,6 +7,7 @@ import {ButtonDestructive, ButtonInverted, ButtonPrimary} from "../../components
 import {NodeCard} from "../../components/Cards/NodeCard";
 import {BeaconNode} from "../../models/beaconNode";
 import {IRootState} from "../../reducers";
+import {truncatePublicKey} from "../../services/utils/formatting";
 
 interface extendedBeaconNode extends BeaconNode {
     validators: string[]
@@ -18,6 +19,7 @@ type beaconNodes = {
 export const BeaconNodesContainer: React.FunctionComponent = () => {
     const history = useHistory();
     const validatorBeaconNodes = useSelector((state: IRootState) => state.network.validatorBeaconNodes);
+    const validators = useSelector((state: IRootState) => state.validators);
 
     const allNodes: beaconNodes = {};
     for (let [validatorAddress, beaconNodes] of Object.entries(validatorBeaconNodes)) {
@@ -44,7 +46,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                         {nodeList.length === 0 ? <h3>No beacon nodes found.</h3> : null}
 
                         {nodeList.map((url) => (
-                            <div className="flex-column box node-container">
+                            <div className="row box node-container">
                                 <NodeCard
                                     key={url}
                                     onClick={() => (): void => {}}
@@ -54,18 +56,24 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                                     value={allNodes[url].currentSlot || "N/A"}
                                 />
 
-                                <h5>Connected validators:</h5>
+                                <div className="flex-column stretch space-between">
+                                    <div className="flex-column">
+                                        <h5>Connected validators:</h5>
 
-                                {allNodes[url] && allNodes[url].validators.map(validatorAddress => (
-                                    <div className="flex-column" key={validatorAddress}>
-                                        <p>{validatorAddress}</p>
+                                        {allNodes[url] && allNodes[url].validators.map(validatorAddress => (
+                                            <div className="flex-column" key={validatorAddress}>
+                                                <p><b>{validators[validatorAddress].name} </b>
+                                                     - {truncatePublicKey(validatorAddress)}
+                                                </p>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
 
-                                <div className="row">
-                                    <ButtonDestructive>Remove</ButtonDestructive>
-                                    <ButtonPrimary>Start</ButtonPrimary>
-                                    <ButtonInverted>Stop</ButtonInverted>
+                                    <div className="row buttons">
+                                        <ButtonPrimary>Start</ButtonPrimary>
+                                        <ButtonInverted>Stop</ButtonInverted>
+                                        <ButtonDestructive>Remove</ButtonDestructive>
+                                    </div>
                                 </div>
                             </div>
                         ))}

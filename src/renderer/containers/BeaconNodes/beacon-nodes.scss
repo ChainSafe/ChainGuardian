@@ -4,5 +4,17 @@
   }
   .node-container {
     margin-bottom: 48px;
+
+    .node-card-container {
+      margin-right: 32px;
+    }
+
+    .buttons {
+      align-self: flex-end;
+
+      button:nth-child(2) {
+        margin: 0 16px;
+      }
+    }
   }
 }
