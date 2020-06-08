@@ -70,8 +70,13 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                                     </div>
 
                                     <div className="row buttons">
-                                        <ButtonPrimary>Start</ButtonPrimary>
-                                        <ButtonInverted>Stop</ButtonInverted>
+                                        {
+                                            allNodes[url].localDockerId ?
+                                            <>
+                                                <ButtonPrimary>Start</ButtonPrimary>
+                                                <ButtonInverted>Stop</ButtonInverted>
+                                            </> : null
+                                        }
                                         <ButtonDestructive>Remove</ButtonDestructive>
                                     </div>
                                 </div>
