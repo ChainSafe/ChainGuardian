@@ -19,7 +19,7 @@ export class CGAccount implements IAccount {
     public directory: string;
     public sendStats: boolean | null;
 
-    private validators: Keypair[] = [];
+    private validators: ICGKeystore[] = [];
     private keystoreTarget: ICGKeystoreFactory;
     private validatorsNetwork: IValidatorNetwork = {};
 
@@ -43,19 +43,26 @@ export class CGAccount implements IAccount {
         const keystoreFiles: ICGKeystore[] = this.getKeystoreFiles();
 
         const validatorAddresses: string[] = keystoreFiles
-            .map(keystore => keystore.getAddress());
+            .map(keystore => keystore.getPublicKey());
 
         return validatorAddresses;
     }
 
     /**
-   * returns all validator keypairs or throws if not unlocked
-   * @param password decryption password of the keystore
+   * returns all validators addresses
    */
-    public getValidators(): Keypair[] {
-        if (!this.isUnlocked()) {
-            throw new Error("Keystore locked.");
+    public getValidators(): ICGKeystore[] {
+        return this.validators;
+    }
+
+    public async loadValidators(): Promise<ICGKeystore[]> {
+        this.validators = this.getKeystoreFiles();
+
+        for (const validator of this.validators) {
+            const validatorAddress = validator.getPublicKey();
+            await this.loadValidatorNetwork(validatorAddress);
         }
+
         return this.validators;
     }
 
@@ -89,82 +96,21 @@ export class CGAccount implements IAccount {
     }
 
     /**
-   * Check if password is valid
-   * @param password decryption password of the keystore
-   */
-    public async isCorrectPassword(password: string): Promise<boolean> {
-        /**
-         * ? As there can be multiple keystore files there can also be
-         * ? different passwords that these keystores use, we need to
-         * ? define how are we going to handle these situations.
-         * * Currently, if any of the keystores matches the provided
-         * * password this method returns true.
-         */
-
-        const keystoreFiles = this.getKeystoreFiles();
-
-        if (keystoreFiles.length <= 0) {
-            return false;
-        }
-
-        /**
-     * Check only first file as we assume that all keystores
-     * have the same password.
-     */
-        const keystore = keystoreFiles[0];
-        try {
-            await keystore.decrypt(password);
-        } catch (e) {
-            // wrong password
-            return false;
-        }
-        // error not detected, password correct
-        return true;
-    }
-
-    /**
    * should try to decrypt keystores using given password,
    * throw exception if wrong password (save unlocked keypairs into private field)
    * @param password decryption password of the keystore
+   * @param keystore keystore that should be descryted
    */
-    public async unlock(password: string): Promise<void> {
-        this.validators = [];
-        const keystoreFiles = this.getKeystoreFiles();
-
-        const validators: Promise<Keypair | undefined>[] = keystoreFiles.map(async keystore => {
-            try {
-                return await keystore.decrypt(password);
-            } catch (e) {
-                return undefined;
-            }
-        });
-        for (const validatorIdx in validators) {
-            const validator = await validators[validatorIdx];
-            if (validator !== undefined) {
-                const validatorAddress = validator.publicKey.toHexString();
-                await this.loadValidatorNetwork(validatorAddress);
-                this.validators.push(validator);
-            }
+    public async unlockKeystore(password: string, keystore: ICGKeystore): Promise<Keypair|undefined> {
+        try {
+            return await keystore.decrypt(password);
+        } catch (e) {
+            return undefined;
         }
     }
 
-    public addValidator(validator: Keypair): void {
-        this.validators.push(validator);
-    }
     public removeValidator(index: number): void {
         this.validators.splice(index, 1);
-    }
-
-    /**
-   * delete all unlocked keypairs from object
-   */
-    public lock(): void {
-        // Clear validator Keypairs
-        this.validators = [];
-    }
-
-    private isUnlocked(): boolean {
-        return this.validators.length > 0;
     }
 
     private getKeystoreFiles(): ICGKeystore[] {

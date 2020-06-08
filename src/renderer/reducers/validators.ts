@@ -2,10 +2,9 @@ import {ValidatorResponse} from "@chainsafe/lodestar-types";
 import {toHexString} from "@chainsafe/ssz";
 import {Action} from "redux";
 
-import {ILoadValidators, ILoadedValidatorsFromChainAction, IStopValidatorServiceAction} from "../actions";
+import {ILoadValidators, ILoadedValidatorsFromChainAction, IStopValidatorServiceAction, IValidator} from "../actions";
 import {ILoadValidatorStatusAction, IStartValidatorServiceAction} from "../actions/validator";
 import {ValidatorActionTypes} from "../constants/action-types";
-import {IValidator} from "../containers/Dashboard/DashboardContainer";
 import {ValidatorLogger} from "../services/eth2/client/logger";
 
 export interface IValidatorState {

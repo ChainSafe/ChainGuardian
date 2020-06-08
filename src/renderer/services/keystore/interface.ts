@@ -4,7 +4,6 @@ export interface ICGKeystore {
     decrypt(password: string): Promise<Keypair>;
     changePassword(oldPassword: string, newPassword: string): Promise<void>;
     destroy(): void;
-    getAddress(): string;
     getPublicKey(): string;
 }
 

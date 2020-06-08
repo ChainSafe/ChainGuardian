@@ -2,11 +2,10 @@ import React, {ReactElement} from "react";
 import {useHistory} from "react-router";
 import {useDispatch} from "react-redux";
 
-import {storeNotificationAction} from "../../../actions";
+import {IValidator, storeNotificationAction} from "../../../actions";
 import {LineGraph, IntervalEnum} from "../../../components/LineGraph/LineGraph";
 import {ButtonSecondary} from "../../../components/Button/ButtonStandard";
 import {exportKeystore} from "../../../services/utils/account";
-import {IValidator} from "../../Dashboard/DashboardContainer";
 
 interface IValidatorStatsProps {
     validatorId: number;

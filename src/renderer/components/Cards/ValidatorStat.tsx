@@ -22,7 +22,7 @@ const renderBalance = (props: IValidatorStatProps): React.ReactElement => {
             <h5>{props.title}</h5>
             <h1>{
                 props.value<1 ?
-                    props.value.toString().slice(1)
+                    props.value.toString().slice(1) || 0
                     :
                     Number(utils.formatEther(utils.parseUnits(props.value.toString(), "gwei"))).toFixed(3)
             }</h1>

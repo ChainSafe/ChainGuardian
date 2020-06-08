@@ -1,18 +1,17 @@
 import {Keypair} from "@chainsafe/bls";
-import {PrivateKey} from "@chainsafe/bls/lib/privateKey";
 import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
 import {ValidatorResponse} from "@chainsafe/lodestar-types";
 import {IValidatorOptions} from "@chainsafe/lodestar-validator/lib";
 import {Action, Dispatch} from "redux";
 
 import {ValidatorActionTypes} from "../constants/action-types";
-import {IValidator} from "../containers/Dashboard/DashboardContainer";
 import {IRootState} from "../reducers";
 import database from "../services/db/api/database";
 import {ValidatorDB} from "../services/db/api/validator";
 import {EthersNotifier} from "../services/deposit/ethers";
 import {ValidatorLogger} from "../services/eth2/client/logger";
 import {getNetworkConfig} from "../services/eth2/networks";
+import {ICGKeystore} from "../services/keystore";
 import {fromHex} from "../services/utils/bytes";
 import {getValidatorStatus} from "../services/validator/status";
 import {ValidatorStatus} from "../services/validator/status/statuses";
@@ -23,17 +22,27 @@ export interface ILoadValidators {
     payload: Array<IValidator>,
 }
 
+export interface IValidator {
+    name: string;
+    status: string;
+    publicKey: string;
+    deposit: number;
+    network: string;
+    balance?: bigint;
+    keystore: ICGKeystore;
+}
+
 export const loadValidatorsAction = () => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const auth = getState().auth;
         if (auth && auth.account) {
-            const validators = auth.account.getValidators();
+            const validators = await auth.account.loadValidators();
             const validatorArray = validators.map((v, index) => ({
                 name: `Validator ${index+1}`,
                 status: undefined,
-                publicKey: v.publicKey.toHexString(),
-                network: auth.account!.getValidatorNetwork(v.publicKey.toHexString()),
-                privateKey: v.privateKey.toHexString()
+                publicKey: v.getPublicKey(),
+                network: auth.account!.getValidatorNetwork(v.getPublicKey()),
+                keystore: v,
             }));
 
             dispatch({
@@ -56,35 +65,39 @@ export const loadValidatorsAction = () => {
 export const loadValidatorsFromChain = (validators: string[]) => {
     return async (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): Promise<void> => {
         const beaconNodes = getState().network.validatorBeaconNodes[validators[0]];
-        // TODO: Use any working beacon node instead of first one
-        const client = beaconNodes[0].client;
-        const pubKeys = validators.map(address => fromHex(address));
-        const response = await client.beacon.getValidators(pubKeys);
+        if (beaconNodes.length > 0) {
+            // TODO: Use any working beacon node instead of first one
+            const client = beaconNodes[0].client;
+            const pubKeys = validators.map(address => fromHex(address));
+            const response = await client.beacon.getValidators(pubKeys);
 
-        dispatch({
-            type: ValidatorActionTypes.LOADED_VALIDATORS_FROM_CHAIN,
-            payload: response
-        });
+            dispatch({
+                type: ValidatorActionTypes.LOADED_VALIDATORS_FROM_CHAIN,
+                payload: response
+            });
+        }
     };
 };
 
 export const loadValidatorStatus = (validatorAddress: string) => {
     return async (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): Promise<void> => {
         const beaconNodes = getState().network.validatorBeaconNodes[validatorAddress];
-        // TODO: Use any working beacon node instead of first one
-        const eth2 = beaconNodes[0].client;
-        const network = getState().validators[validatorAddress].network;
-        const networkConfig = getNetworkConfig(network);
-        const eth1 = new EthersNotifier(networkConfig, networkConfig.eth1Provider);
-        const status = await getValidatorStatus(fromHex(validatorAddress), eth2, eth1);
+        if (beaconNodes.length > 0) {
+            // TODO: Use any working beacon node instead of first one
+            const eth2 = beaconNodes[0].client;
+            const network = getState().validators[validatorAddress].network;
+            const networkConfig = getNetworkConfig(network);
+            const eth1 = new EthersNotifier(networkConfig, networkConfig.eth1Provider);
+            const status = await getValidatorStatus(fromHex(validatorAddress), eth2, eth1);
 
-        dispatch({
-            type: ValidatorActionTypes.LOAD_STATUS,
-            payload: {
-                validator: validatorAddress,
-                status,
-            },
-        });
+            dispatch({
+                type: ValidatorActionTypes.LOAD_STATUS,
+                payload: {
+                    validator: validatorAddress,
+                    status,
+                },
+            });
+        }
     };
 };
 
@@ -106,12 +119,11 @@ export interface IStartValidatorServiceAction {
     payload: IValidatorOptions,
 }
 
-export const startValidatorService = (publicKey: string) => {
+export const startValidatorService = (keypair: Keypair) => {
     return (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): void => {
         const logger = new ValidatorLogger();
-        const privateKey = PrivateKey.fromHexString(getState().validators[publicKey].privateKey);
         // TODO: Use beacon chain proxy instead of first node
-        const eth2API = getState().network.validatorBeaconNodes[publicKey][0].client;
+        const eth2API = getState().network.validatorBeaconNodes[keypair.publicKey.toHexString()][0].client;
 
         dispatch({
             type: ValidatorActionTypes.START_VALIDATOR_SERVICE,
@@ -119,7 +131,7 @@ export const startValidatorService = (publicKey: string) => {
                 db: new ValidatorDB(database),
                 api: eth2API,
                 config,
-                keypair: new Keypair(privateKey),
+                keypair,
                 logger
             },
         });
@@ -131,11 +143,11 @@ export interface IStopValidatorServiceAction {
     payload: string,
 }
 
-export const stopValidatorService = (publicKey: string) => {
+export const stopValidatorService = (keypair: Keypair) => {
     return (dispatch: Dispatch<Action<ValidatorActionTypes>>): void => {
         dispatch({
             type: ValidatorActionTypes.STOP_VALIDATOR_SERVICE,
-            payload: publicKey,
+            payload: keypair.publicKey.toHexString(),
         });
     };
 };

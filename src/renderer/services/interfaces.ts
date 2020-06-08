@@ -1,4 +1,3 @@
-import {Keypair} from "@chainsafe/bls/lib/keypair";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {CGAccount} from "../models/account";
 import {BaseProvider} from "ethers/providers";
@@ -9,18 +8,6 @@ export interface IService {
 
     stop(): Promise<void>;
 }
-
-export interface ICGKeystore {
-    decrypt(password: string): Keypair;
-    changePassword(oldPassword: string, newPassword: string): void;
-    destroy(): void;
-    getAddress(): string;
-}
-
-export interface ICGKeystoreFactory {
-    new (file: string): ICGKeystore;
-}
-
 
 export interface IInputValidity{
     isValid: boolean

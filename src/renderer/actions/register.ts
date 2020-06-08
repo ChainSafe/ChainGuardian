@@ -11,7 +11,7 @@ import * as path from "path";
 import {DEFAULT_ACCOUNT} from "../constants/account";
 import {remote} from "electron";
 import {fromHex} from "../services/utils/bytes";
-import {storeAuthAction} from "./auth";
+import {loadAccountAction} from "./auth";
 
 //Signing actions
 // Signing Mnemonic action
@@ -169,22 +169,11 @@ export const addNewValidatorAction = (password: string) => {
         const account = state.auth.account;
         if (account !== null) {
             // Reload validators and beacon nodes
-            await account.unlock(password);
-            storeAuthAction(account)(dispatch);
+            loadAccountAction()(dispatch);
         }
-
-        dispatch(completeAddingNewValidator());
     };
 };
 
-
-export const startAddingNewValidator = (): Action<RegisterActionTypes> => ({
-    type: RegisterActionTypes.START_ADDING_NEW_VALIDATOR
-});
-
-export const completeAddingNewValidator = (): Action<RegisterActionTypes> => ({
-    type: RegisterActionTypes.COMPLETE_ADDING_NEW_VALIDATOR
-});
 
 export interface ISetNetworkAction {
     type: typeof RegisterActionTypes.SET_NETWORK;

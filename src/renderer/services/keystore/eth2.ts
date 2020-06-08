@@ -3,12 +3,10 @@ import {Keypair} from "@chainsafe/bls";
 import {existsSync, readFileSync, unlinkSync, writeFileSync,mkdirSync} from "fs";
 import {PrivateKey} from "@chainsafe/bls";
 import {Keystore, IKeystore} from "@nodefactory/bls-keystore";
-import bech32 from "bech32";
 import {dirname} from "path";
 import {warn} from "electron-log";
 
-const KEY_PATH = "m/12381/60/0/0";
-const ETH2_ADDRESS_PREFIX="eth2";
+const KEY_PATH = "m/12381/3600/i/0/0";
 export class V4Keystore implements ICGKeystore {
     private keystore: IKeystore;
     private readonly file: string;
@@ -64,13 +62,8 @@ export class V4Keystore implements ICGKeystore {
         }
     }
 
-    public getAddress(): string {
-        const words = bech32.toWords(Buffer.from(this.getPublicKey(), "hex"));
-        return bech32.encode(ETH2_ADDRESS_PREFIX, words);
-    }
-
     public getPublicKey(): string {
-        return this.keystore.pubkey;
+        return `0x${this.keystore.pubkey}`;
     }
 
     /**

@@ -3,43 +3,27 @@ import {useState, useEffect} from "react";
 import {connect} from "react-redux";
 import {RouteComponentProps} from "react-router";
 import {bindActionCreators, Dispatch} from "redux";
+import {EmptyValidatorsList} from "../../components/EmptyValidatorsList/EmptyValidatorsListx";
 
-import {NetworkDropdown} from "../../components/NetworkDropdown/NetworkDropdown";
+import {Topbar} from "../../components/Topbar/Topbar";
 import {Validator} from "../Validator/Validator";
 import {Background} from "../../components/Background/Background";
-import {ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {deleteKeystore} from "../../services/utils/account";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 import {IRootState} from "../../reducers";
-import {loadValidatorsAction, storeNotificationAction} from "../../actions";
-import {Routes, OnBoardingRoutes} from "../../constants/routes";
+import {loadAccountAction, loadValidatorsAction, storeNotificationAction} from "../../actions";
+import {Routes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
-import {storeAuthAction, startAddingNewValidator as startAddingNewValidatorAction} from "../../actions";
 
 type IOwnProps = {
     network: string;
 } & Pick<RouteComponentProps, "history" | "location">;
-
-export interface IValidator {
-    name: string;
-    status: string;
-    publicKey: string;
-    deposit: number;
-    network: string;
-    privateKey: string;
-    balance?: bigint;
-}
 
 type DashBoardProps = IOwnProps & IInjectedProps & Pick<IRootState, "auth" | "validators">;
 const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     const [confirmModal, setConfirmModal] = useState<boolean>(false);
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
     const validators = Object.values(props.validators);
-
-    const onAddNewValidator = (): void => {
-        props.startAddingNewValidator();
-        props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
-    };
 
     const onRemoveValidator = (index: number): void => {
         setSelectedValidatorIndex(index);
@@ -51,7 +35,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
             const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey;
             deleteKeystore(props.auth.account.directory, selectedValidatorPublicKey);
             props.auth.account.removeValidator(selectedValidatorIndex);
-            props.storeAuth(props.auth.account);
+            // props.storeAuth(props.auth.account);
             props.loadValidators();
         }
         setConfirmModal(false);
@@ -65,29 +49,26 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     };
 
     useEffect(()=> {
-        if (!props.auth.account) {
-            return props.history.push(Routes.LOGIN_ROUTE);
-        }
-
         props.loadValidators();
     },[props.auth.account && props.auth.account.getValidators().length]);
 
-    const topBar =
-            <div className={"validator-top-bar"}>
-                <NetworkDropdown />
-                <ButtonPrimary onClick={onAddNewValidator} buttonId={"add-validator"}>
-                    ADD NEW VALIDATOR
-                </ButtonPrimary>
-            </div>;
+    useEffect(()=> {
+        props.loadAccount();
+    },[]);
+
+    const currentValidatorsList = validators.filter(validator =>
+        validator.network === props.network || !props.network // if all networks
+    );
 
     return (
-        <Background topBar={topBar} scrollable={true}>
-            <div className={"validators-display"}>
-                {validators
-                    .filter(validator =>
-                        validator.network === props.network || !props.network // if all networks
-                    )
-                    .map((v, index) => {
+        <Background
+            topBar={<Topbar />}
+            scrollable={true}
+        >
+
+            {currentValidatorsList.length > 0 ?
+                <div className={"validators-display"}>
+                    {currentValidatorsList.map((v, index) => {
                         return <div key={index} className={"validator-wrapper"}>
                             <Validator
                                 name={v.name}
@@ -102,11 +83,12 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
                                 onRemoveClick={(): void => {onRemoveValidator(index);}}
                                 onDetailsClick={(): void =>
                                     props.history.push(Routes.VALIDATOR_DETAILS.replace(":id", index.toString()))}
-                                privateKey={v.privateKey}
                             />
                         </div>;
                     })}
-            </div>
+                </div>
+                : <EmptyValidatorsList />}
+
             <ConfirmModal
                 showModal={confirmModal}
                 question={"Are you sure?"}
@@ -120,10 +102,10 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
 
 
 interface IInjectedProps{
-    storeAuth: typeof storeAuthAction;
+    // storeAuth: typeof storeAuthAction;
     notification: typeof storeNotificationAction;
-    startAddingNewValidator: typeof startAddingNewValidatorAction;
     loadValidators: typeof loadValidatorsAction;
+    loadAccount: typeof loadAccountAction;
 }
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"> => ({
@@ -135,10 +117,9 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            storeAuth: storeAuthAction,
             notification: storeNotificationAction,
-            startAddingNewValidator: startAddingNewValidatorAction,
             loadValidators: loadValidatorsAction,
+            loadAccount: loadAccountAction,
         },
         dispatch
     );

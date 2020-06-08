@@ -3,9 +3,9 @@ import electron, {remote} from "electron";
 import logger from "electron-log";
 
 import {getConfig} from "../../../config/config";
+import {IValidator} from "../../actions";
 import {Level} from "../../components/Notification/NotificationEnums";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
-import {IValidator} from "../../containers/Dashboard/DashboardContainer";
 import {DockerRegistry} from "../docker/docker-registry";
 import {V4Keystore} from "../keystore";
 import {copyFile, removeDirRecursive} from "./file";
