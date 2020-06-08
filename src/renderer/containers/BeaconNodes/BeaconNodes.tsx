@@ -4,13 +4,34 @@ import {useHistory} from "react-router";
 import {Background} from "../../components/Background/Background";
 import {BackButton} from "../../components/Button/ButtonAction";
 import {NodeCard} from "../../components/Cards/NodeCard";
-import {IValidatorBeaconNodes} from "../../models/beaconNode";
+import {BeaconNode} from "../../models/beaconNode";
 import {IRootState} from "../../reducers";
+
+interface extendedBeaconNode extends BeaconNode {
+    validators: string[]
+}
+type beaconNodes = {
+    [url: string]: extendedBeaconNode;
+}
 
 export const BeaconNodesContainer: React.FunctionComponent = () => {
     const history = useHistory();
     const validatorBeaconNodes = useSelector((state: IRootState) => state.network.validatorBeaconNodes);
-    const validators = Object.keys(validatorBeaconNodes);
+
+    const allNodes: beaconNodes = {};
+    for (let [validatorAddress, beaconNodes] of Object.entries(validatorBeaconNodes)) {
+        beaconNodes.map(node => {
+            allNodes[node.url] = {
+                ...node,
+                validators: allNodes[node.url] ? allNodes[node.url].validators : [],
+            };
+            allNodes[node.url].validators.push(validatorAddress)
+        });
+    }
+    const nodeList = Object.keys(allNodes);
+
+    console.log("allNodes: ", allNodes);
+    console.log("nodeList: ", nodeList);
 
     return (
         <Background scrollable={true}>
@@ -23,23 +44,26 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                 <div className="validator-nodes">
                     <div className="box node-container">
                         <div className="node-grid-container">
-                            {validators.length === 0 ? <h3>No beacon nodes found.</h3> : null}
+                            {nodeList.length === 0 ? <h3>No beacon nodes found.</h3> : null}
 
-                            {validators.map((validatorAddress, index) => (
-                                validatorBeaconNodes[validatorAddress].map(node => (
-                                    <div className="flex-column">
-                                        <h4>Validator {index+1}</h4>
-                                        <p>{validatorAddress}</p>
-                                        <NodeCard
-                                            key={node.url}
-                                            onClick={() => (): void => {}}
-                                            title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
-                                            url={node.url}
-                                            isSyncing={node.isSyncing}
-                                            value={node.currentSlot || "N/A"}
-                                        />
-                                    </div>
-                                ))
+                            {nodeList.map((url) => (
+                                <div className="flex-column">
+                                    <NodeCard
+                                        key={url}
+                                        onClick={() => (): void => {}}
+                                        title={allNodes[url].localDockerId ? "Local Docker container" : "Remote Beacon node"}
+                                        url={url}
+                                        isSyncing={allNodes[url].isSyncing}
+                                        value={allNodes[url].currentSlot || "N/A"}
+                                    />
+
+                                    <h5>Connected validators:</h5>
+                                    {allNodes[url] && allNodes[url].validators.map(validatorAddress => (
+                                        <div className="flex-column" key={validatorAddress}>
+                                            <p>{validatorAddress}</p>
+                                        </div>
+                                    ))}
+                                </div>
                             ))}
                         </div>
                     </div>
