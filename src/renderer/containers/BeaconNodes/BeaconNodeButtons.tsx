@@ -3,6 +3,7 @@ import {useDispatch} from "react-redux";
 import logger from "electron-log";
 import {useHistory} from "react-router";
 import {storeNotificationAction} from "../../actions";
+import {removeBeaconNodeAction} from "../../actions/network";
 import {ButtonDestructive, ButtonInverted, ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 
@@ -10,6 +11,7 @@ interface IBeaconNodeButtonsProps {
     image: string;
     url: string;
     isRunning: boolean;
+    validators: string[];
     updateNodeStatus(url: string, status: boolean): void;
 }
 
@@ -45,8 +47,9 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
 
     const onRemoveClick = async(image: string): Promise<void> => {
         try {
+            await (DockerRegistry.getContainer(image)!).stop();
             await (DockerRegistry.getContainer(image)!).remove();
-            // TODO: Dispatch?
+            props.validators.map((validator) => dispatch(removeBeaconNodeAction(image, validator)));
         } catch (e) {
             logger.error(e);
             dispatch(storeNotificationAction({

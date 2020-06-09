@@ -112,6 +112,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                                             image={node.localDockerId}
                                             url={url}
                                             isRunning={runningBeaconNodes[url]}
+                                            validators={node.validators}
                                         />
                                     </div>
                                 </div>
