@@ -46,6 +46,7 @@ export function runDetached(command: string): ICmdRun {
     const args = command.split(" ");
     const process = child.spawn(args[0], args.slice(1), {
         detached: true,
+        shell: true,
     });
 
     if (process.stdout && process.stderr) {
