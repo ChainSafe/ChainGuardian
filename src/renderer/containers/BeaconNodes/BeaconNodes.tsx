@@ -3,12 +3,12 @@ import {useSelector} from "react-redux";
 import {useHistory} from "react-router";
 import {Background} from "../../components/Background/Background";
 import {BackButton} from "../../components/Button/ButtonAction";
-import {ButtonDestructive, ButtonInverted, ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {NodeCard} from "../../components/Cards/NodeCard";
 import {BeaconNode} from "../../models/beaconNode";
 import {IRootState} from "../../reducers";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 import {truncatePublicKey} from "../../services/utils/formatting";
+import {BeaconNodeButtons} from "./BeaconNodeButtons";
 
 interface IExtendedBeaconNode extends BeaconNode {
     validators: string[]
@@ -40,7 +40,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                     ...allNodes,
                     [node.url]: {
                         ...node,
-                        validators,
+                        validators
                     }
                 });
             });
@@ -56,48 +56,19 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                     const isRunning = await container.isRunning();
                     setRunningBeaconNodes({
                         ...runningBeaconNodes,
-                        [url]: isRunning,
+                        [url]: isRunning
                     });
                 }
             }
         });
     }, [allNodes]);
 
-    const onStopClick = async(image: string, url: string): Promise<void> => {
-        await (DockerRegistry.getContainer(image)!).stop();
+    const onUpdateNodeStatus = (url: string, status: boolean): void => {
         setRunningBeaconNodes({
             ...runningBeaconNodes,
-            [url]: false,
+            [url]: status
         });
     };
-
-    const onStartClick = async(image: string, url: string): Promise<void> => {
-        await (DockerRegistry.getContainer(image)!).startStoppedContainer();
-        setRunningBeaconNodes({
-            ...runningBeaconNodes,
-            [url]: true,
-        });
-    };
-
-    const onRemoveClick = async(image: string): Promise<void> => {
-        await (DockerRegistry.getContainer(image)!).remove();
-    };
-
-    const renderButtons = (image: string, url: string): React.ReactElement => (
-        <div className="row buttons">
-            {
-                image ?
-                    <>
-                        {runningBeaconNodes[url] ?
-                            <ButtonInverted onClick={(): Promise<void> => onStopClick(image, url)}>Stop</ButtonInverted>
-                            :
-                            <ButtonPrimary onClick={(): Promise<void> => onStartClick(image, url)}>Start</ButtonPrimary>
-                        }
-                    </> : null
-            }
-            <ButtonDestructive onClick={(): Promise<void> => onRemoveClick(image)}>Remove</ButtonDestructive>
-        </div>
-    );
 
     return (
         <Background scrollable={true}>
@@ -136,7 +107,12 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                                             ))}
                                         </div>
 
-                                        {renderButtons(node.localDockerId, url)}
+                                        <BeaconNodeButtons
+                                            updateNodeStatus={onUpdateNodeStatus}
+                                            image={node.localDockerId}
+                                            url={url}
+                                            isRunning={runningBeaconNodes[url]}
+                                        />
                                     </div>
                                 </div>
                             );
