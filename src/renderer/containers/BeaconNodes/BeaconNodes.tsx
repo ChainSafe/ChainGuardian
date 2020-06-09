@@ -10,16 +10,16 @@ import {IRootState} from "../../reducers";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 import {truncatePublicKey} from "../../services/utils/formatting";
 
-interface ExtendedBeaconNode extends BeaconNode {
+interface IExtendedBeaconNode extends BeaconNode {
     validators: string[]
 }
 type BeaconNodes = {
-    [url: string]: ExtendedBeaconNode;
-}
+    [url: string]: IExtendedBeaconNode;
+};
 
 type RunningBeaconNodes = {
     [url: string]: boolean,
-}
+};
 
 export const BeaconNodesContainer: React.FunctionComponent = () => {
     const history = useHistory();
@@ -31,7 +31,8 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
     const nodeList = Object.keys(allNodes);
 
     useEffect(() => {
-        for (let [validatorAddress, beaconNodes] of Object.entries(validatorBeaconNodes)) {
+        // Parse beacon nodes from all validators
+        for (const [validatorAddress, beaconNodes] of Object.entries(validatorBeaconNodes)) {
             beaconNodes.map(node => {
                 const validators = allNodes[node.url] ? allNodes[node.url].validators : [];
                 validators.push(validatorAddress);
@@ -47,6 +48,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
     }, []);
 
     useEffect(() => {
+        // Load containers running status
         nodeList.map(async (url) => {
             if (allNodes[url].localDockerId) {
                 const container = DockerRegistry.getContainer(allNodes[url].localDockerId);
@@ -55,7 +57,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                     setRunningBeaconNodes({
                         ...runningBeaconNodes,
                         [url]: isRunning,
-                    })
+                    });
                 }
             }
         });
@@ -66,7 +68,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
         setRunningBeaconNodes({
             ...runningBeaconNodes,
             [url]: false,
-        })
+        });
     };
 
     const onStartClick = async(image: string, url: string): Promise<void> => {
@@ -74,7 +76,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
         setRunningBeaconNodes({
             ...runningBeaconNodes,
             [url]: true,
-        })
+        });
     };
 
     const onRemoveClick = async(image: string): Promise<void> => {
@@ -137,7 +139,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                                         {renderButtons(node.localDockerId, url)}
                                     </div>
                                 </div>
-                            )
+                            );
                         })}
                     </div>
                 </div>
