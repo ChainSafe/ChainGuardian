@@ -7,6 +7,7 @@ import {
     IValidatorBeaconClient
 } from "../interface";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
+import logger from "electron-log";
 import {LighthouseBeaconApiClient} from "./beacon";
 import {LighthouseValidatorApiClient} from "./validator";
 import {IEth2ChainHead} from "../../../../models/head";
@@ -33,8 +34,12 @@ export class LighthouseEth2ApiClient extends AbstractApiClient implements IValid
 
     public onNewChainHead(callback: (head: IEth2ChainHead) => void): void {
         setInterval(async() => {
-            const response = await this.beacon.getChainHead();
-            callback(response);
+            try {
+                const response = await this.beacon.getChainHead();
+                callback(response);
+            } catch (e) {
+                logger.error(`Error while fetching head in onNewChainHead: ${e.message}`);
+            }
         }, this.config.params.SECONDS_PER_SLOT * 1000);
     }
 
