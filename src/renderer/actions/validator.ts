@@ -65,7 +65,7 @@ export const loadValidatorsAction = () => {
 export const loadValidatorsFromChain = (validators: string[]) => {
     return async (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): Promise<void> => {
         const beaconNodes = getState().network.validatorBeaconNodes[validators[0]];
-        if (beaconNodes.length > 0) {
+        if (beaconNodes && beaconNodes.length > 0) {
             // TODO: Use any working beacon node instead of first one
             const client = beaconNodes[0].client;
             const pubKeys = validators.map(address => fromHex(address));
@@ -82,7 +82,7 @@ export const loadValidatorsFromChain = (validators: string[]) => {
 export const loadValidatorStatus = (validatorAddress: string) => {
     return async (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): Promise<void> => {
         const beaconNodes = getState().network.validatorBeaconNodes[validatorAddress];
-        if (beaconNodes.length > 0) {
+        if (beaconNodes && beaconNodes.length > 0) {
             // TODO: Use any working beacon node instead of first one
             const eth2 = beaconNodes[0].client;
             const network = getState().validators[validatorAddress].network;

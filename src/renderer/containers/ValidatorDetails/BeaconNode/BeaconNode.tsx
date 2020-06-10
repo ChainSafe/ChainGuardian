@@ -12,7 +12,7 @@ export const BeaconNode = ({node}: IBeaconNodeProps): ReactElement => {
     const container = DockerRegistry.getContainer(node.localDockerId) as BeaconChain;
 
     return (
-        <div className="flex-column stretch validator-container">
+        <div className="flex-column stretch">
             <div className="row space-between">
                 <h3>Beacon Node</h3>
                 <h5>{node.url}</h5>

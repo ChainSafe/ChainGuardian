@@ -53,6 +53,20 @@ export const saveBeaconNodeAction = (url: string, network?: string) => {
     };
 };
 
+export const removeBeaconNodeAction = (image: string, validator: string) => {
+    return async (dispatch: Dispatch<Action<unknown>>): Promise<void> => {
+        const validatorBeaconNodes = await database.beaconNodes.get(validator);
+        const newBeaconNodesList = BeaconNodes.createNodes(validatorBeaconNodes.nodes);
+        newBeaconNodesList.removeNode(image);
+        await database.beaconNodes.set(
+            validator,
+            newBeaconNodesList,
+        );
+
+        storeValidatorBeaconNodes(validator, newBeaconNodesList.nodes)(dispatch);
+    };
+};
+
 // Loading validator beacon nodes
 
 export interface ILoadedValidatorBeaconNodesAction {
