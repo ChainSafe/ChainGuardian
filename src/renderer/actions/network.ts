@@ -62,6 +62,8 @@ export const removeBeaconNodeAction = (image: string, validator: string) => {
             validator,
             newBeaconNodesList,
         );
+
+        storeValidatorBeaconNodes(validator, newBeaconNodesList.nodes)(dispatch);
     };
 };
 

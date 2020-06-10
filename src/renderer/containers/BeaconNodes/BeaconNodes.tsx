@@ -33,19 +33,18 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
     useEffect(() => {
         // Parse beacon nodes from all validators
         for (const [validatorAddress, beaconNodes] of Object.entries(validatorBeaconNodes)) {
+            const beaconNodesList: BeaconNodes = {};
             beaconNodes.map(node => {
                 const validators = allNodes[node.url] ? allNodes[node.url].validators : [];
                 validators.push(validatorAddress);
-                setAllNodes({
-                    ...allNodes,
-                    [node.url]: {
-                        ...node,
-                        validators
-                    }
-                });
+                beaconNodesList[node.url] = {
+                    ...node,
+                    validators
+                };
             });
+            setAllNodes(beaconNodesList);
         }
-    }, []);
+    }, [validatorBeaconNodes]);
 
     useEffect(() => {
         // Load containers running status
