@@ -73,9 +73,13 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
                     image ?
                         <>
                             {isRunning ?
-                                <ButtonInverted onClick={(): Promise<void> => onStopClick(image, url)}>Stop</ButtonInverted>
+                                <ButtonInverted onClick={(): Promise<void> => onStopClick(image, url)}>
+                                    Stop
+                                </ButtonInverted>
                                 :
-                                <ButtonPrimary onClick={(): Promise<void> => onStartClick(image, url)}>Start</ButtonPrimary>
+                                <ButtonPrimary onClick={(): Promise<void> => onStartClick(image, url)}>
+                                    Start
+                                </ButtonPrimary>
                             }
                         </> : null
                 }

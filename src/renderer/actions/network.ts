@@ -54,7 +54,7 @@ export const saveBeaconNodeAction = (url: string, network?: string) => {
 };
 
 export const removeBeaconNodeAction = (image: string, validator: string) => {
-    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+    return async (dispatch: Dispatch<Action<unknown>>): Promise<void> => {
         const validatorBeaconNodes = await database.beaconNodes.get(validator);
         const newBeaconNodesList = BeaconNodes.createNodes(validatorBeaconNodes.nodes);
         newBeaconNodesList.removeNode(image);
