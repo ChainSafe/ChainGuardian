@@ -33,6 +33,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
     const nodeList = Object.keys(allNodes);
 
     useEffect(() => {
+        setLoading(true);
         // Parse beacon nodes from all validators
         for (const [validatorAddress, beaconNodes] of Object.entries(validatorBeaconNodes)) {
             const beaconNodesList: BeaconNodes = {};
@@ -41,7 +42,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                 validators.push(validatorAddress);
                 beaconNodesList[node.url] = {
                     ...node,
-                    validators
+                    validators: [...new Set(validators)],
                 };
             });
             setAllNodes(beaconNodesList);
@@ -50,6 +51,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
     }, [validatorBeaconNodes]);
 
     useEffect(() => {
+        setLoading(true);
         // Load containers running status
         nodeList.map(async (url) => {
             if (allNodes[url].localDockerId) {
@@ -63,6 +65,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                 }
             }
         });
+        setLoading(false);
     }, [allNodes]);
 
     const onUpdateNodeStatus = (url: string, status: boolean): void => {
