@@ -62,7 +62,10 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
                 <h1>Create a password</h1>
                 <p>You will use this password to unlock applications and keys.</p>
                 <div className="input-container input-container-vertical">
-                    <form onSubmit={() => {this.setState({ loading: true }); return this.handleSubmit}} className="flex-column">
+                    <form
+                        onSubmit={(): void => {this.setState({loading: true}); this.handleSubmit();}}
+                        className="flex-column"
+                    >
                         <MultipleInputVertical inputs={inputs}/>
                         <ButtonPrimary
                             buttonId="next"
@@ -99,7 +102,7 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
 
     private handleSubmit = (): void => {
         this.props.afterPassword(this.state.password);
-        this.setState({ loading: false });
+        this.setState({loading: false});
         this.props.history.push(Routes.DASHBOARD_ROUTE);
     };
 }
