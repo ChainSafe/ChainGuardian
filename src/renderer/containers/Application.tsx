@@ -5,6 +5,7 @@ import {ReactElement} from "react";
 import OnboardContainer from "../containers/Onboard/OnboardContainer";
 import {BeaconChain} from "../services/docker/chain";
 import {Routes} from "../constants/routes";
+import {AddBeaconNodeContainer} from "./AddBeaconNode/AddBeaconNode";
 import {BeaconNodesContainer} from "./BeaconNodes/BeaconNodes";
 import {DashboardContainer} from "./Dashboard/DashboardContainer";
 import {ValidatorDetailsContainer} from "./ValidatorDetails/ValidatorDetailsContainer";
@@ -26,6 +27,7 @@ const Application = (): ReactElement => {
                     <Route path={Routes.DASHBOARD_ROUTE} component={DashboardContainer}/>
                     <Route path={Routes.VALIDATOR_DETAILS} component={ValidatorDetailsContainer}/>
                     <Route path={Routes.BEACON_NODES} component={BeaconNodesContainer}/>
+                    <Route path={Routes.ADD_BEACON_NODE} component={AddBeaconNodeContainer}/>
                     <Redirect from="/" to={Routes.DASHBOARD_ROUTE}/>
                 </Switch>
             </Router>
