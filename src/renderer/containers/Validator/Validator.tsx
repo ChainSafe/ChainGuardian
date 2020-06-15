@@ -3,7 +3,7 @@ import {useSelector, useDispatch} from "react-redux";
 import {useHistory} from "react-router";
 import {startValidatorService, stopValidatorService} from "../../actions";
 import {PasswordPrompt} from "../../components/Prompt/PasswordPrompt";
-import {OnBoardingRoutes, Routes} from "../../constants/routes";
+import {Routes} from "../../constants/routes";
 
 import {IRootState} from "../../reducers";
 import {calculateROI} from "../../services/utils/math";
@@ -41,7 +41,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     const ROI = calculateROI(balance, network);
 
     const onAddButtonClick = (): void => {
-      history.push(Routes.ADD_BEACON_NODE.replace(":validatorId", props.publicKey));
+        history.push(Routes.ADD_BEACON_NODE.replace(":validatorId", props.publicKey));
     };
 
     const renderBeaconNodes = (): React.ReactElement => {

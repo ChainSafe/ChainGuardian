@@ -7,5 +7,5 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
     return (
         <>
         </>
-    )
+    );
 };
