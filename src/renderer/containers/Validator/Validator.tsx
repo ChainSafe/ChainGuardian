@@ -51,19 +51,17 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
                     <div className="node-grid-container">
                         {nodes.length === 0 ? <p>No working beacon nodes.</p> : null}
 
-                        {nodes.map(node => {
-                            return (
-                                <NodeCard
-                                    key={node.url}
-                                    //TODO: change to some other id when multinode is enabled
-                                    onClick={props.onBeaconNodeClick(node.url)}
-                                    title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
-                                    url={node.url}
-                                    isSyncing={node.isSyncing}
-                                    value={node.currentSlot || "N/A"}
-                                />
-                            );
-                        })}
+                        {nodes.map((node, index) => (
+                            <NodeCard
+                                key={index}
+                                //TODO: change to some other id when multinode is enabled
+                                onClick={props.onBeaconNodeClick(node.url)}
+                                title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
+                                url={node.url}
+                                isSyncing={node.isSyncing}
+                                value={node.currentSlot || "N/A"}
+                            />
+                        ))}
                     </div>
 
                     <AddButton onClick={onAddButtonClick} />

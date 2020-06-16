@@ -48,8 +48,9 @@ export const saveBeaconNodeAction = (url: string, network?: string, validatorKey
             const signingKey = PrivateKey.fromBytes(fromHex(getState().register.signingKey));
             validatorAddress = signingKey.toPublicKey().toHexString();
         }
-        const beaconNode = new BeaconNodes(url, localDockerName);
-        await database.beaconNodes.set(
+        const beaconNode = new BeaconNodes();
+        beaconNode.addNode(url, localDockerName);
+        await database.beaconNodes.upsert(
             validatorAddress,
             beaconNode,
         );

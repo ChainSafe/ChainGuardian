@@ -1,3 +1,4 @@
+import database from "../database";
 import {Repository} from "../repository";
 import {BeaconNodes} from "../../../../models/beaconNode";
 import {Bucket} from "../../schema";
@@ -29,6 +30,17 @@ export class BeaconNodeRepository extends Repository<BeaconNodes> {
     public async delete(id: string): Promise<void> {
         const key = this.getKeyName(id);
         await super.delete(key);
+    }
+
+    public async upsert(id: string, value: BeaconNodes): Promise<void> {
+        const validatorBeaconNodes = await this.get(id);
+        if (validatorBeaconNodes) {
+            const newList = BeaconNodes.createNodes(value.nodes);
+            validatorBeaconNodes.nodes.map(node => newList.addNode(node.url, node.localDockerId));
+            await this.set(id, newList);
+        } else {
+            await this.set(id, value);
+        }
     }
 
     private getKeyName(validatorAddress: string): string {

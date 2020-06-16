@@ -19,14 +19,10 @@ export interface IValidatorBeaconNodes {
 export class BeaconNodes implements IBeaconNodes {
     public nodes: BeaconNode[] = [];
 
-    public constructor(url: string, localDockerId = "") {
-        this.nodes.push({url, localDockerId});
-    }
-
     public static createNodes(nodes: BeaconNode[]): BeaconNodes|null {
         if (nodes.length > 0) {
-            const list = new BeaconNodes(nodes[0].url, nodes[0].localDockerId);
-            for (let i = 1; i < nodes.length; i++) {
+            const list = new BeaconNodes();
+            for (let i = 0; i < nodes.length; i++) {
                 list.addNode(nodes[i].url, nodes[i].localDockerId);
             }
             return list;
