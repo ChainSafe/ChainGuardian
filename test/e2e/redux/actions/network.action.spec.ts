@@ -48,7 +48,7 @@ describe("register actions", () => {
         await reduxStore.dispatch<any>(saveBeaconNodeAction("localhost"));
         const address = PrivateKey.fromHexString(signingKey).toPublicKey().toHexString();
         const node = new BeaconNodes();
-        node.addNode("localhost");
+        node.addNode("localhost", null);
         expect(spy.calledWith(address, node)).toEqual(true);
     });
 });
