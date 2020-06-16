@@ -6,6 +6,7 @@ import {storeNotificationAction} from "../../actions";
 import {removeBeaconNodeAction} from "../../actions/network";
 import {ButtonDestructive, ButtonInverted, ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
+import {Loading} from "../../components/Loading/Loading";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 
 interface IBeaconNodeButtonsProps {
@@ -21,8 +22,10 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
     const history = useHistory();
     const {image, url, isRunning} = props;
     const [confirmModal, setConfirmModal] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const onStopClick = async(image: string, url: string): Promise<void> => {
+        setLoading(true);
         try {
             await (DockerRegistry.getContainer(image)!).stop();
             props.updateNodeStatus(url, false);
@@ -33,9 +36,11 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
                 title: "Error while trying to stop beacon node container"
             }));
         }
+        setLoading(false);
     };
 
     const onStartClick = async(image: string, url: string): Promise<void> => {
+        setLoading(true);
         try {
             await (DockerRegistry.getContainer(image)!).startStoppedContainer();
             props.updateNodeStatus(url, true);
@@ -46,6 +51,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
                 title: "Error while trying to start beacon node container"
             }));
         }
+        setLoading(false);
     };
 
     const onRemoveClick = (): void => {
@@ -53,6 +59,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
     };
 
     const removeContainer = async(): Promise<void> => {
+        setLoading(true);
         try {
             await (DockerRegistry.getContainer(image))!.stop();
             await (DockerRegistry.getContainer(image)!).remove();
@@ -64,6 +71,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
                 title: "Error while trying to remove beacon node container"
             }));
         }
+        setLoading(false);
     };
 
     return (
@@ -93,6 +101,8 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
                 onOKClick={removeContainer}
                 onCancelClick={(): void => setConfirmModal(false)}
             />
+
+            <Loading visible={loading} title="Loading" />
         </>
     );
 };

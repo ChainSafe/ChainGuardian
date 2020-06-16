@@ -23,6 +23,8 @@ type DashBoardProps = IOwnProps & IInjectedProps & Pick<IRootState, "auth" | "va
 const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     const [confirmModal, setConfirmModal] = useState<boolean>(false);
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [currentValidatorsList, setCurrentValidatorsList] = useState([]);
     const validators = Object.values(props.validators);
 
     const onRemoveValidator = (index: number): void => {
@@ -56,16 +58,20 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
         props.loadAccount();
     },[]);
 
-    const currentValidatorsList = validators.filter(validator =>
-        validator.network === props.network || !props.network // if all networks
-    );
+    useEffect(() => {
+        setLoading(true);
+        setCurrentValidatorsList(validators.filter(validator =>
+            // Filter validators by network or 'All
+            validator.network === props.network || !props.network
+        ));
+        setLoading(false);
+    }, [props.validators]);
 
     return (
         <Background
             topBar={<Topbar />}
             scrollable={true}
         >
-
             {currentValidatorsList.length > 0 ?
                 <div className={"validators-display"}>
                     {currentValidatorsList.map((v, index) => {
@@ -87,7 +93,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
                         </div>;
                     })}
                 </div>
-                : <EmptyValidatorsList />}
+                : !loading ? <EmptyValidatorsList /> : null}
 
             <ConfirmModal
                 showModal={confirmModal}

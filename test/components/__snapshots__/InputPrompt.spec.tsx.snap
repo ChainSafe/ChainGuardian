@@ -1,72 +1,90 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Input prompt renders correctly 1`] = `
-<div
-  className="prompt-overlay prompt-show"
->
+Array [
   <div
-    className="prompt-modal"
+    className="prompt-overlay prompt-show"
   >
-    <h2
-      className="prompt-title"
+    <div
+      className="prompt-modal"
     >
-      Make input
-    </h2>
-    <form
-      onSubmit={[Function]}
-    >
-      <div
-        className="label"
-      />
-      <div
-        className="inputform-container"
+      <h2
+        className="prompt-title"
       >
-        <input
-          className="inputform "
-          id="prompt-input"
-          onChange={[Function]}
-          value=""
+        Make input
+      </h2>
+      <form
+        onSubmit={[Function]}
+      >
+        <div
+          className="label"
         />
         <div
-          className="input-eye none"
+          className="inputform-container"
+        >
+          <input
+            className="inputform "
+            id="prompt-input"
+            onChange={[Function]}
+            value=""
+          />
+          <div
+            className="input-eye none"
+          />
+        </div>
+        <div
+          className="error-message"
         />
-      </div>
+      </form>
       <div
-        className="error-message"
-      />
-    </form>
-    <div
-      className="button-control"
-    >
-      <div
-        className="prompt-cancel-button"
+        className="button-control"
       >
-        <button
-          className="button btn-destructive  "
-          onClick={[Function]}
+        <div
+          className="prompt-cancel-button"
         >
-          <div
-            className=""
+          <button
+            className="button btn-destructive  "
+            onClick={[Function]}
           >
-            Cancel
-          </div>
-        </button>
-      </div>
-      <div
-        className="prompt-confirm-button"
-      >
-        <button
-          className="button btn-primary  "
-          onClick={[Function]}
+            <div
+              className=""
+            >
+              Cancel
+            </div>
+          </button>
+        </div>
+        <div
+          className="prompt-confirm-button"
         >
-          <div
-            className=""
+          <button
+            className="button btn-primary  "
+            onClick={[Function]}
           >
-            OK
-          </div>
-        </button>
+            <div
+              className=""
+            >
+              OK
+            </div>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  </div>,
+  <div
+    className="loading-container none"
+  >
+    <div
+      className="loading title"
+    >
+      <h1>
+        Confirming...
+      </h1>
+    </div>
+    <div />
+    <img
+      className="loading-logo"
+      src="test-file-stub"
+    />
+  </div>,
+]
 `;
