@@ -1,4 +1,3 @@
-import database from "../database";
 import {Repository} from "../repository";
 import {BeaconNodes} from "../../../../models/beaconNode";
 import {Bucket} from "../../schema";

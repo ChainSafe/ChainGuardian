@@ -47,7 +47,7 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
             dispatch(startBeaconChainAction(
                 network,
                 [{...ports[0], local: libp2pPort},
-                {...ports[1], local: rpcPort}]
+                    {...ports[1], local: rpcPort}]
             ));
             dispatch(saveBeaconNodeAction(`http://localhost:${rpcPort}`, network, validatorKey));
             history.push(Routes.DASHBOARD_ROUTE);
