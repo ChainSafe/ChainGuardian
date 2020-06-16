@@ -41,7 +41,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     const ROI = calculateROI(balance, network);
 
     const onAddButtonClick = (): void => {
-        history.push(Routes.ADD_BEACON_NODE.replace(":validatorId", props.publicKey));
+        history.push(Routes.ADD_BEACON_NODE.replace(":validatorKey", props.publicKey));
     };
 
     const renderBeaconNodes = (): React.ReactElement => {

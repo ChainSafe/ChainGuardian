@@ -40,12 +40,15 @@ export const startBeaconChainAction = (network: string, ports?: DockerPort[]) =>
     };
 };
 
-export const saveBeaconNodeAction = (url: string, network?: string) => {
+export const saveBeaconNodeAction = (url: string, network?: string, validatorKey?: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const localDockerName = network ? BeaconChain.getContainerName(network) : undefined;
-        const signingKey = PrivateKey.fromBytes(fromHex(getState().register.signingKey));
+        let validatorAddress = validatorKey || "";
+        if (validatorAddress === "") {
+            const signingKey = PrivateKey.fromBytes(fromHex(getState().register.signingKey));
+            validatorAddress = signingKey.toPublicKey().toHexString();
+        }
         const beaconNode = new BeaconNodes(url, localDockerName);
-        const validatorAddress = signingKey.toPublicKey().toHexString();
         await database.beaconNodes.set(
             validatorAddress,
             beaconNode,

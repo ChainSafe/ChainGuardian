@@ -7,7 +7,6 @@ import {Dropdown} from "../Dropdown/Dropdown";
 import {InputForm} from "../Input/InputForm";
 
 interface IInputBeaconNodeProps {
-    network: string;
     onGoSubmit: (url: string, network: string) => void;
     onRunNodeSubmit: (network: string) => void;
 }
@@ -33,7 +32,7 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
             return false;
         }
 
-        if (!(await isSupportedBeaconChain(beaconNodeInput, props.network))) {
+        if (!(await isSupportedBeaconChain(beaconNodeInput, getSelectedNetwork()))) {
             setErrorMessage("Unsupported beacon chain or not working");
             return false;
         }

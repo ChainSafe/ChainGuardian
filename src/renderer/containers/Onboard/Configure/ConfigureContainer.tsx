@@ -42,7 +42,6 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
 
     return (
         <InputBeaconNode
-            network={props.network}
             onGoSubmit={onGoSubmit}
             onRunNodeSubmit={onRunNodeSubmit}
         />

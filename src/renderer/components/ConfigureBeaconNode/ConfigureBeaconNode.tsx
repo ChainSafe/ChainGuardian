@@ -4,12 +4,12 @@ import {getNetworkConfig} from "../../services/eth2/networks";
 import {ButtonPrimary} from "../Button/ButtonStandard";
 import {InputForm} from "../Input/InputForm";
 
-interface IConfigureBeaconNodeProps {
+interface IConfigureBNProps {
     network: string;
     onSubmit: (ports: DockerPort[], libp2pPort: string, rpcPort: string) => void;
 }
 
-export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBeaconNodeProps> = (props: IConfigureBeaconNodeProps) => {
+export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (props: IConfigureBNProps) => {
     const ports = getNetworkConfig(props.network).dockerConfig.ports;
     const defaultRpcPort = ports[1].local;
     const [rpcPort, setRpcPort] = useState(defaultRpcPort);
