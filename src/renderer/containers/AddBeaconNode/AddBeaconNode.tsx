@@ -69,7 +69,10 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
 
     return (
         <>
-            <OnBoardModal history={history} currentStep={currentStep}>
+            <OnBoardModal
+                history={history}
+                currentStep={currentStep}
+            >
                 {renderStepScreen()}
             </OnBoardModal>
         </>

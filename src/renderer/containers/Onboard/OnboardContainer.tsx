@@ -43,11 +43,24 @@ export default class OnboardContainer extends Component<IProps, {}> {
         [OnBoardingRoutes.PASSWORD]: <CreatePasswordContainer history={this.props.history}/>,
     };
 
+    private steps = [
+        {stepId: 1, stepName: "Signing key"},
+        {stepId: 2, stepName: "Withdrawal key"},
+        {stepId: 3, stepName: "Configure"},
+        {stepId: 4, stepName: "Deposit"},
+        {stepId: 5, stepName: "Password"},
+        {stepId: 6, stepName: "Consent"}
+    ];
+
     public render(): ReactElement {
         const {step} = this.props.match.params;
         return (
             <Background>
-                <OnBoardModal history={this.props.history} currentStep={parseInt(step.split("_")[0])}>
+                <OnBoardModal
+                    history={this.props.history}
+                    currentStep={parseInt(step.split("_")[0])}
+                    steps={this.steps}
+                >
                     {this.renderStep()}
                 </OnBoardModal>
             </Background>
