@@ -35,11 +35,11 @@ export class BeaconNodeRepository extends Repository<BeaconNodes> {
     public async upsert(id: string, value: BeaconNodes): Promise<void> {
         const validatorBeaconNodes = await this.get(id);
         if (validatorBeaconNodes) {
-            const newList = BeaconNodes.createNodes(value.nodes);
-            validatorBeaconNodes.nodes.map(node => newList.addNode(node.url, node.localDockerId));
-            await this.set(id, newList);
+            const newList = BeaconNodes.createNodes(validatorBeaconNodes.nodes);
+            value.nodes.map(node => newList.addNode(node.url, node.localDockerId));
+            return await this.set(id, newList);
         } else {
-            await this.set(id, value);
+            return await this.set(id, value);
         }
     }
 

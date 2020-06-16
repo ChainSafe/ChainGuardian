@@ -7,7 +7,7 @@ export interface INodeCardProps {
     url: string;
     onClick: () => void;
     isSyncing?: boolean;
-    key: number|string;
+    key?: number|string;
 }
 
 export const NodeCard: React.FunctionComponent<INodeCardProps> = (

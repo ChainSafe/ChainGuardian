@@ -31,8 +31,12 @@ export class BeaconNodes implements IBeaconNodes {
         return null;
     }
 
-    public addNode(url: string, localDockerId: string): void {
-        this.nodes.push({url, localDockerId});
+    // Add new node to the list that has unique values
+    public addNode(url: string, localDockerId?: string): void {
+        const found = this.nodes.filter(node => node.url === url && node.localDockerId === localDockerId);
+        if (found.length === 0) {
+            this.nodes.push({url, localDockerId});
+        }
     }
 
     public removeNode(localDockerId: string): boolean {
