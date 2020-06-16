@@ -2,6 +2,7 @@ import * as React from "react";
 import {Component, ReactElement} from "react";
 import {IInputFormProps} from "../../../components/Input/InputForm";
 import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
+import {Loading} from "../../../components/Loading/Loading";
 import {MultipleInputVertical} from "../../../components/MultipleInputVertical/MultipleInputVertical";
 import {RouteComponentProps} from "react-router";
 import {passwordFormSchema} from "./validation";
@@ -18,6 +19,7 @@ export interface IState {
         password?: string,
         confirm?: string
     };
+    loading: boolean;
 }
 
 
@@ -26,11 +28,11 @@ interface IInjectedProps {
 }
 
 export class CreatePassword extends Component<Pick<RouteComponentProps, "history"> & IInjectedProps> {
-
     public state: IState = {
         password: "",
         confirm: "",
-        errorMessages: {}
+        errorMessages: {},
+        loading: false,
     };
 
     public render(): ReactElement {
@@ -53,14 +55,17 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
             }
         ];
 
-        const {errorMessages} = this.state;
+        const {errorMessages, loading} = this.state;
 
         return (
             <>
                 <h1>Create a password</h1>
                 <p>You will use this password to unlock applications and keys.</p>
                 <div className="input-container input-container-vertical">
-                    <form onSubmit={this.handleSubmit} className="flex-column">
+                    <form
+                        onSubmit={(): void => {this.setState({loading: true}); this.handleSubmit();}}
+                        className="flex-column"
+                    >
                         <MultipleInputVertical inputs={inputs}/>
                         <ButtonPrimary
                             buttonId="next"
@@ -71,6 +76,8 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
                         </ButtonPrimary>
                     </form>
                 </div>
+
+                <Loading visible={loading} title="Loading" />;
             </>
         );
     }
@@ -93,9 +100,9 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
         this.setState({errorMessages: m});
     };
 
-    private handleSubmit= (): void => {
-        const {password} = this.state;
-        this.props.afterPassword(password);
+    private handleSubmit = (): void => {
+        this.props.afterPassword(this.state.password);
+        this.setState({loading: false});
         this.props.history.push(Routes.DASHBOARD_ROUTE);
     };
 }
