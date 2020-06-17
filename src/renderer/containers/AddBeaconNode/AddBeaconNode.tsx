@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useCallback} from "react";
 import {useDispatch} from "react-redux";
 import {useHistory, useParams} from "react-router";
 import {saveBeaconNodeAction, startBeaconChainAction} from "../../actions/network";
@@ -41,18 +41,17 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
         );
     };
 
-    const renderSecondStep = (): React.ReactElement => {
-        const onDockerRunSubmit = (ports: DockerPort[], libp2pPort: string, rpcPort: string): void => {
-            // Start beacon chain with selected network and redirect to deposit
-            dispatch(startBeaconChainAction(
-                network,
-                [{...ports[0], local: libp2pPort},
-                    {...ports[1], local: rpcPort}]
-            ));
-            dispatch(saveBeaconNodeAction(`http://localhost:${rpcPort}`, network, validatorKey));
-            history.push(Routes.DASHBOARD_ROUTE);
-        };
+    const onDockerRunSubmit = useCallback((ports: DockerPort[], libp2pPort: string, rpcPort: string): void => {
+        // Start beacon chain with selected network and redirect to deposit
+        dispatch(startBeaconChainAction(
+            network,
+            [{...ports[0], local: libp2pPort}, {...ports[1], local: rpcPort}]
+        ));
+        dispatch(saveBeaconNodeAction(`http://localhost:${rpcPort}`, network, validatorKey));
+        history.push(Routes.DASHBOARD_ROUTE);
+    }, [network]);
 
+    const renderSecondStep = (): React.ReactElement => {
         return (
             <ConfigureBeaconNode
                 network={network}
