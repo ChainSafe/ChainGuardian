@@ -19,14 +19,10 @@ export interface IValidatorBeaconNodes {
 export class BeaconNodes implements IBeaconNodes {
     public nodes: BeaconNode[] = [];
 
-    public constructor(url: string, localDockerId = "") {
-        this.nodes.push({url, localDockerId});
-    }
-
     public static createNodes(nodes: BeaconNode[]): BeaconNodes|null {
         if (nodes.length > 0) {
-            const list = new BeaconNodes(nodes[0].url, nodes[0].localDockerId);
-            for (let i = 1; i < nodes.length; i++) {
+            const list = new BeaconNodes();
+            for (let i = 0; i < nodes.length; i++) {
                 list.addNode(nodes[i].url, nodes[i].localDockerId);
             }
             return list;
@@ -35,8 +31,12 @@ export class BeaconNodes implements IBeaconNodes {
         return null;
     }
 
-    public addNode(url: string, localDockerId: string): void {
-        this.nodes.push({url, localDockerId});
+    // Add new node to the list that has unique values
+    public addNode(url: string, localDockerId?: string): void {
+        const found = this.nodes.filter(node => node.url === url && node.localDockerId === localDockerId);
+        if (found.length === 0) {
+            this.nodes.push({url, localDockerId});
+        }
     }
 
     public removeNode(localDockerId: string): boolean {

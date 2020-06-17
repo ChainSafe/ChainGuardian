@@ -7,14 +7,19 @@ export interface INodeCardProps {
     url: string;
     onClick: () => void;
     isSyncing?: boolean;
+    key?: number|string;
 }
 
 export const NodeCard: React.FunctionComponent<INodeCardProps> = (
     props: INodeCardProps) => {
-    const {onClick, title, value, url, isSyncing} = props;
+    const {onClick, title, value, url, isSyncing, key} = props;
 
     return (
-        <div onClick={(): void=> onClick()} className="node-card-container">
+        <div
+            onClick={(): void=> onClick()}
+            className="node-card-container"
+            key={key}
+        >
             <h2>{title}</h2>
             <span className="node-text">{url}</span>
             <div className="row centered">

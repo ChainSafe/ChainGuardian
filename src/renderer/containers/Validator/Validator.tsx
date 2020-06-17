@@ -1,7 +1,9 @@
 import React, {useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
+import {useHistory} from "react-router";
 import {startValidatorService, stopValidatorService} from "../../actions";
 import {PasswordPrompt} from "../../components/Prompt/PasswordPrompt";
+import {Routes} from "../../constants/routes";
 
 import {IRootState} from "../../reducers";
 import {calculateROI} from "../../services/utils/math";
@@ -26,6 +28,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     props: IValidatorSimpleProps) => {
     const [askPassword, setAskPassword] = useState<string>(null);
     const dispatch = useDispatch();
+    const history = useHistory();
     const validators = useSelector((state: IRootState) => state.validators);
     const network = useSelector((state: IRootState) => state.network.selected);
     const validatorBeaconNodes = useSelector((state: IRootState) => state.network.validatorBeaconNodes);
@@ -37,9 +40,8 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     const balance = isLoaded ? validator.balance || 0n : 0n;
     const ROI = calculateROI(balance, network);
 
-    const renderAddBeaconNodeButton = (): React.ReactElement => {
-        // eslint-disable-next-line
-        return true ? null :  <AddButton onClick={(): void=>{}}/>;
+    const onAddButtonClick = (): void => {
+        history.push(Routes.ADD_BEACON_NODE.replace(":validatorKey", props.publicKey));
     };
 
     const renderBeaconNodes = (): React.ReactElement => {
@@ -49,21 +51,20 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
                     <div className="node-grid-container">
                         {nodes.length === 0 ? <p>No working beacon nodes.</p> : null}
 
-                        {nodes.map(node => {
-                            return (
-                                <NodeCard
-                                    key={node.url}
-                                    //TODO: change to some other id when multinode is enabled
-                                    onClick={props.onBeaconNodeClick(node.url)}
-                                    title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
-                                    url={node.url}
-                                    isSyncing={node.isSyncing}
-                                    value={node.currentSlot || "N/A"}
-                                />
-                            );
-                        })}
+                        {nodes.map((node, index) => (
+                            <NodeCard
+                                key={index}
+                                //TODO: change to some other id when multinode is enabled
+                                onClick={props.onBeaconNodeClick(node.url)}
+                                title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
+                                url={node.url}
+                                isSyncing={node.isSyncing}
+                                value={node.currentSlot || "N/A"}
+                            />
+                        ))}
                     </div>
-                    {renderAddBeaconNodeButton()}
+
+                    <AddButton onClick={onAddButtonClick} />
                 </div>
             </div>
         );

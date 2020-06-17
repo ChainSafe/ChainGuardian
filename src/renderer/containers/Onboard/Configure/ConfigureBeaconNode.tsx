@@ -1,13 +1,12 @@
-import React, {useState} from "react";
+import React from "react";
 import {RouteComponentProps} from "react-router-dom";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
 import {startBeaconChainAction, saveBeaconNodeAction} from "../../../actions/network";
-import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
-import {InputForm} from "../../../components/Input/InputForm";
+import {ConfigureBeaconNode} from "../../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {IRootState} from "../../../reducers";
-import {getNetworkConfig} from "../../../services/eth2/networks";
+import {DockerPort} from "../../../services/docker/type";
 
 type IStateProps = Pick<IRootState, "register">;
 type IOwnProps =  Pick<RouteComponentProps, "history">;
@@ -18,13 +17,9 @@ interface IInjectedProps {
 
 const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProps> = (props) => {
     const {network} = props.register;
-    const ports = getNetworkConfig(network).dockerConfig.ports;
-    const defaultRpcPort = ports[1].local;
-    const [rpcPort, setRpcPort] = useState(defaultRpcPort);
-    const defaultLibp2pPort = ports[0].local;
-    const [libp2pPort, setLibp2pPort] = useState(defaultLibp2pPort);
 
-    const onSubmit = (): void => {
+
+    const onSubmit = (ports: DockerPort[], libp2pPort: string, rpcPort: string): void => {
         // Start beacon chain with selected network and redirect to deposit
         if (props.register.network) {
             props.startBeaconChain(network, [{...ports[0], local: libp2pPort}, {...ports[1], local: rpcPort}]);
@@ -34,35 +29,10 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProp
     };
 
     return (
-        <>
-            <h1>Configure Beacon node settings</h1>
-            <p>You can skip customizing this data if you want to use the default values.</p>
-
-            <div className="configure-port">
-                <div className="row">
-                    <h3>Local RPC port</h3>
-                    <p>(default: {defaultRpcPort})</p>
-                </div>
-                <InputForm
-                    onChange={(e): void => setRpcPort(e.currentTarget.value)}
-                    inputValue={rpcPort}
-                    onSubmit={(e): void => {e.preventDefault(); onSubmit();}}
-                />
-            </div>
-
-            <div className="configure-port">
-                <div className="row">
-                    <h3>Local libp2p port</h3><p>(default: {defaultLibp2pPort})</p>
-                </div>
-                <InputForm
-                    onChange={(e): void => setLibp2pPort(e.currentTarget.value)}
-                    inputValue={libp2pPort}
-                    onSubmit={(e): void => {e.preventDefault(); onSubmit();}}
-                />
-            </div>
-
-            <ButtonPrimary onClick={onSubmit} buttonId="next">NEXT</ButtonPrimary>
-        </>
+        <ConfigureBeaconNode
+            network={network}
+            onSubmit={onSubmit}
+        />
     );
 };
 
@@ -84,7 +54,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
         dispatch
     );
 
-export const ConfigureBeaconNode= connect(
+export const ConfigureBeaconNodeContainer = connect(
     mapStateToProps,
     mapDispatchToProps
 )(Configure);

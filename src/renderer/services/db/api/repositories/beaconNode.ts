@@ -31,6 +31,17 @@ export class BeaconNodeRepository extends Repository<BeaconNodes> {
         await super.delete(key);
     }
 
+    public async upsert(id: string, value: BeaconNodes): Promise<void> {
+        const validatorBeaconNodes = await this.get(id);
+        if (validatorBeaconNodes) {
+            const newList = BeaconNodes.createNodes(validatorBeaconNodes.nodes);
+            value.nodes.map(node => newList.addNode(node.url, node.localDockerId));
+            return await this.set(id, newList);
+        } else {
+            return await this.set(id, value);
+        }
+    }
+
     private getKeyName(validatorAddress: string): string {
         return `${DEFAULT_ACCOUNT}-${validatorAddress}`;
     }

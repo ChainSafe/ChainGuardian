@@ -61,8 +61,11 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
     const removeContainer = async(): Promise<void> => {
         setLoading(true);
         try {
-            await (DockerRegistry.getContainer(image))!.stop();
-            await (DockerRegistry.getContainer(image)!).remove();
+            const container = DockerRegistry.getContainer(image);
+            if (container) {
+                await container.stop();
+                await container.remove();
+            }
             props.validators.map((validator) => dispatch(removeBeaconNodeAction(image, validator)));
         } catch (e) {
             logger.error(e);

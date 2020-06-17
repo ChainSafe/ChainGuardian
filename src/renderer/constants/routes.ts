@@ -4,6 +4,7 @@ export class Routes {
     public static ONBOARD_ROUTE = "/onboard/:step";
     public static VALIDATOR_DETAILS = "/details/:id";
     public static BEACON_NODES = "/beacon-nodes";
+    public static ADD_BEACON_NODE = "/add-beacon-node/:validatorKey";
     public static ONBOARD_ROUTE_EVALUATE = (step: OnBoardingRoutes): string => `/onboard/${step}`;
 }
 

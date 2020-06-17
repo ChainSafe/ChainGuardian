@@ -38,7 +38,8 @@ describe("register actions", () => {
         const spy = sinon.stub(database.beaconNodes, "set").resolves();
         await reduxStore.dispatch<any>(saveBeaconNodeAction("localhost", "Prysm"));
         const address = PrivateKey.fromHexString(signingKey).toPublicKey().toHexString();
-        const node = new BeaconNodes("localhost", BeaconChain.getContainerName("Prysm"));
+        const node = new BeaconNodes();
+        node.addNode("localhost", BeaconChain.getContainerName("Prysm"));
         expect(spy.calledWith(address, node)).toEqual(true);
     });
 
@@ -46,7 +47,8 @@ describe("register actions", () => {
         const spy = sinon.stub(database.beaconNodes, "set").resolves();
         await reduxStore.dispatch<any>(saveBeaconNodeAction("localhost"));
         const address = PrivateKey.fromHexString(signingKey).toPublicKey().toHexString();
-        const node = new BeaconNodes("localhost");
+        const node = new BeaconNodes();
+        node.addNode("localhost", null);
         expect(spy.calledWith(address, node)).toEqual(true);
     });
 });
