@@ -20,15 +20,10 @@ export class BeaconNodes implements IBeaconNodes {
     public nodes: BeaconNode[] = [];
 
     public static createNodes(nodes: BeaconNode[]): BeaconNodes|null {
-        if (nodes.length > 0) {
-            const list = new BeaconNodes();
-            for (let i = 0; i < nodes.length; i++) {
-                list.addNode(nodes[i].url, nodes[i].localDockerId);
-            }
-            return list;
-        }
+        const list = new BeaconNodes();
+        nodes.map((node) => list.addNode(node.url, node.localDockerId));
 
-        return null;
+        return list;
     }
 
     // Add new node to the list that has unique values

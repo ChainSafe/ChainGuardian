@@ -1,10 +1,11 @@
 import React, {useState, useCallback} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useParams} from "react-router";
 import {saveBeaconNodeAction, startBeaconChainAction} from "../../actions/network";
 import {ConfigureBeaconNode} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 import {InputBeaconNode} from "../../components/ConfigureBeaconNode/InputBeaconNode";
 import {Routes} from "../../constants/routes";
+import {IRootState} from "../../reducers";
 import {Container} from "../../services/docker/container";
 import {DockerPort} from "../../services/docker/type";
 import OnBoardModal from "../Onboard/OnBoardModal";
@@ -13,6 +14,7 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
     const {validatorKey} = useParams();
     const dispatch = useDispatch();
     const history = useHistory();
+    const validators = useSelector((state: IRootState) => state.validators);
     const [currentStep, setCurrentStep] = useState<number>(0);
     const [network, setNetwork] = useState<string|undefined>();
 
@@ -35,6 +37,7 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
 
         return (
             <InputBeaconNode
+                validatorNetwork={validators[validatorKey].network}
                 onGoSubmit={onGoSubmit}
                 onRunNodeSubmit={onRunNodeSubmit}
             />

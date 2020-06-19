@@ -1,5 +1,8 @@
 import React, {useState} from "react";
-import {isSupportedBeaconChain} from "../../services/eth2/client";
+import {
+    isSupportedBeaconChain,
+    readBeaconChainNetwork
+} from "../../services/eth2/client";
 import {defaultNetworkIndex, networks, networksList} from "../../services/eth2/networks";
 import {Joi} from "../../services/validation";
 import {ButtonPrimary, ButtonSecondary} from "../Button/ButtonStandard";
@@ -7,6 +10,7 @@ import {Dropdown} from "../Dropdown/Dropdown";
 import {InputForm} from "../Input/InputForm";
 
 interface IInputBeaconNodeProps {
+    validatorNetwork?: string;
     onGoSubmit: (url: string, network: string) => void;
     onRunNodeSubmit: (network: string) => void;
 }
@@ -32,7 +36,18 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
             return false;
         }
 
-        if (!(await isSupportedBeaconChain(beaconNodeInput, getSelectedNetwork()))) {
+        const network = await readBeaconChainNetwork(beaconNodeInput);
+        if (!network) {
+            setErrorMessage("Beacon chain network not supported");
+            return false;
+        }
+
+        if (props.validatorNetwork && network.networkName.toLowerCase() !== props.validatorNetwork.toLowerCase()) {
+            setErrorMessage("Beacon chain network is not running on the same network as validator");
+            return false;
+        }
+
+        if (!(await isSupportedBeaconChain(beaconNodeInput, network.networkName))) {
             setErrorMessage("Unsupported beacon chain or not working");
             return false;
         }
