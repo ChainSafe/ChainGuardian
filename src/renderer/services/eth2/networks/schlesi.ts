@@ -31,7 +31,13 @@ export const SchlesiConfig: INetworkConfig = {
         bytecode: "0x",
         deployedAtBlock: 2596126
     },
-    eth2Config: mainnetBeaconConfig,
+    eth2Config: {
+        ...mainnetBeaconConfig,
+        params: {
+            ...mainnetBeaconConfig.params,
+            GENESIS_FORK_VERSION: Buffer.from("0x00000000")
+        },
+    },
     eth1Provider: ethers.getDefaultProvider("goerli"),
     dockerConfig,
 };

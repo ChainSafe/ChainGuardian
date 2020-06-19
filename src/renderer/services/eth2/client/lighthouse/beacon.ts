@@ -8,14 +8,14 @@ import {
     Uint64,
     ValidatorResponse
 } from "@chainsafe/lodestar-types";
+import {SpecResponse, SpecType} from "../../../../models/types/beaconNode";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {IBeaconClientOptions, IEth2BeaconApi} from "../interface";
 import {Json, toHexString} from "@chainsafe/ssz";
 import {LighthouseRoutes} from "./routes";
 import {ILighthouseSyncResponse} from "./types";
-import {Eth2ChainHeadType} from "../../../../models/types/head";
-import {IEth2ChainHead} from "../../../../models/head";
+import {Eth2ChainHeadType, IEth2ChainHead} from "../../../../models/types/head";
 import {ILogger} from "@chainsafe/lodestar-utils";
 import {axiosConfig} from "./axios";
 
@@ -130,6 +130,13 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
     public async getChainHead(): Promise<IEth2ChainHead> {
         return Eth2ChainHeadType.fromJson(
             await this.client.get<Json>(LighthouseRoutes.GET_HEAD),
+            {case: "snake"}
+        );
+    }
+
+    public async getSpec(): Promise<SpecResponse> {
+        return SpecType.fromJson(
+            await this.client.get<Json>(LighthouseRoutes.GET_SPEC),
             {case: "snake"}
         );
     }
