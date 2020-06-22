@@ -15,14 +15,14 @@ export const BeaconNodesType = new ContainerType<BeaconNodes>({
     }
 });
 
-export interface SpecResponse {
-    genesis_slot: number;
-    genesis_fork_version: string;
+export interface ISpecResponse {
+    genesisSlot: number;
+    genesisForkVersion: string;
 }
 
-export const SpecType = new ContainerType<SpecResponse>({
+export const SpecType = new ContainerType<ISpecResponse>({
     fields: {
-        genesis_slot: new NumberUintType({byteLength: 4}),
-        genesis_fork_version: new StringType(),
+        genesisSlot: new NumberUintType({byteLength: 4}),
+        genesisForkVersion: new StringType(),
     }
 });

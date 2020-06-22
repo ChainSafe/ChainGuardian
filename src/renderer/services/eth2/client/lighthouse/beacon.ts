@@ -8,7 +8,7 @@ import {
     Uint64,
     ValidatorResponse
 } from "@chainsafe/lodestar-types";
-import {SpecResponse, SpecType} from "../../../../models/types/beaconNode";
+import {ISpecResponse, SpecType} from "../../../../models/types/beaconNode";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {IBeaconClientOptions, IEth2BeaconApi} from "../interface";
@@ -134,7 +134,7 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
         );
     }
 
-    public async getSpec(): Promise<SpecResponse> {
+    public async getSpec(): Promise<ISpecResponse> {
         return SpecType.fromJson(
             await this.client.get<Json>(LighthouseRoutes.GET_SPEC),
             {case: "snake"}

@@ -38,7 +38,7 @@ export function getEth2ApiClient(url: string, network: string, logger?: ILogger)
 export async function readBeaconChainNetwork(url: string): Promise<INetworkConfig | null> {
     const client = getEth2ApiClient(url, "unknown");
     const spec = await client.beacon.getSpec();
-    return getNetworkConfigByGenesisVersion(spec.genesis_fork_version);
+    return getNetworkConfigByGenesisVersion(spec.genesisForkVersion);
 }
 
 export async function isSupportedBeaconChain(url: string, network: string): Promise<boolean> {
