@@ -23,5 +23,15 @@ export const LocalhostConfig: INetworkConfig = Object.freeze({
     dockerConfig: {
         name: "lighthouse_validators",
         image: "sigp/lighthouse:latest",
+        ports: [
+            {
+                local: "9000",
+                host: "9000",
+            },
+            {
+                local: "5052",
+                host: "5052",
+            }
+        ],
     }
 });
