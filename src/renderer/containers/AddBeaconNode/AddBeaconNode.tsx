@@ -17,10 +17,11 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
     const validators = useSelector((state: IRootState) => state.validators);
     const [currentStep, setCurrentStep] = useState<number>(0);
     const [network, setNetwork] = useState<string|undefined>();
+    const validatorNetwork = validators[validatorKey].network;
 
     const renderFirstStep = (): React.ReactElement => {
-        const onRunNodeSubmit = async(network: string): Promise<void> => {
-            setNetwork(network);
+        const onRunNodeSubmit = async(): Promise<void> => {
+            setNetwork(validatorNetwork);
 
             if (await Container.isDockerInstalled()) {
                 setCurrentStep(1);
@@ -37,9 +38,10 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
 
         return (
             <InputBeaconNode
-                validatorNetwork={validators[validatorKey].network}
+                validatorNetwork={validatorNetwork}
                 onGoSubmit={onGoSubmit}
                 onRunNodeSubmit={onRunNodeSubmit}
+                displayNetwork={false}
             />
         );
     };
