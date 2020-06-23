@@ -1,5 +1,8 @@
 import React, {useState} from "react";
-import {isSupportedBeaconChain} from "../../services/eth2/client";
+import {
+    isSupportedBeaconChain,
+    readBeaconChainNetwork
+} from "../../services/eth2/client";
 import {defaultNetworkIndex, networks, networksList} from "../../services/eth2/networks";
 import {Joi} from "../../services/validation";
 import {ButtonPrimary, ButtonSecondary} from "../Button/ButtonStandard";
@@ -7,8 +10,10 @@ import {Dropdown} from "../Dropdown/Dropdown";
 import {InputForm} from "../Input/InputForm";
 
 interface IInputBeaconNodeProps {
+    validatorNetwork?: string;
     onGoSubmit: (url: string, network: string) => void;
-    onRunNodeSubmit: (network: string) => void;
+    onRunNodeSubmit: (network?: string) => void;
+    displayNetwork?: boolean;
 }
 
 export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (props: IInputBeaconNodeProps) => {
@@ -32,7 +37,18 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
             return false;
         }
 
-        if (!(await isSupportedBeaconChain(beaconNodeInput, getSelectedNetwork()))) {
+        const network = await readBeaconChainNetwork(beaconNodeInput);
+        if (!network) {
+            setErrorMessage("Beacon chain network not supported");
+            return false;
+        }
+
+        if (props.validatorNetwork && network.networkName.toLowerCase() !== props.validatorNetwork.toLowerCase()) {
+            setErrorMessage("Beacon chain network is not running on the same network as validator");
+            return false;
+        }
+
+        if (!(await isSupportedBeaconChain(beaconNodeInput, network.networkName))) {
             setErrorMessage("Unsupported beacon chain or not working");
             return false;
         }
@@ -59,15 +75,6 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
             <h1>Add your beacon node URL</h1>
             <p>Either add the URL or run a Dockerized beacon node on your device.</p>
 
-            <div className="row align-left">
-                <Dropdown
-                    label="Network"
-                    current={selectedNetworkIndex}
-                    onChange={setSelectedNetworkIndex}
-                    options={networksList}
-                />
-            </div>
-
             <div className="action-buttons">
                 <InputForm
                     focused
@@ -85,6 +92,21 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
 
             <h5 className="input-or">OR</h5>
 
+            {!props.displayNetwork ?
+                null :
+                <>
+                    <div className="row align-left">
+                        <Dropdown
+                            label="Network"
+                            current={selectedNetworkIndex}
+                            onChange={setSelectedNetworkIndex}
+                            options={networksList}
+                        />
+                    </div>
+                    <br />
+                </>
+            }
+
             <ButtonPrimary buttonId="run-node" onClick={onRunNodeSubmit}>RUN OWN NODE</ButtonPrimary>
 
             <div className="skip-notes">
@@ -92,4 +114,8 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
             </div>
         </>
     );
+};
+
+InputBeaconNode.defaultProps = {
+    displayNetwork: true,
 };

@@ -19,12 +19,8 @@ interface IInjectedProps {
 }
 
 const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProps> = (props) => {
-    const handleSubmit = (network: string): void => {
-        props.setNetwork(network);
-    };
-
     const onRunNodeSubmit = async(network: string): Promise<void> => {
-        handleSubmit(network);
+        props.setNetwork(network);
 
         if (await Container.isDockerInstalled()) {
             props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE));
@@ -36,7 +32,7 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
 
     const onGoSubmit = async(beaconNodeInput: string, network: string): Promise<void> => {
         props.saveBeaconNode(beaconNodeInput);
-        handleSubmit(network);
+        props.setNetwork(network);
         props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
     };
 

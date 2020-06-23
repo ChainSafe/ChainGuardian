@@ -10,7 +10,7 @@ import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import logger from "electron-log";
 import {LighthouseBeaconApiClient} from "./beacon";
 import {LighthouseValidatorApiClient} from "./validator";
-import {IEth2ChainHead} from "../../../../models/head";
+import {IEth2ChainHead} from "../../../../models/types/head";
 
 export class LighthouseEth2ApiClient extends AbstractApiClient implements IValidatorBeaconClient,IGenericEth2Client {
 

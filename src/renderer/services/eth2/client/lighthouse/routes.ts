@@ -6,6 +6,7 @@ export enum LighthouseRoutes {
     GET_VERSION = "/node/version",
     GET_SYNC_STATUS = "/lighthouse/syncing",
     GET_VALIDATORS = "/beacon/validators",
+    GET_SPEC = "/spec",
 
     //validator related
     GET_DUTIES = "/validator/duties",

@@ -65,7 +65,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
             validator.network === props.network || !props.network
         ));
         setLoading(false);
-    }, [props.validators]);
+    }, [props.validators, props.network]);
 
     return (
         <Background

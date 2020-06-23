@@ -1,4 +1,5 @@
-import {getNetworkConfig} from "../networks";
+import {INetworkConfig} from "../../interfaces";
+import {getNetworkConfig, getNetworkConfigByGenesisVersion} from "../networks";
 import {SupportedNetworks} from "../supportedNetworks";
 import {IGenericEth2Client} from "./interface";
 import {LighthouseEth2ApiClient} from "./lighthouse/lighthouse";
@@ -32,6 +33,12 @@ export function getEth2ApiClient(url: string, network: string, logger?: ILogger)
                 config: networkConfig.eth2Config
             });
     }
+}
+
+export async function readBeaconChainNetwork(url: string): Promise<INetworkConfig | null> {
+    const client = getEth2ApiClient(url, "unknown");
+    const spec = await client.beacon.getSpec();
+    return getNetworkConfigByGenesisVersion(spec.genesisForkVersion);
 }
 
 export async function isSupportedBeaconChain(url: string, network: string): Promise<boolean> {

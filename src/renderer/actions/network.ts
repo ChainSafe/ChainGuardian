@@ -11,7 +11,7 @@ import database from "../services/db/api/database";
 import {DockerPort} from "../services/docker/type";
 import {SupportedNetworks} from "../services/eth2/supportedNetworks";
 import {fromHex} from "../services/utils/bytes";
-import {IEth2ChainHead} from "../models/head";
+import {IEth2ChainHead} from "../models/types/head";
 
 // User selected network in dashboard dropdown
 export interface ISaveSelectedNetworkAction {

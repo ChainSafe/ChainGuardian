@@ -3,13 +3,15 @@ import {IApiClient} from "@chainsafe/lodestar-validator/lib";
 import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {BLSPubkey, ValidatorResponse} from "@chainsafe/lodestar-types";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
-import {IEth2ChainHead} from "../../../models/head";
+import {ISpecResponse} from "../../../models/types/beaconNode";
+import {IEth2ChainHead} from "../../../models/types/head";
 import {ILogger} from "@chainsafe/lodestar-utils";
 
 export interface IEth2BeaconApi extends IBeaconApi {
     getValidator(pubkey: BLSPubkey): Promise<ValidatorResponse|null>;
     getValidators(pubkeys: BLSPubkey[]): Promise<ValidatorResponse[]>;
     getChainHead(): Promise<IEth2ChainHead>;
+    getSpec(): Promise<ISpecResponse>;
 }
 
 export type IEth2ValidatorApi  = IValidatorApi;

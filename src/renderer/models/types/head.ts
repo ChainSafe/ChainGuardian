@@ -1,5 +1,11 @@
+import {Root, Slot} from "@chainsafe/lodestar-types";
 import {ContainerType, NumberUintType, RootType} from "@chainsafe/ssz";
-import {IEth2ChainHead} from "../head";
+
+export interface IEth2ChainHead {
+    slot: Slot,
+    blockRoot: Root,
+    stateRoot: Root,
+}
 
 export const Eth2ChainHeadType = new ContainerType<IEth2ChainHead>({
     fields: {
