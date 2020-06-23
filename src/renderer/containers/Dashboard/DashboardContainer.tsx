@@ -11,7 +11,12 @@ import {Background} from "../../components/Background/Background";
 import {deleteKeystore} from "../../services/utils/account";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 import {IRootState} from "../../reducers";
-import {loadAccountAction, loadValidatorsAction, storeNotificationAction} from "../../actions";
+import {
+    loadAccountAction,
+    loadValidatorsAction,
+    loadValidatorsChainDataAction,
+    storeNotificationAction
+} from "../../actions";
 import {Routes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 
@@ -57,6 +62,10 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     useEffect(()=> {
         props.loadAccount();
     },[]);
+
+    useEffect(() => {
+        props.loadValidatorsChainData();
+    }, [validators.length]);
 
     useEffect(() => {
         setLoading(true);
@@ -112,6 +121,7 @@ interface IInjectedProps{
     notification: typeof storeNotificationAction;
     loadValidators: typeof loadValidatorsAction;
     loadAccount: typeof loadAccountAction;
+    loadValidatorsChainData: typeof loadValidatorsChainDataAction;
 }
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"> => ({
@@ -126,6 +136,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
             notification: storeNotificationAction,
             loadValidators: loadValidatorsAction,
             loadAccount: loadAccountAction,
+            loadValidatorsChainData: loadValidatorsChainDataAction,
         },
         dispatch
     );

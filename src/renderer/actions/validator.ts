@@ -49,17 +49,27 @@ export const loadValidatorsAction = () => {
                 type: ValidatorActionTypes.LOAD_VALIDATORS,
                 payload: validatorArray
             });
-
-            // Initialize all validator objects with API clients
-            await Promise.all(validatorArray.map(async (v) => {
-                await loadValidatorBeaconNodes(v.publicKey, true)(dispatch, getState);
-                // Load validator state from chain for i.e. balance
-                // TODO: load all validators in one request per network
-                loadValidatorsFromChain([v.publicKey])(dispatch, getState);
-                loadValidatorStatus(v.publicKey)(dispatch, getState);
-            }));
         }
     };
+};
+
+export const loadValidatorsChainDataAction = () => {
+    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+        const validatorArray = Object.values(getState().validators);
+
+        // Initialize all validator objects with API clients
+        await Promise.all(validatorArray.map(async (v) => {
+            await loadValidatorBeaconNodes(v.publicKey, true)(dispatch, getState);
+            // Load validator state from chain for i.e. balance
+            // TODO: load all validators in one request per network
+            loadValidatorsFromChain([v.publicKey])(dispatch, getState);
+            loadValidatorStatus(v.publicKey)(dispatch, getState);
+        }));
+
+        dispatch({
+            type: ValidatorActionTypes.LOAD_VALIDATORS_CHAIN_DATA,
+        });
+    }
 };
 
 export const loadValidatorsFromChain = (validators: string[]) => {
