@@ -29,7 +29,7 @@ export interface IGenericEth2Client extends IApiClient {
 
     getVersion(): Promise<string>;
 
-    onNewChainHead(callback: (head: IEth2ChainHead) => void): void;
+    onNewChainHead(callback: (head: IEth2ChainHead) => void): NodeJS.Timeout;
 }
 
 export type IValidatorBeaconClient  =  IApiClient;

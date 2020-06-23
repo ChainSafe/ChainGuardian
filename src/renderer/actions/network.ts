@@ -94,7 +94,8 @@ export const loadValidatorBeaconNodes = (validator: string, subscribe = false) =
                     await refreshFnWithContext(chainHead);
 
                     if (subscribe) {
-                        validatorBN.client.onNewChainHead(refreshFnWithContext);
+                        const timeoutId = validatorBN.client.onNewChainHead(refreshFnWithContext);
+                        dispatch(subscribeToBlockListening(validator, timeoutId));
                     }
                 } catch (e) {
                     storeValidatorBeaconNodes(validator, validatorBeaconNodes)(dispatch);
@@ -141,3 +142,19 @@ const storeValidatorBeaconNodes = (validator: string, beaconNodes: BeaconNode[])
         });
     };
 
+// Block subscription related
+export interface ISubscribeToBlockListeningAction {
+    type: typeof NetworkActionTypes.SUBSCRIBE_TO_BLOCK_LISTENING;
+    payload: {
+        validator: string;
+        timeoutId: NodeJS.Timeout;
+    };
+}
+
+const subscribeToBlockListening = (validator: string, timeoutId: NodeJS.Timeout) => ({
+    type: NetworkActionTypes.SUBSCRIBE_TO_BLOCK_LISTENING,
+    payload: {
+        validator,
+        timeoutId,
+    }
+});

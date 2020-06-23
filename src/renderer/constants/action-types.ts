@@ -33,6 +33,7 @@ export enum NotificationActionTypes {
 export enum NetworkActionTypes {
     SELECT_NETWORK = "SELECT_NETWORK",
     LOADED_VALIDATOR_BEACON_NODES = "LOADED_VALIDATOR_BEACON_NODES",
+    SUBSCRIBE_TO_BLOCK_LISTENING = "SUBSCRIBE_TO_BLOCK_LISTENING",
 }
 
 export enum ValidatorActionTypes {

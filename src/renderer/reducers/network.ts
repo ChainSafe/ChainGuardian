@@ -1,16 +1,26 @@
 import {NetworkActionTypes} from "../constants/action-types";
-import {ILoadedValidatorBeaconNodesAction, ISaveSelectedNetworkAction} from "../actions/network";
+import {
+    ILoadedValidatorBeaconNodesAction,
+    ISaveSelectedNetworkAction,
+    ISubscribeToBlockListeningAction
+} from "../actions/network";
 import {Action} from "redux";
 import {IValidatorBeaconNodes} from "../models/beaconNode";
+
+type BlockSubscriptions = {
+    [key: string]: NodeJS.Timeout,
+}
 
 export interface INetworkState {
     selected?: string;
     validatorBeaconNodes: IValidatorBeaconNodes;
+    blockSubscriptions: BlockSubscriptions;
 }
 
 const initialState: INetworkState = {
     selected: undefined,
     validatorBeaconNodes: {},
+    blockSubscriptions: {},
 };
 
 export const networkReducer = (
@@ -30,6 +40,16 @@ export const networkReducer = (
                     [payload.validator]: payload.beaconNodes,
                 }
             };
+        case NetworkActionTypes.SUBSCRIBE_TO_BLOCK_LISTENING:
+            payload = (action as ISubscribeToBlockListeningAction).payload;
+            return {
+                ...state,
+                blockSubscriptions: {
+                    ...state.blockSubscriptions,
+                    [payload.validator]: payload.timeoutId,
+                }
+            };
+
         default:
             return state;
     }
