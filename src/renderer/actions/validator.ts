@@ -53,6 +53,28 @@ export const loadValidatorsAction = () => {
     };
 };
 
+export interface IAddValidator {
+    type: typeof ValidatorActionTypes.LOAD_VALIDATORS,
+    payload: IValidator,
+}
+
+export const addNewValidator = (publicKey: string) => {
+    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+        const keystore = getState().auth.account.loadKeystore(publicKey);
+        const validator = {
+            name: `Validator ${getState().auth.account.getValidators().length+2}`,
+            publicKey,
+            network: getState().auth.account!.getValidatorNetwork(publicKey),
+            keystore,
+        };
+
+        dispatch({
+            type: ValidatorActionTypes.ADD_VALIDATOR,
+            payload: validator,
+        })
+    };
+};
+
 export const loadValidatorsChainDataAction = () => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const validatorArray = Object.values(getState().validators);

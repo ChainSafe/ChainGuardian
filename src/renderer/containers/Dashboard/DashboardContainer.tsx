@@ -57,7 +57,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
 
     useEffect(()=> {
         props.loadValidators();
-    },[props.auth.account && props.auth.account.getValidators().length]);
+    },[props.auth.account !== null]);
 
     useEffect(()=> {
         props.loadAccount();
