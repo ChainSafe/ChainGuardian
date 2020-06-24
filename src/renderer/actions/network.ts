@@ -94,8 +94,11 @@ export const loadValidatorBeaconNodes = (validator: string, subscribe = false) =
                     await refreshFnWithContext(chainHead);
 
                     if (subscribe) {
-                        const timeoutId = validatorBN.client.onNewChainHead(refreshFnWithContext);
-                        dispatch(subscribeToBlockListening(validator, timeoutId));
+                        const existingTimeout = getState().network.blockSubscriptions[validator];
+                        if (!existingTimeout) {
+                            const timeoutId = validatorBN.client.onNewChainHead(refreshFnWithContext);
+                            dispatch(subscribeToBlockListening(validator, timeoutId));
+                        }
                     }
                 } catch (e) {
                     storeValidatorBeaconNodes(validator, validatorBeaconNodes)(dispatch);
