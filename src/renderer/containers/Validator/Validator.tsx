@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {useHistory} from "react-router";
-import {startValidatorService, stopValidatorService} from "../../actions";
+import {loadValidatorChainDataAction, startValidatorService, stopValidatorService} from "../../actions";
 import {PasswordPrompt} from "../../components/Prompt/PasswordPrompt";
 import {Routes} from "../../constants/routes";
 
@@ -39,6 +39,10 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     const isLoaded = !!validator;
     const balance = isLoaded ? validator.balance || 0n : 0n;
     const ROI = calculateROI(balance, network);
+
+    useEffect(() => {
+        dispatch(loadValidatorChainDataAction(props.publicKey));
+    }, [props.publicKey]);
 
     const onAddButtonClick = (): void => {
         history.push(Routes.ADD_BEACON_NODE.replace(":validatorKey", props.publicKey));
