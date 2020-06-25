@@ -2,7 +2,13 @@ import {ValidatorResponse} from "@chainsafe/lodestar-types";
 import {toHexString} from "@chainsafe/ssz";
 import {Action} from "redux";
 
-import {ILoadValidators, ILoadedValidatorsFromChainAction, IStopValidatorServiceAction, IValidator} from "../actions";
+import {
+    ILoadValidators,
+    ILoadedValidatorsFromChainAction,
+    IStopValidatorServiceAction,
+    IValidator,
+    IRemoveValidator
+} from "../actions";
 import {IAddValidator, ILoadValidatorStatusAction, IStartValidatorServiceAction} from "../actions/validator";
 import {ValidatorActionTypes} from "../constants/action-types";
 import {ValidatorLogger} from "../services/eth2/client/logger";
@@ -44,6 +50,12 @@ export const validatorsReducer = (
                     isRunning: false,
                 }
             };
+
+        case ValidatorActionTypes.REMOVE_VALIDATOR:
+            payload = (action as IRemoveValidator).payload;
+            delete state[payload.validator];
+
+            return state;
 
         case ValidatorActionTypes.LOADED_VALIDATORS_FROM_CHAIN:
             payload = (action as ILoadedValidatorsFromChainAction).payload;

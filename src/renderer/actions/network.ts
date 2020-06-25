@@ -169,7 +169,7 @@ export interface IUnsubscribeToBlockListeningAction {
     };
 }
 
-export const unsubscribeToBlockListeningAction = (validator: string) => ({
+export const unsubscribeToBlockListening = (validator: string) => ({
     type: NetworkActionTypes.UNSUBSCRIBE_TO_BLOCK_LISTENING,
     payload: {
         validator,
