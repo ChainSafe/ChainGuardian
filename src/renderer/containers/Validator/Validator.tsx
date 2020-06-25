@@ -86,7 +86,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     };
 
     const renderValidatorButtons = (): React.ReactElement => {
-        const isRunning = validators[props.publicKey].isRunning;
+        const isRunning = validators[props.publicKey] && validators[props.publicKey].isRunning;
         return (
             <div className="flex validator-service-button">
                 {isRunning ?

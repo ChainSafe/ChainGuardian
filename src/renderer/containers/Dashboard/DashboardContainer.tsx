@@ -3,6 +3,7 @@ import {useState, useEffect} from "react";
 import {connect} from "react-redux";
 import {RouteComponentProps} from "react-router";
 import {bindActionCreators, Dispatch} from "redux";
+import {unsubscribeToBlockListeningAction} from "../../actions/network";
 import {EmptyValidatorsList} from "../../components/EmptyValidatorsList/EmptyValidatorsListx";
 
 import {Topbar} from "../../components/Topbar/Topbar";
@@ -41,7 +42,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
             const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey;
             deleteKeystore(props.auth.account.directory, selectedValidatorPublicKey);
             props.auth.account.removeValidator(selectedValidatorIndex);
-            // props.storeAuth(props.auth.account);
+            props.unsubscribeToBlockListening(selectedValidatorPublicKey);
             props.loadValidators();
         }
         setConfirmModal(false);
@@ -116,6 +117,7 @@ interface IInjectedProps{
     notification: typeof storeNotificationAction;
     loadValidators: typeof loadValidatorsAction;
     loadAccount: typeof loadAccountAction;
+    unsubscribeToBlockListening: typeof unsubscribeToBlockListeningAction;
 }
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"> => ({
@@ -130,6 +132,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
             notification: storeNotificationAction,
             loadValidators: loadValidatorsAction,
             loadAccount: loadAccountAction,
+            unsubscribeToBlockListening: unsubscribeToBlockListeningAction,
         },
         dispatch
     );

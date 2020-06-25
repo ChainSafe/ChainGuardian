@@ -2,7 +2,7 @@ import {NetworkActionTypes} from "../constants/action-types";
 import {
     ILoadedValidatorBeaconNodesAction,
     ISaveSelectedNetworkAction,
-    ISubscribeToBlockListeningAction
+    ISubscribeToBlockListeningAction, IUnsubscribeToBlockListeningAction
 } from "../actions/network";
 import {Action} from "redux";
 import {IValidatorBeaconNodes} from "../models/beaconNode";
@@ -49,6 +49,15 @@ export const networkReducer = (
                     [payload.validator]: payload.timeoutId,
                 }
             };
+
+        case NetworkActionTypes.UNSUBSCRIBE_TO_BLOCK_LISTENING:
+            payload = (action as IUnsubscribeToBlockListeningAction).payload;
+            const timeout = state.blockSubscriptions[payload.validator];
+            if (timeout) {
+                clearInterval(timeout);
+                delete state.blockSubscriptions[payload.validator];
+            }
+            return state;
 
         default:
             return state;

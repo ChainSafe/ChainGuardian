@@ -161,3 +161,17 @@ const subscribeToBlockListening = (validator: string, timeoutId: NodeJS.Timeout)
         timeoutId,
     }
 });
+
+export interface IUnsubscribeToBlockListeningAction {
+    type: typeof NetworkActionTypes.UNSUBSCRIBE_TO_BLOCK_LISTENING;
+    payload: {
+        validator: string;
+    };
+}
+
+export const unsubscribeToBlockListeningAction = (validator: string) => ({
+    type: NetworkActionTypes.UNSUBSCRIBE_TO_BLOCK_LISTENING,
+    payload: {
+        validator,
+    }
+});
