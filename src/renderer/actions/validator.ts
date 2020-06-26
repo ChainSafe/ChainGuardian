@@ -27,10 +27,10 @@ export interface IValidator {
     name: string;
     status: string;
     publicKey: string;
-    deposit: number;
     network: string;
     balance?: bigint;
     keystore: ICGKeystore;
+    isRunning: boolean,
 }
 
 export const loadValidatorsAction = () => {
@@ -38,12 +38,13 @@ export const loadValidatorsAction = () => {
         const auth = getState().auth;
         if (auth && auth.account) {
             const validators = await auth.account.loadValidators();
-            const validatorArray = validators.map((v, index) => ({
+            const validatorArray: IValidator[] = validators.map((v, index) => ({
                 name: `Validator ${index+1}`,
                 status: undefined,
                 publicKey: v.getPublicKey(),
                 network: auth.account!.getValidatorNetwork(v.getPublicKey()),
                 keystore: v,
+                isRunning: undefined,
             }));
 
             dispatch({
@@ -55,7 +56,7 @@ export const loadValidatorsAction = () => {
 };
 
 export interface IAddValidator {
-    type: typeof ValidatorActionTypes.LOAD_VALIDATORS,
+    type: typeof ValidatorActionTypes.ADD_VALIDATOR,
     payload: IValidator,
 }
 
@@ -77,7 +78,7 @@ export const addNewValidator = (publicKey: string) => {
 };
 
 export interface IRemoveValidator {
-    type: typeof ValidatorActionTypes.LOAD_VALIDATORS,
+    type: typeof ValidatorActionTypes.REMOVE_VALIDATOR,
     payload: {
         validator: string,
     },
@@ -123,7 +124,7 @@ export const loadValidatorsFromChain = (validators: string[]) => {
             const response = await client.beacon.getValidators(pubKeys);
 
             dispatch({
-                type: ValidatorActionTypes.LOADED_VALIDATORS_FROM_CHAIN,
+                type: ValidatorActionTypes.LOADED_VALIDATORS_BALANCE,
                 payload: response
             });
         }
@@ -161,7 +162,7 @@ export interface ILoadValidatorStatusAction {
 }
 
 export interface ILoadedValidatorsFromChainAction {
-    type: typeof ValidatorActionTypes.LOADED_VALIDATORS_FROM_CHAIN;
+    type: typeof ValidatorActionTypes.LOADED_VALIDATORS_BALANCE;
     payload: ValidatorResponse[];
 }
 

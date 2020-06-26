@@ -27,7 +27,6 @@ storiesOf('Validator stats', module).add('stats', () => {
             name: "test",
             status: "good",
             publicKey: "0xpublic",
-            deposit: 32,
             network: "Lighthouse",
             privateKey: "0xprivate",
         }}
