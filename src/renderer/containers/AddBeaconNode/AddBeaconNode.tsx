@@ -14,10 +14,11 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
     const {validatorKey} = useParams();
     const dispatch = useDispatch();
     const history = useHistory();
-    const validators = useSelector((state: IRootState) => state.validators);
+    const validatorNetwork = useSelector(
+    (state: IRootState) => state.validators.byPublicKey[validatorKey].network,
+    );
     const [currentStep, setCurrentStep] = useState<number>(0);
     const [network, setNetwork] = useState<string|undefined>();
-    const validatorNetwork = validators[validatorKey].network;
 
     const renderFirstStep = (): React.ReactElement => {
         const onRunNodeSubmit = async(): Promise<void> => {

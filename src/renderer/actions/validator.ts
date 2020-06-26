@@ -137,7 +137,7 @@ export const loadValidatorStatus = (validatorAddress: string) => {
         if (beaconNodes && beaconNodes.length > 0) {
             // TODO: Use any working beacon node instead of first one
             const eth2 = beaconNodes[0].client;
-            const network = getState().validators[validatorAddress].network;
+            const network = getState().validators.byPublicKey[validatorAddress].network;
             const networkConfig = getNetworkConfig(network);
             const eth1 = new EthersNotifier(networkConfig, networkConfig.eth1Provider);
             const status = await getValidatorStatus(fromHex(validatorAddress), eth2, eth1);
