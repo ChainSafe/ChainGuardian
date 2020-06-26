@@ -67,7 +67,7 @@ export const removeBeaconNodeAction = (image: string, validator: string) => {
             newBeaconNodesList,
         );
 
-        storeValidatorBeaconNodes(validator, newBeaconNodesList.nodes)(dispatch);
+        dispatch(storeValidatorBeaconNodes(validator, newBeaconNodesList.nodes));
     };
 };
 
@@ -101,7 +101,7 @@ export const loadValidatorBeaconNodes = (validator: string, subscribe = false) =
                         }
                     }
                 } catch (e) {
-                    storeValidatorBeaconNodes(validator, validatorBeaconNodes)(dispatch);
+                    dispatch(storeValidatorBeaconNodes(validator, validatorBeaconNodes));
                     warn("Error while fetching chainhead from beacon node... ", e.message);
                 }
             }
@@ -131,19 +131,19 @@ async function refreshBeaconNodeStatus(
             return validatorBN;
         }
     }));
-    storeValidatorBeaconNodes(validator, beaconNodes)(dispatch);
+    dispatch(storeValidatorBeaconNodes(validator, beaconNodes));
 }
 
-const storeValidatorBeaconNodes = (validator: string, beaconNodes: BeaconNode[]) =>
-    (dispatch: Dispatch<Action<unknown>>): void => {
-        dispatch({
-            type: NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES,
-            payload: {
-                validator,
-                beaconNodes,
-            },
-        });
-    };
+const storeValidatorBeaconNodes = (
+    validator: string,
+    beaconNodes: BeaconNode[],
+): ILoadedValidatorBeaconNodesAction => ({
+    type: NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES,
+    payload: {
+        validator,
+        beaconNodes,
+    },
+});
 
 // Block subscription related
 export interface ISubscribeToBlockListeningAction {
@@ -154,7 +154,10 @@ export interface ISubscribeToBlockListeningAction {
     };
 }
 
-const subscribeToBlockListening = (validator: string, timeoutId: NodeJS.Timeout) => ({
+const subscribeToBlockListening = (
+    validator: string,
+    timeoutId: NodeJS.Timeout,
+): ISubscribeToBlockListeningAction => ({
     type: NetworkActionTypes.SUBSCRIBE_TO_BLOCK_LISTENING,
     payload: {
         validator,
@@ -169,7 +172,7 @@ export interface IUnsubscribeToBlockListeningAction {
     };
 }
 
-export const unsubscribeToBlockListening = (validator: string) => ({
+export const unsubscribeToBlockListening = (validator: string): IUnsubscribeToBlockListeningAction => ({
     type: NetworkActionTypes.UNSUBSCRIBE_TO_BLOCK_LISTENING,
     payload: {
         validator,

@@ -1,4 +1,4 @@
-import {RegisterActionTypes, ValidatorActionTypes} from "../constants/action-types";
+import {RegisterActionTypes} from "../constants/action-types";
 import {Action, Dispatch} from "redux";
 import {ValidatorNetwork} from "../models/network";
 import {IRootState} from "../reducers";
@@ -8,7 +8,7 @@ import {CGAccount} from "../models/account";
 import {DEFAULT_ACCOUNT} from "../constants/account";
 import {saveKeystore} from "../services/utils/account";
 import {fromHex} from "../services/utils/bytes";
-import {addNewValidator, IValidator} from "./validator";
+import {addNewValidator} from "./validator";
 
 //Signing actions
 // Signing Mnemonic action

@@ -72,7 +72,7 @@ export const addNewValidator = (publicKey: string) => {
         dispatch({
             type: ValidatorActionTypes.ADD_VALIDATOR,
             payload: validator,
-        })
+        });
     };
 };
 
@@ -94,7 +94,7 @@ export const removeValidatorAction = (publicKey: string, validatorIndex: number)
             payload: {
                 validator: publicKey,
             },
-        })
+        });
     };
 };
 
@@ -110,7 +110,7 @@ export const loadValidatorChainDataAction = (publicKey: string) => {
         dispatch({
             type: ValidatorActionTypes.LOAD_VALIDATOR_CHAIN_DATA,
         });
-    }
+    };
 };
 
 export const loadValidatorsFromChain = (validators: string[]) => {

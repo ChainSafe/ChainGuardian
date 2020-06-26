@@ -9,7 +9,7 @@ import {IValidatorBeaconNodes} from "../models/beaconNode";
 
 type BlockSubscriptions = {
     [key: string]: NodeJS.Timeout,
-}
+};
 
 export interface INetworkState {
     selected?: string;
@@ -52,9 +52,8 @@ export const networkReducer = (
 
         case NetworkActionTypes.UNSUBSCRIBE_TO_BLOCK_LISTENING:
             payload = (action as IUnsubscribeToBlockListeningAction).payload;
-            const timeout = state.blockSubscriptions[payload.validator];
-            if (timeout) {
-                clearInterval(timeout);
+            if (state.blockSubscriptions[payload.validator]) {
+                clearInterval(state.blockSubscriptions[payload.validator]);
                 delete state.blockSubscriptions[payload.validator];
             }
             return state;
