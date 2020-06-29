@@ -110,7 +110,7 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"
     return {
         auth: state.auth,
         validatorsList,
-    }
+    };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>

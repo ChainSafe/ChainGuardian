@@ -38,7 +38,7 @@ const addValidator = (state: IValidatorState, validator: IValidator): IValidator
             [validator.publicKey]: validator,
         },
         allPublicKeys: state.allPublicKeys.concat(validator.publicKey),
-    }
+    };
 };
 
 const removeValidator = (state: IValidatorState, publicKey: string): IValidatorState => {
@@ -83,10 +83,9 @@ export const validatorsReducer = (
 
         case ValidatorActionTypes.START_VALIDATOR_SERVICE:
             payload = (action as IStartValidatorServiceAction).payload;
-            const publicKey = payload.keypair.publicKey.toHexString();
             newState = {...state};
             newState.byPublicKey[payload.validator] = {
-                ...state.byPublicKey[publicKey],
+                ...state.byPublicKey[payload.keypair.publicKey.toHexString()],
                 isRunning: true,
                 logger: payload.logger,
             };
