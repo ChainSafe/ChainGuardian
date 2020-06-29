@@ -53,7 +53,7 @@ export const validatorsReducer = (
 
         case ValidatorActionTypes.REMOVE_VALIDATOR:
             payload = (action as IRemoveValidator).payload;
-            delete state[payload.validator];
+            delete state[payload.validatorPublicKey];
 
             return state;
 
