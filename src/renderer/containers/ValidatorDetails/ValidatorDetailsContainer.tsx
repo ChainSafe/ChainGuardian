@@ -1,6 +1,8 @@
 import React, {ReactElement, useState} from "react";
 import {useHistory, useParams} from "react-router";
 import {useSelector} from "react-redux";
+import {RouteComponentProps} from "react-router-dom";
+
 import {Background} from "../../components/Background/Background";
 import {BackButton} from "../../components/Button/ButtonAction";
 import {TabNavigation} from "../../components/TabNavigation/TabNavigation";
@@ -8,16 +10,16 @@ import {IRootState} from "../../reducers";
 import {BeaconNode} from "./BeaconNode/BeaconNode";
 import {ValidatorLogs} from "./ValidatorLogs";
 import {ValidatorStats} from "./ValidatorStats/ValidatorStats";
-import {RouteComponentProps} from "react-router-dom";
 
 export const ValidatorDetailsContainer = (props: RouteComponentProps): ReactElement => {
     const [currentTab, setCurrentTab] = useState(props.location?.state?.tab! === "BN" ? 2 : 0);
     const history = useHistory();
-    const {id} = useParams();
-    const validatorId = id ? parseInt(id) : 0;
-    const validators = Object.values(useSelector((state: IRootState) => state.validators));
+    const {publicKey} = useParams();
+    const validatorsIndex = useSelector((state: IRootState) => state.validators.allPublicKeys.indexOf(publicKey));
+    const validator = useSelector((state: IRootState) => state.validators.byPublicKey[publicKey]);
+    const validatorId = validatorsIndex > 0 ? validatorsIndex : 0;
     const beaconNodes = useSelector((state: IRootState) => state.network.validatorBeaconNodes);
-    const validatorBeaconNodes = beaconNodes[validators[validatorId].publicKey] || [];
+    const validatorBeaconNodes = beaconNodes[publicKey] || [];
 
     const tabs = [
         {tabId: 0, tabName: "Validator stats", index: validatorId},
@@ -39,11 +41,11 @@ export const ValidatorDetailsContainer = (props: RouteComponentProps): ReactElem
                 </div>
 
                 {currentTab === tabs[0].tabId ?
-                    <ValidatorStats validator={validators[validatorId]} validatorId={validatorId} />
+                    <ValidatorStats validator={validator} validatorId={validatorId} />
                     : null}
 
                 {currentTab === tabs[1].tabId ?
-                    <ValidatorLogs logger={validators[validatorId].logger}/>
+                    <ValidatorLogs logger={validator.logger}/>
                     : null}
 
                 {tabs.map(tab => (tab.tabName === "Beacon node" && currentTab === tab.tabId ?

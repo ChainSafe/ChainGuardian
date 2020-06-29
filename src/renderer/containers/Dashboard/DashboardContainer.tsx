@@ -70,13 +70,13 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
                                 publicKey={publicKey}
                                 onBeaconNodeClick={(() => (): void => {
                                     props.history.push(
-                                        Routes.VALIDATOR_DETAILS.replace(":id", index.toString()),
+                                        Routes.VALIDATOR_DETAILS.replace(":publicKey", publicKey),
                                         {tab: "BN"}
                                     );
                                 })}
                                 onRemoveClick={(): void => {onRemoveValidator(index);}}
                                 onDetailsClick={(): void =>
-                                    props.history.push(Routes.VALIDATOR_DETAILS.replace(":id", index.toString()))}
+                                    props.history.push(Routes.VALIDATOR_DETAILS.replace(":publicKey", publicKey))}
                             />
                         </div>;
                     })}
