@@ -12,10 +12,10 @@ import {EthersNotifier} from "../services/deposit/ethers";
 import {ValidatorLogger} from "../services/eth2/client/logger";
 import {getNetworkConfig} from "../services/eth2/networks";
 import {ICGKeystore} from "../services/keystore";
+import {deleteKeystore} from "../services/utils/account";
 import {fromHex} from "../services/utils/bytes";
-import {getValidatorStatus} from "../services/validator/status";
-import {ValidatorStatus} from "../services/validator/status/statuses";
-import {loadValidatorBeaconNodes} from "./network";
+import {getValidatorStatus, ValidatorStatus} from "../services/validator/status";
+import {loadValidatorBeaconNodes, unsubscribeToBlockListening} from "./network";
 
 export interface ILoadValidators {
     type: typeof ValidatorActionTypes.LOAD_VALIDATORS,
@@ -26,7 +26,6 @@ export interface IValidator {
     name: string;
     status: string;
     publicKey: string;
-    deposit: number;
     network: string;
     balance?: bigint;
     keystore: ICGKeystore;
@@ -49,16 +48,67 @@ export const loadValidatorsAction = () => {
                 type: ValidatorActionTypes.LOAD_VALIDATORS,
                 payload: validatorArray
             });
-
-            // Initialize all validator objects with API clients
-            await Promise.all(validatorArray.map(async (v) => {
-                await loadValidatorBeaconNodes(v.publicKey, true)(dispatch, getState);
-                // Load validator state from chain for i.e. balance
-                // TODO: load all validators in one request per network
-                loadValidatorsFromChain([v.publicKey])(dispatch, getState);
-                loadValidatorStatus(v.publicKey)(dispatch, getState);
-            }));
         }
+    };
+};
+
+export interface IAddValidator {
+    type: typeof ValidatorActionTypes.ADD_VALIDATOR,
+    payload: IValidator,
+}
+
+export const addNewValidator = (publicKey: string) => {
+    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+        const keystore = getState().auth.account.loadKeystore(publicKey);
+        const validator: IValidator = {
+            name: `Validator ${getState().auth.account.getValidators().length+2}`,
+            publicKey,
+            network: getState().auth.account!.getValidatorNetwork(publicKey),
+            keystore,
+            status: undefined,
+        };
+
+        dispatch({
+            type: ValidatorActionTypes.ADD_VALIDATOR,
+            payload: validator,
+        });
+    };
+};
+
+export interface IRemoveValidator {
+    type: typeof ValidatorActionTypes.REMOVE_VALIDATOR,
+    payload: {
+        validatorPublicKey: string,
+    },
+}
+
+export const removeValidatorAction = (publicKey: string, validatorIndex: number) => {
+    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+        deleteKeystore(getState().auth.account.directory, publicKey);
+        getState().auth.account.removeValidator(validatorIndex);
+        dispatch(unsubscribeToBlockListening(publicKey));
+
+        dispatch({
+            type: ValidatorActionTypes.REMOVE_VALIDATOR,
+            payload: {
+                validatorPublicKey: publicKey,
+            },
+        });
+    };
+};
+
+export const loadValidatorChainDataAction = (publicKey: string) => {
+    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+        // Initialize validator object with API client
+        await loadValidatorBeaconNodes(publicKey, true)(dispatch, getState);
+        // Load validator state from chain for i.e. balance
+        // TODO: load all validators in one request per network
+        loadValidatorsFromChain([publicKey])(dispatch, getState);
+        loadValidatorStatus(publicKey)(dispatch, getState);
+
+        dispatch({
+            type: ValidatorActionTypes.LOAD_VALIDATOR_CHAIN_DATA,
+        });
     };
 };
 

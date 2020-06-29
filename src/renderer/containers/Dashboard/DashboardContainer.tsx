@@ -8,10 +8,13 @@ import {EmptyValidatorsList} from "../../components/EmptyValidatorsList/EmptyVal
 import {Topbar} from "../../components/Topbar/Topbar";
 import {Validator} from "../Validator/Validator";
 import {Background} from "../../components/Background/Background";
-import {deleteKeystore} from "../../services/utils/account";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
 import {IRootState} from "../../reducers";
-import {loadAccountAction, loadValidatorsAction, storeNotificationAction} from "../../actions";
+import {
+    loadAccountAction,
+    loadValidatorsAction, removeValidatorAction,
+    storeNotificationAction
+} from "../../actions";
 import {Routes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 
@@ -33,13 +36,9 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     };
 
     const onConfirmDelete = (): void => {
-        if(props.auth.account){
-            const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey;
-            deleteKeystore(props.auth.account.directory, selectedValidatorPublicKey);
-            props.auth.account.removeValidator(selectedValidatorIndex);
-            // props.storeAuth(props.auth.account);
-            props.loadValidators();
-        }
+        const selectedValidatorPublicKey = validators[selectedValidatorIndex].publicKey;
+        props.removeValidator(selectedValidatorPublicKey, selectedValidatorIndex);
+
         setConfirmModal(false);
         props.notification({
             source: props.history.location.pathname,
@@ -52,7 +51,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
 
     useEffect(()=> {
         props.loadValidators();
-    },[props.auth.account && props.auth.account.getValidators().length]);
+    },[props.auth.account !== null]);
 
     useEffect(()=> {
         props.loadAccount();
@@ -108,10 +107,10 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
 
 
 interface IInjectedProps{
-    // storeAuth: typeof storeAuthAction;
     notification: typeof storeNotificationAction;
     loadValidators: typeof loadValidatorsAction;
     loadAccount: typeof loadAccountAction;
+    removeValidator: typeof removeValidatorAction;
 }
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"> => ({
@@ -126,6 +125,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
             notification: storeNotificationAction,
             loadValidators: loadValidatorsAction,
             loadAccount: loadAccountAction,
+            removeValidator: removeValidatorAction,
         },
         dispatch
     );

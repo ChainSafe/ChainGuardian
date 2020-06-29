@@ -1,3 +1,4 @@
+import {Keypair, PrivateKey, PublicKey} from "@chainsafe/bls";
 import path from "path";
 import electron, {remote} from "electron";
 import logger from "electron-log";
@@ -22,6 +23,16 @@ export const cleanUpAccount = async(): Promise<void> => {
     } catch (e) {
         logger.error("Error occurred while cleaning up account: ", e.message);
     }
+};
+
+export const saveKeystore = async(signingKey: PrivateKey, password: string): Promise<string> => {
+    const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
+    await V4Keystore.create(
+        path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
+        password, new Keypair(signingKey)
+    );
+
+    return accountDirectory;
 };
 
 export const deleteKeystore = (directory: string, publicKey: string): void => {

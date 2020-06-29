@@ -32,8 +32,8 @@ export class LighthouseEth2ApiClient extends AbstractApiClient implements IValid
         return Buffer.from((await this.beacon.getClientVersion()).valueOf() as Uint8Array).toString("ascii");
     }
 
-    public onNewChainHead(callback: (head: IEth2ChainHead) => void): void {
-        setInterval(async() => {
+    public onNewChainHead(callback: (head: IEth2ChainHead) => void): NodeJS.Timeout {
+        return setInterval(async() => {
             try {
                 const response = await this.beacon.getChainHead();
                 callback(response);

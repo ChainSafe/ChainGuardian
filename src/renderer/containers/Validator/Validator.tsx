@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {useHistory} from "react-router";
-import {startValidatorService, stopValidatorService} from "../../actions";
+import {loadValidatorChainDataAction, startValidatorService, stopValidatorService} from "../../actions";
 import {PasswordPrompt} from "../../components/Prompt/PasswordPrompt";
 import {Routes} from "../../constants/routes";
 
@@ -40,6 +40,10 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     const balance = isLoaded ? validator.balance || 0n : 0n;
     const ROI = calculateROI(balance, network);
 
+    useEffect(() => {
+        dispatch(loadValidatorChainDataAction(props.publicKey));
+    }, [props.publicKey]);
+
     const onAddButtonClick = (): void => {
         history.push(Routes.ADD_BEACON_NODE.replace(":validatorKey", props.publicKey));
     };
@@ -52,15 +56,16 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
                         {nodes.length === 0 ? <p>No working beacon nodes.</p> : null}
 
                         {nodes.map((node, index) => (
-                            <NodeCard
-                                key={index}
-                                //TODO: change to some other id when multinode is enabled
-                                onClick={props.onBeaconNodeClick(node.url)}
-                                title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
-                                url={node.url}
-                                isSyncing={node.isSyncing}
-                                value={node.currentSlot || "N/A"}
-                            />
+                            <div key={`${node.url}-${index}`}>
+                                <NodeCard
+                                    //TODO: change to some other id when multinode is enabled
+                                    onClick={props.onBeaconNodeClick(node.url)}
+                                    title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
+                                    url={node.url}
+                                    isSyncing={node.isSyncing}
+                                    value={node.currentSlot || "N/A"}
+                                />
+                            </div>
                         ))}
                     </div>
 
@@ -82,7 +87,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     };
 
     const renderValidatorButtons = (): React.ReactElement => {
-        const isRunning = validators[props.publicKey].isRunning;
+        const isRunning = validators[props.publicKey] && validators[props.publicKey].isRunning;
         return (
             <div className="flex validator-service-button">
                 {isRunning ?

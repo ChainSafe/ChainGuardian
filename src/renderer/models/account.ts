@@ -1,5 +1,6 @@
 import {Keypair} from "@chainsafe/bls";
 import {readdirSync} from "fs";
+import path from "path";
 
 import {getEth2ApiClient} from "../services/eth2/client";
 import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/keystore";
@@ -111,6 +112,11 @@ export class CGAccount implements IAccount {
 
     public removeValidator(index: number): void {
         this.validators.splice(index, 1);
+    }
+
+    public loadKeystore(publicKey: string): ICGKeystore {
+        const file = path.join(this.directory,  `${publicKey}.json`);
+        return new this.keystoreTarget(file);
     }
 
     private getKeystoreFiles(): ICGKeystore[] {
