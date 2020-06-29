@@ -14,8 +14,7 @@ import {getNetworkConfig} from "../services/eth2/networks";
 import {ICGKeystore} from "../services/keystore";
 import {deleteKeystore} from "../services/utils/account";
 import {fromHex} from "../services/utils/bytes";
-import {getValidatorStatus} from "../services/validator/status";
-import {ValidatorStatus} from "../services/validator/status/statuses";
+import {getValidatorStatus, ValidatorStatus} from "../services/validator/status";
 import {loadValidatorBeaconNodes, unsubscribeToBlockListening} from "./network";
 
 export interface ILoadValidators {
@@ -63,11 +62,12 @@ export interface IAddValidator {
 export const addNewValidator = (publicKey: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const keystore = getState().auth.account.loadKeystore(publicKey);
-        const validator = {
+        const validator: IValidator = {
             name: `Validator ${getState().auth.account.getValidators().length+2}`,
             publicKey,
             network: getState().auth.account!.getValidatorNetwork(publicKey),
             keystore,
+            status: undefined,
         };
 
         dispatch({
@@ -80,7 +80,7 @@ export const addNewValidator = (publicKey: string) => {
 export interface IRemoveValidator {
     type: typeof ValidatorActionTypes.REMOVE_VALIDATOR,
     payload: {
-        validator: string,
+        validatorPublicKey: string,
     },
 }
 
@@ -93,7 +93,7 @@ export const removeValidatorAction = (publicKey: string, validatorIndex: number)
         dispatch({
             type: ValidatorActionTypes.REMOVE_VALIDATOR,
             payload: {
-                validator: publicKey,
+                validatorPublicKey: publicKey,
             },
         });
     };
