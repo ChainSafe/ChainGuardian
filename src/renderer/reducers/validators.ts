@@ -54,16 +54,14 @@ export const validatorsReducer = (
     action: Action<ValidatorActionTypes>
 ): IValidatorState => {
     let payload: any;
-    let newState: IValidatorState;
+    let newState = initialState;
     switch (action.type) {
         case ValidatorActionTypes.LOAD_VALIDATORS:
-            /* eslint-disable no-case-declarations */
-            let newAllValidatorsState: IValidatorState = initialState;
             (action as ILoadValidators).payload.forEach((v: IValidator) => {
-                newAllValidatorsState = addValidator(newState, v);
+                newState = addValidator(newState, v);
             });
 
-            return newAllValidatorsState;
+            return newState;
 
         case ValidatorActionTypes.ADD_VALIDATOR:
             payload = (action as IAddValidator).payload;
