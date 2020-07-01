@@ -25,12 +25,28 @@ export const saveSelectedNetworkAction = (network: string): ISaveSelectedNetwork
 });
 
 // Beacon chain
+export interface IDockerImagePull {
+    type: typeof NetworkActionTypes.START_DOCKER_IMAGE_PULL |
+        typeof NetworkActionTypes.END_DOCKER_IMAGE_PULL;
+}
+
+const startImagePulling = (): IDockerImagePull => ({
+    type: NetworkActionTypes.START_DOCKER_IMAGE_PULL,
+});
+
+const endImagePulling = (): IDockerImagePull => ({
+    type: NetworkActionTypes.END_DOCKER_IMAGE_PULL,
+});
 
 export const startBeaconChainAction = (network: string, ports?: DockerPort[]) => {
-    return async (): Promise<void> => {
+    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+        // Pull image first
         const image = getNetworkConfig(network).dockerConfig.image;
+        dispatch(startImagePulling());
         await BeaconChain.pullImage(image);
+        dispatch(endImagePulling());
 
+        // Start chain
         switch(network) {
             case SupportedNetworks.PRYSM:
                 await BeaconChain.startBeaconChain(SupportedNetworks.PRYSM, ports);
@@ -41,6 +57,9 @@ export const startBeaconChainAction = (network: string, ports?: DockerPort[]) =>
             default:
                 await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI, ports);
         }
+
+        // Save local beacon node to db
+        saveBeaconNodeAction(`http://localhost:${ports[1].local}`, network)(dispatch, getState);
     };
 };
 
