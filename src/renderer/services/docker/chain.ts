@@ -14,7 +14,7 @@ export class BeaconChain extends Container {
         waitUntilReady = false,
     ): Promise<BeaconChain> {
         const imageName = BeaconChain.getContainerName(network);
-        // Check if docker image already exists
+        // Check if docker container already exists in app memory
         const existingBC = DockerRegistry.getContainer(imageName);
         if (existingBC) {
             return existingBC as BeaconChain;
