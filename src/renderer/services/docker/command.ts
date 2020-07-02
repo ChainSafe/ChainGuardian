@@ -24,6 +24,11 @@ export class Command {
         return `"${path}" -v`;
     }
 
+    public static async pull(image: string): Promise<string> {
+        const path = await dockerPath.getPath();
+        return `"${path}" pull ${image}`;
+    }
+
     public static async stop(containerName: string): Promise<string> {
         const path = await dockerPath.getPath();
         return `"${path}" stop ${containerName}`;

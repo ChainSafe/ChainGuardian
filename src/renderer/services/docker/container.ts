@@ -62,6 +62,11 @@ export abstract class Container {
         return runningInstance !== "";
     }
 
+    public static async pullImage(image: string): Promise<boolean> {
+        const cmdResult = await runCmdAsync(await Command.pull(image));
+        return cmdResult.stdout.includes("Status: Downloaded");
+    }
+
     public static async getImageName(dockerId: string): Promise<string|undefined> {
         const cmdResult = await runCmdAsync(await Command.ps(dockerId));
         const instance = cmdResult.stdout.split("\n")[1];
