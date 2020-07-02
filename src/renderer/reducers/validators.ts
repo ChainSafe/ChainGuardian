@@ -7,20 +7,46 @@ import {
     ILoadedValidatorsFromChainAction,
     IStopValidatorServiceAction,
     IValidator,
-    IRemoveValidator
+    IRemoveValidator,
+    IAddValidator,
+    ILoadValidatorStatusAction,
+    IStartValidatorServiceAction,
 } from "../actions";
-import {IAddValidator, ILoadValidatorStatusAction, IStartValidatorServiceAction} from "../actions/validator";
 import {ValidatorActionTypes} from "../constants/action-types";
 import {ValidatorLogger} from "../services/eth2/client/logger";
 
+export interface IValidatorComplete extends IValidator {
+    logger?: ValidatorLogger,
+}
+
 export interface IValidatorState {
-    [validatorAddress: string]: IValidator & {
-        isRunning: boolean,
-        logger?: ValidatorLogger,
+    byPublicKey: {
+        [publicKey: string]: IValidatorComplete,
     },
+    allPublicKeys: string[],
 }
 
 const initialState: IValidatorState = {
+    byPublicKey: {},
+    allPublicKeys: [],
+};
+
+const addValidator = (state: IValidatorState, validator: IValidator): IValidatorState => {
+    return {
+        byPublicKey: {
+            ...state.byPublicKey,
+            [validator.publicKey]: validator,
+        },
+        allPublicKeys: state.allPublicKeys.concat(validator.publicKey),
+    };
+};
+
+const removeValidator = (state: IValidatorState, publicKey: string): IValidatorState => {
+    const newState = {...state};
+    delete newState.byPublicKey[publicKey];
+    newState.allPublicKeys = state.allPublicKeys.filter(vKey => vKey !== publicKey);
+
+    return newState;
 };
 
 export const validatorsReducer = (
@@ -28,73 +54,62 @@ export const validatorsReducer = (
     action: Action<ValidatorActionTypes>
 ): IValidatorState => {
     let payload: any;
+    let newState = initialState;
     switch (action.type) {
         case ValidatorActionTypes.LOAD_VALIDATORS:
-            /* eslint-disable no-case-declarations */
-            const validatorMap: IValidatorState = {};
             (action as ILoadValidators).payload.forEach((v: IValidator) => {
-                validatorMap[v.publicKey] = {
-                    ...v,
-                    isRunning: state[v.publicKey] ? state[v.publicKey].isRunning : false,
-                };
+                newState = addValidator(newState, v);
             });
 
-            return validatorMap;
+            return newState;
 
         case ValidatorActionTypes.ADD_VALIDATOR:
             payload = (action as IAddValidator).payload;
-            return {
-                ...state,
-                [payload.publicKey]: {
-                    ...payload,
-                    isRunning: false,
-                }
-            };
+            return addValidator(state, payload);
 
         case ValidatorActionTypes.REMOVE_VALIDATOR:
             payload = (action as IRemoveValidator).payload;
-            delete state[payload.validatorPublicKey];
+            return removeValidator(state, payload.validatorPublicKey);
 
-            return state;
-
-        case ValidatorActionTypes.LOADED_VALIDATORS_FROM_CHAIN:
+        case ValidatorActionTypes.LOADED_VALIDATORS_BALANCE:
             payload = (action as ILoadedValidatorsFromChainAction).payload;
-            const newState = {...state};
+            newState = {...state};
             payload.map((v: ValidatorResponse) => {
                 const publicKey = toHexString(v.pubkey);
                 // Take balance only
-                newState[publicKey] = {...state[publicKey], balance: v.balance};
+                newState.byPublicKey[publicKey] = {...state.byPublicKey[publicKey], balance: v.balance};
             });
             return newState;
 
         case ValidatorActionTypes.START_VALIDATOR_SERVICE:
             payload = (action as IStartValidatorServiceAction).payload;
-            const publicKey = payload.keypair.publicKey.toHexString();
-            return {
-                ...state,
-                [publicKey]: {
-                    ...state[publicKey],
-                    isRunning: true,
-                    logger: payload.logger,
-                }
+            newState = {...state};
+            newState.byPublicKey[payload.validator] = {
+                ...state.byPublicKey[payload.keypair.publicKey.toHexString()],
+                isRunning: true,
+                logger: payload.logger,
             };
+
+            return newState;
 
         case ValidatorActionTypes.STOP_VALIDATOR_SERVICE:
             payload = (action as IStopValidatorServiceAction).payload;
-            return {
-                ...state,
-                [payload]: {...state[payload], isRunning: false}
+            newState = {...state};
+            newState.byPublicKey[payload] = {
+                ...state.byPublicKey[payload],
+                isRunning: false
             };
+            return newState;
 
         case ValidatorActionTypes.LOAD_STATUS:
             payload = (action as ILoadValidatorStatusAction).payload;
-            return {
-                ...state,
-                [payload.validator]: {
-                    ...state[payload.validator],
-                    status: payload.status
-                },
+            newState = {...state};
+            newState.byPublicKey[payload.validator] = {
+                ...state.byPublicKey[payload.validator],
+                status: payload.status
             };
+            return newState;
+
         default:
             return state;
     }

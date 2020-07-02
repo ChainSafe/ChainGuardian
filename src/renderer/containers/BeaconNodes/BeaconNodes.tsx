@@ -25,7 +25,7 @@ type RunningBeaconNodes = {
 export const BeaconNodesContainer: React.FunctionComponent = () => {
     const history = useHistory();
     const validatorBeaconNodes = useSelector((state: IRootState) => state.network.validatorBeaconNodes);
-    const validators = useSelector((state: IRootState) => state.validators);
+    const validators = useSelector((state: IRootState) => state.validators.byPublicKey);
 
     const [loading, setLoading] = useState<boolean>(true);
     const [runningBeaconNodes, setRunningBeaconNodes] = useState<RunningBeaconNodes>({});
