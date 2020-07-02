@@ -3,6 +3,9 @@ import {initBLS} from "@chainsafe/bls";
 
 import {createWindow} from "./gui/window";
 import {DatabaseIpcHandler} from "./db/ipc";
+import {initSentry} from "./sentry";
+
+initSentry();
 
 const db = new DatabaseIpcHandler();
 

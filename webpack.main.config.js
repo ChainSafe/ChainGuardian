@@ -47,6 +47,5 @@ module.exports = merge.smart(baseConfig, {
         new webpack.DefinePlugin({
             'process.type': '"browser"'
         }),
-        new Dotenv(),
     ]
 });
