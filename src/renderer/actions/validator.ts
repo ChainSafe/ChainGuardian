@@ -68,7 +68,7 @@ export const addNewValidator = (publicKey: string) => {
             network: getState().auth.account!.getValidatorNetwork(publicKey),
             keystore,
             status: undefined,
-            isRunning: undefined,
+            isRunning: false,
         };
 
         dispatch({
