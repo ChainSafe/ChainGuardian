@@ -1,7 +1,5 @@
-const path = require("path");
 const webpack = require("webpack");
 const merge = require("webpack-merge");
-const Dotenv = require('dotenv-webpack');
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
 const baseConfig = require("./webpack.base.config");

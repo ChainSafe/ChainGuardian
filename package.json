@@ -86,6 +86,7 @@
     "@hot-loader/react-dom": "^16.8.6",
     "@machinomy/types-ethereumjs-wallet": "^0.0.12",
     "@nodefactory/axios-mock-adapter": "1.17.1",
+    "@sentry/webpack-plugin": "^1.11.1",
     "@storybook/addon-actions": "5.2.8",
     "@storybook/addon-backgrounds": "5.2.8",
     "@storybook/addon-knobs": "5.2.8",
