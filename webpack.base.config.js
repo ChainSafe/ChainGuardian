@@ -7,13 +7,15 @@ module.exports = {
     mode: 'development',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].js'
+        filename: '[name].js',
+        sourceMapFilename: "[name].js.map",
     },
     externals: {
         'level':"require('level')",
         'bcrypto':"require('bcrypto')",
         'leveldown':"require('leveldown')",
     },
+    devtool: 'source-map',
     node: {
         __dirname: false,
         __filename: false
@@ -21,7 +23,6 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js', '.json']
     },
-    devtool: 'source-map',
     plugins: [
         new Dotenv(),
     ]

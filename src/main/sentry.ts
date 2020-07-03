@@ -5,6 +5,10 @@ export function initSentry(): void {
             ? require("@sentry/electron/dist/main")
             : require("@sentry/electron/dist/renderer"));
 
-        init({dsn: process.env.SENTRY_DSN, release: process.env.npm_package_version});
+        const version = (process.type === "browser"
+            ? require('electron').app.getVersion()
+            : require('electron').remote.app.getVersion());
+
+        init({dsn: process.env.SENTRY_DSN, release: version});
     }
 }
