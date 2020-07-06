@@ -30,7 +30,6 @@ export async function createWindow(): Promise<void> {
         show: false,
         icon: iconPath,
     });
-
     win.maximize();
     win.once("ready-to-show", () => {
         if (win !== null) { win.show(); }
