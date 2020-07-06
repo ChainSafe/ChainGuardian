@@ -6,8 +6,8 @@ export function initSentry(): void {
             : require("@sentry/electron/dist/renderer"));
 
         const version = (process.type === "browser"
-            ? require('electron').app.getVersion()
-            : require('electron').remote.app.getVersion());
+            ? require("electron").app.getVersion()
+            : require("electron").remote.app.getVersion());
 
         init({dsn: process.env.SENTRY_DSN, release: version});
     }
