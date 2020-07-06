@@ -49,7 +49,6 @@ export default class OnboardContainer extends Component<IProps, {}> {
         {stepId: 3, stepName: "Configure"},
         {stepId: 4, stepName: "Deposit"},
         {stepId: 5, stepName: "Password"},
-        {stepId: 6, stepName: "Consent"}
     ];
 
     public render(): ReactElement {
