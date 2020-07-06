@@ -1,5 +1,5 @@
 .modal-container{
-    position: fixed;
+    position: relative;
     height: 100vh;
     width: 100vw;
     top: 0;
@@ -7,7 +7,7 @@
     background-color: transparent;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 }
 .modal{
     background: $neutral-700 no-repeat;

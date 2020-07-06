@@ -2,6 +2,7 @@ import React, {useState, useCallback} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useParams} from "react-router";
 import {saveBeaconNodeAction, startBeaconChainAction} from "../../actions/network";
+import {Background} from "../../components/Background/Background";
 import {ConfigureBeaconNode} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 import {InputBeaconNode} from "../../components/ConfigureBeaconNode/InputBeaconNode";
 import {Routes} from "../../constants/routes";
@@ -72,13 +73,13 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
     };
 
     return (
-        <>
+        <Background>
             <OnBoardModal
                 history={history}
                 currentStep={currentStep}
             >
                 {renderStepScreen()}
             </OnBoardModal>
-        </>
+        </Background>
     );
 };
