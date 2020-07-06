@@ -2,7 +2,7 @@
 name: ci
 
 # on events
-on: [pull_request]
+on: [push, pull_request]
 
 
 # jobs to run
