@@ -35,13 +35,15 @@ export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps): 
                 <ButtonSecondary onClick={onExportValidator}>EXPORT</ButtonSecondary>
             </div>
 
-            <div className="row">
-                <LineGraph
-                    title="Validator Balance"
-                    defaultInterval={IntervalEnum.MONTH}
-                    getData={async (): Promise<number[]> => [2356,3213,8934,7924,7924]}
-                />
-            </div>
+            {true ? <p>Performance statistics are coming soon!</p> :
+                <div className="row">
+                    <LineGraph
+                        title="Validator Balance"
+                        defaultInterval={IntervalEnum.MONTH}
+                        getData={async (): Promise<number[]> => [2356,3213,8934,7924,7924]}
+                    />
+                </div>
+            }
         </div>
     );
 };
