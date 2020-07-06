@@ -28,6 +28,17 @@ export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps): 
         }
     };
 
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    const renderBalanceGraph = (): React.ReactElement => (
+        <div className="row">
+            <LineGraph
+                title="Validator Balance"
+                defaultInterval={IntervalEnum.MONTH}
+                getData={async (): Promise<number[]> => [2356,3213,8934,7924,7924]}
+            />
+        </div>
+    );
+
     return (
         <div className="validator-details-stats">
             <div className="row space-between">
@@ -35,15 +46,7 @@ export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps): 
                 <ButtonSecondary onClick={onExportValidator}>EXPORT</ButtonSecondary>
             </div>
 
-            {true ? <p>Performance statistics are coming soon!</p> :
-                <div className="row">
-                    <LineGraph
-                        title="Validator Balance"
-                        defaultInterval={IntervalEnum.MONTH}
-                        getData={async (): Promise<number[]> => [2356,3213,8934,7924,7924]}
-                    />
-                </div>
-            }
+            <p>Performance statistics are coming soon!</p>
         </div>
     );
 };
