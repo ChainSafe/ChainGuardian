@@ -31,7 +31,7 @@ module.exports = merge.smart(baseConfig, {
                         ["@babel/plugin-proposal-class-properties", {loose: true}]
                     ]
                 }
-            }
+            },
         ]
     },
     plugins: [

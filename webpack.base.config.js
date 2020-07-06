@@ -8,7 +8,6 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js',
-        sourceMapFilename: "[name].js.map",
     },
     externals: {
         'level':"require('level')",

@@ -5,7 +5,8 @@ module.exports = {
     plugins: [
         // Sentry CLI used for uploading releases
         new SentryWebpackPlugin({
-            include: './dist',
+            include: '.',
+            ignore: ['node_modules', 'webpack.*.config.js', '.eslintrc.js', '/coverage', '/mocks'],
             release: packageJson.version,
         }),
     ]
