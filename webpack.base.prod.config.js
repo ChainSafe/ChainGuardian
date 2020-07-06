@@ -2,6 +2,7 @@ const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 const packageJson = require('./package.json');
 
 module.exports = {
+    devtool: 'source-map',
     plugins: [
         // Sentry CLI used for uploading releases
         new SentryWebpackPlugin({

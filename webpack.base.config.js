@@ -14,7 +14,7 @@ module.exports = {
         'bcrypto':"require('bcrypto')",
         'leveldown':"require('leveldown')",
     },
-    devtool: 'source-map',
+    devtool: 'eval',
     node: {
         __dirname: false,
         __filename: false
