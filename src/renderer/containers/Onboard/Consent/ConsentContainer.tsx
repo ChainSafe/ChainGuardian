@@ -29,8 +29,8 @@ class Consent extends Component<Pick<RouteComponentProps, "history"> & IInjected
                 <p>By sharing ChainGuardian bug reports that might occur we will be able to improve your app experience. Don't worry! We will never be able to access your keys.</p>
 
                 <div className="action-buttons">
-                    <ButtonSecondary onClick={this.onNoClick} large>NO</ButtonSecondary>
-                    <ButtonPrimary onClick={this.onYesClick} large>YES</ButtonPrimary>
+                    <ButtonSecondary onClick={this.onNoClick.bind(this)} large>NO</ButtonSecondary>
+                    <ButtonPrimary onClick={this.onYesClick.bind(this)} large>YES</ButtonPrimary>
                 </div>
             </>
         );
