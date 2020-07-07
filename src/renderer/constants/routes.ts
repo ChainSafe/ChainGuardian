@@ -22,4 +22,5 @@ export enum OnBoardingRoutes {
     CONFIGURE_BEACON_NODE = "3_1",
     DEPOSIT_TX = "4_0",
     PASSWORD = "5_ps",
+    CONSENT = "6_0",
 }

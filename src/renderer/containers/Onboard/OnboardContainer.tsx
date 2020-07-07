@@ -41,6 +41,7 @@ export default class OnboardContainer extends Component<IProps, {}> {
         [OnBoardingRoutes.CONFIGURE_DOCKER_PATH]: <ConfigureDockerPath history={this.props.history}/>,
         [OnBoardingRoutes.DEPOSIT_TX]: <DepositTxContainer history={this.props.history}/>,
         [OnBoardingRoutes.PASSWORD]: <CreatePasswordContainer history={this.props.history}/>,
+        [OnBoardingRoutes.CONSENT]: <CreatePasswordContainer history={this.props.history}/>,
     };
 
     private steps = [
