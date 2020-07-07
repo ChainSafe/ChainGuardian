@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import * as Sentry from "@sentry/electron";
 import {connect} from "react-redux";
 import {RouteComponentProps} from "react-router";
 import {bindActionCreators, Dispatch} from "redux";
@@ -12,6 +13,7 @@ class Consent extends Component<Pick<RouteComponentProps, "history"> & IInjected
     }
 
     private onNoClick(): void {
+        Sentry.getCurrentHub().getClient().getOptions().enabled = false;
         this.onButtonClick(false);
     }
 
