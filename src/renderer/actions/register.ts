@@ -130,7 +130,7 @@ export const afterPasswordAction = (password: string) => {
         // 3. Save network
         await saveNetwork(signingKey, getState().register.network);
 
-        addNewValidator(signingKey.toPublicKey().toHexString())(dispatch, getState);
+        addNewValidator(signingKey.toPublicKey().toHexString(), account)(dispatch);
 
         dispatch(completeRegistrationSubmission());
     };

@@ -5,6 +5,7 @@ import {IValidatorOptions} from "@chainsafe/lodestar-validator/lib";
 import {Action, Dispatch} from "redux";
 
 import {ValidatorActionTypes} from "../constants/action-types";
+import {CGAccount} from "../models/account";
 import {IRootState} from "../reducers";
 import database from "../services/db/api/database";
 import {ValidatorDB} from "../services/db/api/validator";
@@ -59,13 +60,13 @@ export interface IAddValidator {
     payload: IValidator,
 }
 
-export const addNewValidator = (publicKey: string) => {
-    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
-        const keystore = getState().auth.account.loadKeystore(publicKey);
+export const addNewValidator = (publicKey: string, account: CGAccount) => {
+    return async (dispatch: Dispatch<Action<unknown>>): Promise<void> => {
+        const keystore = account.loadKeystore(publicKey);
         const validator: IValidator = {
-            name: `Validator ${getState().auth.account.getValidators().length+2}`,
+            name: `Validator ${account.getValidators().length+2}`,
             publicKey,
-            network: getState().auth.account!.getValidatorNetwork(publicKey),
+            network: account!.getValidatorNetwork(publicKey),
             keystore,
             status: undefined,
             isRunning: false,
