@@ -1,4 +1,3 @@
-const path = require("path");
 const webpack = require("webpack");
 const merge = require("webpack-merge");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
@@ -33,7 +32,7 @@ module.exports = merge.smart(baseConfig, {
                         ["@babel/plugin-proposal-class-properties", {loose: true}]
                     ]
                 }
-            }
+            },
         ]
     },
     plugins: [

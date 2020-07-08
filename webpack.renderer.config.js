@@ -57,6 +57,7 @@ module.exports = merge.smart(baseConfig, {
                 ]
             },
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+            // Should be good for dependencies
             {
                 enforce: "pre",
                 test: /\.js$/,
@@ -72,6 +73,9 @@ module.exports = merge.smart(baseConfig, {
         new HtmlWebpackPlugin(),
         new webpack.DefinePlugin({
             "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development")
-        })
+        }),
+        new webpack.DefinePlugin({
+            'process.type': '"renderer"'
+        }),
     ]
 });
