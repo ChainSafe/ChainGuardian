@@ -13,23 +13,11 @@ export interface ILighthouseDutiesResponse {
     aggregator_modulo: number
 }
 
-export interface ILighthouseFinalizedSyncing {
-    "SyncingFinalized": {
-        "start_slot": number,
-        "head_slot": number,
-        "head_root": string
+export type ILighthouseSyncResponse = {
+    is_syncing: boolean,
+    sync_status: {
+        starting_slot: number,
+        current_slot: number,
+        highest_slot: number
     }
-}
-
-export interface ILighthouseHeadSyncing {
-    "SyncingHead": {
-        "start_slot": number,
-        "head_slot": number,
-    }
-}
-
-export interface ILighthouseSynced {
-    "Synced": {}
-}
-
-export type ILighthouseSyncResponse = ILighthouseFinalizedSyncing & ILighthouseHeadSyncing & ILighthouseSynced;
+};

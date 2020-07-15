@@ -146,7 +146,7 @@ async function refreshBeaconNodeStatus(
             }
             return {
                 ...validatorBN,
-                isSyncing: !!(await validatorBN.client.beacon.getSyncingStatus()),
+                isSyncing: (await validatorBN.client.node.getSyncingStatus()).syncDistance === BigInt(0),
                 currentSlot: String(chainHead.slot),
             };
         } catch (e) {

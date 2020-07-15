@@ -156,7 +156,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
             LighthouseRoutes.GET_AGGREGATED_ATTESTATION,
             {
                 params: {
-                    "attestation_data": toHexString(this.config.types.AttestationData.serialize(attestationData))
+                    "attestation_data": JSON.stringify(this.config.types.AttestationData.toJson(attestationData))
                 }
             });
         const validator = await this.beaconApi.getValidator(aggregator);

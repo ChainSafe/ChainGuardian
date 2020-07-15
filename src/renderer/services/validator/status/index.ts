@@ -25,7 +25,7 @@ export async function getValidatorStatus(
     const validator = await eth2Api.beacon.getValidator(validatorPubKey);
     if(validator) {
         const currentEpoch = computeEpochAtSlot(eth2Api.config, eth2Api.getCurrentSlot());
-        if(validator.validator.activationEpoch !== FAR_FUTURE_EPOCH 
+        if(validator.validator.activationEpoch !== FAR_FUTURE_EPOCH
             && currentEpoch < validator.validator.activationEpoch) {
             return ValidatorStatus.ACTIVATION_QUEUE;
         }
@@ -52,7 +52,7 @@ export async function getValidatorStatus(
 async function isBeaconNodeWorking(eth2Api: IGenericEth2Client|null): Promise<boolean> {
     if(!eth2Api) return false;
     try {
-        await eth2Api.beacon.getClientVersion();
+        await eth2Api.getVersion();
         return true;
     } catch (e) {
         return false;
@@ -70,7 +70,7 @@ async function hasChainStarted(eth2Api: IGenericEth2Client): Promise<boolean> {
 
 async function isBeaconNodeSyncing(eth2Api: IGenericEth2Client): Promise<boolean> {
     try {
-        return !!await eth2Api.beacon.getSyncingStatus();
+        return (await eth2Api.node.getSyncingStatus()).syncDistance === BigInt(0);
     } catch (e) {
         warn("Failed to get syncing status", e);
         return true;

@@ -5,7 +5,6 @@ import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
 import {LighthouseRoutes} from "../../../../../../src/renderer/services/eth2/client/lighthouse/routes";
 import * as fs from "fs";
 import * as path from "path";
-import {SyncingStatus} from "@chainsafe/lodestar-types";
 import {WinstonLogger} from "@chainsafe/lodestar-utils";
 import sinon from "sinon";
 
@@ -35,12 +34,6 @@ describe("ligthhouse beacon client", function() {
         ).toBeTruthy();
     });
 
-    it("get client version", async function() {
-        httpMock.onGet(LighthouseRoutes.GET_VERSION).reply(200, "Lighthouse/v0.1.0-unstable/x86_64-linux");
-        const version = await client.getClientVersion();
-        expect(version.toString()).toContain("Lighthouse");
-    });
-
     it("get fork", async function() {
         httpMock.onGet(LighthouseRoutes.GET_FORK).reply(200, {
             "previous_version": "0x00000000",
@@ -60,43 +53,6 @@ describe("ligthhouse beacon client", function() {
         httpMock.onGet(LighthouseRoutes.GET_GENESIS_TIME).reply(200, 1585412365);
         const genesis = await client.getGenesisTime();
         expect(genesis).toEqual(1585412365);
-    });
-
-    it("get sync status - synced", async function() {
-        httpMock
-            .onGet(LighthouseRoutes.GET_SYNC_STATUS)
-            .reply(
-                200,
-                fs.readFileSync(path.join(__dirname, "./payloads/beacon/sync/synced.json"), "utf-8")
-            );
-        const isSyncing = await client.getSyncingStatus();
-        expect(isSyncing).toBeFalsy();
-    });
-
-    it("get sync status - sync finalized", async function() {
-        httpMock
-            .onGet(LighthouseRoutes.GET_SYNC_STATUS)
-            .reply(
-                200,
-                fs.readFileSync(path.join(__dirname, "./payloads/beacon/sync/finalized.json"), "utf-8")
-            );
-        const syncStatus = await client.getSyncingStatus() as SyncingStatus;
-        expect(syncStatus.currentBlock.toString()).toEqual("20");
-        expect(syncStatus.startingBlock.toString()).toEqual("10");
-        expect(syncStatus.highestBlock.toString()).toEqual("20");
-    });
-
-    it("get sync status - sync head", async function() {
-        httpMock
-            .onGet(LighthouseRoutes.GET_SYNC_STATUS)
-            .reply(
-                200,
-                fs.readFileSync(path.join(__dirname, "./payloads/beacon/sync/head.json"), "utf-8")
-            );
-        const syncStatus = await client.getSyncingStatus() as SyncingStatus;
-        expect(syncStatus.currentBlock.toString()).toEqual("1195");
-        expect(syncStatus.startingBlock.toString()).toEqual("0");
-        expect(syncStatus.highestBlock.toString()).toEqual("1195");
     });
 
     it("get validator - exists", async function() {
