@@ -22,7 +22,7 @@ export const LocalhostConfig: INetworkConfig = Object.freeze({
     eth1Provider: new JsonRpcProvider("http://localhost:8545"),
     dockerConfig: {
         name: "lighthouse_validators",
-        image: "sigp/lighthouse:latest",
+        image: "sigp/lighthouse:sha256:b245b66eb73f354c589027a918974ccc5b0192ecf60d3c6c3a5abf5a4926f44b",
         ports: [
             {
                 local: "9000",

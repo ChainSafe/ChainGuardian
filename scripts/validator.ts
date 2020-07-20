@@ -15,12 +15,12 @@ if(!validatorIndexArg && validatorIndexArg !== "0") {
     throw "Missing validator index argument (positional)";
 }
 
-(async function() {
+(async function(): Promise<void> {
     await initBLS();
     const validatorPrivateKey = getInteropKey(Number(validatorIndexArg));
     console.log("Starting validator " + validatorPrivateKey.toPublicKey().toHexString());
     rimraf.sync("./.tmp/validator-script-db");
-    const logger = new WinstonLogger({module: "ChainGuardian", level: "verbose"});
+    const logger = new WinstonLogger({module: "ChainGuardian", level: LogLevel.verbose});
     const db = new CGDatabase({
         controller: new LevelDbController({location: "./.tmp/validator-script-db"})
     });

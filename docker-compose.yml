@@ -1,55 +1,55 @@
 version: "3"
 services:
-  eth1-node:
-    image: ethereum/client-go:v1.9.10
-    container_name: "cg_eth1_node"
-    ports:
-      - "8545:8545"
-    entrypoint: sh /opt/init.sh --mine --networkid 999 --nodiscover --nousb --password "/tmp/passwd.txt" --allow-insecure-unlock  --unlock "0xE574F2A090380F4AF972b7CB1dF95aD21b566F37" --txpool.pricelimit 0  --etherbase="0xE574F2A090380F4AF972b7CB1dF95aD21b566F37" --miner.gasprice 0 --rpc --rpcaddr 0.0.0.0 --rpcvhosts=* --rpcapi personal,account,admin,db,eth,net,web3 --ws --wsport 8546 --wsorigins="*"
-    volumes:
-      - "./eth1_testnet/init.sh:/opt/init.sh:ro"
-      - "./eth1_testnet/genesis.json:/tmp/genesis.json:ro"
-      - "./eth1_testnet/signer.key:/tmp/signer.key:ro"
-      - "./eth1_testnet/passwd.txt:/tmp/passwd.txt:ro"
+#  eth1-node:
+#    image: ethereum/client-go:v1.9.10
+#    container_name: "cg_eth1_node"
+#    ports:
+#      - "8545:8545"
+#    entrypoint: sh /opt/init.sh --mine --networkid 999 --nodiscover --nousb --password "/tmp/passwd.txt" --allow-insecure-unlock  --unlock "0xE574F2A090380F4AF972b7CB1dF95aD21b566F37" --txpool.pricelimit 0  --etherbase="0xE574F2A090380F4AF972b7CB1dF95aD21b566F37" --miner.gasprice 0 --rpc --rpcaddr 0.0.0.0 --rpcvhosts=* --rpcapi personal,account,admin,db,eth,net,web3 --ws --wsport 8546 --wsorigins="*"
+#    volumes:
+#      - "./eth1_testnet/init.sh:/opt/init.sh:ro"
+#      - "./eth1_testnet/genesis.json:/tmp/genesis.json:ro"
+#      - "./eth1_testnet/signer.key:/tmp/signer.key:ro"
+#      - "./eth1_testnet/passwd.txt:/tmp/passwd.txt:ro"
 
-  deployer:
-    image: gochain/web3:0.2.19
-    depends_on:
-      - eth1-node
-    restart: on-failure
-    container_name: "cg_eth1_deployer"
-    entrypoint: []
-    command: sh -c '/opt/wait-for.sh eth1-node:8545 -- /app/web3 contract deploy /opt/deposit-contract.bin'
-    volumes:
-      - "./eth1_testnet/deposit-contract.bin:/opt/deposit-contract.bin"
-      - "./wait-for.sh:/opt/wait-for.sh"
-    environment:
-      - "WEB3_PRIVATE_KEY=0xcd8ed955f2eab4faa99c5165a76aa89953c6da9438649fc9f3235fbd72da29e1"
-      - "WEB3_RPC_URL=http://eth1-node:8545"
+#  deployer:
+#    image: gochain/web3:0.2.19
+#    depends_on:
+#      - eth1-node
+#    restart: on-failure
+#    container_name: "cg_eth1_deployer"
+#    entrypoint: []
+#    command: sh -c '/opt/wait-for.sh eth1-node:8545 -- /app/web3 contract deploy /opt/deposit-contract.bin'
+#    volumes:
+#      - "./eth1_testnet/deposit-contract.bin:/opt/deposit-contract.bin"
+#      - "./wait-for.sh:/opt/wait-for.sh"
+#    environment:
+#      - "WEB3_PRIVATE_KEY=0xcd8ed955f2eab4faa99c5165a76aa89953c6da9438649fc9f3235fbd72da29e1"
+#      - "WEB3_RPC_URL=http://eth1-node:8545"
 
   eth2-bn:
-    image: sigp/lighthouse:latest
+    image: sigp/lighthouse@sha256:b245b66eb73f354c589027a918974ccc5b0192ecf60d3c6c3a5abf5a4926f44b
     container_name: "lighthouse_beacon_node"
     command: /opt/start.sh
     restart: on-failure
-    links:
-      - deployer:deployer
+#    links:
+#      - deployer:deployer
     volumes:
       - "./eth2_testnet:/opt/eth2_testnet"
       - "./eth1_testnet/passwd.txt:/opt/passwd.txt:ro"
       - "./eth2_testnet/start.sh:/opt/start.sh:ro"
       - "./wait-for.sh:/opt/wait-for.sh"
-    depends_on:
-      - eth1-node
-      - deployer
+#    depends_on:
+#      - eth1-node
+#      - deployer
     ports:
       - "5052:5052"
 
   eth2-validators:
-    image: sigp/lighthouse:latest
+    image: sigp/lighthouse@sha256:b245b66eb73f354c589027a918974ccc5b0192ecf60d3c6c3a5abf5a4926f44b
     restart: on-failure
     container_name: "lighthouse_validators"
-    command: 'lighthouse -s minimal vc --testnet-dir /opt/eth2_testnet --server http://eth2-bn:5052 testnet insecure 0 15'
+    command: 'lighthouse -s minimal vc --testnet-dir /opt/eth2_testnet --server http://eth2-bn:5052 --datadir /opt/eth2_testnet/validators --secrets-dir /opt/eth2_testnet/secrets'
     volumes:
       - "./eth2_testnet:/opt/eth2_testnet"
     depends_on:
