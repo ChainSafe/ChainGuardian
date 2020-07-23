@@ -9,7 +9,7 @@ import sinon, {SinonStubbedInstance} from "sinon";
 import {LighthouseBeaconApiClient} from "../../../../../src/renderer/services/eth2/client/lighthouse/beacon";
 import {LighthouseValidatorApiClient} from "../../../../../src/renderer/services/eth2/client/lighthouse/validator";
 import EventEmitter from "events";
-import { LighthouseNodeApiClient } from '../../../../../src/renderer/services/eth2/client/lighthouse/node';
+import {LighthouseNodeApiClient} from "../../../../../src/renderer/services/eth2/client/lighthouse/node";
 
 export class MockEth2ApiClient extends EventEmitter implements IGenericEth2Client {
     public config: IBeaconConfig;
