@@ -44,6 +44,7 @@ export class HttpClient {
 }
 
 const handleError = (error: AxiosError): Error => {
+    console.log(error);
     let message: string;
     if (error.response) {
         message = error.response.data || error.response.statusText;

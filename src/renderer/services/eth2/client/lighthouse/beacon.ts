@@ -1,13 +1,13 @@
-import { BLSPubkey, Fork, Number64, Root, Uint64, ValidatorResponse } from '@chainsafe/lodestar-types';
-import { ISpecResponse, SpecType } from '../../../../models/types/beaconNode';
-import { HttpClient } from '../../../api';
-import { IBeaconConfig } from '@chainsafe/lodestar-config';
-import { IBeaconClientOptions, IEth2BeaconApi } from '../interface';
-import { Json, toHexString } from '@chainsafe/ssz';
-import { LighthouseRoutes } from './routes';
-import { Eth2ChainHeadType, IEth2ChainHead } from '../../../../models/types/head';
-import { ILogger } from '@chainsafe/lodestar-utils';
-import { axiosConfig } from './axios';
+import {BLSPubkey, Fork, Number64, Root, Uint64, ValidatorResponse} from "@chainsafe/lodestar-types";
+import {ISpecResponse, SpecType} from "../../../../models/types/beaconNode";
+import {HttpClient} from "../../../api";
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
+import {IBeaconClientOptions, IEth2BeaconApi} from "../interface";
+import {Json, toHexString} from "@chainsafe/ssz";
+import {LighthouseRoutes} from "./routes";
+import {Eth2ChainHeadType, IEth2ChainHead} from "../../../../models/types/head";
+import {ILogger} from "@chainsafe/lodestar-utils";
+import {axiosConfig} from "./axios";
 
 
 export class LighthouseBeaconApiClient implements IEth2BeaconApi {

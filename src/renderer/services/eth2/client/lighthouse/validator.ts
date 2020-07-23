@@ -23,12 +23,15 @@ import {LighthouseRoutes} from "./routes";
 import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {ZERO_HASH} from "@chainsafe/lodestar-beacon-state-transition";
 import {axiosConfig} from "./axios";
+import {computeSubnetForCommittee} from "./utils";
 
 export class LighthouseValidatorApiClient implements IValidatorApi {
 
     private readonly client: HttpClient;
     private readonly config: IBeaconConfig;
     private readonly beaconApi: IBeaconApi;
+
+    private committeeCountPerSlot: Map<Slot, number> = new Map();
 
     public constructor(options: IBeaconClientOptions, beaconApi: IBeaconApi) {
         this.client = new HttpClient(options.baseUrl, {
@@ -49,6 +52,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
         return validatorPubKeys.map((validatorPubKey) => {
             const lhDuty = response.find((value => value.validator_pubkey === toHexString(validatorPubKey)));
             if(lhDuty && lhDuty.attestation_slot !== null) {
+                this.committeeCountPerSlot.set(lhDuty.attestation_slot, lhDuty.committee_count_at_slot);
                 return {
                     validatorPubkey: validatorPubKey,
                     attestationSlot: lhDuty.attestation_slot,
@@ -109,9 +113,18 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
     }
 
     public async publishAttestation(attestation: Attestation): Promise<void> {
+
         await this.client.post(
             LighthouseRoutes.PUBLISH_ATTESTATION,
-            [this.config.types.Attestation.toJson(attestation, {case: "snake"})]
+            [[
+                this.config.types.Attestation.toJson(attestation, {case: "snake"}),
+                computeSubnetForCommittee(
+                    this.config,
+                    this.committeeCountPerSlot.get(attestation.data.slot) || 1,
+                    attestation.data.slot,
+                    attestation.data.index
+                )
+            ]]
         );
     }
 
@@ -133,6 +146,7 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
                 {
                     "validator_index": validator.index,
                     "attestation_committee_index": committeeIndex,
+                    "committee_count_at_slot": this.committeeCountPerSlot.get(slot),
                     slot: slot,
                     "is_aggregator": true
                 }
@@ -156,7 +170,8 @@ export class LighthouseValidatorApiClient implements IValidatorApi {
             LighthouseRoutes.GET_AGGREGATED_ATTESTATION,
             {
                 params: {
-                    "attestation_data": JSON.stringify(this.config.types.AttestationData.toJson(attestationData))
+                    "attestation_data": toHexString(
+                        this.config.types.AttestationData.serialize(attestationData))
                 }
             });
         const validator = await this.beaconApi.getValidator(aggregator);

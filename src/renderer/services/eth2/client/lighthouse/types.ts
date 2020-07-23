@@ -7,6 +7,7 @@ export interface ILighthouseDutiesResponse {
     validator_pubkey: string,
     validator_index: number,
     attestation_slot: number,
+    committee_count_at_slot: number,
     attestation_committee_index: number,
     attestation_committee_position: number,
     block_proposal_slots: number[],

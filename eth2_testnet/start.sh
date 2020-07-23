@@ -1,6 +1,7 @@
 #!/bin/bash
 
 rm -rf /opt/eth2_testnet/genesis.ssz
+rm -rf /opt/eth2_testnet/validators/slashing_protection.sqlite
 rm -rf ~/.lighthouse/beacon
 rm -rf ~/.lighthouse/validators
 #/opt/wait-for.sh eth1-node:8545
