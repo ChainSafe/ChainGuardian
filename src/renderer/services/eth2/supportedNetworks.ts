@@ -1,4 +1,3 @@
 export enum SupportedNetworks {
-    PRYSM = "Prysm",
-    SCHLESI = "Schlesi",
+    LOCALHOST = "localhost",
 }
