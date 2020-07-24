@@ -48,14 +48,8 @@ export const startBeaconChainAction = (network: string, ports?: DockerPort[]) =>
 
         // Start chain
         switch(network) {
-            case SupportedNetworks.PRYSM:
-                await BeaconChain.startBeaconChain(SupportedNetworks.PRYSM, ports);
-                break;
-            case SupportedNetworks.SCHLESI:
-                await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI, ports);
-                break;
             default:
-                await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI, ports);
+                await BeaconChain.startBeaconChain(SupportedNetworks.LOCALHOST, ports);
         }
 
         // Save local beacon node to db

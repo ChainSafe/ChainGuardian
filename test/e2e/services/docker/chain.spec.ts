@@ -20,10 +20,10 @@ function tests(): void {
             if (isRunning) {
                 await beaconChain.stop();
             }
-            const name = BeaconChain.getContainerName(SupportedNetworks.SCHLESI);
+            const name = BeaconChain.getContainerName(SupportedNetworks.LOCALHOST);
             DockerRegistry.removeContainer(name);
             await runCmdAsync(`docker rm ${name}`);
-            await runCmdAsync(`docker volume rm ${SupportedNetworks.SCHLESI}-chain-data`);
+            await runCmdAsync(`docker volume rm ${SupportedNetworks.LOCALHOST}-chain-data`);
         }
     }, 20000);
 
@@ -34,7 +34,7 @@ function tests(): void {
      */
     it("should execute test case: run-check", async done => {
         if (await BeaconChain.isDockerInstalled()) {
-            beaconChain = await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI);
+            beaconChain = await BeaconChain.startBeaconChain(SupportedNetworks.LOCALHOST);
             // wait for docker instance to start
             while (!(await beaconChain.isRunning())) { /* */}
             done();
@@ -49,7 +49,7 @@ function tests(): void {
      */
     it("should read logs using listenToLogs", async () => {
         if (await BeaconChain.isDockerInstalled()) {
-            beaconChain = await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI);
+            beaconChain = await BeaconChain.startBeaconChain(SupportedNetworks.LOCALHOST);
             // wait for docker instance to start
             while (!(await beaconChain.isRunning())) { /* */ }
             for await (const logs of beaconChain.getLogs()) {
