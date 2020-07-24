@@ -99,6 +99,7 @@
     "@types/ethereumjs-abi": "^0.6.3",
     "@types/hapi__joi": "^16.0.3",
     "@types/jest": "^24.0.13",
+    "@types/js-yaml": "^3.12.5",
     "@types/leveldown": "^4.0.0",
     "@types/levelup": "^3.1.1",
     "@types/prop-types": "^15.7.3",
@@ -160,14 +161,14 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@chainsafe/bls": "1.0.0",
+    "@chainsafe/bls": "2.0.0",
     "@chainsafe/bls-keygen": "0.1.0",
-    "@chainsafe/lodestar-beacon-state-transition": "0.6.0",
-    "@chainsafe/lodestar-config": "0.6.0",
-    "@chainsafe/lodestar-types": "0.6.0",
-    "@chainsafe/lodestar-utils": "0.6.0",
-    "@chainsafe/lodestar-validator": "0.6.0",
-    "@chainsafe/ssz": "0.6.3",
+    "@chainsafe/lodestar-beacon-state-transition": "0.10.0",
+    "@chainsafe/lodestar-config": "0.10.0",
+    "@chainsafe/lodestar-types": "0.10.0",
+    "@chainsafe/lodestar-utils": "0.10.0",
+    "@chainsafe/lodestar-validator": "0.10.0",
+    "@chainsafe/ssz": "0.6.9",
     "@hapi/joi": "^16.1.7",
     "@nodefactory/bls-keystore": "^1.0.0-beta7",
     "@sentry/electron": "1.3.0",
@@ -198,8 +199,8 @@
   "resolutions": {
     "terser": "4.6.3",
     "bcrypto": "4.2.9",
-    "@chainsafe/bls": "1.0.0",
-    "@chainsafe/ssz": "0.6.3",
+    "@chainsafe/bls": "2.0.0",
+    "@chainsafe/ssz": "0.6.9",
     "serialize-javascript": "2.1.1"
   }
 }

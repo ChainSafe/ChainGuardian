@@ -2,6 +2,7 @@ import {PassThrough} from "stream";
 import {createLogger, format, Logger, transports} from "winston";
 import {defaultLogLevel, LogLevel, ILogger, ILoggerOptions} from "@chainsafe/lodestar-utils";
 import chalk from "chalk";
+import {Writable} from "stream";
 import {ICGLogger, ILogRecord} from "../../utils/logging/interface";
 import {BufferedLogger} from "../../utils/logging/buffered";
 
@@ -98,7 +99,11 @@ export class ValidatorLogger implements ILogger {
         return this._silent;
     }
 
-    public child(options: ILoggerOptions): ValidatorLogger {
+    public getLogIterator(): AsyncIterable<ILogRecord[]> {
+        return this.bufferedLogger.getLogIterator();
+    }
+
+    public child(options: ILoggerOptions): ILogger {
         const logger = Object.create(ValidatorLogger.prototype);
         const winston = this.winston.child({namespace: options.module});
         return Object.assign(logger, {
@@ -108,8 +113,12 @@ export class ValidatorLogger implements ILogger {
         });
     }
 
-    public getLogIterator(): AsyncIterable<ILogRecord[]> {
-        return this.bufferedLogger.getLogIterator();
+    public profile(): void {
+        throw new Error("not implemented");
+    }
+
+    public stream(): Writable {
+        throw new Error("not implemented");
     }
 
     private createLogEntry(level: LogLevel, message: string | object, context: object = {}): void {

@@ -25,7 +25,7 @@ const initalState: IRegisterState = {
     withdrawalMnemonic: "",
     withdrawalVerification: false,
     withdrawalKey: "",
-    network: SupportedNetworks.SCHLESI,
+    network: SupportedNetworks.LOCALHOST,
 };
 
 describe("register reducer", () => {

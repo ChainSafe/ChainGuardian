@@ -1,9 +1,7 @@
 import {INetworkConfig} from "../../interfaces";
 import {LocalhostConfig} from "./local";
-import {SchlesiConfig} from "./schlesi";
 
 const networks: INetworkConfig[] = [
-    SchlesiConfig,
 ];
 
 const isLocal = process.env.NODE_ENV !== "production";

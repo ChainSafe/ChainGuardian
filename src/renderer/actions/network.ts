@@ -48,14 +48,8 @@ export const startBeaconChainAction = (network: string, ports?: DockerPort[]) =>
 
         // Start chain
         switch(network) {
-            case SupportedNetworks.PRYSM:
-                await BeaconChain.startBeaconChain(SupportedNetworks.PRYSM, ports);
-                break;
-            case SupportedNetworks.SCHLESI:
-                await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI, ports);
-                break;
             default:
-                await BeaconChain.startBeaconChain(SupportedNetworks.SCHLESI, ports);
+                await BeaconChain.startBeaconChain(SupportedNetworks.LOCALHOST, ports);
         }
 
         // Save local beacon node to db
@@ -146,7 +140,7 @@ async function refreshBeaconNodeStatus(
             }
             return {
                 ...validatorBN,
-                isSyncing: !!(await validatorBN.client.beacon.getSyncingStatus()),
+                isSyncing: (await validatorBN.client.node.getSyncingStatus()).syncDistance === BigInt(0),
                 currentSlot: String(chainHead.slot),
             };
         } catch (e) {
