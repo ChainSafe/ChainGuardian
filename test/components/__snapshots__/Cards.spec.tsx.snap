@@ -20,7 +20,7 @@ exports[`Cards renders correctly, NodeCard 1`] = `
       21
     </h2>
     <div
-      className="__react_component_tooltip place-top type-dark "
+      className="__react_component_tooltip place-top type-dark"
       data-id="tooltip"
     />
     <span
