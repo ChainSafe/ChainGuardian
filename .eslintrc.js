@@ -1,4 +1,5 @@
 module.exports = {
+    ignorePatterns: ["*.js"],
     "env": {
         "browser": true,
         "jest": true,
