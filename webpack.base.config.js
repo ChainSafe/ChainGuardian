@@ -1,26 +1,27 @@
-'use strict';
+"use strict";
 
-const path = require('path');
-const Dotenv = require('dotenv-webpack');
+const path = require("path");
+const Dotenv = require("dotenv-webpack");
 
 module.exports = {
-    mode: 'development',
+    mode: "development",
     output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: '[name].js',
+        path: path.resolve(__dirname, "dist"),
+        filename: "[name].js",
     },
     externals: {
-        'level':"require('level')",
-        'bcrypto':"require('bcrypto')",
-        'leveldown':"require('leveldown')",
+        "level":"require('level')",
+        "bcrypto":"require('bcrypto')",
+        "leveldown":"require('leveldown')",
     },
-    devtool: 'cheap-source-map',
+    devtool: "cheap-source-map",
     node: {
         __dirname: false,
         __filename: false
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.json']
+        mainFields: ["main", "module"],
+        extensions: [".tsx", ".ts", ".js", ".json"]
     },
     plugins: [
         new Dotenv(),
