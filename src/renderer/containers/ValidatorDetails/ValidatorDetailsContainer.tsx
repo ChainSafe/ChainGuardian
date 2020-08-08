@@ -11,7 +11,7 @@ import {BeaconNode} from "./BeaconNode/BeaconNode";
 import {ValidatorLogs} from "./ValidatorLogs";
 import {ValidatorStats} from "./ValidatorStats/ValidatorStats";
 
-export const ValidatorDetailsContainer = (props: RouteComponentProps): ReactElement => {
+export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {tab: "BN"}>): ReactElement => {
     const [currentTab, setCurrentTab] = useState(props.location?.state?.tab! === "BN" ? 2 : 0);
     const history = useHistory();
     const {publicKey} = useParams();

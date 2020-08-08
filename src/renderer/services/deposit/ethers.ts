@@ -3,9 +3,7 @@ import {Gwei} from "@chainsafe/lodestar-types";
 import DepositContract from "./options";
 import {INetworkConfig} from "../interfaces";
 import {warn} from "electron-log";
-import {ParamType} from "ethers/utils";
 import {etherToGwei} from "./utils";
-import {Log} from "ethers/providers/abstract-provider";
 import {PublicKey} from "@chainsafe/bls";
 
 const PUBKEY_INDEX = 0;
@@ -31,7 +29,7 @@ export class EthersNotifier implements IEth1Client{
         return new Promise((resolve, reject) => {
             const contract = new Contract(this.networkConfig.contract.address, DepositContract.abi, this.provider);
             const filter = contract.filters.DepositEvent(null);
-    
+
             // Listen for our filtered results
             contract.on(filter, (pubkey, withdrawalCredentials, amount) => {
                 if (pubkey === validatorPublicKey.toHexString()) {
@@ -59,9 +57,9 @@ export class EthersNotifier implements IEth1Client{
             };
             const logs = await this.provider.getLogs(filter);
             let amountSum = BigInt(0);
-            logs.forEach((log: Log) => {
+            logs.forEach((log) => {
                 const data = utils.defaultAbiCoder.decode(
-                    DepositContract.abi[0].inputs.map((parameter: ParamType) => parameter.type),
+                    DepositContract.abi[0].inputs.map((parameter: utils.ParamType) => parameter.type),
                     log.data
                 );
 

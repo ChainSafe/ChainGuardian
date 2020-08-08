@@ -4,8 +4,7 @@ import {ITx} from "./types";
 import {functionSignatureFromABI} from "./utils";
 import DepositContract from "../../../../src/renderer/services/deposit/options";
 import {DEPOSIT_TX_GAS} from "./constants";
-import {Wallet} from "ethers/wallet";
-import {utils} from "ethers";
+import {Wallet, utils} from "ethers";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 
 export class DepositTx implements ITx{
@@ -28,8 +27,8 @@ export class DepositTx implements ITx{
      * @param depositAmount
      */
     public static generateDepositTx(
-        depositParams: DepositData, 
-        depositContractAddress: string, 
+        depositParams: DepositData,
+        depositContractAddress: string,
         config: IBeaconConfig,
         depositAmount: string|number): DepositTx {
         // calculate root
@@ -62,6 +61,6 @@ export class DepositTx implements ITx{
             nonce,
             gasLimit: DEPOSIT_TX_GAS,
         };
-        return wallet.sign(txData);
+        return wallet.signTransaction(txData);
     }
 }

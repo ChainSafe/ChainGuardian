@@ -1,6 +1,6 @@
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {CGAccount} from "../models/account";
-import {BaseProvider} from "ethers/providers";
+import {ethers} from "ethers";
 import {IDockerRunParams} from "./docker/type";
 
 export interface IService {
@@ -55,7 +55,7 @@ export interface INetworkConfig {
     eth2Config: IBeaconConfig;
     networkId: number;
     networkName: string;
-    eth1Provider: BaseProvider;
+    eth1Provider: ethers.providers.BaseProvider;
     contract: {
         address: string,
         bytecode: string,

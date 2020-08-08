@@ -15,7 +15,7 @@ export async function createWindow(): Promise<void> {
 
     const iconPath = path.join(
         __dirname,
-        `../src/renderer/assets/ico/app_icon${iconExtensions[process.platform]}`
+        `../src/renderer/assets/ico/app_icon${(iconExtensions as Record<NodeJS.Platform, string>)[process.platform]}`
     );
     // eslint-disable-next-line require-atomic-updates
     win = new BrowserWindow({
