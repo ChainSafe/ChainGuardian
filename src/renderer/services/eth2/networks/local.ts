@@ -1,6 +1,6 @@
 import {config as minimalBeaconConfig} from "@chainsafe/lodestar-config/lib/presets/minimal";
 import {INetworkConfig} from "../../interfaces";
-import { ethers } from 'ethers';
+import {ethers} from "ethers";
 
 export const LocalhostConfig: INetworkConfig = Object.freeze({
     networkName: "localhost",
