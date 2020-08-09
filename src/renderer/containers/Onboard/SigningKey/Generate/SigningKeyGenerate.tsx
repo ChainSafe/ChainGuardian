@@ -2,13 +2,13 @@ import React, {Component, ReactElement} from "react";
 import {Link, RouteComponentProps} from "react-router-dom";
 import {ButtonPrimary} from "../../../../components/Button/ButtonStandard";
 import {MnemonicCopyField} from "../../../../components/CopyField/CopyField";
-import {Routes, OnBoardingRoutes} from "../../../../constants/routes";
+import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
 import {clipboard} from "electron";
-import {Eth2HDWallet} from "../../../../services/wallet";
 import {connect} from "react-redux";
-import {storeSigningMnemonicAction, storeNotificationAction} from "../../../../actions";
+import {storeNotificationAction, storeSigningMnemonicAction} from "../../../../actions";
 import {bindActionCreators, Dispatch} from "redux";
 import {IRootState} from "../../../../reducers";
+import {generateMnemonic} from "bip39";
 
 interface IState {
     mnemonic: string;
@@ -23,7 +23,7 @@ interface IInjectedProps {
 
 class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRootState, "register">, IState> {
     public state = {
-        mnemonic: Eth2HDWallet.generate(),
+        mnemonic: generateMnemonic(),
     };
 
     public render(): ReactElement {

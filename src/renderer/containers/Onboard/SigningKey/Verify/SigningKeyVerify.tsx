@@ -6,15 +6,19 @@ import {VerifyMnemonic} from "../../../../components/VerifyMnemonic/VerifyMnemon
 import {getRandomInt, getRandomIntArray} from "../../../../services/mnemonic/utils/random";
 import {ordinalSuffix} from "../../../../services/mnemonic/utils/ordinalSuffix";
 import {IRootState} from "../../../../reducers";
-import {storeSigningVerificationStatusAction,storeSigningKeyAction} from "../../../../actions";
-import {Routes, OnBoardingRoutes} from "../../../../constants/routes";
-import {Eth2HDWallet} from "../../../../services/wallet";
+import {
+    storeSigningVerificationStatusAction,
+    storeValidatorKeysAction
+} from "../../../../actions";
+import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
+import {deriveEth2ValidatorKeys, deriveKeyFromMnemonic} from "@chainsafe/bls-keygen";
+import {toHexString} from "@chainsafe/ssz";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
 const SigningMnemonicQuestion: React.FunctionComponent<
-IOwnProps & 
-IInjectedProps & 
+IOwnProps &
+IInjectedProps &
 Pick<IRootState, "register">> = (props) => {
 
     const mnemonic = props.register.signingMnemonic.split(" ");
@@ -23,19 +27,26 @@ Pick<IRootState, "register">> = (props) => {
 
     const handleCorrectAnswer = async (): Promise<void> => {
         props.setVerificationStatus(false);
-        
-        const {register, storeSigningKey, history} = props;
-        const signingKey = Eth2HDWallet.getKeypair(register.signingMnemonic).privateKey.toHexString();
-        storeSigningKey(signingKey);
 
-        history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL));
+        const {register, storeValidatorKeys, history} = props;
+        const validatorIndex = 1;
+        const validatorKeys = deriveEth2ValidatorKeys(
+            deriveKeyFromMnemonic(register.signingMnemonic),
+            validatorIndex
+        );
+        storeValidatorKeys(
+            toHexString(validatorKeys.signing),
+            toHexString(validatorKeys.withdrawal),
+            `m/12381/3600/${validatorIndex}/0/0`);
+
+        history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
     };
 
     const handleInvalidAnswer = (): void => {
         props.setVerificationStatus(true);
         props.history.goBack();
     };
-    
+
     return (
         <VerifyMnemonic
             question={`What’s the ${ordinalSuffix(correctAnswerIndex+1)} word in the mnemonic?`}
@@ -50,7 +61,7 @@ Pick<IRootState, "register">> = (props) => {
 // redux
 
 interface IInjectedProps {
-    storeSigningKey: typeof storeSigningKeyAction;
+    storeValidatorKeys: typeof storeValidatorKeysAction;
     setVerificationStatus: typeof storeSigningVerificationStatusAction;
 }
 
@@ -60,7 +71,7 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "register"> => ({
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators({
-        storeSigningKey: storeSigningKeyAction,
+        storeValidatorKeys: storeValidatorKeysAction,
         setVerificationStatus: storeSigningVerificationStatusAction
     }, dispatch);
 

@@ -5,16 +5,19 @@ import {INetworkConfig} from "../services/interfaces";
 import {DepositTx, generateDeposit} from "../services/deposit";
 import {Keypair, PrivateKey} from "@chainsafe/bls";
 import {EthersNotifier} from "../services/deposit/ethers";
+import {fromHexString} from "@chainsafe/ssz";
+import {fromHex} from "../services/utils/bytes";
 
 // Generate deposit action
 export const generateDepositAction = (networkConfig: INetworkConfig) => {
     return (dispatch: Dispatch<IGenerateDepositAction>, getState: () => IRootState): void => {
         const {signingKey, withdrawalKey} = getState().register;
-        const keyPair = new Keypair(PrivateKey.fromHexString(signingKey));
+        console.log("state", getState().register);
+        const keyPair = new Keypair(PrivateKey.fromBytes(fromHex(signingKey)));
         // Call deposit service and dispatch action
         const depositData = generateDeposit(
             keyPair,
-            Buffer.from(withdrawalKey, "hex"),
+            fromHex(withdrawalKey),
             networkConfig.contract.depositAmount,
             networkConfig.eth2Config,
         );

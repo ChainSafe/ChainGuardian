@@ -87,7 +87,7 @@ describe("Onboarding signing key import screen", () => {
         await client.$("#submit").click();
         postClickUrl = await client.getUrl();
         expect(postClickUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
-            OnBoardingRoutes.WITHDRAWAL
+            OnBoardingRoutes.DEPOSIT_TX
         ))).to.be.true;
     });
 
@@ -104,19 +104,19 @@ describe("Onboarding signing key validate screen", () => {
         await stopApp(app);
     });
 
-    it("should redirect to withdrawal key flow on correct answer", async (done) => {
+    it("should redirect to deposit flow on correct answer", async (done) => {
         const {client} = app;
         await client.$("#savedSigningMnemonic").click();
         const verificationUrl = await client.getUrl();
         expect(verificationUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
             OnBoardingRoutes.SIGNING_KEY_VALIDATE
         ))).to.be.true;
-        
+
         await client.$(".verify-button-container button[datafield=true]").click();
 
         const timeoutHandler = async (): Promise<void> => {
             const url = await client.getUrl();
-            expect(url.endsWith(OnBoardingRoutes.WITHDRAWAL)).to.be.true;
+            expect(url.endsWith(OnBoardingRoutes.DEPOSIT_TX)).to.be.true;
             done();
         };
         setTimeout(timeoutHandler, 1500);

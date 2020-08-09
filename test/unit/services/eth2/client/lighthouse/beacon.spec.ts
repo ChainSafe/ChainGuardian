@@ -51,8 +51,15 @@ describe("ligthhouse beacon client", function() {
 
     it("get genesis time", async function() {
         httpMock.onGet(LighthouseRoutes.GET_GENESIS_TIME).reply(200, 1585412365);
-        const genesis = await client.getGenesisTime();
-        expect(genesis).toEqual(1585412365);
+        httpMock.onGet(LighthouseRoutes.GET_FORK).reply(200, {
+            "previous_version": "0x00000000",
+            "current_version": "0x00000000",
+            "epoch": 2
+        });
+        httpMock.onGet(LighthouseRoutes.GET_GENESIS_VALIDATORS_ROOT)
+            .reply(200, config.types.Root.toJson(Buffer.alloc(32, 3)));
+        const genesis = await client.getGenesis();
+        expect(genesis.genesisTime.toString()).toEqual("1585412365");
     });
 
     it("get validator - exists", async function() {

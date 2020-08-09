@@ -9,6 +9,8 @@ import {DEFAULT_ACCOUNT} from "../constants/account";
 import {saveKeystore} from "../services/utils/account";
 import {fromHex} from "../services/utils/bytes";
 import {addNewValidator} from "./validator";
+import {wordlists} from "bip39";
+import {randBetween} from "@chainsafe/lodestar-utils";
 
 //Signing actions
 // Signing Mnemonic action
@@ -41,65 +43,38 @@ export interface ISigningVerificationStatusAction extends Action<RegisterActionT
     payload: IStoreSigningVerificationStatusPayload;
 }
 
-// Signing key action
-export const storeSigningKeyAction = (signingKey: string) =>
-    (dispatch: Dispatch<ISigningKeyAction>): void => {
+export const storeValidatorKeysAction = ((signingKey: string, withdrawalKey: string, signingKeyPath: string) =>
+    (dispatch: Dispatch<IStoreValidatorKeysAction>): void => {
+        dispatch(setValidatorKeys(signingKey, withdrawalKey, signingKeyPath));
+    });
+
+export const setValidatorKeys =
+    (signingKey: string, withdrawalKey: string, signingKeyPath: string): IStoreValidatorKeysAction => ({
+        type: RegisterActionTypes.STORE_VALIDATOR_KEYS, payload: {signingKey, withdrawalKey, signingKeyPath}
+    });
+export type StoreValidatorKeysPayload = {
+    signingKey: string;
+    withdrawalKey: string;
+    signingKeyPath: string;
+};
+export interface IStoreValidatorKeysAction extends Action<RegisterActionTypes> {
+    payload: StoreValidatorKeysPayload;
+}
+export const storeSigningKeyAction = ((signingKey: string) =>
+    (dispatch: Dispatch<IStoreSigningKeyAction>): void => {
         dispatch(setSigningKey(signingKey));
-    };
-export const setSigningKey = (signingKey: string): ISigningKeyAction => ({
+    });
+
+export const setSigningKey = (signingKey: string): IStoreSigningKeyAction => ({
     type: RegisterActionTypes.STORE_SIGNING_KEY, payload: {signingKey}
 });
-export interface IStoreSigningKeyPayload {
+export type StoreSigningKeyPayload = {
     signingKey: string;
-}
-export interface ISigningKeyAction extends Action<RegisterActionTypes> {
-    payload: IStoreSigningKeyPayload;
-}
-//Withdrawal actions
-// Withdrawal Mnemonic action
-export const storeWithdrawalMnemonicAction = (withdrawalMnemonic: string) =>
-    (dispatch: Dispatch<IWithdrawalMnemonicAction>): void => {
-        dispatch(setWithdrawalMnemonic(withdrawalMnemonic));
-    };
-export const setWithdrawalMnemonic = (withdrawalMnemonic: string): IWithdrawalMnemonicAction => ({
-    type: RegisterActionTypes.STORE_WITHDRAWAL_MNEMONIC, payload: {withdrawalMnemonic}
-});
-export interface IStoreWithdrawalMnemonicPayload {
-    withdrawalMnemonic: string;
-}
-export interface IWithdrawalMnemonicAction extends Action<RegisterActionTypes> {
-    payload: IStoreWithdrawalMnemonicPayload;
+};
+export interface IStoreSigningKeyAction extends Action<RegisterActionTypes> {
+    payload: StoreSigningKeyPayload;
 }
 
-// Withdrawal Mnemonic Failed Verification
-export const storeWithdrawalVerificationStatusAction = (withdrawalVerification: boolean) =>
-    (dispatch: Dispatch<IWithdrawalVerificationStatusAction>): void => {
-        dispatch(setWithdrawalVerificationStatus(withdrawalVerification));
-    };
-export const setWithdrawalVerificationStatus=(withdrawalVerification: boolean): IWithdrawalVerificationStatusAction=>({
-    type: RegisterActionTypes.STORE_WITHDRAWAL_VERIFICATION_STATUS, payload: {withdrawalVerification}
-});
-export interface IStoreWithdrawalVerificationStatusPayload {
-    withdrawalVerification: boolean;
-}
-export interface IWithdrawalVerificationStatusAction extends Action<RegisterActionTypes> {
-    payload: IStoreWithdrawalVerificationStatusPayload;
-}
-
-// Withdrawal key action
-export const storeWithdrawalKeyAction = (withdrawalKey: string) =>
-    (dispatch: Dispatch<IWithdrawalKeyAction>): void => {
-        dispatch(setWithdrawalKey(withdrawalKey));
-    };
-export const setWithdrawalKey = (withdrawalKey: string): IWithdrawalKeyAction => ({
-    type: RegisterActionTypes.STORE_WITHDRAWAL_KEY, payload: {withdrawalKey}
-});
-export interface IStoreWithdrawalKeyPayload {
-    withdrawalKey: string;
-}
-export interface IWithdrawalKeyAction extends Action<RegisterActionTypes> {
-    payload: IStoreWithdrawalKeyPayload;
-}
 
 const saveNetwork = async(signingKey: PrivateKey, networkName: string): Promise<void> => {
     const network = new ValidatorNetwork(networkName);
@@ -108,12 +83,18 @@ const saveNetwork = async(signingKey: PrivateKey, networkName: string): Promise<
 };
 
 // After password action
-export const afterPasswordAction = (password: string) => {
+export const afterPasswordAction = (password: string, name?: string) => {
     return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
         const signingKey = PrivateKey.fromBytes(fromHex(getState().register.signingKey));
         // 1. Save to keystore
         dispatch(startRegistrationSubmission());
-        const accountDirectory = await saveKeystore(signingKey, password);
+        const englishWordList = wordlists["english"];
+        const accountDirectory = await saveKeystore(
+            signingKey,
+            password,
+            getState().register.signingKeyPath,
+            name ?? "Validator " + englishWordList[randBetween(0, englishWordList.length - 1)]
+        );
 
         // 2. Save account to db
         const account = new CGAccount({

@@ -34,7 +34,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     const validator = useSelector((state: IRootState) => state.validators.byPublicKey[props.publicKey]);
 
     const isLoaded = !!validator;
-    const balance = isLoaded ? validator.balance || 0n : 0n;
+    const balance = isLoaded ? validator.balance ?? BigInt(0) : BigInt(0);
     const ROI = calculateROI(balance, network);
 
     useEffect(() => {

@@ -39,7 +39,7 @@ describe("V4Keystore", () => {
         const priv = PrivateKey.fromHexString(privateKey);
         const keypair = new Keypair(priv);
 
-        v4Keystore = await V4Keystore.create(keyStoreFilePath, password, keypair);
+        v4Keystore = await V4Keystore.create(keyStoreFilePath, password, keypair, "unknown");
     });
 
     afterAll(() => {
