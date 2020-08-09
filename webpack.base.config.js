@@ -10,9 +10,9 @@ module.exports = {
         filename: "[name].js",
     },
     externals: {
-        "level":"require('level')",
-        "bcrypto":"require('bcrypto')",
-        "leveldown":"require('leveldown')",
+        "level": "require('level')",
+        "bcrypto": "require('bcrypto')",
+        "leveldown": "require('leveldown')",
     },
     devtool: "cheap-source-map",
     node: {
