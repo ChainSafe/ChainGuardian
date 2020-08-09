@@ -6,13 +6,11 @@ import {VerifyMnemonic} from "../../../../components/VerifyMnemonic/VerifyMnemon
 import {getRandomInt, getRandomIntArray} from "../../../../services/mnemonic/utils/random";
 import {ordinalSuffix} from "../../../../services/mnemonic/utils/ordinalSuffix";
 import {IRootState} from "../../../../reducers";
-import {
-    storeSigningVerificationStatusAction,
-    storeValidatorKeysAction
-} from "../../../../actions";
+import {storeSigningVerificationStatusAction, storeValidatorKeysAction} from "../../../../actions";
 import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
 import {deriveEth2ValidatorKeys, deriveKeyFromMnemonic} from "@chainsafe/bls-keygen";
 import {toHexString} from "@chainsafe/ssz";
+import {PrivateKey} from "@chainsafe/bls";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
@@ -36,7 +34,7 @@ Pick<IRootState, "register">> = (props) => {
         );
         storeValidatorKeys(
             toHexString(validatorKeys.signing),
-            toHexString(validatorKeys.withdrawal),
+            PrivateKey.fromBytes(validatorKeys.withdrawal).toPublicKey().toHexString(),
             `m/12381/3600/${validatorIndex}/0/0`);
 
         history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
