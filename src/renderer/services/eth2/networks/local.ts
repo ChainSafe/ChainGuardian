@@ -1,6 +1,6 @@
 import {config as minimalBeaconConfig} from "@chainsafe/lodestar-config/lib/presets/minimal";
-import {JsonRpcProvider} from "ethers/providers";
 import {INetworkConfig} from "../../interfaces";
+import {ethers} from "ethers";
 
 export const LocalhostConfig: INetworkConfig = Object.freeze({
     networkName: "localhost",
@@ -19,7 +19,7 @@ export const LocalhostConfig: INetworkConfig = Object.freeze({
             GENESIS_FORK_VERSION: Buffer.from("0x00000001"),
         }
     },
-    eth1Provider: new JsonRpcProvider("http://localhost:8545"),
+    eth1Provider: new ethers.providers.JsonRpcProvider("http://localhost:8545"),
     dockerConfig: {
         name: "lighthouse_validators",
         image: "sigp/lighthouse:sha256:b245b66eb73f354c589027a918974ccc5b0192ecf60d3c6c3a5abf5a4926f44b",

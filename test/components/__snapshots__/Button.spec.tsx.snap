@@ -349,7 +349,7 @@ exports[`CopyButton renders correctly 1`] = `
   onClick={[Function]}
 >
   <div
-    className="__react_component_tooltip place-right type-dark "
+    className="__react_component_tooltip place-right type-dark"
     data-id="tooltip"
     id="cg-tooltip-1"
   >

@@ -61,6 +61,13 @@ module.exports = merge.smart(baseConfig, {
             {
                 enforce: "pre",
                 test: /\.js$/,
+                exclude: [
+                    /@ethersproject/,
+                    /ethers/,
+                    /ethereumjs-util/,
+                    /rlp/,
+                    /fetcha/,
+                ],
                 loader: "source-map-loader"
             }
         ]
@@ -75,7 +82,7 @@ module.exports = merge.smart(baseConfig, {
             "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development")
         }),
         new webpack.DefinePlugin({
-            'process.type': '"renderer"'
+            "process.type": "\"renderer\""
         }),
     ]
 });
