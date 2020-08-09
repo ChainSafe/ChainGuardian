@@ -1,9 +1,8 @@
-import {deriveKeyFromMnemonic} from "@chainsafe/bls-keygen";
 import {
+    completeRegistrationSubmission,
     setSigningKey,
     setSigningMnemonic,
-    setSigningVerificationStatus,
-    completeRegistrationSubmission
+    setSigningVerificationStatus
 } from "../../../../src/renderer/actions";
 import {IRegisterState, registerReducer as reducer} from "../../../../src/renderer/reducers/register";
 import {RegisterActionTypes} from "../../../../src/renderer/constants/action-types";

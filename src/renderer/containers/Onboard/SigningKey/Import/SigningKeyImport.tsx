@@ -10,7 +10,6 @@ import {ValidationResult} from "@hapi/joi";
 import {PrivateKey} from "@chainsafe/bls";
 import {deriveEth2ValidatorKeys, deriveKeyFromMnemonic} from "@chainsafe/bls-keygen";
 import {storeSigningKeyAction, storeValidatorKeysAction} from "../../../../actions";
-import {toHexString} from "@chainsafe/ssz";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 

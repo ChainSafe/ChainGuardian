@@ -1,9 +1,10 @@
 import {
     ISetNetworkAction,
     ISigningMnemonicAction,
-    ISigningVerificationStatusAction, IStoreSigningKeyAction,
+    ISigningVerificationStatusAction,
+    IStoreSigningKeyAction,
     IStoreValidatorKeysAction
-} from '../actions';
+} from "../actions";
 import {RegisterActionTypes} from "../constants/action-types";
 import {Action} from "redux";
 import {networks} from "../services/eth2/networks";
