@@ -79,6 +79,7 @@ describe("CGAccount tests", () => {
     });
 
     afterAll(() => {
+        sinon.restore();
         jest.restoreAllMocks();
     });
 
