@@ -78,6 +78,10 @@ describe("CGAccount tests", () => {
         sandbox.restore();
     });
 
+    afterAll(() => {
+        jest.restoreAllMocks();
+    });
+
     it("should be able to get validator addresses from keystores", async () => {
         const account = createTestAccount();
         const validatorsAddresses = account.getValidatorsAddresses();
