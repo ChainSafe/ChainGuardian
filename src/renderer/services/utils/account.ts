@@ -25,15 +25,19 @@ export const cleanUpAccount = async(): Promise<void> => {
     }
 };
 
-export const saveKeystore = async(signingKey: PrivateKey, password: string): Promise<string> => {
-    const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
-    await V4Keystore.create(
-        path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
-        password, new Keypair(signingKey)
-    );
+export const saveKeystore =
+    async(signingKey: PrivateKey, password: string, keyPath: string, name = ""): Promise<string> => {
+        const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
+        await V4Keystore.create(
+            path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
+            password,
+            new Keypair(signingKey),
+            keyPath,
+            name
+        );
 
-    return accountDirectory;
-};
+        return accountDirectory;
+    };
 
 export const deleteKeystore = (directory: string, publicKey: string): void => {
     const selectedV4Keystore = new V4Keystore(path.join(directory, `${publicKey}.json`));

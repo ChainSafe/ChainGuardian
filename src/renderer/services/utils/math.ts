@@ -1,7 +1,7 @@
 import {getNetworkConfig} from "../eth2/networks";
 
 function divBigInt(a: bigint, b: bigint): number {
-    return Number(a * 10000000000n / b) / 10000000000;
+    return Number(a * BigInt(10000000000) / b) / 10000000000;
 }
 
 export function calculateROI(balance: bigint, network: string): number {

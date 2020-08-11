@@ -61,7 +61,7 @@ async function isBeaconNodeWorking(eth2Api: IGenericEth2Client|null): Promise<bo
 
 async function hasChainStarted(eth2Api: IGenericEth2Client): Promise<boolean> {
     try {
-        return !!await eth2Api.beacon.getGenesisTime();
+        return !!(await eth2Api.beacon.getGenesis())?.genesisTime;
     } catch (e) {
         warn("Failed to get genesis time", e);
         return false;

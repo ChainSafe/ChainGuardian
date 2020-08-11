@@ -39,7 +39,7 @@ export const loadValidatorsAction = () => {
         if (auth && auth.account) {
             const validators = await auth.account.loadValidators();
             const validatorArray: IValidator[] = validators.map((v, index) => ({
-                name: `Validator ${index+1}`,
+                name: v.getName() ?? `Validator - ${index}`,
                 status: undefined,
                 publicKey: v.getPublicKey(),
                 network: auth.account!.getValidatorNetwork(v.getPublicKey()),

@@ -19,7 +19,8 @@ describe("V4Keystore", () => {
     let sandbox: sinon.SinonSandbox;
     let unlinkStub: sinon.SinonStub;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
+        await init();
         sandbox = sinon.createSandbox();
         sandbox.stub(fs, "existsSync").withArgs(keyStoreFilePath).returns(true);
         sandbox.stub(fs, "writeFileSync");
@@ -32,18 +33,17 @@ describe("V4Keystore", () => {
             .stub(fs, "unlinkSync")
             .withArgs(keyStoreFilePath)
             .returns();
-    });
-
-    beforeEach(async () => {
-        await init();
         const priv = PrivateKey.fromHexString(privateKey);
         const keypair = new Keypair(priv);
 
-        v4Keystore = await V4Keystore.create(keyStoreFilePath, password, keypair);
+        v4Keystore = await V4Keystore.create(keyStoreFilePath, password, keypair, "unknown");
+    });
+
+    afterEach(() => {
+        sandbox.restore();
     });
 
     afterAll(() => {
-        sandbox.restore();
         destroy();
     });
 

@@ -1,4 +1,4 @@
-import {BLSPubkey, Fork, Number64, Root, Uint64, ValidatorResponse} from "@chainsafe/lodestar-types";
+import {BLSPubkey, Fork, Genesis, Root, Uint64, ValidatorResponse} from "@chainsafe/lodestar-types";
 import {ISpecResponse, SpecType} from "../../../../models/types/beaconNode";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
@@ -24,6 +24,23 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
         this.logger = options.logger;
     }
 
+    public async getGenesis(): Promise<Genesis|null> {
+        try {
+            const [genesisTime, fork] = await Promise.all([
+                this.client.get<number>(LighthouseRoutes.GET_GENESIS_TIME),
+                this.getFork()
+            ]);
+            return {
+                genesisForkVersion: this.config.params.GENESIS_FORK_VERSION,
+                genesisValidatorsRoot: fork.genesisValidatorsRoot,
+                genesisTime: BigInt(genesisTime)
+            };
+        } catch (e) {
+            this.logger.error("Failed to get genesis response");
+            return null;
+        }
+    }
+
     public async getFork(): Promise<{
         fork: Fork;
         chainId: Uint64;
@@ -38,15 +55,6 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
             genesisValidatorsRoot: this.config.types.Root.fromJson(validatorsRootResponse, {case: "snake"}),
             chainId: BigInt(0)
         };
-    }
-
-    public async getGenesisTime(): Promise<Number64> {
-        try {
-            return await this.client.get<number>(LighthouseRoutes.GET_GENESIS_TIME);
-        } catch (e) {
-            this.logger.warn("Failed to get genesis time. Error: " + e.message);
-            return 0;
-        }
     }
 
     public async getValidator(pubkey: BLSPubkey): Promise<ValidatorResponse | null> {

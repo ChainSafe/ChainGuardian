@@ -66,7 +66,7 @@ module.exports = merge.smart(baseConfig, {
                     /ethers/,
                     /ethereumjs-util/,
                     /rlp/,
-                    /fetcha/,
+                    /fecha/,
                 ],
                 loader: "source-map-loader"
             }

@@ -1,11 +1,7 @@
 import configureStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
-import {
-    setDepositDetected,
-    setDepositTransactionData,
-    generateDepositAction
-} from "../../../../src/renderer/actions";
+import {generateDepositAction, setDepositDetected, setDepositTransactionData} from "../../../../src/renderer/actions";
 import {IRootState} from "../../../../src/renderer/reducers";
 import {IRegisterState} from "../../../../src/renderer/reducers/register";
 import {IDepositState} from "../../../../src/renderer/reducers/deposit";
@@ -19,6 +15,7 @@ import {IAuthState} from "../../../../src/renderer/reducers/auth";
 import {INotificationStateObject} from "../../../../src/renderer/reducers/notification";
 import {initBLS} from "@chainsafe/bls";
 import {INetworkState} from "../../../../src/renderer/reducers/network";
+import {fromHex, toHex} from "@chainsafe/lodestar-utils";
 
 const privateKeyStr = "0x6e4a0f1fabccb26b99fbac820be46c29ff5d294544282ad133c5463f2aa5f885";
 const publicKeyStr =
@@ -82,7 +79,7 @@ describe("deposit actions", () => {
         // Call deposit service and dispatch action
         const depositData = generateDeposit(
             keyPair,
-            Buffer.from(publicKeyStr, "hex"),
+            fromHex(publicKeyStr),
             networkConfig.contract.depositAmount,
             networkConfig.eth2Config,
         );
@@ -91,7 +88,7 @@ describe("deposit actions", () => {
             networkConfig.contract.address,
             networkConfig.eth2Config,
             networkConfig.contract.depositAmount);
-        const txData = `0x${depositTx.data.toString("hex")}`;
+        const txData = toHex(depositTx.data as Buffer);
 
         const expectedActions = [
             setDepositTransactionData(txData)

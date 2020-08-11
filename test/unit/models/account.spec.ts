@@ -1,33 +1,38 @@
 import sinon from "sinon";
-import {Keypair} from "@chainsafe/bls/lib/keypair";
-import {initBLS} from "@chainsafe/bls";
+import {initBLS, Keypair} from "@chainsafe/bls";
 
-// Mock keystore, only address is important
-// eslint-disable-next-line max-len
-const mockKeystore = {"crypto":{"kdf":{"function":"pbkdf2","message":"","params":{"c":262144,"dklen":32,"prf":"hmac-sha256","salt":"d6789f160795e07b4383a930f6904513149ce806183f8598a1e077eff7b244e8"}},"checksum":{"function":"sha256","message":"4b03b8f270ffb22c060717c268a9cb17d8e2711deaa1ff21cc881455b594e31d","params":{}},"cipher":{"function":"aes-128-ctr","message":"f66b216f3cfbe4836d0889f5c5b28fdcbe6d97fdad45d362571aec62bc76f6fd","params":{"iv":"b605a33cf3086ca3aa42e77a22fbdbfd"}}},"pubkey":"a12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136","path":"m/12381/60/0/0","uuid":"456f6a72-33ed-47c0-9206-09f432eec7d2","version":4};
+jest.mock("fs", () => {
+    // Mock keystore, only address is important
+    // eslint-disable-next-line max-len
+    const mockKeystore = {"crypto":{"kdf":{"function":"pbkdf2","message":"","params":{"c":262144,"dklen":32,"prf":"hmac-sha256","salt":"d6789f160795e07b4383a930f6904513149ce806183f8598a1e077eff7b244e8"}},"checksum":{"function":"sha256","message":"4b03b8f270ffb22c060717c268a9cb17d8e2711deaa1ff21cc881455b594e31d","params":{}},"cipher":{"function":"aes-128-ctr","message":"f66b216f3cfbe4836d0889f5c5b28fdcbe6d97fdad45d362571aec62bc76f6fd","params":{"iv":"b605a33cf3086ca3aa42e77a22fbdbfd"}}},"pubkey":"a12c862a5c295b665989ac905231767d752df00fbad33378a83fa2c4acfdffa04d2ee8f9aa9ba5406ea5f35c2825b136","path":"m/12381/60/0/0","uuid":"456f6a72-33ed-47c0-9206-09f432eec7d2","version":4};
+    const fs = jest.requireActual("fs");
+    const mockedReadDirSync = sinon
+        .stub()
+        .withArgs("/test_keystores/")
+        .returns(["keystore1.json", "keystore2.json", "keystoreNotJSONError"]);
+    const mockedExistSync = sinon
+        .stub(fs, "existsSync")
+        .callThrough();
 
-const mockedReadDirSync = sinon
-    .stub()
-    .withArgs("/test_keystores/")
-    .returns(["keystore1.json", "keystore2.json", "keystoreNotJSONError"]);
-const mockedExistSync = sinon
-    .stub()
-    .withArgs("/test_keystores/keystore1.json")
-    .returns(true)
-    .withArgs("/test_keystores/keystore2.json")
-    .returns(true);
-const mockedReadFileSync = sinon
-    .stub()
-    .withArgs("/test_keystores/keystore1.json")
-    .returns(JSON.stringify(mockKeystore))
-    .withArgs("/test_keystores/keystore2.json")
-    .returns(JSON.stringify(mockKeystore));
+    mockedExistSync
+        .withArgs("/test_keystores/keystore1.json")
+        .returns(true);
+    mockedExistSync
+        .withArgs("/test_keystores/keystore2.json")
+        .returns(true);
 
-jest.mock("fs", () => ({
-    readdirSync: mockedReadDirSync,
-    existsSync: mockedExistSync,
-    readFileSync: mockedReadFileSync
-}));
+    const mockedReadFileSync = sinon
+        .stub()
+        .withArgs("/test_keystores/keystore1.json")
+        .returns(JSON.stringify(mockKeystore))
+        .withArgs("/test_keystores/keystore2.json")
+        .returns(JSON.stringify(mockKeystore));
+    return {
+        readdirSync: mockedReadDirSync,
+        existsSync: mockedExistSync,
+        readFileSync: mockedReadFileSync
+    };
+});
 
 import {CGAccount} from "../../../src/renderer/models/account";
 import {V4KeystoreFactory} from "../../../src/renderer/services/keystore";
@@ -71,6 +76,11 @@ describe("CGAccount tests", () => {
 
     afterEach(() => {
         sandbox.restore();
+    });
+
+    afterAll(() => {
+        sinon.restore();
+        jest.restoreAllMocks();
     });
 
     it("should be able to get validator addresses from keystores", async () => {

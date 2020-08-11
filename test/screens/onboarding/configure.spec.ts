@@ -46,7 +46,7 @@ describe("Onboarding configure screens", () => {
 
 describe("Onboarding configure screens from start", () => {
     it("should redirect to deposit with inserted withdrawal key", async () => {
-        const appFromWithdrawal = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.WITHDRAWAL_IMPORT));
+        const appFromWithdrawal = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_KEY_VALIDATE));
         const {client} = appFromWithdrawal;
 
         // Process withdrawal key step

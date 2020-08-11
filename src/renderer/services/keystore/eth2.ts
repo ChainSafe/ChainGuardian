@@ -2,17 +2,16 @@ import {ICGKeystore, ICGKeystoreFactory} from "./interface";
 import {Keypair} from "@chainsafe/bls";
 import {existsSync, readFileSync, unlinkSync, writeFileSync,mkdirSync} from "fs";
 import {PrivateKey} from "@chainsafe/bls";
-import {Keystore, IKeystore} from "@nodefactory/bls-keystore";
+import {Keystore, IKeystore} from "@chainsafe/bls-keystore";
 import {dirname} from "path";
 import {warn} from "electron-log";
 
-const KEY_PATH = "m/12381/3600/i/0/0";
 export class V4Keystore implements ICGKeystore {
-    private keystore: IKeystore;
+    private keystore: Keystore;
     private readonly file: string;
 
     public constructor(file: string) {
-        this.keystore = this.readKeystoreFile(file);
+        this.keystore = Keystore.fromObject(this.readKeystoreFile(file));
         this.file = file;
     }
 
@@ -22,12 +21,22 @@ export class V4Keystore implements ICGKeystore {
      * @param file file path
      * @param password password for encryption
      * @param keypair private and public key
+     * @param keyPath path used to generate key from mnemonic
+     * @param name
      */
-    public static async create(file: string, password: string, keypair: Keypair): Promise<ICGKeystore> {
+    public static async create(
+        file: string, password: string, keypair: Keypair, keyPath: string, name = ""
+    ): Promise<ICGKeystore> {
         try {
-            const keystore = Keystore.encrypt(keypair.privateKey.toBytes(), password, KEY_PATH);
+            const keystore = await Keystore.create(
+                password,
+                keypair.privateKey.toBytes(),
+                keypair.publicKey.toBytesCompressed(),
+                keyPath,
+                name
+            );
             ensureKeystoreDirectory(file);
-            writeFileSync(file, keystore.toJSON());
+            writeFileSync(file, keystore.stringify());
             return new V4Keystore(file);
         } catch (err) {
             throw new Error(`Failed to write to ${file}: ${err}`);
@@ -39,7 +48,7 @@ export class V4Keystore implements ICGKeystore {
      * @param password
      */
     public async decrypt(password: string): Promise<Keypair> {
-        const privateKeyBuffer: Buffer = this.keystore.decrypt(password);
+        const privateKeyBuffer: Buffer = await this.keystore.decrypt(password);
         const priv = PrivateKey.fromBytes(privateKeyBuffer);
         return new Keypair(priv);
     }
@@ -52,10 +61,16 @@ export class V4Keystore implements ICGKeystore {
      */
     public async changePassword(oldPassword: string, newPassword: string): Promise<void> {
         const keypair = await this.decrypt(oldPassword);
-        const keystore = Keystore.encrypt(keypair.privateKey.toBytes(), newPassword);
+        const keystore = await Keystore.create(
+            newPassword,
+            keypair.privateKey.toBytes(),
+            keypair.publicKey.toBytesCompressed(),
+            this.keystore.path,
+            this.keystore.description
+        );
         try {
             ensureKeystoreDirectory(this.file);
-            writeFileSync(this.file, keystore.toJSON());
+            writeFileSync(this.file, keystore.stringify());
             this.keystore = keystore;
         } catch (err) {
             throw new Error(`Failed to write to ${this.file}: ${err}`);
@@ -64,6 +79,10 @@ export class V4Keystore implements ICGKeystore {
 
     public getPublicKey(): string {
         return `0x${this.keystore.pubkey}`;
+    }
+
+    public getName(): string|null {
+        return this.keystore.description;
     }
 
     /**
@@ -85,7 +104,7 @@ export class V4Keystore implements ICGKeystore {
         if (existsSync(file)) {
             try {
                 const data = readFileSync(file);
-                return Keystore.fromJSON(data.toString());
+                return JSON.parse(data.toString()) as IKeystore;
             } catch (err) {
                 throw new Error(`${file} could not be parsed: ${err}`);
             }
