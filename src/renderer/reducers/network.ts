@@ -1,11 +1,5 @@
-import {NetworkActionTypes} from "../constants/action-types";
-import {
-    ILoadedValidatorBeaconNodesAction,
-    ISaveSelectedNetworkAction,
-    ISubscribeToBlockListeningAction, IUnsubscribeToBlockListeningAction
-} from "../actions/network";
-import {Action} from "redux";
 import {IValidatorBeaconNodes} from "../models/beaconNode";
+import {NetworkAction, NetworkActionTypes} from "../actions/network";
 
 type BlockSubscriptions = {
     [key: string]: NodeJS.Timeout,
@@ -29,15 +23,15 @@ const initialState: INetworkState = {
 
 export const networkReducer = (
     state = initialState,
-    action: Action<NetworkActionTypes>): INetworkState => {
+    action: NetworkAction): INetworkState => {
     let payload;
     switch (action.type) {
         case NetworkActionTypes.SELECT_NETWORK:
-            payload = (action as ISaveSelectedNetworkAction).payload;
+            payload = action.payload;
             return {...state, selected: payload === "All networks" ? undefined : payload};
 
         case NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES:
-            payload = (action as ILoadedValidatorBeaconNodesAction).payload;
+            payload = action.payload;
             return {
                 ...state,
                 validatorBeaconNodes: {
@@ -47,7 +41,7 @@ export const networkReducer = (
             };
 
         case NetworkActionTypes.SUBSCRIBE_TO_BLOCK_LISTENING:
-            payload = (action as ISubscribeToBlockListeningAction).payload;
+            payload = action.payload;
             return {
                 ...state,
                 blockSubscriptions: {
@@ -57,7 +51,7 @@ export const networkReducer = (
             };
 
         case NetworkActionTypes.UNSUBSCRIBE_TO_BLOCK_LISTENING:
-            payload = (action as IUnsubscribeToBlockListeningAction).payload;
+            payload = action.payload;
             if (state.blockSubscriptions[payload.validator]) {
                 clearInterval(state.blockSubscriptions[payload.validator]);
                 delete state.blockSubscriptions[payload.validator];

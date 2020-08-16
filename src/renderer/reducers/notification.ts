@@ -1,8 +1,7 @@
-import {IStoreNotificationAction, IRemoveNotificationAction} from "../actions";
-import {NotificationActionTypes} from "../constants/action-types";
-import {Action} from "redux";
-import {Level, Horizontal, Vertical} from "../components/Notification/NotificationEnums";
+import {Horizontal, Level, Vertical} from "../components/Notification/NotificationEnums";
 import {isStackedNotification} from "../services/notification/isStackedNotification";
+import {NotificationActionTypes} from "../actions/notification";
+import {NotificationAction} from "../actions/notification";
 
 export interface INotificationProps {
     /** history.location.pathname */
@@ -34,11 +33,11 @@ const initialState: INotificationStateObject = {
 
 export const notificationReducer = (
     state = initialState,
-    action: Action<NotificationActionTypes>): INotificationStateObject => {
+    action: NotificationAction): INotificationStateObject => {
 
     switch (action.type) {
         case NotificationActionTypes.ADD_NOTIFICATION: {
-            const actionProps = (action as IStoreNotificationAction).payload;
+            const actionProps = action.payload;
 
             if(isStackedNotification(actionProps.horizontalPosition, actionProps.verticalPosition)) {
                 const newStackedArray = state.stacked.slice();
@@ -58,7 +57,7 @@ export const notificationReducer = (
         }
 
         case NotificationActionTypes.REMOVE_NOTIFICATION: {
-            const notificationId = (action as IRemoveNotificationAction).payload.id;
+            const notificationId = action.payload.id;
             let arrayIndex = 0;
             let stacked: boolean | undefined;
 

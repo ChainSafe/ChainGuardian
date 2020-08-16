@@ -1,12 +1,11 @@
 import {
     completeRegistrationSubmission,
+    RegisterAction,
     setSigningKey,
     setSigningMnemonic,
     setSigningVerificationStatus
 } from "../../../../src/renderer/actions";
 import {IRegisterState, registerReducer as reducer} from "../../../../src/renderer/reducers/register";
-import {RegisterActionTypes} from "../../../../src/renderer/constants/action-types";
-import {Action} from "redux";
 import {SupportedNetworks} from "../../../../src/renderer/services/eth2/supportedNetworks";
 
 
@@ -24,7 +23,7 @@ const initalState: IRegisterState = {
 
 describe("register reducer", () => {
     it("should return the initial state", () => {
-        expect(reducer(undefined, {} as Action<RegisterActionTypes>)).toEqual(
+        expect(reducer(undefined, {} as RegisterAction)).toEqual(
             initalState
         );
     });

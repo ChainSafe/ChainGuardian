@@ -1,10 +1,5 @@
 import {depositReducer as reducer, IDepositState} from "../../../../src/renderer/reducers/deposit";
-import {
-    setDepositDetected,
-    setDepositTransactionData
-} from "../../../../src/renderer/actions";
-import {Action} from "redux";
-import {DepositActionTypes} from "../../../../src/renderer/constants/action-types";
+import {DepositAction, setDepositDetected, setDepositTransactionData} from "../../../../src/renderer/actions";
 
 const initalState: IDepositState = {
     isDepositDetected: false,
@@ -14,11 +9,11 @@ const initalState: IDepositState = {
 
 describe("deposit reducer", () => {
     it("should return the initial state", () => {
-        expect(reducer(undefined, {} as Action<DepositActionTypes>)).toEqual(
+        expect(reducer(undefined, {} as DepositAction)).toEqual(
             initalState
         );
     });
-    
+
 
     it("should handle setDepositVisible", () => {
         expect(
@@ -40,5 +35,5 @@ describe("deposit reducer", () => {
             }
         );
     });
-    
+
 });

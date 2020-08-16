@@ -1,6 +1,4 @@
-import {IGenerateDepositAction} from "../actions";
-import {DepositActionTypes} from "../constants/action-types";
-import {Action} from "redux";
+import {DepositAction, DepositActionTypes} from "../actions";
 
 export interface IDepositState {
     waitingForDeposit: boolean;
@@ -14,10 +12,10 @@ const initialState: IDepositState = {
     depositTxData: ""
 };
 
-export const depositReducer = (state = initialState, action: Action<DepositActionTypes>): IDepositState => {
+export const depositReducer = (state = initialState, action: DepositAction): IDepositState => {
     switch (action.type) {
         case DepositActionTypes.STORE_DEPOSIT_TX_DATA: {
-            const txData = (action as IGenerateDepositAction).payload.txData;
+            const txData = action.payload.txData;
             return {
                 ...state,
                 depositTxData: txData,
@@ -42,8 +40,6 @@ export const depositReducer = (state = initialState, action: Action<DepositActio
                 isDepositDetected: true,
                 waitingForDeposit: false
             };
-        case DepositActionTypes.RESET:
-            return {...initialState};
         default:
             return state;
     }

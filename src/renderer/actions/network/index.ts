@@ -1,45 +1,44 @@
+import {
+    DockerImageAction,
+    LoadedValidatorBeaconNodesAction,
+    NetworkAction,
+    NetworkActionTypes,
+    SaveSelectedNetworkAction,
+    SubscribeToBlockListeningAction,
+    UnsubscribeToBlockListeningAction
+} from "./types";
+import {DockerPort} from "../../services/docker/type";
+import {Dispatch} from "redux";
+import {IRootState} from "../../reducers";
+import {getNetworkConfig} from "../../services/eth2/networks";
+import {BeaconChain} from "../../services/docker/chain";
+import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import {PrivateKey} from "@chainsafe/bls";
-import {warn} from "electron-log";
-import {Action, Dispatch} from "redux";
+import {fromHex} from "../../services/utils/bytes";
+import {BeaconNode, BeaconNodes} from "../../models/beaconNode";
+import database from "../../services/db/api/database";
 import * as logger from "electron-log";
+import {warn} from "electron-log";
+import {IEth2ChainHead} from "../../models/types/head";
 
-import {BeaconChain} from "../services/docker/chain";
-import {NetworkActionTypes} from "../constants/action-types";
-import {IRootState} from "../reducers";
-import {BeaconNode, BeaconNodes} from "../models/beaconNode";
-import database from "../services/db/api/database";
-import {DockerPort} from "../services/docker/type";
-import {getNetworkConfig} from "../services/eth2/networks";
-import {SupportedNetworks} from "../services/eth2/supportedNetworks";
-import {fromHex} from "../services/utils/bytes";
-import {IEth2ChainHead} from "../models/types/head";
+export * from "./types";
 
 // User selected network in dashboard dropdown
-export interface ISaveSelectedNetworkAction {
-    type: typeof NetworkActionTypes.SELECT_NETWORK;
-    payload: string;
-}
-export const saveSelectedNetworkAction = (network: string): ISaveSelectedNetworkAction => ({
+export const saveSelectedNetworkAction = (network: string): SaveSelectedNetworkAction => ({
     type: NetworkActionTypes.SELECT_NETWORK,
     payload: network,
 });
 
-// Beacon chain
-export interface IDockerImagePull {
-    type: typeof NetworkActionTypes.START_DOCKER_IMAGE_PULL |
-        typeof NetworkActionTypes.END_DOCKER_IMAGE_PULL;
-}
-
-const startImagePulling = (): IDockerImagePull => ({
+const startImagePulling = (): DockerImageAction => ({
     type: NetworkActionTypes.START_DOCKER_IMAGE_PULL,
 });
 
-const endImagePulling = (): IDockerImagePull => ({
+const endImagePulling = (): DockerImageAction => ({
     type: NetworkActionTypes.END_DOCKER_IMAGE_PULL,
 });
 
 export const startBeaconChainAction = (network: string, ports?: DockerPort[]) => {
-    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+    return async (dispatch: Dispatch<NetworkAction>, getState: () => IRootState): Promise<void> => {
         // Pull image first
         const image = getNetworkConfig(network).dockerConfig.image;
         dispatch(startImagePulling());
@@ -53,12 +52,12 @@ export const startBeaconChainAction = (network: string, ports?: DockerPort[]) =>
         }
 
         // Save local beacon node to db
-        saveBeaconNodeAction(`http://localhost:${ports[1].local}`, network)(dispatch, getState);
+        await saveBeaconNodeAction(`http://localhost:${ports[1].local}`, network)(dispatch, getState);
     };
 };
 
 export const saveBeaconNodeAction = (url: string, network?: string, validatorKey?: string) => {
-    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+    return async (dispatch: Dispatch<NetworkAction>, getState: () => IRootState): Promise<void> => {
         const localDockerName = network ? BeaconChain.getContainerName(network) : null;
         let validatorAddress = validatorKey || "";
         if (validatorAddress === "") {
@@ -75,7 +74,7 @@ export const saveBeaconNodeAction = (url: string, network?: string, validatorKey
 };
 
 export const removeBeaconNodeAction = (image: string, validator: string) => {
-    return async (dispatch: Dispatch<Action<unknown>>): Promise<void> => {
+    return async (dispatch: Dispatch<LoadedValidatorBeaconNodesAction>): Promise<void> => {
         const validatorBeaconNodes = await database.beaconNodes.get(validator);
         const newBeaconNodesList = BeaconNodes.createNodes(validatorBeaconNodes.nodes);
         newBeaconNodesList.removeNode(image);
@@ -88,18 +87,8 @@ export const removeBeaconNodeAction = (image: string, validator: string) => {
     };
 };
 
-// Loading validator beacon nodes
-
-export interface ILoadedValidatorBeaconNodesAction {
-    type: typeof NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES;
-    payload: {
-        validator: string;
-        beaconNodes: BeaconNode[];
-    };
-}
-
 export const loadValidatorBeaconNodes = (validator: string, subscribe = false) => {
-    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+    return async (dispatch: Dispatch<NetworkAction>, getState: () => IRootState): Promise<void> => {
         const validatorBeaconNodes = await getState().auth.account!.getValidatorBeaconNodes(validator);
         logger.info(`Found ${validatorBeaconNodes.length} beacon nodes for validator ${validator}.`);
         await Promise.all(validatorBeaconNodes.map(async(validatorBN) => {
@@ -127,7 +116,7 @@ export const loadValidatorBeaconNodes = (validator: string, subscribe = false) =
 };
 
 async function refreshBeaconNodeStatus(
-    dispatch: Dispatch<Action<unknown>>,
+    dispatch: Dispatch<LoadedValidatorBeaconNodesAction>,
     getState: () => IRootState,
     validator: string,
     chainHead: IEth2ChainHead,
@@ -154,7 +143,7 @@ async function refreshBeaconNodeStatus(
 const storeValidatorBeaconNodes = (
     validator: string,
     beaconNodes: BeaconNode[],
-): ILoadedValidatorBeaconNodesAction => ({
+): LoadedValidatorBeaconNodesAction => ({
     type: NetworkActionTypes.LOADED_VALIDATOR_BEACON_NODES,
     payload: {
         validator,
@@ -163,18 +152,12 @@ const storeValidatorBeaconNodes = (
 });
 
 // Block subscription related
-export interface ISubscribeToBlockListeningAction {
-    type: typeof NetworkActionTypes.SUBSCRIBE_TO_BLOCK_LISTENING;
-    payload: {
-        validator: string;
-        timeoutId: NodeJS.Timeout;
-    };
-}
+
 
 const subscribeToBlockListening = (
     validator: string,
     timeoutId: NodeJS.Timeout,
-): ISubscribeToBlockListeningAction => ({
+): SubscribeToBlockListeningAction => ({
     type: NetworkActionTypes.SUBSCRIBE_TO_BLOCK_LISTENING,
     payload: {
         validator,
@@ -182,16 +165,11 @@ const subscribeToBlockListening = (
     }
 });
 
-export interface IUnsubscribeToBlockListeningAction {
-    type: typeof NetworkActionTypes.UNSUBSCRIBE_TO_BLOCK_LISTENING;
-    payload: {
-        validator: string;
-    };
-}
 
-export const unsubscribeToBlockListening = (validator: string): IUnsubscribeToBlockListeningAction => ({
+export const unsubscribeToBlockListening = (validator: string): UnsubscribeToBlockListeningAction => ({
     type: NetworkActionTypes.UNSUBSCRIBE_TO_BLOCK_LISTENING,
     payload: {
         validator,
     }
 });
+

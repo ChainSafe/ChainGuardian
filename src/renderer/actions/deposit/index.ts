@@ -1,15 +1,25 @@
-import {DepositActionTypes} from "../constants/action-types";
-import {Action, Dispatch} from "redux";
-import {IRootState} from "../reducers";
-import {INetworkConfig} from "../services/interfaces";
-import {DepositTx, generateDeposit} from "../services/deposit";
+import {INetworkConfig} from "../../services/interfaces";
+import {Dispatch} from "redux";
+import {IRootState} from "../../reducers";
 import {Keypair, PrivateKey} from "@chainsafe/bls";
-import {EthersNotifier} from "../services/deposit/ethers";
-import {fromHex} from "../services/utils/bytes";
+import {fromHex} from "../../services/utils/bytes";
+import {DepositTx, generateDeposit} from "../../services/deposit";
+import {EthersNotifier} from "../../services/deposit/ethers";
+import {
+    DepositAction,
+    DepositActionTypes,
+    DepositDetectionAction,
+    DepositNotFoundAction,
+    GenerateDepositAction,
+    ResetDepositDataAction,
+    WaitForDepositAction
+} from "./types";
+
+export * from "./types";
 
 // Generate deposit action
 export const generateDepositAction = (networkConfig: INetworkConfig) => {
-    return (dispatch: Dispatch<IGenerateDepositAction>, getState: () => IRootState): void => {
+    return (dispatch: Dispatch<GenerateDepositAction>, getState: () => IRootState): void => {
         const {signingKey, withdrawalKey} = getState().register;
         const keyPair = new Keypair(PrivateKey.fromBytes(fromHex(signingKey)));
         // Call deposit service and dispatch action
@@ -33,7 +43,7 @@ export const generateDepositAction = (networkConfig: INetworkConfig) => {
 
 // Verify deposit action
 export const verifyDepositAction = (networkConfig: INetworkConfig, timeout = 30000) => {
-    return async (dispatch: Dispatch<Action<DepositActionTypes>>, getState: () => IRootState): Promise<void> => {
+    return async (dispatch: Dispatch<DepositAction>, getState: () => IRootState): Promise<void> => {
         dispatch(setWaitingDeposit());
         const signingKey = getState().register.signingKey;
         const keyPair = new Keypair(PrivateKey.fromHexString(signingKey));
@@ -55,31 +65,22 @@ export const verifyDepositAction = (networkConfig: INetworkConfig, timeout = 300
     };
 };
 
-export const setDepositTransactionData = (txData: string): IGenerateDepositAction => ({
+export const setDepositTransactionData = (txData: string): GenerateDepositAction => ({
     type: DepositActionTypes.STORE_DEPOSIT_TX_DATA, payload: {txData}
 });
 
-
-export const setWaitingDeposit = (): Action<DepositActionTypes> => ({
+export const setWaitingDeposit = (): WaitForDepositAction => ({
     type: DepositActionTypes.WAIT_FOR_DEPOSIT
 });
-export const setDepositDetected = (): Action<DepositActionTypes> => ({
+export const setDepositDetected = (): DepositDetectionAction => ({
     type: DepositActionTypes.DEPOSIT_DETECTED
 });
 
-export const setDepositNotFound = (): Action<DepositActionTypes> => ({
+export const setDepositNotFound = (): DepositNotFoundAction => ({
     type: DepositActionTypes.DEPOSIT_NOT_FOUND
 });
 
-export const resetDepositData = (): Action<DepositActionTypes> => ({
-    type: DepositActionTypes.RESET
+export const resetDepositData = (): ResetDepositDataAction => ({
+    type: DepositActionTypes.RESET_DEPOSIT_DATA
 });
-
-export interface IGenerateDepositPayload {
-    txData: string;
-}
-
-export interface IGenerateDepositAction extends Action<DepositActionTypes> {
-    payload: IGenerateDepositPayload;
-}
 

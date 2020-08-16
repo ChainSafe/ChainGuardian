@@ -201,6 +201,7 @@
     "winston-transport": "^4.4.0"
   },
   "resolutions": {
+    "@chainsafe/bls": "3.0.0",
     "terser": "4.6.3",
     "bcrypto": "5.2.0",
     "serialize-javascript": "2.1.1"
