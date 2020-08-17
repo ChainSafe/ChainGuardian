@@ -1,18 +1,6 @@
 import {ValidatorResponse} from "@chainsafe/lodestar-types";
 import {toHexString} from "@chainsafe/ssz";
-import {Action} from "redux";
-
-import {
-    ILoadValidators,
-    ILoadedValidatorsFromChainAction,
-    IStopValidatorServiceAction,
-    IValidator,
-    IRemoveValidator,
-    IAddValidator,
-    ILoadValidatorStatusAction,
-    IStartValidatorServiceAction,
-} from "../actions";
-import {ValidatorActionTypes} from "../constants/action-types";
+import {IValidator, ValidatorAction, ValidatorActionTypes} from "../actions/validator";
 import {ValidatorLogger} from "../services/eth2/client/logger";
 
 export interface IValidatorComplete extends IValidator {
@@ -51,30 +39,26 @@ const removeValidator = (state: IValidatorState, publicKey: string): IValidatorS
 
 export const validatorsReducer = (
     state = initialState,
-    action: Action<ValidatorActionTypes>
+    action: ValidatorAction
 ): IValidatorState => {
-    let payload: any;
     let newState = initialState;
     switch (action.type) {
         case ValidatorActionTypes.LOAD_VALIDATORS:
-            (action as ILoadValidators).payload.forEach((v: IValidator) => {
+            action.payload.forEach((v: IValidator) => {
                 newState = addValidator(newState, v);
             });
 
             return newState;
 
         case ValidatorActionTypes.ADD_VALIDATOR:
-            payload = (action as IAddValidator).payload;
-            return addValidator(state, payload);
+            return addValidator(state, action.payload);
 
         case ValidatorActionTypes.REMOVE_VALIDATOR:
-            payload = (action as IRemoveValidator).payload;
-            return removeValidator(state, payload.validatorPublicKey);
+            return removeValidator(state, action.payload.validatorPublicKey);
 
         case ValidatorActionTypes.LOADED_VALIDATORS_BALANCE:
-            payload = (action as ILoadedValidatorsFromChainAction).payload;
             newState = {...state};
-            payload.map((v: ValidatorResponse) => {
+            action.payload.map((v: ValidatorResponse) => {
                 const publicKey = toHexString(v.pubkey);
                 // Take balance only
                 newState.byPublicKey[publicKey] = {...state.byPublicKey[publicKey], balance: v.balance};
@@ -82,31 +66,28 @@ export const validatorsReducer = (
             return newState;
 
         case ValidatorActionTypes.START_VALIDATOR_SERVICE:
-            payload = (action as IStartValidatorServiceAction).payload;
             newState = {...state};
-            newState.byPublicKey[payload.validator] = {
-                ...state.byPublicKey[payload.keypair.publicKey.toHexString()],
+            newState.byPublicKey[action.payload.keypairs[0].publicKey.toHexString()] = {
+                ...state.byPublicKey[action.payload.keypairs[0].publicKey.toHexString()],
                 isRunning: true,
-                logger: payload.logger,
+                logger: action.payload.logger,
             };
 
             return newState;
 
         case ValidatorActionTypes.STOP_VALIDATOR_SERVICE:
-            payload = (action as IStopValidatorServiceAction).payload;
             newState = {...state};
-            newState.byPublicKey[payload] = {
-                ...state.byPublicKey[payload],
+            newState.byPublicKey[action.payload] = {
+                ...state.byPublicKey[action.payload],
                 isRunning: false
             };
             return newState;
 
-        case ValidatorActionTypes.LOAD_STATUS:
-            payload = (action as ILoadValidatorStatusAction).payload;
+        case ValidatorActionTypes.LOAD_VALIDATOR_STATUS:
             newState = {...state};
-            newState.byPublicKey[payload.validator] = {
-                ...state.byPublicKey[payload.validator],
-                status: payload.status
+            newState.byPublicKey[action.payload.validator] = {
+                ...state.byPublicKey[action.payload.validator],
+                status: action.payload.status
             };
             return newState;
 

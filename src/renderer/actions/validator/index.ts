@@ -1,40 +1,40 @@
+import {Dispatch} from "redux";
+import {IRootState} from "../../reducers";
+import {CGAccount} from "../../models/account";
+import {deleteKeystore} from "../../services/utils/account";
+import {
+    loadValidatorBeaconNodes,
+    NetworkAction,
+    unsubscribeToBlockListening,
+    UnsubscribeToBlockListeningAction
+} from "../network";
+import {fromHex} from "../../services/utils/bytes";
+import {getNetworkConfig} from "../../services/eth2/networks";
+import {EthersNotifier} from "../../services/deposit/ethers";
+import {getValidatorStatus} from "../../services/validator/status";
 import {Keypair} from "@chainsafe/bls";
+import {ValidatorLogger} from "../../services/eth2/client/logger";
+import {ValidatorDB} from "../../services/db/api/validator";
+import database from "../../services/db/api/database";
 import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
-import {ValidatorResponse} from "@chainsafe/lodestar-types";
-import {IValidatorOptions} from "@chainsafe/lodestar-validator/lib";
-import {Action, Dispatch} from "redux";
+import {
+    AddValidatorAction,
+    IValidator,
+    LoadedValidatorBalanceAction,
+    LoadValidatorsAction,
+    LoadValidatorStatusAction,
+    RemoveValidatorAction,
+    StartValidatorServiceAction,
+    StopValidatorServiceAction,
+    ValidatorAction,
+    ValidatorActionTypes
+} from "./types";
 
-import {ValidatorActionTypes} from "../constants/action-types";
-import {CGAccount} from "../models/account";
-import {IRootState} from "../reducers";
-import database from "../services/db/api/database";
-import {ValidatorDB} from "../services/db/api/validator";
-import {EthersNotifier} from "../services/deposit/ethers";
-import {ValidatorLogger} from "../services/eth2/client/logger";
-import {getNetworkConfig} from "../services/eth2/networks";
-import {ICGKeystore} from "../services/keystore";
-import {deleteKeystore} from "../services/utils/account";
-import {fromHex} from "../services/utils/bytes";
-import {getValidatorStatus, ValidatorStatus} from "../services/validator/status";
-import {loadValidatorBeaconNodes, unsubscribeToBlockListening} from "./network";
+export * from "./types";
 
-export interface ILoadValidators {
-    type: typeof ValidatorActionTypes.LOAD_VALIDATORS,
-    payload: Array<IValidator>,
-}
-
-export interface IValidator {
-    name: string;
-    status: string;
-    publicKey: string;
-    network: string;
-    balance?: bigint;
-    keystore: ICGKeystore;
-    isRunning: boolean,
-}
 
 export const loadValidatorsAction = () => {
-    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+    return async (dispatch: Dispatch<LoadValidatorsAction>, getState: () => IRootState): Promise<void> => {
         const auth = getState().auth;
         if (auth && auth.account) {
             const validators = await auth.account.loadValidators();
@@ -55,13 +55,9 @@ export const loadValidatorsAction = () => {
     };
 };
 
-export interface IAddValidator {
-    type: typeof ValidatorActionTypes.ADD_VALIDATOR,
-    payload: IValidator,
-}
 
 export const addNewValidator = (publicKey: string, account: CGAccount) => {
-    return async (dispatch: Dispatch<Action<unknown>>): Promise<void> => {
+    return async (dispatch: Dispatch<AddValidatorAction>): Promise<void> => {
         const keystore = account.loadKeystore(publicKey);
         const validator: IValidator = {
             name: `Validator ${account.getValidators().length+2}`,
@@ -79,15 +75,11 @@ export const addNewValidator = (publicKey: string, account: CGAccount) => {
     };
 };
 
-export interface IRemoveValidator {
-    type: typeof ValidatorActionTypes.REMOVE_VALIDATOR,
-    payload: {
-        validatorPublicKey: string,
-    },
-}
 
 export const removeValidatorAction = (publicKey: string, validatorIndex: number) => {
-    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+    return async (
+        dispatch: Dispatch<RemoveValidatorAction|UnsubscribeToBlockListeningAction>, getState: () => IRootState
+    ): Promise<void> => {
         deleteKeystore(getState().auth.account.directory, publicKey);
         getState().auth.account.removeValidator(validatorIndex);
         dispatch(unsubscribeToBlockListening(publicKey));
@@ -102,13 +94,17 @@ export const removeValidatorAction = (publicKey: string, validatorIndex: number)
 };
 
 export const loadValidatorChainDataAction = (publicKey: string) => {
-    return async (dispatch: Dispatch<Action<unknown>>, getState: () => IRootState): Promise<void> => {
+    return async (
+        dispatch: Dispatch<ValidatorAction|NetworkAction>, getState: () => IRootState
+    ): Promise<void> => {
         // Initialize validator object with API client
         await loadValidatorBeaconNodes(publicKey, true)(dispatch, getState);
         // Load validator state from chain for i.e. balance
         // TODO: load all validators in one request per network
-        loadValidatorsFromChain([publicKey])(dispatch, getState);
-        loadValidatorStatus(publicKey)(dispatch, getState);
+        await Promise.all([
+            loadValidatorsFromChain([publicKey])(dispatch, getState),
+            loadValidatorStatus(publicKey)(dispatch, getState)
+        ]);
 
         dispatch({
             type: ValidatorActionTypes.LOAD_VALIDATOR_CHAIN_DATA,
@@ -117,7 +113,7 @@ export const loadValidatorChainDataAction = (publicKey: string) => {
 };
 
 export const loadValidatorsFromChain = (validators: string[]) => {
-    return async (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): Promise<void> => {
+    return async (dispatch: Dispatch<LoadedValidatorBalanceAction>, getState: () => IRootState): Promise<void> => {
         const beaconNodes = getState().network.validatorBeaconNodes[validators[0]];
         if (beaconNodes && beaconNodes.length > 0) {
             // TODO: Use any working beacon node instead of first one
@@ -134,7 +130,7 @@ export const loadValidatorsFromChain = (validators: string[]) => {
 };
 
 export const loadValidatorStatus = (validatorAddress: string) => {
-    return async (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): Promise<void> => {
+    return async (dispatch: Dispatch<LoadValidatorStatusAction>, getState: () => IRootState): Promise<void> => {
         const beaconNodes = getState().network.validatorBeaconNodes[validatorAddress];
         if (beaconNodes && beaconNodes.length > 0) {
             // TODO: Use any working beacon node instead of first one
@@ -145,7 +141,7 @@ export const loadValidatorStatus = (validatorAddress: string) => {
             const status = await getValidatorStatus(fromHex(validatorAddress), eth2, eth1);
 
             dispatch({
-                type: ValidatorActionTypes.LOAD_STATUS,
+                type: ValidatorActionTypes.LOAD_VALIDATOR_STATUS,
                 payload: {
                     validator: validatorAddress,
                     status,
@@ -155,26 +151,9 @@ export const loadValidatorStatus = (validatorAddress: string) => {
     };
 };
 
-export interface ILoadValidatorStatusAction {
-    type: typeof ValidatorActionTypes.LOAD_STATUS,
-    payload: {
-        validator: string;
-        status: ValidatorStatus;
-    },
-}
-
-export interface ILoadedValidatorsFromChainAction {
-    type: typeof ValidatorActionTypes.LOADED_VALIDATORS_BALANCE;
-    payload: ValidatorResponse[];
-}
-
-export interface IStartValidatorServiceAction {
-    type: typeof ValidatorActionTypes.START_VALIDATOR_SERVICE,
-    payload: IValidatorOptions,
-}
 
 export const startValidatorService = (keypair: Keypair) => {
-    return (dispatch: Dispatch<Action<ValidatorActionTypes>>, getState: () => IRootState): void => {
+    return (dispatch: Dispatch<StartValidatorServiceAction>, getState: () => IRootState): void => {
         const logger = new ValidatorLogger();
         // TODO: Use beacon chain proxy instead of first node
         const eth2API = getState().network.validatorBeaconNodes[keypair.publicKey.toHexString()][0].client;
@@ -185,20 +164,15 @@ export const startValidatorService = (keypair: Keypair) => {
                 db: new ValidatorDB(database),
                 api: eth2API,
                 config,
-                keypair,
+                keypairs: [keypair],
                 logger
             },
         });
     };
 };
 
-export interface IStopValidatorServiceAction {
-    type: typeof ValidatorActionTypes.STOP_VALIDATOR_SERVICE,
-    payload: string,
-}
-
 export const stopValidatorService = (keypair: Keypair) => {
-    return (dispatch: Dispatch<Action<ValidatorActionTypes>>): void => {
+    return (dispatch: Dispatch<StopValidatorServiceAction>): void => {
         dispatch({
             type: ValidatorActionTypes.STOP_VALIDATOR_SERVICE,
             payload: keypair.publicKey.toHexString(),

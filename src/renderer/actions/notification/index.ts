@@ -1,15 +1,17 @@
-import {Horizontal, Level, Vertical} from "../components/Notification/NotificationEnums";
-import {NotificationActionTypes} from "../constants/action-types";
-import {Action, Dispatch} from "redux";
-import {INotificationState, INotificationProps} from "../reducers/notification";
-import {createNotificationId} from "../services/notification/createNotificationId";
+import {INotificationProps, INotificationState} from "../../reducers/notification";
+import {Dispatch} from "redux";
+import {createNotificationId} from "../../services/notification/createNotificationId";
+import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
+import {NotificationActionTypes, RemoveNotificationAction, StoreNotificationAction} from "./types";
+
+export * from "./types";
 
 //Add Notification
 /** expireTime is in seconds
  * / only bottom right notifications are stacked one above another
  */
 export const storeNotificationAction = (notificationProps: INotificationProps) =>
-    (dispatch: Dispatch<IStoreNotificationAction>): void => {
+    (dispatch: Dispatch<StoreNotificationAction>): void => {
         const notificationId = createNotificationId(notificationProps);
         const notification = {
             isVisible: true,
@@ -31,31 +33,23 @@ export const storeNotificationAction = (notificationProps: INotificationProps) =
             )
             : null;
     };
-export const setNotification = (payload: INotificationState): IStoreNotificationAction => {
+export const setNotification = (payload: INotificationState): StoreNotificationAction => {
     return {
         type: NotificationActionTypes.ADD_NOTIFICATION,
         payload,
     };
 };
-export interface IStoreNotificationAction extends Action<NotificationActionTypes> {
-    payload: INotificationState;
-}
 
 //Remove Notification
 export const removeNotificationAction = (id: string) =>
-    (dispatch: Dispatch<IRemoveNotificationAction>): void => {
+    (dispatch: Dispatch<RemoveNotificationAction>): void => {
         dispatch(setRemoveNotification(
             id
         ));
     };
-export const setRemoveNotification = (id: string): IRemoveNotificationAction => ({
-    type: NotificationActionTypes.REMOVE_NOTIFICATION, payload: {
+export const setRemoveNotification = (id: string): RemoveNotificationAction => ({
+    type: NotificationActionTypes.REMOVE_NOTIFICATION,
+    payload: {
         id
     }
 });
-export interface IRemoveNotificationPayload {
-    id: string
-}
-export interface IRemoveNotificationAction extends Action<NotificationActionTypes> {
-    payload: IRemoveNotificationPayload
-}

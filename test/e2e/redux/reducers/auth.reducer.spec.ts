@@ -1,7 +1,5 @@
-import {setAuth} from "../../../../src/renderer/actions";
-import {IAuthState, authReducer as reducer} from "../../../../src/renderer/reducers/auth";
-import {AuthActionTypes} from "../../../../src/renderer/constants/action-types";
-import {Action} from "redux";
+import {AuthAction, setAuth} from "../../../../src/renderer/actions";
+import {authReducer as reducer, IAuthState} from "../../../../src/renderer/reducers/auth";
 import {CGAccount} from "../../../../src/renderer/models/account";
 
 const account = new CGAccount({
@@ -16,7 +14,7 @@ const initalState: IAuthState = {
 
 describe("auth reducer", () => {
     it("should return the initial state", () => {
-        expect(reducer(undefined, {} as Action<AuthActionTypes>)).toEqual(
+        expect(reducer(undefined, {} as AuthAction)).toEqual(
             initalState
         );
     });

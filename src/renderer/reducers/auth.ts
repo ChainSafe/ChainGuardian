@@ -1,6 +1,4 @@
-import {IStoreAuthAction} from "../actions";
-import {AuthActionTypes} from "../constants/action-types";
-import {Action} from "redux";
+import {AuthAction, AuthActionTypes} from "../actions";
 import {CGAccount} from "../models/account";
 
 export interface IAuthState {
@@ -11,11 +9,11 @@ const initialState: IAuthState = {
     account: null,
 };
 
-export const authReducer = (state = initialState, action: Action<AuthActionTypes>): IAuthState => {
+export const authReducer = (state = initialState, action: AuthAction): IAuthState => {
     switch (action.type) {
         case AuthActionTypes.STORE_AUTH:
             return Object.assign({}, state, {
-                account: (action as IStoreAuthAction).payload.auth
+                account: action.payload.auth
             });
         default:
             return state;
