@@ -9,6 +9,5 @@ export const generateDeposit = createAction<INetworkConfig>("deposit/generateDep
 type VerifyDeposit = (networkConfig: INetworkConfig, timeout?: number) =>
 {payload: {networkConfig: INetworkConfig; timeout: number}};
 export const verifyDeposit = createAction<VerifyDeposit>(
-    "deposit/verifyDeposit",
-    (networkConfig: INetworkConfig, timeout = 30000) => ({payload: {networkConfig, timeout}}),
+    "deposit/verifyDeposit", (networkConfig: INetworkConfig, timeout = 30000) => ({payload: {networkConfig, timeout}}),
 );
