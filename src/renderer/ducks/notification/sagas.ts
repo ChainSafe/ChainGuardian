@@ -23,7 +23,7 @@ function* storeNotification({payload}: ReturnType<typeof createNotification>): G
     }
 }
 
-export function* networkSagaWatcher(): Generator {
+export function* notificationSagaWatcher(): Generator {
     yield all([
         takeEvery(createNotification, storeNotification),
     ]);
