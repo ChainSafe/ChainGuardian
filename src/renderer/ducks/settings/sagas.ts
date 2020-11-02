@@ -9,7 +9,7 @@ function* saveAccountSettings(action: ReturnType<typeof saveAccountSettingsActio
     // yield put(); some settings redux store function
 }
 
-export function* registerSagaWatcher(): Generator {
+export function* settingsSagaWatcher(): Generator {
     yield all([
         takeEvery(saveAccountSettingsAction, saveAccountSettings),
     ]);

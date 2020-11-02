@@ -1,6 +1,4 @@
 import {all, takeEvery, put, call, select, PutEffect, CallEffect, SelectEffect, AllEffect} from "redux-saga/effects";
-import {Dispatch} from "redux";
-import {IRootState} from "../../reducers";
 import {getNetworkConfig} from "../../services/eth2/networks";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
@@ -63,15 +61,17 @@ Generator<CallEffect | PutEffect, void, BeaconNodes> {
     yield put(loadedValidatorBeaconNodes(newBeaconNodesList.nodes, validator));
 }
 
-function* loadValidatorBeaconNodesSaga({payload: {subscribe, validator}}: ReturnType<typeof loadValidatorBeaconNodes>):
-Generator<
-SelectEffect | CallEffect | AllEffect<
-Generator<CallEffect | SelectEffect | PutEffect,
-void,
-IEth2ChainHead>>,
-void,
-CGAccount & BeaconNode[]
-> {
+export function* loadValidatorBeaconNodesSaga(
+    {payload: {subscribe, validator}}: ReturnType<typeof loadValidatorBeaconNodes>
+):
+    Generator<
+    SelectEffect | CallEffect | AllEffect<
+    Generator<CallEffect | SelectEffect | PutEffect,
+    void,
+    IEth2ChainHead>>,
+    void,
+    CGAccount & BeaconNode[]
+    > {
     const account = yield select(s => s.auth.account);
     if (!account) {
         return;
