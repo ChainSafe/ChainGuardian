@@ -9,8 +9,8 @@ import {rootSaga} from "./rootSaga";
 const sagaMiddleware = reduxSaga();
 
 const configureStore = (initialState?: IRootState): Store<IRootState | undefined> => {
-    const middlewares: Middleware[] = [sagaMiddleware, logger],
-        enhancer = composeWithDevTools(applyMiddleware(...middlewares));
+    const middlewares: Middleware[] = [sagaMiddleware, logger];
+    const enhancer = composeWithDevTools(applyMiddleware(...middlewares));
     return createStore(rootReducer, initialState, enhancer);
 };
 
@@ -18,7 +18,6 @@ const store = configureStore();
 
 sagaMiddleware.run(rootSaga);
 
-console.log(module);
 if (typeof module.hot !== "undefined") {
     module.hot.accept("./reducers", () =>
     // eslint-disable-next-line @typescript-eslint/no-require-imports

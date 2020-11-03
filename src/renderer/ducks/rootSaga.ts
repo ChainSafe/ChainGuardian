@@ -1,4 +1,4 @@
-import {all} from "deepmerge";
+import {all} from "redux-saga/effects";
 import {authSagaWatcher} from "./auth/sagas";
 import {depositSagaWatcher} from "./deposit/sagas";
 import {networkSagaWatcher} from "./network/sagas";
