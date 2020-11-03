@@ -28,7 +28,7 @@ export const networkSlice = createSlice({
         loadedValidatorBeaconNodes: {
             reducer: (state, action: PayloadAction<BeaconNode[], string, string>): void =>
             {
-                state.validatorBeaconNodes.abab = action.payload;
+                state.validatorBeaconNodes[action.meta] = action.payload;
             },
             prepare: (beaconNodes: BeaconNode[], validator: string): { payload: BeaconNode[]; meta: string } => ({
                 payload: beaconNodes, meta: validator,
