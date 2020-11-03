@@ -8,5 +8,5 @@ export const {
 
 type AfterPassword = (password: string, name?: string) => {payload: {password: string, name?: string}};
 export const afterPassword = createAction<AfterPassword>(
-    "notification/createNotification",(password: string, name?: string) => ({payload: {password, name}}),
+    "register/afterPassword",(password: string, name?: string) => ({payload: {password, name}}),
 );
