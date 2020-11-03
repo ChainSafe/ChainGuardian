@@ -116,7 +116,7 @@ Generator<SelectEffect | CallEffect | PutEffect, void, ValidatorStatus & IValida
         // TODO: Use any working beacon node instead of first one
         const eth2 = beaconNodes[0].client;
         // TODO: use selector
-        const byPublicKey: IByPublicKey = yield select(s => s.validator.byPublicKey);
+        const byPublicKey: IByPublicKey = yield select(s => s.validators.byPublicKey);
         const network = byPublicKey[action.payload].network;
         const networkConfig = getNetworkConfig(network);
         const eth1 = new EthersNotifier(networkConfig, networkConfig.eth1Provider);
