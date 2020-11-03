@@ -9,6 +9,8 @@ import {CGAccount} from "../../models/account";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
 import {all, takeEvery, select, call, SelectEffect, CallEffect} from "redux-saga/effects";
 import {afterPassword} from "./actions";
+import {addNewValidator} from "../validator/actions";
+import {addNewValidatorSaga} from "../validator/sagas";
 
 function* afterPasswordProcess({payload: {password, name}}: ReturnType<typeof afterPassword>):
 Generator<SelectEffect | CallEffect | Promise<void>, void, string> {
@@ -43,8 +45,7 @@ Generator<SelectEffect | CallEffect | Promise<void>, void, string> {
     const validatorPubKey = signingKey.toPublicKey().toHexString();
     yield database.validator.network.set(validatorPubKey, network);
 
-    // TODO: add call to validator saga add new validator
-    // yield call(addNewValidator, signingKey.toPublicKey().toHexString(), account);
+    yield call(addNewValidatorSaga, addNewValidator(signingKey.toPublicKey().toHexString(), account));
 }
 
 export function* registerSagaWatcher(): Generator {

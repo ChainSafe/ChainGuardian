@@ -56,7 +56,7 @@ Generator<SelectEffect | PutEffect | Promise<ICGKeystore[]>, void, ICGKeystore[]
     }
 }
 
-function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>): Generator<PutEffect> {
+export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>): Generator<PutEffect> {
     const keystore = action.meta.loadKeystore(action.payload);
     const validator: IValidator = {
         name: `Validator ${action.meta.getValidators().length+2}`,
