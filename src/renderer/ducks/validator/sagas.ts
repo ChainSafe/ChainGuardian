@@ -30,6 +30,7 @@ import {IValidatorBeaconNodes} from "../../models/beaconNode";
 import {loadValidatorBeaconNodesSaga} from "../network/sagas";
 import {AllEffect} from "@redux-saga/core/effects";
 import {ValidatorResponse} from "@chainsafe/lodestar-types";
+import * as logger from "electron-log";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -93,7 +94,7 @@ Generator<CallEffect | AllEffect<CallEffect>> {
 }
 
 function* loadValidatorsFromChain(action: ReturnType<typeof updateValidatorsFromChain>):
-Generator<SelectEffect | CallEffect | PutEffect, void, IValidatorBeaconNodes & ValidatorResponse[]> {
+Generator<SelectEffect | Promise<ValidatorResponse[]> | PutEffect, void, IValidatorBeaconNodes & ValidatorResponse[]> {
     // TODO: use selector
     const validatorBeaconNodes: IValidatorBeaconNodes = yield select(s => s.network.validatorBeaconNodes);
     const beaconNodes = validatorBeaconNodes[action.payload[0]];
@@ -101,9 +102,12 @@ Generator<SelectEffect | CallEffect | PutEffect, void, IValidatorBeaconNodes & V
         // TODO: Use any working beacon node instead of first one
         const client = beaconNodes[0].client;
         const pubKeys = action.payload.map(address => fromHex(address));
-        const response = yield call(client.beacon.getValidators, pubKeys);
-
-        yield put(loadedValidatorsBalance(response));
+        try {
+            const response = yield client.beacon.getValidators(pubKeys);
+            yield put(loadedValidatorsBalance(response));
+        } catch (e) {
+            logger.warn("Error while fetching validator balance...", e.message);
+        }
     }
 }
 
