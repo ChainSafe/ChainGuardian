@@ -1,4 +1,4 @@
-import {all, takeEvery, select, put, SelectEffect, PutEffect, call} from "redux-saga/effects";
+import {all, takeEvery, select, put, SelectEffect, PutEffect} from "redux-saga/effects";
 import {Keypair, PrivateKey} from "@chainsafe/bls";
 import {fromHex} from "../../services/utils/bytes";
 import {DepositTx, generateDeposit} from "../../services/deposit";
