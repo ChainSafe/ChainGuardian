@@ -4,7 +4,7 @@ import database from "../../services/db/api/database";
 import {CGAccount} from "../../models/account";
 import {error} from "electron-log";
 
-function* authorize(action: ReturnType<typeof requireAuthorization>):
+export function* authorize(action: ReturnType<typeof requireAuthorization>):
 Generator<Promise<CGAccount> | PutEffect, void, CGAccount & null> {
     try {
         const account = yield database.account.get(action.payload);
