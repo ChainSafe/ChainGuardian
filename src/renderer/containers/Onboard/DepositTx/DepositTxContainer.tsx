@@ -6,11 +6,11 @@ import {connect} from "react-redux";
 import {RouteComponentProps} from "react-router";
 import {copyToClipboard} from "../../../services/utils/clipboard";
 import {bindActionCreators, Dispatch} from "redux";
-import {generateDepositAction, resetDepositData, verifyDepositAction} from "../../../actions";
-import {IRootState} from "../../../reducers";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {networks} from "../../../services/eth2/networks";
 import {Loading} from "../../../components/Loading/Loading";
+import {IRootState} from "../../../ducks/reducers";
+import {generateDeposit, verifyDeposit, resetDepositData} from "../../../ducks/deposit/actions";
 
 /**
  * required own props
@@ -20,8 +20,8 @@ interface IOwnProps extends Pick<RouteComponentProps, "history"> {
 }
 
 interface IInjectedActions {
-    generateDepositTxData: typeof generateDepositAction;
-    verifyDeposit: typeof verifyDepositAction;
+    generateDepositTxData: typeof generateDeposit;
+    verifyDeposit: typeof verifyDeposit;
     resetDepositState: typeof resetDepositData;
 }
 
@@ -118,6 +118,7 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps> {
     };
 }
 
+// TODO: use selectors
 const mapStateToProps = (state: IRootState): IInjectedState => {
     const {register, deposit} = state;
     const networkIndex = register.network ? networks.map(n => n.networkName).indexOf(register.network) : 0;
@@ -135,8 +136,8 @@ const mapStateToProps = (state: IRootState): IInjectedState => {
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedActions =>
     bindActionCreators(
         {
-            generateDepositTxData: generateDepositAction,
-            verifyDeposit: verifyDepositAction,
+            generateDepositTxData: generateDeposit,
+            verifyDeposit: verifyDeposit,
             resetDepositState: resetDepositData
         },
         dispatch

@@ -2,10 +2,9 @@ import React, {Component} from "react";
 import * as Sentry from "@sentry/electron";
 import {connect} from "react-redux";
 import {RouteComponentProps} from "react-router";
-import {bindActionCreators, Dispatch} from "redux";
-import {saveAccountSettings} from "../../../actions/settings";
 import {ButtonPrimary, ButtonSecondary} from "../../../components/Button/ButtonStandard";
 import {Routes} from "../../../constants/routes";
+import {saveAccountSettings} from "../../../ducks/settings/actions";
 
 class Consent extends Component<Pick<RouteComponentProps, "history"> & IInjectedProps> {
     public onYesClick(): void {
@@ -46,13 +45,9 @@ interface IInjectedProps {
     saveSettings: typeof saveAccountSettings,
 }
 
-const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
-    bindActionCreators(
-        {
-            saveSettings: saveAccountSettings,
-        },
-        dispatch
-    );
+const mapDispatchToProps: IInjectedProps = ({
+    saveSettings: saveAccountSettings,
+});
 
 export const ConsentContainer = connect(
     null,

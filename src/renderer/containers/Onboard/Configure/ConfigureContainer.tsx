@@ -2,20 +2,20 @@ import React from "react";
 import {RouteComponentProps} from "react-router-dom";
 import {InputBeaconNode} from "../../../components/ConfigureBeaconNode/InputBeaconNode";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
-import {IRootState} from "../../../reducers";
 import {Container} from "../../../services/docker/container";
 import {bindActionCreators, Dispatch} from "redux";
 import {connect} from "react-redux";
-import {setNetworkAction} from "../../../actions";
-import {saveBeaconNodeAction} from "../../../actions/network";
+import {IRootState} from "../../../ducks/reducers";
+import {setNetwork} from "../../../ducks/register/actions";
+import {saveBeaconNode} from "../../../ducks/network/actions";
 
 type IStateProps = {
     network: string;
 };
 type IOwnProps = Pick<RouteComponentProps, "history">;
 interface IInjectedProps {
-    setNetwork: typeof setNetworkAction;
-    saveBeaconNode: typeof saveBeaconNodeAction;
+    setNetwork: typeof setNetwork;
+    saveBeaconNode: typeof saveBeaconNode;
 }
 
 const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProps> = (props) => {
@@ -45,14 +45,15 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
 };
 
 const mapStateToProps = (state: IRootState): IStateProps => ({
+    // TODO: use selector
     network: state.register.network,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            setNetwork: setNetworkAction,
-            saveBeaconNode: saveBeaconNodeAction,
+            setNetwork: setNetwork,
+            saveBeaconNode: saveBeaconNode,
         },
         dispatch
     );

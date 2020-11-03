@@ -3,12 +3,12 @@ import {RouteComponentProps} from "react-router-dom";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
 
-import {startBeaconChainAction} from "../../../actions/network";
 import {ConfigureBeaconNode} from "../../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 import {Loading} from "../../../components/Loading/Loading";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
-import {IRootState} from "../../../reducers";
 import {DockerPort} from "../../../services/docker/type";
+import {IRootState} from "../../../ducks/reducers";
+import {startBeaconChain} from "../../../ducks/network/actions";
 
 interface IStateProps extends Pick<IRootState, "register"> {
     pullingDockerImage: boolean;
@@ -16,7 +16,7 @@ interface IStateProps extends Pick<IRootState, "register"> {
 }
 type IOwnProps =  Pick<RouteComponentProps, "history">;
 interface IInjectedProps {
-    startBeaconChain: typeof startBeaconChainAction;
+    startBeaconChain: typeof startBeaconChain;
 }
 
 const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProps> = (props) => {
@@ -49,9 +49,10 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProp
 
 
 interface IInjectedProps {
-    startBeaconChain: typeof startBeaconChainAction;
+    startBeaconChain: typeof startBeaconChain;
 }
 
+// TODO: use selectors
 const mapStateToProps = (state: IRootState): IStateProps => ({
     register: state.register,
     pullingDockerImage: state.network.pullingDockerImage,
@@ -61,7 +62,7 @@ const mapStateToProps = (state: IRootState): IStateProps => ({
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            startBeaconChain: startBeaconChainAction,
+            startBeaconChain,
         },
         dispatch
     );

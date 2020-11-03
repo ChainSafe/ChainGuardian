@@ -1,19 +1,19 @@
 import React, {useState} from "react";
 import {RouteComponentProps} from "react-router-dom";
-import {connect} from "react-redux";
-import {bindActionCreators, Dispatch} from "redux";
+import {useDispatch} from "react-redux";
 import {remote} from "electron";
 
-import {saveAccountSettings} from "../../../actions/settings";
 import {ButtonPrimary, ButtonSecondary} from "../../../components/Button/ButtonStandard";
 import {InputForm} from "../../../components/Input/InputForm";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {DockerPath} from "../../../services/docker/path";
+import {saveAccountSettings} from "../../../ducks/settings/actions";
 
 type IOwnProps =  Pick<RouteComponentProps, "history">;
-const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) => {
+export const ConfigureDockerPath: React.FunctionComponent<IOwnProps> = (props) => {
     const [path, setPath] = useState("");
     const [valid, setValid] = useState(null);
+    const dispatch = useDispatch();
 
     const savePath = async(): Promise<void> => {
         const {filePaths} = await remote.dialog.showOpenDialog({
@@ -25,9 +25,7 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
             setPath(filePaths[0]);
 
             if (filePaths[0] && await DockerPath.isValidPath(filePaths[0])) {
-                props.saveSettings({
-                    dockerPath: filePaths[0],
-                });
+                dispatch(saveAccountSettings({dockerPath: filePaths[0]}));
                 setValid(true);
             } else {
                 setValid(false);
@@ -84,21 +82,3 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps> = (props) =
         </>
     );
 };
-
-
-interface IInjectedProps {
-    saveSettings: typeof saveAccountSettings,
-}
-
-const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
-    bindActionCreators(
-        {
-            saveSettings: saveAccountSettings,
-        },
-        dispatch
-    );
-
-export const ConfigureDockerPath = connect(
-    null,
-    mapDispatchToProps
-)(Configure);

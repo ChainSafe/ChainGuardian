@@ -9,14 +9,12 @@ import {Topbar} from "../../components/Topbar/Topbar";
 import {Validator} from "../Validator/Validator";
 import {Background} from "../../components/Background/Background";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
-import {IRootState} from "../../reducers";
-import {
-    loadAccountAction,
-    loadValidatorsAction, removeValidatorAction,
-    storeNotificationAction
-} from "../../actions";
 import {Routes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
+import {IRootState} from "../../ducks/reducers";
+import {createNotification} from "../../ducks/notification/actions";
+import {requireAuthorization} from "../../ducks/auth/actions";
+import {loadValidatorsAction, removeActiveValidator} from "../../ducks/validator/actions";
 
 type IOwnProps = {
     network: string;
@@ -96,12 +94,13 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
 
 
 interface IInjectedProps{
-    notification: typeof storeNotificationAction;
+    notification: typeof createNotification;
     loadValidators: typeof loadValidatorsAction;
-    loadAccount: typeof loadAccountAction;
-    removeValidator: typeof removeValidatorAction;
+    loadAccount: typeof requireAuthorization;
+    removeValidator: typeof removeActiveValidator;
 }
 
+// TODO: implement selectors
 const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"> => {
     // Filter validators by network or 'All
     const validatorsList = state.validators.allPublicKeys.filter(publicKey =>
@@ -116,10 +115,10 @@ const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            notification: storeNotificationAction,
+            notification: createNotification,
             loadValidators: loadValidatorsAction,
-            loadAccount: loadAccountAction,
-            removeValidator: removeValidatorAction,
+            loadAccount: requireAuthorization,
+            removeValidator: removeActiveValidator,
         },
         dispatch
     );

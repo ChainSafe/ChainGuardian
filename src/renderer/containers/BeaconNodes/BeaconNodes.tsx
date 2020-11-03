@@ -6,10 +6,10 @@ import {BackButton} from "../../components/Button/ButtonAction";
 import {NodeCard} from "../../components/Cards/NodeCard";
 import {Loading} from "../../components/Loading/Loading";
 import {BeaconNode} from "../../models/beaconNode";
-import {IRootState} from "../../reducers";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 import {truncatePublicKey} from "../../services/utils/formatting";
 import {BeaconNodeButtons} from "./BeaconNodeButtons";
+import {IRootState} from "../../ducks/reducers";
 
 interface IExtendedBeaconNode extends BeaconNode {
     validators: string[]
@@ -24,6 +24,7 @@ type RunningBeaconNodes = {
 
 export const BeaconNodesContainer: React.FunctionComponent = () => {
     const history = useHistory();
+    // TODO: use selectors
     const validatorBeaconNodes = useSelector((state: IRootState) => state.network.validatorBeaconNodes);
     const validators = useSelector((state: IRootState) => state.validators.byPublicKey);
 

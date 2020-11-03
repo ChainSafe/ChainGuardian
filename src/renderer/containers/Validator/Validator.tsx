@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {useHistory} from "react-router";
-import {loadValidatorChainDataAction, startValidatorService, stopValidatorService} from "../../actions";
 import {PasswordPrompt} from "../../components/Prompt/PasswordPrompt";
 import {Routes} from "../../constants/routes";
 
-import {IRootState} from "../../reducers";
 import {calculateROI} from "../../services/utils/math";
 import {AddButton} from "../../components/Button/ButtonAction";
 import {ButtonDestructive, ButtonPrimary} from "../../components/Button/ButtonStandard";
@@ -14,6 +12,10 @@ import {PrivateKeyField} from "../../components/PrivateKeyField/PrivateKeyField"
 import {InputForm} from "../../components/Input/InputForm";
 import {NodeCard} from "../../components/Cards/NodeCard";
 import {Keypair} from "@chainsafe/bls";
+import {IRootState} from "../../ducks/reducers";
+import {
+    updateValidatorChainData, stopActiveValidatorService, startNewValidatorService
+} from "../../ducks/validator/actions";
 
 export interface IValidatorSimpleProps {
     publicKey: string,
@@ -27,6 +29,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     const [askPassword, setAskPassword] = useState<string>(null);
     const dispatch = useDispatch();
     const history = useHistory();
+    // TODO: use selectors
     const network = useSelector((state: IRootState) => state.network.selected);
     const validatorBeaconNodes = useSelector((state: IRootState) => state.network.validatorBeaconNodes);
     const nodes = Object.prototype.hasOwnProperty.call(validatorBeaconNodes, props.publicKey) ?
@@ -38,7 +41,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     const ROI = calculateROI(balance, network);
 
     useEffect(() => {
-        dispatch(loadValidatorChainDataAction(props.publicKey));
+        dispatch(updateValidatorChainData(props.publicKey));
     }, [props.publicKey]);
 
     const onAddButtonClick = (): void => {
@@ -74,9 +77,9 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
 
     const controlValidator = async(keypair: Keypair): Promise<void> => {
         if (askPassword === "stop") {
-            dispatch(stopValidatorService(keypair));
+            dispatch(stopActiveValidatorService(keypair));
         } else if (askPassword === "start") {
-            dispatch(startValidatorService(keypair));
+            dispatch(startNewValidatorService(keypair));
         } else if (askPassword === "remove") {
             props.onRemoveClick();
         }

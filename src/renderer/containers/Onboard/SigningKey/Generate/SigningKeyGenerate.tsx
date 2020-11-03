@@ -5,21 +5,17 @@ import {MnemonicCopyField} from "../../../../components/CopyField/CopyField";
 import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
 import {clipboard} from "electron";
 import {connect} from "react-redux";
-import {storeNotificationAction, storeSigningMnemonicAction} from "../../../../actions";
 import {bindActionCreators, Dispatch} from "redux";
-import {IRootState} from "../../../../reducers";
 import {generateMnemonic} from "bip39";
+import {IRootState} from "../../../../ducks/reducers";
+import {storeSigningMnemonic} from "../../../../ducks/register/actions";
+import {createNotification} from "../../../../ducks/notification/actions";
 
 interface IState {
     mnemonic: string;
 }
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
-
-interface IInjectedProps {
-    storeMnemonic: typeof storeSigningMnemonicAction;
-    notification: typeof storeNotificationAction;
-}
 
 class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRootState, "register">, IState> {
     public state = {
@@ -59,13 +55,20 @@ class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRoot
     }
 }
 const mapStateToProps = (state: IRootState): Pick<IRootState, "register"> => ({
+    // TODO: use selector
     register: state.register
 });
+
+interface IInjectedProps {
+    storeMnemonic: typeof storeSigningMnemonic;
+    notification: typeof createNotification;
+}
+
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            storeMnemonic: storeSigningMnemonicAction,
-            notification: storeNotificationAction,
+            storeMnemonic: storeSigningMnemonic,
+            notification: createNotification,
         },
         dispatch
     );

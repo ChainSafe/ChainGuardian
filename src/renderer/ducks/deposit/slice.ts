@@ -1,5 +1,4 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {verifyDeposit} from "./actions";
 
 interface IDepositState {
     waitingForDeposit: boolean;
@@ -20,7 +19,6 @@ export const depositSlice = createSlice({
         storeDepositTx: (state, action: PayloadAction<string>): void => {
             state.depositTxData = action.payload;
         },
-        // TODO: decide what approach to use #1
         waitForDeposit: (state): void => {
             state.waitingForDeposit = true;  
         },
@@ -31,12 +29,7 @@ export const depositSlice = createSlice({
         depositDetected: (state): void => {
             state.waitingForDeposit = false;
             state.isDepositDetected = true;
-        }
-    },
-    // TODO: decide what approach to use #1
-    extraReducers: (builder): void => {
-        builder.addCase(verifyDeposit, (state): void => {
-            state.waitingForDeposit = true;
-        });
+        },
+        resetDepositData: (): IDepositState => initialState,
     },
 });

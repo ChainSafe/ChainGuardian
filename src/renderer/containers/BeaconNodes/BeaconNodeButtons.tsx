@@ -2,12 +2,12 @@ import React, {useState} from "react";
 import {useDispatch} from "react-redux";
 import logger from "electron-log";
 import {useHistory} from "react-router";
-import {storeNotificationAction} from "../../actions";
-import {removeBeaconNodeAction} from "../../actions/network";
 import {ButtonDestructive, ButtonInverted, ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {Loading} from "../../components/Loading/Loading";
 import {DockerRegistry} from "../../services/docker/docker-registry";
+import {createNotification} from "../../ducks/notification/actions";
+import {removeBeaconNode} from "../../ducks/network/actions";
 
 interface IBeaconNodeButtonsProps {
     image: string;
@@ -31,7 +31,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
             props.updateNodeStatus(url, false);
         } catch (e) {
             logger.error(e);
-            dispatch(storeNotificationAction({
+            dispatch(createNotification({
                 source: history.location.pathname,
                 title: "Error while trying to stop beacon node container"
             }));
@@ -46,7 +46,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
             props.updateNodeStatus(url, true);
         } catch (e) {
             logger.error(e);
-            dispatch(storeNotificationAction({
+            dispatch(createNotification({
                 source: history.location.pathname,
                 title: "Error while trying to start beacon node container"
             }));
@@ -66,10 +66,10 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
                 await container.stop();
                 await container.remove();
             }
-            props.validators.map((validator) => dispatch(removeBeaconNodeAction(image, validator)));
+            props.validators.map((validator) => dispatch(removeBeaconNode(image, validator)));
         } catch (e) {
             logger.error(e);
-            dispatch(storeNotificationAction({
+            dispatch(createNotification({
                 source: history.location.pathname,
                 title: "Error while trying to remove beacon node container"
             }));

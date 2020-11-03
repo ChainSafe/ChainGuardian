@@ -1,6 +1,5 @@
 import {createAction} from "@reduxjs/toolkit";
-import {notificationSlice} from "./slice";
-import {INotificationProps} from "../../reducers/notification";
+import {INotificationProps, notificationSlice} from "./slice";
 
 export const {addNotification, removeNotification} = notificationSlice.actions;
 

@@ -5,13 +5,13 @@ import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
 import {Loading} from "../../../components/Loading/Loading";
 import {MultipleInputVertical} from "../../../components/MultipleInputVertical/MultipleInputVertical";
 import {RouteComponentProps} from "react-router";
-import {IRootState} from "../../../reducers";
 import {passwordFormSchema} from "./validation";
 import {joiValidationToErrorMessages} from "../../../services/validation/util";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
-import {afterPasswordAction} from "../../../actions";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
+import {IRootState} from "../../../ducks/reducers";
+import {afterPassword} from "../../../ducks/register/actions";
 
 export interface IState {
     password: string;
@@ -28,7 +28,7 @@ interface IStateProps {
 }
 
 interface IInjectedProps {
-    afterPassword: typeof afterPasswordAction;
+    afterPassword: typeof afterPassword;
 }
 
 export class CreatePassword extends Component<Pick<RouteComponentProps, "history"> & IInjectedProps & IStateProps> {
@@ -119,12 +119,13 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            afterPassword: afterPasswordAction,
+            afterPassword: afterPassword,
         },
         dispatch
     );
 
 const mapStateToProps = (state: IRootState): IStateProps => ({
+    // TODO: use selector
     isFirstTimeRegistration: !state.auth.account,
 });
 

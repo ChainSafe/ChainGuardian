@@ -6,15 +6,16 @@ import {RouteComponentProps} from "react-router-dom";
 import {Background} from "../../components/Background/Background";
 import {BackButton} from "../../components/Button/ButtonAction";
 import {TabNavigation} from "../../components/TabNavigation/TabNavigation";
-import {IRootState} from "../../reducers";
 import {BeaconNode} from "./BeaconNode/BeaconNode";
 import {ValidatorLogs} from "./ValidatorLogs";
 import {ValidatorStats} from "./ValidatorStats/ValidatorStats";
+import {IRootState} from "../../ducks/reducers";
 
 export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {tab: "BN"}>): ReactElement => {
     const [currentTab, setCurrentTab] = useState(props.location?.state?.tab! === "BN" ? 2 : 0);
     const history = useHistory();
     const {publicKey} = useParams();
+    // TODO: use selectors
     const validatorsIndex = useSelector((state: IRootState) => state.validators.allPublicKeys.indexOf(publicKey));
     const validator = useSelector((state: IRootState) => state.validators.byPublicKey[publicKey]);
     const validatorId = validatorsIndex > 0 ? validatorsIndex : 0;
