@@ -1,4 +1,4 @@
-import {all, takeEvery, select, put, SelectEffect, PutEffect, call, CallEffect} from "redux-saga/effects";
+import {all, takeEvery, select, put, SelectEffect, PutEffect, call} from "redux-saga/effects";
 import {Keypair, PrivateKey} from "@chainsafe/bls";
 import {fromHex} from "../../services/utils/bytes";
 import {DepositTx, generateDeposit} from "../../services/deposit";
@@ -39,7 +39,7 @@ Generator<SelectEffect | PutEffect, void, any> {
 }
 
 function* verifyDeposit({payload: {networkConfig, timeout}}: ReturnType<typeof verifyDepositAction>):
-Generator<SelectEffect | CallEffect | PutEffect, void, (string & boolean)> {
+Generator<SelectEffect | Promise<BigInt> | Promise<boolean> | PutEffect, void, (string & boolean)> {
     // TODO: decide what approach to use #1
     // yield put(setWaitingDeposit());
     // TODO: use sector
@@ -53,7 +53,7 @@ Generator<SelectEffect | CallEffect | PutEffect, void, (string & boolean)> {
     // Call deposit service and listen for event, when transaction is visible dispatch action
     // TODO: Refactor entire logic and service logic
     try {
-        yield call(ethersNotifier.depositEventListener, keyPair.publicKey, timeout);
+        yield ethersNotifier.depositEventListener(keyPair.publicKey, timeout);
         yield put(depositDetected());
     } catch {
         yield put(depositNotFount());
@@ -61,7 +61,7 @@ Generator<SelectEffect | CallEffect | PutEffect, void, (string & boolean)> {
 
     // TODO note to myself: if request resolve() or reject() still check lock if is deposit made?
     // Is there point of using logic like this? or will be better to use different approach
-    const hasDeposited: boolean = yield call(ethersNotifier.hasUserDeposited, keyPair.publicKey);
+    const hasDeposited: boolean = yield ethersNotifier.hasUserDeposited(keyPair.publicKey);
     if(hasDeposited) {
         yield put(depositDetected());
     }
