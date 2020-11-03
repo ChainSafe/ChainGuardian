@@ -37,7 +37,7 @@ Generator<PutEffect | CallEffect, void> {
 }
 
 function* saveBeaconNodeSaga({payload: {url, network, validatorKey}}: ReturnType<typeof saveBeaconNode>):
-Generator<SelectEffect | CallEffect, void, string> {
+Generator<SelectEffect | Promise<void>, void, string> {
     const localDockerName = network ? BeaconChain.getContainerName(network) : null;
     let validatorAddress = validatorKey || "";
     if (validatorAddress === "") {
@@ -48,15 +48,15 @@ Generator<SelectEffect | CallEffect, void, string> {
     }
     const beaconNode = new BeaconNodes();
     beaconNode.addNode(url, localDockerName);
-    yield call(database.beaconNodes.upsert, validatorAddress, beaconNode);
+    yield database.beaconNodes.upsert(validatorAddress, beaconNode);
 }
 
 function* removeBeaconNodeSaga({payload: {image, validator}}: ReturnType<typeof removeBeaconNode>):
-Generator<CallEffect | PutEffect, void, BeaconNodes> {
-    const validatorBeaconNodes = yield call(database.beaconNodes.get, validator);
+Generator<Promise<void> | Promise<BeaconNodes> | PutEffect, void, BeaconNodes> {
+    const validatorBeaconNodes = yield database.beaconNodes.get(validator);
     const newBeaconNodesList = BeaconNodes.createNodes(validatorBeaconNodes.nodes);
     newBeaconNodesList.removeNode(image);
-    yield call(database.beaconNodes.set, validator, newBeaconNodesList);
+    yield database.beaconNodes.set(validator, newBeaconNodesList);
 
     yield put(loadedValidatorBeaconNodes(newBeaconNodesList.nodes, validator));
 }

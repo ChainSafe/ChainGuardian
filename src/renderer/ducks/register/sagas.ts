@@ -11,7 +11,7 @@ import {all, takeEvery, select, call, SelectEffect, CallEffect} from "redux-saga
 import {afterPassword} from "./actions";
 
 function* afterPasswordProcess({payload: {password, name}}: ReturnType<typeof afterPassword>):
-Generator<SelectEffect | CallEffect, void, string> {
+Generator<SelectEffect | CallEffect | Promise<void>, void, string> {
     // TODO: use selector
     const signingKeyData = yield select(s => s.register.signingKey);
     const signingKey = PrivateKey.fromBytes(fromHex(signingKeyData));
@@ -34,14 +34,14 @@ Generator<SelectEffect | CallEffect, void, string> {
         sendStats: false
     });
 
-    yield call(database.account.set, DEFAULT_ACCOUNT, account);
+    yield database.account.set(DEFAULT_ACCOUNT, account);
 
     // 3. Save network
     // TODO: use selector
     const networkName = yield select(s => s.register.network);
     const network = new ValidatorNetwork(networkName);
     const validatorPubKey = signingKey.toPublicKey().toHexString();
-    yield call(database.validator.network.set, validatorPubKey, network);
+    yield database.validator.network.set(validatorPubKey, network);
 
     // TODO: add call to validator saga add new validator
     // yield call(addNewValidator, signingKey.toPublicKey().toHexString(), account);
