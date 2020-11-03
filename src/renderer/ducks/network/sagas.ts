@@ -66,7 +66,8 @@ export function* loadValidatorBeaconNodesSaga(
 ):
     Generator<
     SelectEffect | CallEffect | AllEffect<
-    Generator<CallEffect | SelectEffect | PutEffect,
+    // TODO: find current type
+    Generator<any | SelectEffect | PutEffect,
     void,
     IEth2ChainHead>>,
     void,
@@ -82,7 +83,7 @@ export function* loadValidatorBeaconNodesSaga(
         validatorBeaconNodes.map(function* (validatorBN) {
             if (validatorBN.client) {
                 try {
-                    const chainHead: IEth2ChainHead = yield call(validatorBN.client.beacon.getChainHead);
+                    const chainHead: IEth2ChainHead = yield validatorBN.client.beacon.getChainHead();
                     // TODO: uff, test if this naive attempt will work
                     const refreshFnWithContext = refreshBeaconNodeStatus.bind(null, validator);
                     yield call(refreshFnWithContext, chainHead);
