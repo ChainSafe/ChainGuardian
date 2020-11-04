@@ -1,7 +1,7 @@
 import {IValidatorBeaconNodes} from "../../models/beaconNode";
 import {DockerPort} from "../../services/docker/type";
 
-type BlockSubscriptions = {
+export type BlockSubscriptions = {
     [key: string]: NodeJS.Timeout,
 };
 

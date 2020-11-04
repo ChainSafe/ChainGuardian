@@ -17,6 +17,9 @@ import {
     removeBeaconNode, loadValidatorBeaconNodes, subscribeToBlockListening
 } from "./actions";
 import {CGAccount} from "../../models/account";
+import {getRegisterSigningKey} from "../register/selectors";
+import {getValidatorBeaconNodes, getValidatorBlockSubscription} from "./selectors";
+import {getAuthAccount} from "../auth/selectors";
 
 function* startBeaconChainSaga({payload: {network, ports}}: ReturnType<typeof startBeaconChain>):
 Generator<PutEffect | CallEffect, void> {
@@ -41,8 +44,7 @@ Generator<SelectEffect | Promise<void>, void, string> {
     const localDockerName = network ? BeaconChain.getContainerName(network) : null;
     let validatorAddress = validatorKey || "";
     if (validatorAddress === "") {
-        // TODO: use sector
-        const signingKeyState: string = yield select(s => s.register.signingKey);
+        const signingKeyState: string = yield select(getRegisterSigningKey);
         const signingKey = PrivateKey.fromBytes(fromHex(signingKeyState));
         validatorAddress = signingKey.toPublicKey().toHexString();
     }
@@ -73,7 +75,7 @@ export function* loadValidatorBeaconNodesSaga(
     void,
     CGAccount & BeaconNode[]
     > {
-    const account = yield select(s => s.auth.account);
+    const account = yield select(getAuthAccount);
     if (!account) {
         return;
     }
@@ -84,13 +86,12 @@ export function* loadValidatorBeaconNodesSaga(
             if (validatorBN.client) {
                 try {
                     const chainHead: IEth2ChainHead = yield validatorBN.client.beacon.getChainHead();
-                    // TODO: uff, test if this naive attempt will work
                     const refreshFnWithContext = refreshBeaconNodeStatus.bind(null, validator);
                     yield call(refreshFnWithContext, chainHead);
 
                     if (subscribe) {
-                        // TODO: use sector
-                        const existingTimeout = yield select(s => s.network.blockSubscriptions[validator]);
+                        const existingTimeout = yield select(
+                            state => getValidatorBlockSubscription(state, {validator}));
                         if (!existingTimeout) {
                             const timeoutId = validatorBN.client.onNewChainHead(refreshFnWithContext);
                             yield put(subscribeToBlockListening(timeoutId, validator));
@@ -107,7 +108,7 @@ export function* loadValidatorBeaconNodesSaga(
 
 function* refreshBeaconNodeStatus(validator: string, chainHead: IEth2ChainHead):
 Generator<SelectEffect | PutEffect | AllEffect<Promise<BeaconNode>>, void, BeaconNode[]> {
-    const validatorBeaconNodes = yield select(s => s.auth.account!.getValidatorBeaconNodes(validator));
+    const validatorBeaconNodes = yield select(state => getValidatorBeaconNodes(state, {validator}));
     const beaconNodes: BeaconNode[] = yield all(validatorBeaconNodes.map(async(validatorBN: BeaconNode) => {
         try {
             if (!validatorBN.client) {

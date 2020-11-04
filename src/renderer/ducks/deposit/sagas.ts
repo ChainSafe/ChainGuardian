@@ -9,12 +9,12 @@ import {
     storeDepositTx,
     depositDetected, depositNotFound
 } from "./actions";
+import {getRegisterSigningKey, getRegisterWithdrawalKey} from "../register/selectors";
 
 function* generateDepositSaga({payload: networkConfig}: ReturnType<typeof generateDepositAction>):
-// TODO: Remove any with real type
-Generator<SelectEffect | PutEffect, void, any> {
-    // TODO: use sector
-    const {signingKey, withdrawalKey} = yield select(s => s.register);
+Generator<SelectEffect | PutEffect, void, string> {
+    const withdrawalKey = yield select(getRegisterWithdrawalKey);
+    const signingKey = yield select(getRegisterSigningKey);
 
     const keyPair = new Keypair(PrivateKey.fromBytes(fromHex(signingKey)));
     // Call deposit service and dispatch action
@@ -40,10 +40,7 @@ Generator<SelectEffect | PutEffect, void, any> {
 
 function* verifyDeposit({payload: {networkConfig, timeout}}: ReturnType<typeof verifyDepositAction>):
 Generator<SelectEffect | Promise<BigInt> | Promise<boolean> | PutEffect, void, (string & boolean)> {
-    // TODO: decide what approach to use #1
-    // yield put(setWaitingDeposit());
-    // TODO: use sector
-    const signingKey: string = yield select(s => s.register.signingKey);
+    const signingKey: string = yield select(getRegisterSigningKey);
 
     const keyPair = new Keypair(PrivateKey.fromHexString(signingKey));
 

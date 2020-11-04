@@ -9,7 +9,7 @@ import {BeaconNode} from "../../models/beaconNode";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 import {truncatePublicKey} from "../../services/utils/formatting";
 import {BeaconNodeButtons} from "./BeaconNodeButtons";
-import {getValidatorBeaconNodes} from "../../ducks/network/selectors";
+import {getBeaconNodes} from "../../ducks/network/selectors";
 import {getValidators} from "../../ducks/validator/selectors";
 
 interface IExtendedBeaconNode extends BeaconNode {
@@ -25,7 +25,7 @@ type RunningBeaconNodes = {
 
 export const BeaconNodesContainer: React.FunctionComponent = () => {
     const history = useHistory();
-    const validatorBeaconNodes = useSelector(getValidatorBeaconNodes);
+    const validatorBeaconNodes = useSelector(getBeaconNodes);
     const validators = useSelector(getValidators);
 
     const [loading, setLoading] = useState<boolean>(true);

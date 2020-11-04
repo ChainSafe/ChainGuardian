@@ -31,6 +31,9 @@ import {loadValidatorBeaconNodesSaga} from "../network/sagas";
 import {AllEffect} from "@redux-saga/core/effects";
 import {ValidatorResponse} from "@chainsafe/lodestar-types";
 import * as logger from "electron-log";
+import {getAuthAccount} from "../auth/selectors";
+import {getBeaconNodes} from "../network/selectors";
+import {getValidators} from "./selectors";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -40,8 +43,7 @@ const validatorServices: IValidatorServices = {};
 
 function* loadValidatorsSaga():
 Generator<SelectEffect | PutEffect | Promise<ICGKeystore[]>, void, ICGKeystore[] & (CGAccount | null)> {
-    // TODO: use selector
-    const auth: CGAccount | null = yield select(s => s.auth.account);
+    const auth: CGAccount | null = yield select(getAuthAccount);
     if (auth) {
         const validators: ICGKeystore[] = yield auth.loadValidators();
         const validatorArray: IValidator[] = validators.map((keyStore, index) => ({
@@ -72,8 +74,7 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
 
 function* removeValidatorSaga(action: ReturnType<typeof removeActiveValidator>):
 Generator<SelectEffect | PutEffect, void, (CGAccount | null)> {
-    // TODO: use selector
-    const auth: CGAccount | null = yield select(s => s.auth.account);
+    const auth: CGAccount | null = yield select(getAuthAccount);
     deleteKeystore(auth.directory, action.payload);
     auth.removeValidator(action.meta);
 
@@ -95,8 +96,7 @@ Generator<CallEffect | AllEffect<CallEffect>> {
 
 function* loadValidatorsFromChain(action: ReturnType<typeof updateValidatorsFromChain>):
 Generator<SelectEffect | Promise<ValidatorResponse[]> | PutEffect, void, IValidatorBeaconNodes & ValidatorResponse[]> {
-    // TODO: use selector
-    const validatorBeaconNodes: IValidatorBeaconNodes = yield select(s => s.network.validatorBeaconNodes);
+    const validatorBeaconNodes: IValidatorBeaconNodes = yield select(getBeaconNodes);
     const beaconNodes = validatorBeaconNodes[action.payload[0]];
     if (beaconNodes && beaconNodes.length > 0) {
         // TODO: Use any working beacon node instead of first one
@@ -113,14 +113,12 @@ Generator<SelectEffect | Promise<ValidatorResponse[]> | PutEffect, void, IValida
 
 function* loadValidatorStatusSaga(action: ReturnType<typeof updateValidatorStatus>):
 Generator<SelectEffect | CallEffect | PutEffect, void, ValidatorStatus & IValidatorBeaconNodes & IByPublicKey> {
-    // TODO: use selector
-    const validatorBeaconNodes: IValidatorBeaconNodes = yield select(s => s.network.validatorBeaconNodes);
+    const validatorBeaconNodes: IValidatorBeaconNodes = yield select(getBeaconNodes);
     const beaconNodes = validatorBeaconNodes[action.payload];
     if (beaconNodes && beaconNodes.length > 0) {
         // TODO: Use any working beacon node instead of first one
         const eth2 = beaconNodes[0].client;
-        // TODO: use selector
-        const byPublicKey: IByPublicKey = yield select(s => s.validators.byPublicKey);
+        const byPublicKey: IByPublicKey = yield select(getValidators);
         const network = byPublicKey[action.payload].network;
         const networkConfig = getNetworkConfig(network);
         const eth1 = new EthersNotifier(networkConfig, networkConfig.eth1Provider);
@@ -133,8 +131,7 @@ Generator<SelectEffect | CallEffect | PutEffect, void, ValidatorStatus & IValida
 function* startService(action: ReturnType<typeof startNewValidatorService>):
 Generator<SelectEffect | PutEffect | Promise<void>, void, IValidatorBeaconNodes> {
     const logger = new ValidatorLogger();
-    // TODO: use selector
-    const validatorBeaconNodes = yield select(s => s.network.validatorBeaconNodes);
+    const validatorBeaconNodes = yield select(getBeaconNodes);
     const publicKey = action.payload.publicKey.toHexString();
     // TODO: Use beacon chain proxy instead of first node
     const eth2API = validatorBeaconNodes[publicKey][0].client;

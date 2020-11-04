@@ -7,6 +7,10 @@ export const getRegisterSigningMnemonic = (state: IRootState): string => state.r
 
 export const getRegisterWithdrawalKey = (state: IRootState): string => state.register.withdrawalKey;
 
+export const getRegisterSigningKey = (state: IRootState): string => state.register.signingKey;
+
+export const getRegisterSigningKeyPath = (state: IRootState): string => state.register.signingKeyPath;
+
 export const getRegisterNetwork = (state: IRootState): string => state.register.network;
 
 export const getNetworkIndex = (state: IRootState): number =>

@@ -11,16 +11,15 @@ import {all, takeEvery, select, call, SelectEffect, CallEffect} from "redux-saga
 import {afterPassword} from "./actions";
 import {addNewValidator} from "../validator/actions";
 import {addNewValidatorSaga} from "../validator/sagas";
+import {getRegisterNetwork, getRegisterSigningKey, getRegisterSigningKeyPath} from "./selectors";
 
 function* afterPasswordProcess({payload: {password, name}}: ReturnType<typeof afterPassword>):
 Generator<SelectEffect | CallEffect | Promise<void>, void, string> {
-    // TODO: use selector
-    const signingKeyData = yield select(s => s.register.signingKey);
+    const signingKeyData = yield select(getRegisterSigningKey);
     const signingKey = PrivateKey.fromBytes(fromHex(signingKeyData));
     // 1. Save to keystore
     const englishWordList = wordlists["english"];
-    // TODO: use selector
-    const keyPath = yield select(s => s.register.signingKeyPath);
+    const keyPath = yield select(getRegisterSigningKeyPath);
     const accountDirectory = yield call(
         saveKeystore,
         signingKey,
@@ -39,8 +38,7 @@ Generator<SelectEffect | CallEffect | Promise<void>, void, string> {
     yield database.account.set(DEFAULT_ACCOUNT, account);
 
     // 3. Save network
-    // TODO: use selector
-    const networkName = yield select(s => s.register.network);
+    const networkName = yield select(getRegisterNetwork);
     const network = new ValidatorNetwork(networkName);
     const validatorPubKey = signingKey.toPublicKey().toHexString();
     yield database.validator.network.set(validatorPubKey, network);

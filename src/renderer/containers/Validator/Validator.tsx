@@ -16,7 +16,7 @@ import {IRootState} from "../../ducks/reducers";
 import {
     updateValidatorChainData, stopActiveValidatorService, startNewValidatorService
 } from "../../ducks/validator/actions";
-import {getSelectedNetwork, getValidatorBeaconNodes} from "../../ducks/network/selectors";
+import {getSelectedNetwork, getBeaconNodes} from "../../ducks/network/selectors";
 import {getValidator} from "../../ducks/validator/selectors";
 
 export interface IValidatorSimpleProps {
@@ -32,7 +32,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
     const dispatch = useDispatch();
     const history = useHistory();
     const network = useSelector(getSelectedNetwork);
-    const validatorBeaconNodes = useSelector(getValidatorBeaconNodes);
+    const validatorBeaconNodes = useSelector(getBeaconNodes);
     const nodes = Object.prototype.hasOwnProperty.call(validatorBeaconNodes, props.publicKey) ?
         validatorBeaconNodes[props.publicKey] : [];
     const validator = useSelector((state: IRootState) => getValidator(state, props));
