@@ -23,5 +23,5 @@ export const getValidator = createSelector(
 
 export const getValidatorNetwork = createSelector(
     getValidator,
-    (validator) => validator.network,
+    (validator) => validator?.network,
 );

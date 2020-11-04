@@ -17,11 +17,14 @@ export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {ta
     const [currentTab, setCurrentTab] = useState(props.location?.state?.tab! === "BN" ? 2 : 0);
     const history = useHistory();
     const {publicKey} = useParams();
-    const validatorsIndex = useSelector(getValidatorKeys).indexOf(publicKey);
-    const validator = useSelector((state: IRootState) => getValidator(state, publicKey));
+    const validatorKeys = useSelector(getValidatorKeys);
+    const validatorsIndex = validatorKeys.indexOf(publicKey);
+    const validator = useSelector((state: IRootState) => getValidator(state, {publicKey}));
     const validatorId = validatorsIndex > 0 ? validatorsIndex : 0;
     const beaconNodes = useSelector(getBeaconNodes);
     const validatorBeaconNodes = beaconNodes[publicKey] || [];
+
+    console.log(validator);
 
     const tabs = [
         {tabId: 0, tabName: "Validator stats", index: validatorId},
