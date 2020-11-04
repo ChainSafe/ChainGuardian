@@ -24,8 +24,6 @@ export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {ta
     const beaconNodes = useSelector(getBeaconNodes);
     const validatorBeaconNodes = beaconNodes[publicKey] || [];
 
-    console.log(validator);
-
     const tabs = [
         {tabId: 0, tabName: "Validator stats", index: validatorId},
         {tabId: 1, tabName: "Validator logs", index: validatorId},
