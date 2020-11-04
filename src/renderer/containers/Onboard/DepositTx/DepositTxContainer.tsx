@@ -11,6 +11,8 @@ import {networks} from "../../../services/eth2/networks";
 import {Loading} from "../../../components/Loading/Loading";
 import {IRootState} from "../../../ducks/reducers";
 import {generateDeposit, verifyDeposit, resetDepositData} from "../../../ducks/deposit/actions";
+import {getDepositTxData, getIsDepositDetected, getWaitingForDeposit} from "../../../ducks/deposit/selectors";
+import {getRegisterWithdrawalKey, getNetworkIndex} from "../../../ducks/register/selectors";
 
 /**
  * required own props
@@ -118,20 +120,14 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps> {
     };
 }
 
-// TODO: use selectors
-const mapStateToProps = (state: IRootState): IInjectedState => {
-    const {register, deposit} = state;
-    const networkIndex = register.network ? networks.map(n => n.networkName).indexOf(register.network) : 0;
-
-    return {
-        networkIndex,
-        waitingForDeposit: deposit.waitingForDeposit,
-        depositTxData: deposit.depositTxData,
-        isDepositGenerated: deposit.depositTxData !== null,
-        isDepositDetected: deposit.isDepositDetected,
-        canDeposit: !!register.withdrawalKey,
-    };
-};
+const mapStateToProps = (state: IRootState): IInjectedState => ({
+    networkIndex: getNetworkIndex(state),
+    waitingForDeposit: getWaitingForDeposit(state),
+    depositTxData: getDepositTxData(state),
+    isDepositGenerated: getDepositTxData(state) !== null,
+    isDepositDetected: getIsDepositDetected(state),
+    canDeposit: !!getRegisterWithdrawalKey(state),
+});
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedActions =>
     bindActionCreators(

@@ -9,7 +9,8 @@ import {BeaconNode} from "../../models/beaconNode";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 import {truncatePublicKey} from "../../services/utils/formatting";
 import {BeaconNodeButtons} from "./BeaconNodeButtons";
-import {IRootState} from "../../ducks/reducers";
+import {getValidatorBeaconNodes} from "../../ducks/network/selectors";
+import {getValidators} from "../../ducks/validator/selectors";
 
 interface IExtendedBeaconNode extends BeaconNode {
     validators: string[]
@@ -24,9 +25,8 @@ type RunningBeaconNodes = {
 
 export const BeaconNodesContainer: React.FunctionComponent = () => {
     const history = useHistory();
-    // TODO: use selectors
-    const validatorBeaconNodes = useSelector((state: IRootState) => state.network.validatorBeaconNodes);
-    const validators = useSelector((state: IRootState) => state.validators.byPublicKey);
+    const validatorBeaconNodes = useSelector(getValidatorBeaconNodes);
+    const validators = useSelector(getValidators);
 
     const [loading, setLoading] = useState<boolean>(true);
     const [runningBeaconNodes, setRunningBeaconNodes] = useState<RunningBeaconNodes>({});
@@ -35,6 +35,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
 
     useEffect(() => {
         setLoading(true);
+        // TODO?: move this logic to selector?
         // Parse beacon nodes from all validators
         for (const [validatorAddress, beaconNodes] of Object.entries(validatorBeaconNodes)) {
             const beaconNodesList: BeaconNodes = {};

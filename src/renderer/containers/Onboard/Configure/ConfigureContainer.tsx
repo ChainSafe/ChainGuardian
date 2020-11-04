@@ -8,6 +8,7 @@ import {connect} from "react-redux";
 import {IRootState} from "../../../ducks/reducers";
 import {setNetwork} from "../../../ducks/register/actions";
 import {saveBeaconNode} from "../../../ducks/network/actions";
+import {getRegisterNetwork} from "../../../ducks/register/selectors";
 
 type IStateProps = {
     network: string;
@@ -45,8 +46,7 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
 };
 
 const mapStateToProps = (state: IRootState): IStateProps => ({
-    // TODO: use selector
-    network: state.register.network,
+    network: getRegisterNetwork(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>

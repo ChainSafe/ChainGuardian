@@ -10,15 +10,13 @@ import {DockerPort} from "../../services/docker/type";
 import OnBoardModal from "../Onboard/OnBoardModal";
 import {IRootState} from "../../ducks/reducers";
 import {saveBeaconNode, startBeaconChain} from "../../ducks/network/actions";
+import {getValidatorNetwork} from "../../ducks/validator/selectors";
 
 export const AddBeaconNodeContainer: React.FunctionComponent = () => {
     const {validatorKey} = useParams();
     const dispatch = useDispatch();
     const history = useHistory();
-    // TODO: use selector
-    const validatorNetwork = useSelector(
-        (state: IRootState) => state.validators.byPublicKey[validatorKey].network,
-    );
+    const validatorNetwork = useSelector((state: IRootState) => getValidatorNetwork(state, validatorKey));
     const [currentStep, setCurrentStep] = useState<number>(0);
     const [network, setNetwork] = useState<string|undefined>();
 

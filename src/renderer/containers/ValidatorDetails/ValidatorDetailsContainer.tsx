@@ -10,16 +10,17 @@ import {BeaconNode} from "./BeaconNode/BeaconNode";
 import {ValidatorLogs} from "./ValidatorLogs";
 import {ValidatorStats} from "./ValidatorStats/ValidatorStats";
 import {IRootState} from "../../ducks/reducers";
+import {getValidator, getValidatorKeys} from "../../ducks/validator/selectors";
+import {getValidatorBeaconNodes} from "../../ducks/network/selectors";
 
 export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {tab: "BN"}>): ReactElement => {
     const [currentTab, setCurrentTab] = useState(props.location?.state?.tab! === "BN" ? 2 : 0);
     const history = useHistory();
     const {publicKey} = useParams();
-    // TODO: use selectors
-    const validatorsIndex = useSelector((state: IRootState) => state.validators.allPublicKeys.indexOf(publicKey));
-    const validator = useSelector((state: IRootState) => state.validators.byPublicKey[publicKey]);
+    const validatorsIndex = useSelector(getValidatorKeys).indexOf(publicKey);
+    const validator = useSelector((state: IRootState) => getValidator(state, publicKey));
     const validatorId = validatorsIndex > 0 ? validatorsIndex : 0;
-    const beaconNodes = useSelector((state: IRootState) => state.network.validatorBeaconNodes);
+    const beaconNodes = useSelector(getValidatorBeaconNodes);
     const validatorBeaconNodes = beaconNodes[publicKey] || [];
 
     const tabs = [

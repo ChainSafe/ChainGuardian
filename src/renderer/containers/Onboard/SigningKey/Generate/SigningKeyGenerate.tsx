@@ -10,6 +10,7 @@ import {generateMnemonic} from "bip39";
 import {IRootState} from "../../../../ducks/reducers";
 import {storeSigningMnemonic} from "../../../../ducks/register/actions";
 import {createNotification} from "../../../../ducks/notification/actions";
+import {getRegisterSigningVerification} from "../../../../ducks/register/selectors";
 
 interface IState {
     mnemonic: string;
@@ -17,13 +18,13 @@ interface IState {
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
-class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRootState, "register">, IState> {
+class SigningMnemonic extends Component<IOwnProps & IInjectedProps & IInjectedStateProps, IState> {
     public state = {
         mnemonic: generateMnemonic(),
     };
 
     public render(): ReactElement {
-        if(this.props.register.signingVerification) {
+        if(this.props.signingVerification) {
             this.props.notification({
                 source: this.props.history.location.pathname,
                 title: "Oh no! That wasn’t the correct word.",
@@ -54,9 +55,13 @@ class SigningMnemonic extends Component<IOwnProps & IInjectedProps &  Pick<IRoot
         );
     }
 }
-const mapStateToProps = (state: IRootState): Pick<IRootState, "register"> => ({
-    // TODO: use selector
-    register: state.register
+
+interface IInjectedStateProps {
+    signingVerification: ReturnType<typeof getRegisterSigningVerification>;
+}
+
+const mapStateToProps = (state: IRootState): IInjectedStateProps => ({
+    signingVerification: getRegisterSigningVerification(state),
 });
 
 interface IInjectedProps {

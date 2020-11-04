@@ -15,13 +15,15 @@ import {IRootState} from "../../ducks/reducers";
 import {createNotification} from "../../ducks/notification/actions";
 import {requireAuthorization} from "../../ducks/auth/actions";
 import {loadValidatorsAction, removeActiveValidator} from "../../ducks/validator/actions";
+import {getAuthAccount} from "../../ducks/auth/selectors";
+import {getNetworkValidators} from "../../ducks/validator/selectors";
 
 type IOwnProps = {
     network: string;
     validatorsList: string[];
 } & Pick<RouteComponentProps, "history" | "location">;
 
-type DashBoardProps = IOwnProps & IInjectedProps & Pick<IRootState, "auth">;
+type DashBoardProps = IOwnProps & IInjectedProps & IStateProps;
 const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     const [confirmModal, setConfirmModal] = useState<boolean>(false);
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
@@ -49,7 +51,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     useEffect(()=> {
         props.loadValidators();
         setLoading(false);
-    },[props.auth.account !== null]);
+    },[props.account !== null]);
 
     useEffect(()=> {
         props.loadAccount();
@@ -92,6 +94,10 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     );
 };
 
+interface IStateProps {
+    account: ReturnType<typeof getAuthAccount>;
+    validatorsList: ReturnType<typeof getNetworkValidators>;
+}
 
 interface IInjectedProps{
     notification: typeof createNotification;
@@ -100,17 +106,10 @@ interface IInjectedProps{
     removeValidator: typeof removeActiveValidator;
 }
 
-// TODO: implement selectors
-const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"> => {
-    // Filter validators by network or 'All
-    const validatorsList = state.validators.allPublicKeys.filter(publicKey =>
-        state.validators.byPublicKey[publicKey].network === state.network.selected || !state.network.selected
-    );
-    return {
-        auth: state.auth,
-        validatorsList,
-    };
-};
+const mapStateToProps = (state: IRootState): IStateProps => ({
+    account: getAuthAccount(state),
+    validatorsList: getNetworkValidators(state),
+});
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(

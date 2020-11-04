@@ -12,6 +12,7 @@ import {bindActionCreators, Dispatch} from "redux";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {IRootState} from "../../../ducks/reducers";
 import {afterPassword} from "../../../ducks/register/actions";
+import {getAuthAccount} from "../../../ducks/auth/selectors";
 
 export interface IState {
     password: string;
@@ -125,8 +126,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     );
 
 const mapStateToProps = (state: IRootState): IStateProps => ({
-    // TODO: use selector
-    isFirstTimeRegistration: !state.auth.account,
+    isFirstTimeRegistration: !getAuthAccount(state),
 });
 
 export const CreatePasswordContainer = connect(

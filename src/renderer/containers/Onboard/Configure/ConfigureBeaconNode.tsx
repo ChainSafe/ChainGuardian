@@ -9,8 +9,11 @@ import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {DockerPort} from "../../../services/docker/type";
 import {IRootState} from "../../../ducks/reducers";
 import {startBeaconChain} from "../../../ducks/network/actions";
+import {getRegisterNetwork} from "../../../ducks/register/selectors";
+import {getFinishedPullingDockerImage, getPullingDockerImage} from "../../../ducks/network/selectors";
 
-interface IStateProps extends Pick<IRootState, "register"> {
+interface IStateProps {
+    network: string;
     pullingDockerImage: boolean;
     finishedPullingDockerImage: boolean;
 }
@@ -20,13 +23,10 @@ interface IInjectedProps {
 }
 
 const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProps> = (props) => {
-    const {network} = props.register;
-
-
     const onSubmit = (ports: DockerPort[], libp2pPort: string, rpcPort: string): void => {
         // Start beacon chain with selected network and redirect to deposit
-        if (props.register.network) {
-            props.startBeaconChain(network, [{...ports[0], local: libp2pPort}, {...ports[1], local: rpcPort}]);
+        if (props.network) {
+            props.startBeaconChain(props.network, [{...ports[0], local: libp2pPort}, {...ports[1], local: rpcPort}]);
         }
     };
 
@@ -39,7 +39,7 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProp
     return (
         <>
             <ConfigureBeaconNode
-                network={network}
+                network={props.network}
                 onSubmit={onSubmit}
             />
             <Loading visible={props.pullingDockerImage} title="Pulling Docker image..." />
@@ -52,11 +52,10 @@ interface IInjectedProps {
     startBeaconChain: typeof startBeaconChain;
 }
 
-// TODO: use selectors
 const mapStateToProps = (state: IRootState): IStateProps => ({
-    register: state.register,
-    pullingDockerImage: state.network.pullingDockerImage,
-    finishedPullingDockerImage: state.network.finishedPullingDockerImage,
+    network: getRegisterNetwork(state),
+    pullingDockerImage: getPullingDockerImage(state),
+    finishedPullingDockerImage: getFinishedPullingDockerImage(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>

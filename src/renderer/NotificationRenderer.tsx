@@ -5,6 +5,7 @@ import {bindActionCreators, Dispatch} from "redux";
 import {removeNotification} from "./ducks/notification/actions";
 import {IRootState} from "./ducks/reducers";
 import {INotificationState} from "./ducks/notification/slice";
+import {getNotifications} from "./ducks/notification/selectors";
 
 const NotificationRendererContainer: React.FunctionComponent<
 IInjectedProps & Pick<IRootState, "notificationArray">> = (props) => {
@@ -40,8 +41,7 @@ IInjectedProps & Pick<IRootState, "notificationArray">> = (props) => {
 };
 
 const mapStateToProps = (state: IRootState): Pick<IRootState, "notificationArray"> => ({
-    // TODO: use selector
-    notificationArray: state.notificationArray,
+    notificationArray: getNotifications(state),
 });
 
 interface IInjectedProps {
