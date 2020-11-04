@@ -1,6 +1,12 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {networks} from "../../services/eth2/networks";
 
+export interface IStoreValidatorKeysPayload {
+    signingKey: string;
+    withdrawalKey: string;
+    signingKeyPath: string;
+}
+
 export interface IRegisterState {
     signingMnemonic: string,
     signingVerification: boolean,
@@ -35,14 +41,14 @@ export const registerSlice = createSlice({
         storeValidatorKeys: {
             reducer: (
                 state,
-                action: PayloadAction<{signingKey: string; withdrawalKey: string; signingKeyPath: string;}>
+                action: PayloadAction<IStoreValidatorKeysPayload>
             ): void => {
                 state.signingKey = action.payload.signingKey;
                 state.withdrawalKey = action.payload.withdrawalKey;
                 state.signingKeyPath = action.payload.signingKeyPath;
             },
             prepare: (signingKey: string, withdrawalKey: string, signingKeyPath: string):
-            {payload: {signingKey: string; withdrawalKey: string; signingKeyPath: string;}} => ({
+            {payload: IStoreValidatorKeysPayload} => ({
                 payload: {signingKey, withdrawalKey, signingKeyPath}
             }),
         },

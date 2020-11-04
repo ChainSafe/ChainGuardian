@@ -22,7 +22,7 @@ export const depositSlice = createSlice({
         waitForDeposit: (state): void => {
             state.waitingForDeposit = true;  
         },
-        depositNotFount: (state): void => {
+        depositNotFound: (state): void => {
             state.waitingForDeposit = false;
             state.isDepositDetected = false;
         },

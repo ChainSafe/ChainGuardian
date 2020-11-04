@@ -7,7 +7,7 @@ import {
     generateDeposit as generateDepositAction,
     verifyDeposit as verifyDepositAction,
     storeDepositTx,
-    depositDetected, depositNotFount
+    depositDetected, depositNotFound
 } from "./actions";
 
 function* generateDepositSaga({payload: networkConfig}: ReturnType<typeof generateDepositAction>):
@@ -56,10 +56,9 @@ Generator<SelectEffect | Promise<BigInt> | Promise<boolean> | PutEffect, void, (
         yield ethersNotifier.depositEventListener(keyPair.publicKey, timeout);
         yield put(depositDetected());
     } catch {
-        yield put(depositNotFount());
+        yield put(depositNotFound());
     }
 
-    // TODO note to myself: if request resolve() or reject() still check lock if is deposit made?
     // Is there point of using logic like this? or will be better to use different approach
     const hasDeposited: boolean = yield ethersNotifier.hasUserDeposited(keyPair.publicKey);
     if(hasDeposited) {

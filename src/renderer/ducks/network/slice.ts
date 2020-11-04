@@ -1,17 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {BeaconNode, IValidatorBeaconNodes} from "../../models/beaconNode";
-
-type BlockSubscriptions = {
-    [key: string]: NodeJS.Timeout,
-};
-
-export interface INetworkState {
-    selected?: string;
-    validatorBeaconNodes: IValidatorBeaconNodes;
-    blockSubscriptions: BlockSubscriptions;
-    pullingDockerImage: boolean;
-    finishedPullingDockerImage: boolean;
-}
+import {BeaconNode} from "../../models/beaconNode";
+import {INetworkState} from "./types";
 
 const initialState: INetworkState = {
     selected: undefined,
