@@ -1,7 +1,7 @@
 import React, {ChangeEvent, FC, useState} from "react";
 import {processKeystore} from "../../../../services/utils/processKeystore";
 import {useDispatch} from "react-redux";
-import {storeValidatorKeys} from "../../../../ducks/register/actions";
+import {storeValidatorKeys, setKeystorePath} from "../../../../ducks/register/actions";
 import {ButtonPrimary} from "../../../../components/Button/ButtonStandard";
 import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
 import {RouteComponentProps} from "react-router-dom";
@@ -29,6 +29,7 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
     const onSubmit = (): void => {
         processKeystore(path)
             .then((r) => {
+                dispatch(setKeystorePath(path));
                 dispatch(storeValidatorKeys(r.signingKey, r.withdrawalKey, r.signingKeyPath));
                 history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
             });
