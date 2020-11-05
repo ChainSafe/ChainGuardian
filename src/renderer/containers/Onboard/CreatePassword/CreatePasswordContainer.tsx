@@ -11,8 +11,9 @@ import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
 import {OnBoardingRoutes, Routes} from "../../../constants/routes";
 import {IRootState} from "../../../ducks/reducers";
-import {afterPassword} from "../../../ducks/register/actions";
+import {afterConfirmPassword, afterCreatePassword} from "../../../ducks/register/actions";
 import {getAuthAccount} from "../../../ducks/auth/selectors";
+import {getKeystorePath} from "../../../ducks/register/selectors";
 
 export interface IState {
     password: string;
@@ -26,10 +27,12 @@ export interface IState {
 
 interface IStateProps {
     isFirstTimeRegistration: boolean;
+    isFromKeystore: boolean;
 }
 
 interface IInjectedProps {
-    afterPassword: typeof afterPassword;
+    afterCreatePassword: typeof afterCreatePassword;
+    afterConfirmPassword: typeof afterConfirmPassword;
 }
 
 export class CreatePassword extends Component<Pick<RouteComponentProps, "history"> & IInjectedProps & IStateProps> {
@@ -71,7 +74,9 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
                         onSubmit={(): void => {this.setState({loading: true}); this.handleSubmit();}}
                         className="flex-column"
                     >
-                        <MultipleInputVertical inputs={inputs}/>
+                        {this.props.isFromKeystore ?
+                            <MultipleInputVertical inputs={inputs}/>
+                            : <input type="text" />}
                         <ButtonPrimary
                             buttonId="next"
                             disabled={errorMessages.password !== "" || errorMessages.confirm !== ""}
@@ -106,7 +111,11 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
     };
 
     private handleSubmit = (): void => {
-        this.props.afterPassword(this.state.password);
+        if (this.props.isFromKeystore) {
+            this.props.afterCreatePassword(this.state.password);
+        } else {
+            this.props.afterConfirmPassword(this.state.password);
+        }
         this.setState({loading: false});
 
         if (this.props.isFirstTimeRegistration) {
@@ -120,13 +129,15 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            afterPassword: afterPassword,
+            afterCreatePassword,
+            afterConfirmPassword,
         },
         dispatch
     );
 
 const mapStateToProps = (state: IRootState): IStateProps => ({
     isFirstTimeRegistration: !getAuthAccount(state),
+    isFromKeystore: !getKeystorePath(state),
 });
 
 export const CreatePasswordContainer = connect(

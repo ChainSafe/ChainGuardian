@@ -3,18 +3,18 @@ import {ValidatorNetwork} from "../../models/network";
 import database from "../../services/db/api/database";
 import {fromHex} from "../../services/utils/bytes";
 import {wordlists} from "bip39";
-import {saveKeystore} from "../../services/utils/account";
+import {saveKeystore, importKeystore} from "../../services/utils/account";
 import {randBetween} from "@chainsafe/lodestar-utils";
 import {CGAccount} from "../../models/account";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
 import {all, takeEvery, select, call, SelectEffect, CallEffect} from "redux-saga/effects";
-import {afterPassword} from "./actions";
+import {afterConfirmPassword, afterCreatePassword} from "./actions";
 import {addNewValidator} from "../validator/actions";
 import {addNewValidatorSaga} from "../validator/sagas";
-import {getRegisterNetwork, getRegisterSigningKey, getRegisterSigningKeyPath} from "./selectors";
+import {getKeystorePath, getRegisterNetwork, getRegisterSigningKey, getRegisterSigningKeyPath} from "./selectors";
 
-function* afterPasswordProcess({payload: {password, name}}: ReturnType<typeof afterPassword>):
-Generator<SelectEffect | CallEffect | Promise<void>, void, string> {
+function* afterCreatePasswordProcess({payload: {password, name}}: ReturnType<typeof afterCreatePassword>):
+Generator<SelectEffect | CallEffect, void, string> {
     const signingKeyData = yield select(getRegisterSigningKey);
     const signingKey = PrivateKey.fromBytes(fromHex(signingKeyData));
     // 1. Save to keystore
@@ -28,16 +28,38 @@ Generator<SelectEffect | CallEffect | Promise<void>, void, string> {
         name ?? "Validator " + englishWordList[randBetween(0, englishWordList.length - 1)]
     );
 
-    // 2. Save account to db
+    yield call(saveAccount, signingKey, accountDirectory);
+}
+
+function* afterConfirmPasswordProcess({payload: {password}}: ReturnType<typeof afterConfirmPassword>):
+Generator<SelectEffect | CallEffect, void, string> {
+    const signingKeyData = yield select(getRegisterSigningKey);
+    const signingKey = PrivateKey.fromBytes(fromHex(signingKeyData));
+    const fromPath = yield select(getKeystorePath);
+
+    // 1. Save to keystore
+    const accountDirectory = yield call(
+        importKeystore,
+        fromPath,
+        signingKey,
+        password,
+    );
+
+    yield call(saveAccount, signingKey, accountDirectory);
+}
+
+function* saveAccount(signingKey: PrivateKey, directory: string):
+Generator<CallEffect | Promise<void> | SelectEffect, void, string> {
+    // Save account to db
     const account = new CGAccount({
         name: "Default",
-        directory: accountDirectory,
+        directory: directory,
         sendStats: false
     });
 
     yield database.account.set(DEFAULT_ACCOUNT, account);
 
-    // 3. Save network
+    // Save network
     const networkName = yield select(getRegisterNetwork);
     const network = new ValidatorNetwork(networkName);
     const validatorPubKey = signingKey.toPublicKey().toHexString();
@@ -48,6 +70,7 @@ Generator<SelectEffect | CallEffect | Promise<void>, void, string> {
 
 export function* registerSagaWatcher(): Generator {
     yield all([
-        takeEvery(afterPassword, afterPasswordProcess),
+        takeEvery(afterCreatePassword, afterCreatePasswordProcess),
+        takeEvery(afterConfirmPassword, afterConfirmPasswordProcess),
     ]);
 }

@@ -3,10 +3,15 @@ import {registerSlice} from "./slice";
 
 export const {
     storeSigningKey, storeSigningMnemonic, storeSigningVerificationStatus, storeValidatorKeys,
-    completedRegistrationSubmission, setNetwork,
+    completedRegistrationSubmission, setNetwork, setKeystorePath,
 } = registerSlice.actions;
 
-type AfterPassword = (password: string, name?: string) => {payload: {password: string, name?: string}};
-export const afterPassword = createAction<AfterPassword>(
-    "register/afterPassword",(password: string, name?: string) => ({payload: {password, name}}),
+type AfterCreatePassword = (password: string, name?: string) => {payload: {password: string, name?: string}};
+export const afterCreatePassword = createAction<AfterCreatePassword>(
+    "register/afterCreatePassword",(password: string, name?: string) => ({payload: {password, name}}),
+);
+
+type AfterConfirmPassword = (password: string, name?: string) => {payload: {password: string, name?: string}};
+export const afterConfirmPassword = createAction<AfterConfirmPassword>(
+    "register/afterConfirmPassword",(password: string, name?: string) => ({payload: {password, name}}),
 );
