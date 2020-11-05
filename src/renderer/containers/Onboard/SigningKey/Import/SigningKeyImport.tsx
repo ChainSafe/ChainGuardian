@@ -9,7 +9,7 @@ import {mnemonicSchema, privateKeySchema} from "./validation";
 import {ValidationResult} from "@hapi/joi";
 import {PrivateKey} from "@chainsafe/bls";
 import {deriveEth2ValidatorKeys, deriveKeyFromMnemonic} from "@chainsafe/bls-keygen";
-import {storeSigningKeyAction, storeValidatorKeysAction} from "../../../../actions";
+import {storeSigningKey, storeValidatorKeys} from "../../../../ducks/register/actions";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
@@ -59,15 +59,15 @@ class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
 // redux
 
 interface IInjectedProps {
-    storeSigningKey: typeof storeSigningKeyAction;
-    storeValidatorKeys: typeof storeValidatorKeysAction;
+    storeSigningKey: typeof storeSigningKey;
+    storeValidatorKeys: typeof storeValidatorKeys;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            storeSigningKey: storeSigningKeyAction,
-            storeValidatorKeys: storeValidatorKeysAction,
+            storeSigningKey: storeSigningKey,
+            storeValidatorKeys: storeValidatorKeys,
         },
         dispatch
     );

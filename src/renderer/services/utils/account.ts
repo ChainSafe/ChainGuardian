@@ -4,13 +4,13 @@ import electron, {remote} from "electron";
 import logger from "electron-log";
 
 import {getConfig} from "../../../config/config";
-import {IValidator} from "../../actions";
 import {Level} from "../../components/Notification/NotificationEnums";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
 import {DockerRegistry} from "../docker/docker-registry";
 import {V4Keystore} from "../keystore";
 import {copyFile, removeDirRecursive} from "./file";
 import {networks} from "../eth2/networks";
+import {IValidator} from "../../ducks/validator/slice";
 
 export const cleanUpAccount = async(): Promise<void> => {
     const config = getConfig(electron.remote.app);

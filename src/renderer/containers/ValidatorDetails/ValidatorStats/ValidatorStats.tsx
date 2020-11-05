@@ -2,10 +2,11 @@ import React, {ReactElement} from "react";
 import {useHistory} from "react-router";
 import {useDispatch} from "react-redux";
 
-import {IValidator, storeNotificationAction} from "../../../actions";
 import {LineGraph, IntervalEnum} from "../../../components/LineGraph/LineGraph";
 import {ButtonSecondary} from "../../../components/Button/ButtonStandard";
 import {exportKeystore} from "../../../services/utils/account";
+import {IValidator} from "../../../ducks/validator/slice";
+import {createNotification} from "../../../ducks/notification/actions";
 
 interface IValidatorStatsProps {
     validatorId: number;
@@ -20,7 +21,7 @@ export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps): 
         const result = exportKeystore(validator);
         // show notification only if success or error, not on cancel
         if (result) {
-            dispatch(storeNotificationAction({
+            dispatch(createNotification({
                 source: history.location.pathname,
                 title: result.message,
                 level: result.level

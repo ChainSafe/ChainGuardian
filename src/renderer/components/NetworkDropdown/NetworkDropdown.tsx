@@ -1,8 +1,8 @@
 import React, {ReactElement, useState} from "react";
 import {useDispatch} from "react-redux";
-import {saveSelectedNetworkAction} from "../../actions/network";
 import {networksList} from "../../services/eth2/networks";
 import {Dropdown} from "../Dropdown/Dropdown";
+import {selectNetwork} from "../../ducks/network/actions";
 
 export const NetworkDropdown = (): ReactElement => {
     const [currentNetworkIndex, setCurrentNetworkIndex] = useState<number>(0);
@@ -11,7 +11,7 @@ export const NetworkDropdown = (): ReactElement => {
 
     const onChange = (selected: number): void => {
         setCurrentNetworkIndex(selected);
-        dispatch(saveSelectedNetworkAction(networkOptions[selected]));
+        dispatch(selectNetwork(networkOptions[selected]));
     };
 
     return (

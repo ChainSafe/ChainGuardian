@@ -7,8 +7,8 @@ import {initBLS} from "@chainsafe/bls";
 import {initSentry} from "../main/sentry";
 import {NotificationRenderer} from "./NotificationRenderer";
 import Application from "./containers/Application";
-import store from "./store";
 import "./style/index.scss";
+import store from "./ducks/store";
 
 initSentry();
 

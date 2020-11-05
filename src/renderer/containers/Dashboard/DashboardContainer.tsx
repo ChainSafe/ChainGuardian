@@ -9,21 +9,21 @@ import {Topbar} from "../../components/Topbar/Topbar";
 import {Validator} from "../Validator/Validator";
 import {Background} from "../../components/Background/Background";
 import {Horizontal, Level, Vertical} from "../../components/Notification/NotificationEnums";
-import {IRootState} from "../../reducers";
-import {
-    loadAccountAction,
-    loadValidatorsAction, removeValidatorAction,
-    storeNotificationAction
-} from "../../actions";
 import {Routes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
+import {IRootState} from "../../ducks/reducers";
+import {createNotification} from "../../ducks/notification/actions";
+import {requireAuthorization} from "../../ducks/auth/actions";
+import {loadValidatorsAction, removeActiveValidator} from "../../ducks/validator/actions";
+import {getAuthAccount} from "../../ducks/auth/selectors";
+import {getNetworkValidators} from "../../ducks/validator/selectors";
 
 type IOwnProps = {
     network: string;
     validatorsList: string[];
 } & Pick<RouteComponentProps, "history" | "location">;
 
-type DashBoardProps = IOwnProps & IInjectedProps & Pick<IRootState, "auth">;
+type DashBoardProps = IOwnProps & IInjectedProps & IStateProps;
 const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     const [confirmModal, setConfirmModal] = useState<boolean>(false);
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
@@ -51,7 +51,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     useEffect(()=> {
         props.loadValidators();
         setLoading(false);
-    },[props.auth.account !== null]);
+    },[props.account !== null]);
 
     useEffect(()=> {
         props.loadAccount();
@@ -94,32 +94,30 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     );
 };
 
-
-interface IInjectedProps{
-    notification: typeof storeNotificationAction;
-    loadValidators: typeof loadValidatorsAction;
-    loadAccount: typeof loadAccountAction;
-    removeValidator: typeof removeValidatorAction;
+interface IStateProps {
+    account: ReturnType<typeof getAuthAccount>;
+    validatorsList: ReturnType<typeof getNetworkValidators>;
 }
 
-const mapStateToProps = (state: IRootState): Pick<IRootState, "auth" & "network"> => {
-    // Filter validators by network or 'All
-    const validatorsList = state.validators.allPublicKeys.filter(publicKey =>
-        state.validators.byPublicKey[publicKey].network === state.network.selected || !state.network.selected
-    );
-    return {
-        auth: state.auth,
-        validatorsList,
-    };
-};
+interface IInjectedProps{
+    notification: typeof createNotification;
+    loadValidators: typeof loadValidatorsAction;
+    loadAccount: typeof requireAuthorization;
+    removeValidator: typeof removeActiveValidator;
+}
+
+const mapStateToProps = (state: IRootState): IStateProps => ({
+    account: getAuthAccount(state),
+    validatorsList: getNetworkValidators(state),
+});
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            notification: storeNotificationAction,
+            notification: createNotification,
             loadValidators: loadValidatorsAction,
-            loadAccount: loadAccountAction,
-            removeValidator: removeValidatorAction,
+            loadAccount: requireAuthorization,
+            removeValidator: removeActiveValidator,
         },
         dispatch
     );

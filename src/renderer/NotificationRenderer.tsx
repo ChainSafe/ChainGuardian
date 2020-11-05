@@ -2,9 +2,10 @@ import * as React from "react";
 import {Notification} from "./components/Notification/Notification";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
-import {IRootState} from "./reducers";
-import {INotificationState} from "./reducers/notification";
-import {removeNotificationAction} from "./actions";
+import {removeNotification} from "./ducks/notification/actions";
+import {IRootState} from "./ducks/reducers";
+import {INotificationState} from "./ducks/notification/slice";
+import {getNotifications} from "./ducks/notification/selectors";
 
 const NotificationRendererContainer: React.FunctionComponent<
 IInjectedProps & Pick<IRootState, "notificationArray">> = (props) => {
@@ -39,18 +40,18 @@ IInjectedProps & Pick<IRootState, "notificationArray">> = (props) => {
     );
 };
 
-interface IInjectedProps {
-    removeNotification: typeof removeNotificationAction
-}
-
 const mapStateToProps = (state: IRootState): Pick<IRootState, "notificationArray"> => ({
-    notificationArray: state.notificationArray,
+    notificationArray: getNotifications(state),
 });
+
+interface IInjectedProps {
+    removeNotification: typeof removeNotification
+}
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
-            removeNotification: removeNotificationAction
+            removeNotification: removeNotification
         },
         dispatch
     );
