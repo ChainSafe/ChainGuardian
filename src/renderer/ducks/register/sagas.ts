@@ -17,7 +17,7 @@ function* afterCreatePasswordProcess({payload: {password, name}}: ReturnType<typ
 Generator<SelectEffect | CallEffect, void, string> {
     const signingKeyData = yield select(getRegisterSigningKey);
     const signingKey = PrivateKey.fromBytes(fromHex(signingKeyData));
-    // 1. Save to keystore
+
     const englishWordList = wordlists["english"];
     const keyPath = yield select(getRegisterSigningKeyPath);
     const accountDirectory = yield call(
@@ -31,18 +31,19 @@ Generator<SelectEffect | CallEffect, void, string> {
     yield call(saveAccount, signingKey, accountDirectory);
 }
 
-function* afterConfirmPasswordProcess({payload: {password}}: ReturnType<typeof afterConfirmPassword>):
+function* afterConfirmPasswordProcess({payload: {password, name}}: ReturnType<typeof afterConfirmPassword>):
 Generator<SelectEffect | CallEffect, void, string> {
     const signingKeyData = yield select(getRegisterSigningKey);
     const signingKey = PrivateKey.fromBytes(fromHex(signingKeyData));
     const fromPath = yield select(getKeystorePath);
 
-    // 1. Save to keystore
+    const englishWordList = wordlists["english"];
     const accountDirectory = yield call(
         importKeystore,
         fromPath,
         signingKey,
         password,
+        name ?? "Validator " + englishWordList[randBetween(0, englishWordList.length - 1)]
     );
 
     yield call(saveAccount, signingKey, accountDirectory);
