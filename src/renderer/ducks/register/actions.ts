@@ -3,7 +3,7 @@ import {registerSlice} from "./slice";
 
 export const {
     storeSigningKey, storeSigningMnemonic, storeSigningVerificationStatus, storeValidatorKeys,
-    completedRegistrationSubmission, setNetwork, setKeystorePath,
+    completedRegistrationSubmission, setNetwork, setKeystorePath, setPublicKey,
 } = registerSlice.actions;
 
 type AfterCreatePassword = (password: string, name?: string) => {payload: {password: string, name?: string}};

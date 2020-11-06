@@ -33,23 +33,22 @@ Generator<SelectEffect | CallEffect, void, string> {
 
 function* afterConfirmPasswordProcess({payload: {password, name}}: ReturnType<typeof afterConfirmPassword>):
 Generator<SelectEffect | CallEffect, void, string> {
-    const signingKeyData = yield select(getRegisterSigningKey);
-    const signingKey = PrivateKey.fromBytes(fromHex(signingKeyData));
+    const publicKey = yield select(getRegisterSigningKey);
     const fromPath = yield select(getKeystorePath);
 
     const englishWordList = wordlists["english"];
     const accountDirectory = yield call(
         importKeystore,
         fromPath,
-        signingKey,
+        publicKey,
         password,
         name ?? "Validator " + englishWordList[randBetween(0, englishWordList.length - 1)]
     );
 
-    yield call(saveAccount, signingKey, accountDirectory);
+    yield call(saveAccount, publicKey, accountDirectory);
 }
 
-function* saveAccount(signingKey: PrivateKey, directory: string):
+function* saveAccount(signingKey: PrivateKey | string, directory: string):
 Generator<CallEffect | Promise<void> | SelectEffect, void, string> {
     // Save account to db
     const account = new CGAccount({
@@ -63,10 +62,10 @@ Generator<CallEffect | Promise<void> | SelectEffect, void, string> {
     // Save network
     const networkName = yield select(getRegisterNetwork);
     const network = new ValidatorNetwork(networkName);
-    const validatorPubKey = signingKey.toPublicKey().toHexString();
+    const validatorPubKey = typeof signingKey === "string" ? signingKey : signingKey.toPublicKey().toHexString();
     yield database.validator.network.set(validatorPubKey, network);
 
-    yield call(addNewValidatorSaga, addNewValidator(signingKey.toPublicKey().toHexString(), account));
+    yield call(addNewValidatorSaga, addNewValidator(validatorPubKey, account));
 }
 
 export function* registerSagaWatcher(): Generator {

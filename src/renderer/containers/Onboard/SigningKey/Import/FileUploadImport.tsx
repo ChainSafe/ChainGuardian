@@ -1,7 +1,7 @@
 import React, {ChangeEvent, FC, useState} from "react";
 import {processKeystore} from "../../../../services/utils/processKeystore";
 import {useDispatch} from "react-redux";
-import {storeValidatorKeys, setKeystorePath} from "../../../../ducks/register/actions";
+import {setKeystorePath, setPublicKey as setPublicKeyAction} from "../../../../ducks/register/actions";
 import {ButtonPrimary} from "../../../../components/Button/ButtonStandard";
 import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
 import {RouteComponentProps} from "react-router-dom";
@@ -11,6 +11,7 @@ type IOwnProps = Pick<RouteComponentProps, "history">;
 export const FileUploadImport: FC<IOwnProps> = ({history}) => {
     const [error, setError] = useState("");
     const [path, setPath] = useState<null | string>(null);
+    const [publicKey, setPublicKey] = useState("");
     
     const dispatch = useDispatch();
     
@@ -20,19 +21,19 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
         if (!filePath) {
             setError("No selected file");
         } else {
-            processKeystore(filePath)
-                .then(() => {setPath(filePath);})
-                .catch(e => {setError(e.message);});
+            try {
+                setPublicKey(processKeystore(filePath));
+                setPath(filePath);
+            } catch (e) {
+                setError(e.message);
+            }
         }
     };
     
     const onSubmit = (): void => {
-        processKeystore(path)
-            .then((r) => {
-                dispatch(setKeystorePath(path));
-                dispatch(storeValidatorKeys(r.signingKey, r.withdrawalKey, r.signingKeyPath));
-                history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
-            });
+        dispatch(setKeystorePath(path));
+        dispatch(setPublicKeyAction(publicKey));
+        history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
     };
 
     const valid = !error && !!path;
