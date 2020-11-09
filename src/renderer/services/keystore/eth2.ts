@@ -1,6 +1,6 @@
 import {ICGKeystore, ICGKeystoreFactory} from "./interface";
 import {Keypair} from "@chainsafe/bls";
-import {existsSync, readFileSync, unlinkSync, writeFileSync, mkdirSync, copyFileSync} from "fs";
+import {existsSync, readFileSync, unlinkSync, writeFileSync, mkdirSync} from "fs";
 import {PrivateKey} from "@chainsafe/bls";
 import {Keystore, IKeystore} from "@chainsafe/bls-keystore";
 import {dirname} from "path";
