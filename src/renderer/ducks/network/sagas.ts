@@ -43,6 +43,7 @@ function* saveBeaconNodeSaga({payload: {url, network, validatorKey}}: ReturnType
 Generator<SelectEffect | Promise<void>, void, string> {
     const localDockerName = network ? BeaconChain.getContainerName(network) : null;
     let validatorAddress = validatorKey || "";
+    // TODO: add logic to decode key in case of crating node
     if (validatorAddress === "") {
         const signingKeyState: string = yield select(getRegisterSigningKey);
         const signingKey = PrivateKey.fromBytes(fromHex(signingKeyState));

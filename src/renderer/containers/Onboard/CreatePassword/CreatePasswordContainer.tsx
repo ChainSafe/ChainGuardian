@@ -37,6 +37,7 @@ interface IInjectedProps {
     afterConfirmPassword: typeof afterConfirmPassword;
 }
 
+// TODO?: in case of import this component should ask for changing password os skip??
 export class CreatePassword extends Component<Pick<RouteComponentProps, "history"> & IInjectedProps & IStateProps> {
     public state: IState = {
         password: "",
