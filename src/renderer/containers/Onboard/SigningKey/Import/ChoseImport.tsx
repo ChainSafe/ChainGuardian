@@ -12,7 +12,7 @@ export const ChoseImport: FC = () => (
                 <ButtonSecondary buttonId="import" large>FILE</ButtonSecondary>
             </Link>
             <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT_MNEMONIC)}>
-                <ButtonPrimary buttonId="generate" large>MNEMONIC</ButtonPrimary>
+                <ButtonPrimary buttonId="mnemonic" large>MNEMONIC</ButtonPrimary>
             </Link>
         </div>
     </>
