@@ -5,12 +5,15 @@ import {setKeystorePath, setPublicKey as setPublicKeyAction} from "../../../../d
 import {ButtonPrimary} from "../../../../components/Button/ButtonStandard";
 import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
 import {RouteComponentProps} from "react-router-dom";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faExclamationTriangle, faUpload} from "@fortawesome/free-solid-svg-icons";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
 export const FileUploadImport: FC<IOwnProps> = ({history}) => {
     const [error, setError] = useState("");
     const [path, setPath] = useState<null | string>(null);
+    const [fileName, setFileName] = useState<null | string>(null);
     const [publicKey, setPublicKey] = useState("");
     
     const dispatch = useDispatch();
@@ -19,8 +22,10 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
         setError("");
         const filePath = event.target.files[0]?.path;
         if (!filePath) {
-            setError("No selected file");
+            setFileName(null);
+            setError("Please select a file");
         } else {
+            setFileName(event.target.files[0].name);
             try {
                 setPublicKey(processKeystore(filePath));
                 setPath(filePath);
@@ -42,14 +47,20 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
         <div className={"key-input-container mt-32"}>
             {/* TODO: improve styling */}
             {/* TODO: implement drag and drop */}
-            <p>{error}</p>
             <input
                 type="file"
-                id="myFile"
+                id="file"
                 name="filename"
                 accept="application/json"
+                className="inputfile"
                 onChange={onChange}
             />
+            <label htmlFor="file" className={error && "error"}>
+                <FontAwesomeIcon icon={faUpload} transform={{x: -10}} />
+                {!fileName ? "Choose a file..." : fileName}
+                {error && <FontAwesomeIcon icon={faExclamationTriangle} className="error-icon" size="lg"/>}
+            </label>
+            <div className={"error-message error-message-wide"} style={{marginLeft: "28px"}}>{error}</div>
             <span className="submit-button-container">
                 <ButtonPrimary buttonId="submit" disabled={!valid} onClick={onSubmit}>Submit</ButtonPrimary>
             </span>
