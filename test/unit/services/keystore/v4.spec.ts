@@ -47,6 +47,10 @@ describe("V4Keystore", () => {
         destroy();
     });
 
+    it("should verify password", async () => {
+        expect(await v4Keystore.verifyPassword(password)).toBeTruthy();
+        expect(await v4Keystore.verifyPassword(newPassword)).toBeFalsy();
+    });
 
     it("should decrypt", async () => {
         const keypair = await v4Keystore.decrypt(password);

@@ -50,10 +50,9 @@ export class V4Keystore implements ICGKeystore {
      * @param password to validate keystore
      * @param name change description to be displayed as name at validator list
      */
-    public static async import(from: string, to: string, password: string, name: string): Promise<ICGKeystore> {
-        const keystore = new V4Keystore(from);
-        if(!await keystore.verifyPassword(password)) {
-            throw new Error("Wrong password");
+    public static async import(from: string, to: string, password: string, name = ""): Promise<ICGKeystore> {
+        if(!await new V4Keystore(from).verifyPassword(password)) {
+            throw new Error("Invalid password");
         }
         try {
             ensureKeystoreDirectory(to);
