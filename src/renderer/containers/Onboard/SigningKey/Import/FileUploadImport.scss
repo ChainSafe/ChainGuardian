@@ -1,0 +1,57 @@
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.inputfile + label {
+  cursor: pointer; /* "hand" cursor */
+  padding: 0 48px 0 30px;
+  min-height: 54px;
+  height: 54px;
+  background: $primary-blue-400;
+  color: $primary-blue-700;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 45px;
+  outline: transparent;
+  border: none;
+  font-family: "Palanquin Dark", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 54px;
+  letter-spacing: 0.04em;
+  position: relative;
+  display: inline-block;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+  background: $primary-blue-300;
+  box-shadow: 0 0 0 4px $neutral-600, 0 0 0 8px $primary-blue-400;
+}
+
+.inputfile:focus + label {
+  background: $primary-blue-300;
+  box-shadow: 0 0 0 4px $neutral-700, 0 0 0 8px $primary-blue-600;
+}
+
+.inputfile + .error {
+  background: $primary-blue-400;
+  box-shadow: 0 0 0 1px $system-error-600, 0 0 0 3px $system-error-500;
+}
+
+.inputfile:focus + .error,
+.inputfile + .error:hover {
+  background: $primary-blue-300;
+  box-shadow: 0 0 0 1px $system-error-500, 0 0 0 3px $system-error-400;
+}
+
+.error-icon {
+  color: $system-error-400;
+  position: absolute;
+  top: 14px;
+  right: 15px;
+}

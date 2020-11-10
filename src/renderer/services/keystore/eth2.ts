@@ -1,6 +1,6 @@
 import {ICGKeystore, ICGKeystoreFactory} from "./interface";
 import {Keypair} from "@chainsafe/bls";
-import {existsSync, readFileSync, unlinkSync, writeFileSync,mkdirSync} from "fs";
+import {existsSync, readFileSync, unlinkSync, writeFileSync, mkdirSync} from "fs";
 import {PrivateKey} from "@chainsafe/bls";
 import {Keystore, IKeystore} from "@chainsafe/bls-keystore";
 import {dirname} from "path";
@@ -14,7 +14,6 @@ export class V4Keystore implements ICGKeystore {
         this.keystore = Keystore.fromObject(this.readKeystoreFile(file));
         this.file = file;
     }
-
 
     /**
      * Static method to create keystore file and ICGKeystore instance
@@ -41,6 +40,37 @@ export class V4Keystore implements ICGKeystore {
         } catch (err) {
             throw new Error(`Failed to write to ${file}: ${err}`);
         }
+    }
+
+    /**
+     * Helper method to move validate keystore and move to desired destination
+     *
+     * @param from where file will be copied
+     * @param to where file will be stored
+     * @param password to validate keystore
+     * @param name change description to be displayed as name at validator list
+     */
+    public static async import(from: string, to: string, password: string, name = ""): Promise<ICGKeystore> {
+        if(!await new V4Keystore(from).verifyPassword(password)) {
+            throw new Error("Invalid password");
+        }
+        try {
+            ensureKeystoreDirectory(to);
+            const keystore = Keystore.parse(readFileSync(from).toString());
+            keystore.description = name;
+            writeFileSync(to, keystore.stringify());
+            return new V4Keystore(to);
+        } catch (err) {
+            throw new Error(`Failed to move file from ${from} to ${to}: ${err}`);
+        }
+    }
+
+    /**
+     * Method used to verify password of keystore file
+     * @param password
+     */
+    public async verifyPassword(password: string): Promise<boolean> {
+        return this.keystore.verifyPassword(password);
     }
 
     /**
@@ -77,6 +107,10 @@ export class V4Keystore implements ICGKeystore {
         }
     }
 
+    public getPath(): string {
+        return this.keystore.path;
+    }
+
     public getPublicKey(): string {
         return `0x${this.keystore.pubkey}`;
     }
@@ -111,7 +145,6 @@ export class V4Keystore implements ICGKeystore {
         }
         throw new Error(`Cannot find file ${file}`);
     }
-
 }
 
 export const V4KeystoreFactory: ICGKeystoreFactory = V4Keystore;

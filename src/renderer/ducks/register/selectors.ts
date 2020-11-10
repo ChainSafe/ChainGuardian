@@ -9,9 +9,13 @@ export const getRegisterWithdrawalKey = (state: IRootState): string => state.reg
 
 export const getRegisterSigningKey = (state: IRootState): string => state.register.signingKey;
 
+export const getRegisterPublicKey = (state: IRootState): string => state.register.publicKey;
+
 export const getRegisterSigningKeyPath = (state: IRootState): string => state.register.signingKeyPath;
 
 export const getRegisterNetwork = (state: IRootState): string => state.register.network;
+
+export const getKeystorePath = (state: IRootState): string | undefined => state.register.path;
 
 export const getNetworkIndex = (state: IRootState): number =>
     state.register.network ? networks.map(n => n.networkName).indexOf(state.register.network) : 0;

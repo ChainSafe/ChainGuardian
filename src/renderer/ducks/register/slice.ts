@@ -14,6 +14,8 @@ export interface IRegisterState {
     signingKeyPath: string,
     withdrawalKey: string,
     network: string;
+    path?: string;
+    publicKey?: string;
 }
 
 const initialState: IRegisterState = {
@@ -54,6 +56,12 @@ export const registerSlice = createSlice({
         },
         setNetwork: (state, action: PayloadAction<string>): void => {
             state.network = action.payload;
+        },
+        setKeystorePath: (state, action: PayloadAction<string>): void => {
+            state.path = action.payload;
+        },
+        setPublicKey: (state, action: PayloadAction<string>): void => {
+            state.publicKey = action.payload;
         },
         completedRegistrationSubmission: (): IRegisterState => initialState,
     },

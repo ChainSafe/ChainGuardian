@@ -11,6 +11,8 @@ export class Routes {
 export enum OnBoardingRoutes {
     SIGNING = "1_0",
     SIGNING_IMPORT = "1_a1",
+    SIGNING_IMPORT_MNEMONIC = "1_a1_mem",
+    SIGNING_IMPORT_FILE = "1_a1_fil",
     SIGNING_KEY_GENERATE ="1_skg",
     SIGNING_KEY_VALIDATE ="1_skv",
     CONFIGURE = "2_0",

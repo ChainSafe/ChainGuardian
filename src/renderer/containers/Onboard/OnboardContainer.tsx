@@ -13,6 +13,8 @@ import {DepositTxContainer} from "./DepositTx/DepositTxContainer";
 import {CreatePasswordContainer} from "./CreatePassword/CreatePasswordContainer";
 import {ConfigureContainer} from "./Configure/ConfigureContainer";
 import {ConfigureBeaconNodeContainer} from "./Configure/ConfigureBeaconNode";
+import {ChoseImport} from "./SigningKey/Import/ChoseImport";
+import {FileUploadImport} from "./SigningKey/Import/FileUploadImport";
 
 interface IOnboardStep {
     step: string
@@ -28,7 +30,9 @@ export default class OnboardContainer extends Component<IProps, {}> {
         [OnBoardingRoutes.SIGNING]: <SigningKey />,
         [OnBoardingRoutes.SIGNING_KEY_GENERATE]: <SigningKeyGenerateContainer history={this.props.history} />,
         [OnBoardingRoutes.SIGNING_KEY_VALIDATE]: <SigningKeyVerifyContainer history={this.props.history} />,
-        [OnBoardingRoutes.SIGNING_IMPORT]: <SigningKeyImportContainer history={this.props.history} />,
+        [OnBoardingRoutes.SIGNING_IMPORT]: <ChoseImport />,
+        [OnBoardingRoutes.SIGNING_IMPORT_FILE]: <FileUploadImport history={this.props.history} />,
+        [OnBoardingRoutes.SIGNING_IMPORT_MNEMONIC]: <SigningKeyImportContainer history={this.props.history} />,
         [OnBoardingRoutes.CONFIGURE]: <ConfigureContainer history={this.props.history}/>,
         [OnBoardingRoutes.CONFIGURE_BEACON_NODE]: <ConfigureBeaconNodeContainer history={this.props.history}/>,
         [OnBoardingRoutes.CONFIGURE_DOCKER_PATH]: <ConfigureDockerPath history={this.props.history}/>,
