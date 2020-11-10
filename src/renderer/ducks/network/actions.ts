@@ -15,7 +15,7 @@ export const startBeaconChain = createAction<StartBeaconChain>(
 );
 
 export const saveBeaconNode = createAction<SaveBeaconNode>(
-    "network/startBeaconChain",
+    "network/saveBeaconNode",
     (url: string, network?: string, validatorKey?: string) => ({payload: {url, network, validatorKey}})
 );
 
