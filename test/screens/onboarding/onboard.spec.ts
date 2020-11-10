@@ -18,13 +18,13 @@ describe("Onboarding start screen", () => {
 
     it("has rendered properly", async function() {
         const {client} = app;
-        expect(await client.isExisting(".back-tab")).to.be.true;
-        expect((await client.elements(".step")).value.length).to.be.equal(6);
-        const goButtonText = await client.getAttribute("#import", "textContent");
+        expect(await (await client.$(".back-tab")).isExisting()).to.be.true;
+        expect((await (await client.$(".step")).getValue()).length).to.be.equal(6);
+        const goButtonText = await client.getElementAttribute("#import", "textContent");
         expect(goButtonText).to.be.equal("IMPORT");
-        const registerButtonText = await client.getAttribute("#generate", "textContent");
+        const registerButtonText = await client.getElementAttribute("#generate", "textContent");
         expect(registerButtonText).to.be.equal("GENERATE");
-        const currentStep = await client.getAttribute(".step.current", "textContent");
+        const currentStep = await client.getElementAttribute(".step.current", "textContent");
         expect(currentStep).to.be.equal("Signing key");
     });
     //

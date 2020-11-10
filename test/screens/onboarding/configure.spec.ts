@@ -18,25 +18,25 @@ describe("Onboarding configure screens", () => {
 
     it("has rendered properly", async function() {
         const {client} = app;
-        expect(await client.isExisting(".back-tab")).to.be.true;
-        expect(await client.isExisting(".dropdown-container")).to.be.true;
-        const runButtonText = await client.getAttribute("#run-node", "textContent");
+        expect(await (await client.$(".back-tab")).isExisting()).to.be.true;
+        expect(await (await client.$(".dropdown-container")).isExisting()).to.be.true;
+        const runButtonText = await client.getElementAttribute("#run-node", "textContent");
         expect(runButtonText).to.be.equal("RUN OWN NODE");
-        const goButtonText = await client.getAttribute("#go", "textContent");
+        const goButtonText = await client.getElementAttribute("#go", "textContent");
         expect(goButtonText).to.be.equal("GO");
-        const inputPlaceholder = await client.getAttribute("#beaconURL", "placeholder");
+        const inputPlaceholder = await client.getElementAttribute("#beaconURL", "placeholder");
         expect(inputPlaceholder).to.be.equal("http://... beacon node URL");
     });
 
     it("should redirect to password since no withdrawal key", async () => {
         const {client} = app;
-        await client.$("#run-node").click();
+        await (await client.$("#run-node")).click();
         const beaconNodeUrl = await client.getUrl();
         expect(beaconNodeUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
             OnBoardingRoutes.CONFIGURE_BEACON_NODE
         ))).to.be.true;
 
-        await client.$("#next").click();
+        await (await client.$("#next")).click();
         const url = await client.getUrl();
         expect(url.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
             OnBoardingRoutes.PASSWORD
@@ -50,16 +50,16 @@ describe("Onboarding configure screens from start", () => {
         const {client} = appFromWithdrawal;
 
         // Process withdrawal key step
-        await client.setValue(".inputform",
+        await client.replaceValue(".inputform",
             "0x92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff4990daa18");
-        await client.waitForVisible("#submit");
-        await client.$("#submit").click();
+        await (await client.$("#submit")).isDisplayed();
+        await (await client.$("#submit")).click();
         // Process configure step with running node
-        await client.waitForVisible("#run-node");
-        await client.$("#run-node").click();
+        await (await client.$("#run-node")).isDisplayed();
+        await (await client.$("#run-node")).click();
         // Process configure beacon chain with default values
-        await client.waitForVisible("#next");
-        await client.$("#next").click();
+        await (await client.$("#next")).isDisplayed();
+        await (await client.$("#next")).click();
 
         const url = await client.getUrl();
         expect(url.endsWith(OnBoardingRoutes.DEPOSIT_TX)).to.be.true;
