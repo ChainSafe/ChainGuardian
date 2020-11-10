@@ -28,11 +28,11 @@ describe("Onboarding signing key import screen", () => {
 
     it("has rendered properly", async function () {
         const {client} = app;
-        expect(await client.isExisting(".back-tab")).to.be.true;
-        expect(await client.isExisting("#inputKey")).to.be.true;
-        const placeholder = await client.getAttribute("#inputKey", "placeholder");
+        expect(await (await client.$(".back-tab")).isExisting()).to.be.true;
+        expect(await (await client.$("#inputKey")).isExisting()).to.be.true;
+        const placeholder = await client.getElementAttribute("#inputKey", "placeholder");
         expect(placeholder).to.be.equal(IMPORT_SIGNING_KEY_PLACEHOLDER);
-        const currentStep = await client.getAttribute(".step.current", "textContent");
+        const currentStep = await client.getElementAttribute(".step.current", "textContent");
         expect(currentStep).to.be.equal("Signing key");
     });
 
@@ -40,18 +40,18 @@ describe("Onboarding signing key import screen", () => {
         const {client} = app;
 
         // Invalid mnemonic
-        await client.setValue(".inputform", "test mnemonic");
-        let errorMessage = await client.getText(".error-message");
+        await client.replaceValue(".inputform", "test mnemonic");
+        let errorMessage = await client.getElementText(".error-message");
         expect(errorMessage).to.be.equal(MNEMONIC_INVALID_MESSAGE);
 
         // Invalid key length
-        await client.setValue(".inputform", "0xadfa");
-        errorMessage = await client.getText(".error-message");
+        await client.replaceValue(".inputform", "0xadfa");
+        errorMessage = await client.getElementText(".error-message");
         expect(errorMessage).to.be.equal(PRIVATE_KEY_WRONG_LENGTH_MESSAGE);
 
         // Invalid charactes in key
-        await client.setValue(".inputform", "0xasdf*=");
-        errorMessage = await client.getText(".error-message");
+        await client.replaceValue(".inputform", "0xasdf*=");
+        errorMessage = await client.getElementText(".error-message");
         expect(errorMessage).to.be.equal(PRIVATE_KEY_WRONG_CHARACTERS_MESSAGE);
     });
 
@@ -60,13 +60,13 @@ describe("Onboarding signing key import screen", () => {
         const {client} = app;
 
         // Valid key
-        await client.setValue(".inputform", privateKeyStr);
-        let errorMessage = await client.getText(".error-message");
+        await client.replaceValue(".inputform", privateKeyStr);
+        let errorMessage = await client.getElementText(".error-message");
         expect(errorMessage).to.be.equal("");
 
         // Valid mnemonic
-        await client.setValue(".inputform", mnemonic);
-        errorMessage = await client.getText(".error-message");
+        await client.replaceValue(".inputform", mnemonic);
+        errorMessage = await client.getElementText(".error-message");
         expect(errorMessage).to.be.equal("");
     });
 
@@ -74,17 +74,17 @@ describe("Onboarding signing key import screen", () => {
         const {client} = app;
 
         // User enter invalid mnemonic
-        await client.setValue(".inputform", "test mnemonic");
+        await client.replaceValue(".inputform", "test mnemonic");
 
         const preClickUrl = await client.getUrl();
-        await client.waitForVisible("#submit");
-        await client.$("#submit").click();
+        await (await client.$("#submit")).isDisplayed();
+        await (await client.$("#submit")).click();
         let postClickUrl = await client.getUrl();
         expect(preClickUrl).to.be.equal(postClickUrl);
 
         // Useer enter valid mnemonic
-        await client.setValue(".inputform", mnemonic);
-        await client.$("#submit").click();
+        await client.replaceValue(".inputform", mnemonic);
+        await (await client.$("#submit")).click();
         postClickUrl = await client.getUrl();
         expect(postClickUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
             OnBoardingRoutes.DEPOSIT_TX
@@ -106,13 +106,13 @@ describe("Onboarding signing key validate screen", () => {
 
     it("should redirect to deposit flow on correct answer", async (done) => {
         const {client} = app;
-        await client.$("#savedSigningMnemonic").click();
+        await (await client.$("#savedSigningMnemonic")).click();
         const verificationUrl = await client.getUrl();
         expect(verificationUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
             OnBoardingRoutes.SIGNING_KEY_VALIDATE
         ))).to.be.true;
 
-        await client.$(".verify-button-container button[datafield=true]").click();
+        await (await client.$(".verify-button-container button[datafield=true]")).click();
 
         const timeoutHandler = async (): Promise<void> => {
             const url = await client.getUrl();
