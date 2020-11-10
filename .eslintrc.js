@@ -33,7 +33,6 @@ module.exports = {
     ],
     "rules": {
         "@typescript-eslint/class-name-casing": "error",
-        "@typescript-eslint/indent": ["error", 4],
         "@typescript-eslint/interface-name-prefix": ["error", { "prefixWithI": "always" }],
         "@typescript-eslint/member-delimiter-style": "off",
         "@typescript-eslint/explicit-function-return-type": "error",
@@ -64,7 +63,6 @@ module.exports = {
         "no-var": "error",
         "object-curly-spacing": ["error", "never"],
         "prefer-const": "error",
-        "quotes": ["error", "double"],
         "semi": "off",
         "react/prop-types": "off"
     }
