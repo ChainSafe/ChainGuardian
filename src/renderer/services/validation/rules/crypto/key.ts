@@ -16,21 +16,20 @@ const joiKey: ExtensionRule & ThisType<SchemaInternals> = {
             name: "type",
             ref: true,
             assert: (value: any): boolean => typeof value === "string" && value.length != 0,
-            message: "must be a string"
-        }
+            message: "must be a string",
+        },
     ],
     validate(value: string, helpers: CustomHelpers, args: Record<string, any>): any {
         // check if hex value
-        if (!(/^[0-9a-fA-F]+$/.test(value)))
-            return helpers.error(ERR_CODE_KEY);
+        if (!/^[0-9a-fA-F]+$/.test(value)) return helpers.error(ERR_CODE_KEY);
         // check if valid key size
         if (!isValidKeyLength(value, args.type))
-            return helpers.error((args.type === "private") ? ERR_CODE_PRIVATE_KEY : ERR_CODE_PUBLIC_KEY);
+            return helpers.error(args.type === "private" ? ERR_CODE_PRIVATE_KEY : ERR_CODE_PUBLIC_KEY);
         // value validated
         return value;
-    }
+    },
 };
 
 export const keyRule = {
-    key: joiKey
+    key: joiKey,
 };

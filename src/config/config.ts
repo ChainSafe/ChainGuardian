@@ -6,31 +6,31 @@ const env = process.env;
 
 export interface IConfig {
     storage: {
-        dataDir: string,
-        accountsDir: string
-    },
+        dataDir: string;
+        accountsDir: string;
+    };
     db: {
-        name: string
-    }
+        name: string;
+    };
 }
 
 export function getConfig(app?: App): IConfig {
     // eslint-disable-next-line no-param-reassign
     app = app || mainApp;
-    if(!app) {
+    if (!app) {
         throw new Error("Cannot get config before app is initialized");
     }
     const storageConfig = {
         dataDir: app.getPath("userData"),
-        accountsDir: path.join(app.getPath("userData"), "accounts")
+        accountsDir: path.join(app.getPath("userData"), "accounts"),
     };
 
     const dbConfig = {
-        name: env.CG_DATABASE_LOCATION || join(storageConfig.dataDir, "db/chainguardian.db")
+        name: env.CG_DATABASE_LOCATION || join(storageConfig.dataDir, "db/chainguardian.db"),
     };
 
     return {
         storage: storageConfig,
-        db: dbConfig
+        db: dbConfig,
     };
 }

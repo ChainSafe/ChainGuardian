@@ -5,8 +5,8 @@ import {CGAccount} from "../account";
 
 export const AccountType = new ContainerType<CGAccount>({
     fields: {
-        "name": new StringType(),
-        "directory": new StringType(),
-        "sendStats": config.types.Boolean
-    }
+        name: new StringType(),
+        directory: new StringType(),
+        sendStats: config.types.Boolean,
+    },
 });

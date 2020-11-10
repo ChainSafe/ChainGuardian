@@ -6,7 +6,7 @@ class JSONSZ implements ICGSerialization<Type<any>> {
         return Buffer.from(JSON.stringify(type.toJson(value)), "utf-8");
     }
 
-    public deserialize<R>(value: Buffer|Uint8Array, type: Type<R>): R {
+    public deserialize<R>(value: Buffer | Uint8Array, type: Type<R>): R {
         return type.fromJson(JSON.parse(Buffer.from(value).toString("utf-8")));
     }
     public hashTreeRoot(value: unknown, type: Type<unknown>): Buffer {

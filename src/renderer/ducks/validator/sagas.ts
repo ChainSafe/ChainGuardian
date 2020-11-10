@@ -21,7 +21,11 @@ import {
     stopActiveValidatorService,
     startNewValidatorService,
     updateValidatorsFromChain,
-    updateValidatorChainData, removeActiveValidator, addNewValidator, updateValidatorStatus, loadValidatorsAction
+    updateValidatorChainData,
+    removeActiveValidator,
+    addNewValidator,
+    updateValidatorStatus,
+    loadValidatorsAction,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {loadValidatorBeaconNodes, unsubscribeToBlockListening} from "../network/actions";
@@ -41,8 +45,11 @@ interface IValidatorServices {
 
 const validatorServices: IValidatorServices = {};
 
-function* loadValidatorsSaga():
-Generator<SelectEffect | PutEffect | Promise<ICGKeystore[]>, void, ICGKeystore[] & (CGAccount | null)> {
+function* loadValidatorsSaga(): Generator<
+    SelectEffect | PutEffect | Promise<ICGKeystore[]>,
+    void,
+    ICGKeystore[] & (CGAccount | null)
+> {
     const auth: CGAccount | null = yield select(getAuthAccount);
     if (auth) {
         const validators: ICGKeystore[] = yield auth.loadValidators();
@@ -61,7 +68,7 @@ Generator<SelectEffect | PutEffect | Promise<ICGKeystore[]>, void, ICGKeystore[]
 export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>): Generator<PutEffect> {
     const keystore = action.meta.loadKeystore(action.payload);
     const validator: IValidator = {
-        name: `Validator ${action.meta.getValidators().length+2}`,
+        name: `Validator ${action.meta.getValidators().length + 2}`,
         publicKey: action.payload,
         network: action.meta!.getValidatorNetwork(action.payload),
         keystore,
@@ -72,8 +79,9 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
     yield put(addValidator(validator));
 }
 
-function* removeValidatorSaga(action: ReturnType<typeof removeActiveValidator>):
-Generator<SelectEffect | PutEffect, void, (CGAccount | null)> {
+function* removeValidatorSaga(
+    action: ReturnType<typeof removeActiveValidator>,
+): Generator<SelectEffect | PutEffect, void, CGAccount | null> {
     const auth: CGAccount | null = yield select(getAuthAccount);
     deleteKeystore(auth.directory, action.payload);
     auth.removeValidator(action.meta);
@@ -82,8 +90,9 @@ Generator<SelectEffect | PutEffect, void, (CGAccount | null)> {
     yield put(removeValidator(action.payload));
 }
 
-function* loadValidatorChainData(action: ReturnType<typeof updateValidatorChainData>):
-Generator<CallEffect | AllEffect<CallEffect>> {
+function* loadValidatorChainData(
+    action: ReturnType<typeof updateValidatorChainData>,
+): Generator<CallEffect | AllEffect<CallEffect>> {
     // Initialize validator object with API client
     yield call(loadValidatorBeaconNodesSaga, loadValidatorBeaconNodes(action.payload, true));
     // Load validator state from chain for i.e. balance
@@ -94,14 +103,19 @@ Generator<CallEffect | AllEffect<CallEffect>> {
     ]);
 }
 
-function* loadValidatorsFromChain(action: ReturnType<typeof updateValidatorsFromChain>):
-Generator<SelectEffect | Promise<ValidatorResponse[]> | PutEffect, void, IValidatorBeaconNodes & ValidatorResponse[]> {
+function* loadValidatorsFromChain(
+    action: ReturnType<typeof updateValidatorsFromChain>,
+): Generator<
+    SelectEffect | Promise<ValidatorResponse[]> | PutEffect,
+    void,
+    IValidatorBeaconNodes & ValidatorResponse[]
+> {
     const validatorBeaconNodes: IValidatorBeaconNodes = yield select(getBeaconNodes);
     const beaconNodes = validatorBeaconNodes[action.payload[0]];
     if (beaconNodes && beaconNodes.length > 0) {
         // TODO: Use any working beacon node instead of first one
         const client = beaconNodes[0].client;
-        const pubKeys = action.payload.map(address => fromHex(address));
+        const pubKeys = action.payload.map((address) => fromHex(address));
         try {
             const response = yield client.beacon.getValidators(pubKeys);
             yield put(loadedValidatorsBalance(response));
@@ -111,8 +125,9 @@ Generator<SelectEffect | Promise<ValidatorResponse[]> | PutEffect, void, IValida
     }
 }
 
-function* loadValidatorStatusSaga(action: ReturnType<typeof updateValidatorStatus>):
-Generator<SelectEffect | CallEffect | PutEffect, void, ValidatorStatus & IValidatorBeaconNodes & IByPublicKey> {
+function* loadValidatorStatusSaga(
+    action: ReturnType<typeof updateValidatorStatus>,
+): Generator<SelectEffect | CallEffect | PutEffect, void, ValidatorStatus & IValidatorBeaconNodes & IByPublicKey> {
     const validatorBeaconNodes: IValidatorBeaconNodes = yield select(getBeaconNodes);
     const beaconNodes = validatorBeaconNodes[action.payload];
     if (beaconNodes && beaconNodes.length > 0) {
@@ -128,8 +143,9 @@ Generator<SelectEffect | CallEffect | PutEffect, void, ValidatorStatus & IValida
     }
 }
 
-function* startService(action: ReturnType<typeof startNewValidatorService>):
-Generator<SelectEffect | PutEffect | Promise<void>, void, IValidatorBeaconNodes> {
+function* startService(
+    action: ReturnType<typeof startNewValidatorService>,
+): Generator<SelectEffect | PutEffect | Promise<void>, void, IValidatorBeaconNodes> {
     const logger = new ValidatorLogger();
     const validatorBeaconNodes = yield select(getBeaconNodes);
     const publicKey = action.payload.publicKey.toHexString();
@@ -142,7 +158,7 @@ Generator<SelectEffect | PutEffect | Promise<void>, void, IValidatorBeaconNodes>
             api: eth2API,
             config,
             keypairs: [action.payload],
-            logger
+            logger,
         });
     }
     yield validatorServices[publicKey].start();

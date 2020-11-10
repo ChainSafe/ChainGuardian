@@ -11,9 +11,9 @@ export const EmptyValidatorsList = (): ReactElement => {
     };
 
     return (
-        <div className="validator-container">
-            <div className="box empty-list">
-                <div className="flex-column centered">
+        <div className='validator-container'>
+            <div className='box empty-list'>
+                <div className='flex-column centered'>
                     <h2>No validators found.</h2>
                     <p>Please create new account to start using ChainGuardian.</p>
                 </div>

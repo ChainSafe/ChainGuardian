@@ -14,15 +14,18 @@ import {
     startBeaconChain,
     saveBeaconNode,
     loadedValidatorBeaconNodes,
-    removeBeaconNode, loadValidatorBeaconNodes, subscribeToBlockListening
+    removeBeaconNode,
+    loadValidatorBeaconNodes,
+    subscribeToBlockListening,
 } from "./actions";
 import {CGAccount} from "../../models/account";
 import {getRegisterSigningKey} from "../register/selectors";
 import {getValidatorBeaconNodes, getValidatorBlockSubscription} from "./selectors";
 import {getAuthAccount} from "../auth/selectors";
 
-function* startBeaconChainSaga({payload: {network, ports}}: ReturnType<typeof startBeaconChain>):
-Generator<PutEffect | CallEffect, void> {
+function* startBeaconChainSaga({
+    payload: {network, ports},
+}: ReturnType<typeof startBeaconChain>): Generator<PutEffect | CallEffect, void> {
     // Pull image first
     yield put(startDockerImagePull());
     const image = getNetworkConfig(network).dockerConfig.image;
@@ -30,7 +33,7 @@ Generator<PutEffect | CallEffect, void> {
     yield put(endDockerImagePull());
 
     // Start chain
-    switch(network) {
+    switch (network) {
         default:
             yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports);
     }
@@ -39,8 +42,9 @@ Generator<PutEffect | CallEffect, void> {
     yield call(saveBeaconNodeSaga, saveBeaconNode(`http://localhost:${ports[1].local}`, network));
 }
 
-function* saveBeaconNodeSaga({payload: {url, network, validatorKey}}: ReturnType<typeof saveBeaconNode>):
-Generator<SelectEffect | Promise<void>, void, string> {
+function* saveBeaconNodeSaga({
+    payload: {url, network, validatorKey},
+}: ReturnType<typeof saveBeaconNode>): Generator<SelectEffect | Promise<void>, void, string> {
     const localDockerName = network ? BeaconChain.getContainerName(network) : null;
     let validatorAddress = validatorKey || "";
     // TODO: add logic to decode key in case of crating node
@@ -54,8 +58,13 @@ Generator<SelectEffect | Promise<void>, void, string> {
     yield database.beaconNodes.upsert(validatorAddress, beaconNode);
 }
 
-function* removeBeaconNodeSaga({payload: {image, validator}}: ReturnType<typeof removeBeaconNode>):
-Generator<Promise<void> | Promise<BeaconNodes> | PutEffect, void, BeaconNodes> {
+function* removeBeaconNodeSaga({
+    payload: {image, validator},
+}: ReturnType<typeof removeBeaconNode>): Generator<
+    Promise<void> | Promise<BeaconNodes> | PutEffect,
+    void,
+    BeaconNodes
+> {
     const validatorBeaconNodes = yield database.beaconNodes.get(validator);
     const newBeaconNodesList = BeaconNodes.createNodes(validatorBeaconNodes.nodes);
     newBeaconNodesList.removeNode(image);
@@ -64,18 +73,18 @@ Generator<Promise<void> | Promise<BeaconNodes> | PutEffect, void, BeaconNodes> {
     yield put(loadedValidatorBeaconNodes(newBeaconNodesList.nodes, validator));
 }
 
-export function* loadValidatorBeaconNodesSaga(
-    {payload: {subscribe, validator}}: ReturnType<typeof loadValidatorBeaconNodes>
-):
-    Generator<
-    SelectEffect | CallEffect | AllEffect<
-    // TODO: find current type
-    Generator<any | SelectEffect | PutEffect,
-    void,
-    IEth2ChainHead>>,
+export function* loadValidatorBeaconNodesSaga({
+    payload: {subscribe, validator},
+}: ReturnType<typeof loadValidatorBeaconNodes>): Generator<
+    | SelectEffect
+    | CallEffect
+    | AllEffect<
+          // TODO: find current type
+          Generator<any | SelectEffect | PutEffect, void, IEth2ChainHead>
+      >,
     void,
     CGAccount & BeaconNode[]
-    > {
+> {
     const account = yield select(getAuthAccount);
     if (!account) {
         return;
@@ -91,8 +100,9 @@ export function* loadValidatorBeaconNodesSaga(
                     yield call(refreshFnWithContext, chainHead);
 
                     if (subscribe) {
-                        const existingTimeout = yield select(
-                            state => getValidatorBlockSubscription(state, {validator}));
+                        const existingTimeout = yield select((state) =>
+                            getValidatorBlockSubscription(state, {validator}),
+                        );
                         if (!existingTimeout) {
                             const timeoutId = validatorBN.client.onNewChainHead(refreshFnWithContext);
                             yield put(subscribeToBlockListening(timeoutId, validator));
@@ -103,28 +113,32 @@ export function* loadValidatorBeaconNodesSaga(
                     logger.warn("Error while fetching chainhead from beacon node... ", e.message);
                 }
             }
-        })
+        }),
     );
 }
 
-function* refreshBeaconNodeStatus(validator: string, chainHead: IEth2ChainHead):
-Generator<SelectEffect | PutEffect | AllEffect<Promise<BeaconNode>>, void, BeaconNode[]> {
-    const validatorBeaconNodes = yield select(state => getValidatorBeaconNodes(state, {validator}));
-    const beaconNodes: BeaconNode[] = yield all(validatorBeaconNodes.map(async(validatorBN: BeaconNode) => {
-        try {
-            if (!validatorBN.client) {
-                throw new Error("No ETH2 API client");
+function* refreshBeaconNodeStatus(
+    validator: string,
+    chainHead: IEth2ChainHead,
+): Generator<SelectEffect | PutEffect | AllEffect<Promise<BeaconNode>>, void, BeaconNode[]> {
+    const validatorBeaconNodes = yield select((state) => getValidatorBeaconNodes(state, {validator}));
+    const beaconNodes: BeaconNode[] = yield all(
+        validatorBeaconNodes.map(async (validatorBN: BeaconNode) => {
+            try {
+                if (!validatorBN.client) {
+                    throw new Error("No ETH2 API client");
+                }
+                return {
+                    ...validatorBN,
+                    isSyncing: (await validatorBN.client.node.getSyncingStatus()).syncDistance === BigInt(0),
+                    currentSlot: String(chainHead.slot),
+                };
+            } catch (e) {
+                logger.warn(`Error while trying to fetch beacon node status... ${e.message}`);
+                return validatorBN;
             }
-            return {
-                ...validatorBN,
-                isSyncing: (await validatorBN.client.node.getSyncingStatus()).syncDistance === BigInt(0),
-                currentSlot: String(chainHead.slot),
-            };
-        } catch (e) {
-            logger.warn(`Error while trying to fetch beacon node status... ${e.message}`);
-            return validatorBN;
-        }
-    }));
+        }),
+    );
     yield put(loadedValidatorBeaconNodes(beaconNodes, validator));
 }
 

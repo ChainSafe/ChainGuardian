@@ -6,7 +6,6 @@ import {Type} from "@chainsafe/ssz";
 export type Id = Buffer | Uint8Array | string | number | bigint;
 
 export abstract class Repository<T> {
-
     protected db: IDatabaseController;
 
     protected bucket: Bucket;
@@ -15,12 +14,7 @@ export abstract class Repository<T> {
 
     protected serializer: ICGSerialization<unknown>;
 
-    public constructor(
-        db: IDatabaseController,
-        serializer: ICGSerialization<unknown>,
-        bucket: Bucket,
-        type: Type<T>
-    ) {
+    public constructor(db: IDatabaseController, serializer: ICGSerialization<unknown>, bucket: Bucket, type: Type<T>) {
         this.db = db;
         this.serializer = serializer;
         this.bucket = bucket;
@@ -56,14 +50,14 @@ export abstract class Repository<T> {
     public async getAll(): Promise<T[]> {
         const data = await this.db.search({
             gt: encodeKey(this.bucket, Buffer.alloc(0)),
-            lt: encodeKey(this.bucket + 1, Buffer.alloc(0))
+            lt: encodeKey(this.bucket + 1, Buffer.alloc(0)),
         });
-        return (data || []).map(data => this.serializer.deserialize(data as Buffer, this.type));
+        return (data || []).map((data) => this.serializer.deserialize(data as Buffer, this.type));
     }
 }
 
 export abstract class BulkRepository<T> extends Repository<T> {
-    public async getAll(id: Buffer|Uint8Array = Buffer.alloc(0), options?: ISearchOptions): Promise<T[]> {
+    public async getAll(id: Buffer | Uint8Array = Buffer.alloc(0), options?: ISearchOptions): Promise<T[]> {
         let searchFilter: ISearchOptions;
         if (options) {
             searchFilter = options;
@@ -76,7 +70,7 @@ export abstract class BulkRepository<T> extends Repository<T> {
         }
 
         const data = await this.db.search(searchFilter);
-        return (data || []).map(data => this.serializer.deserialize(data as Buffer, this.type));
+        return (data || []).map((data) => this.serializer.deserialize(data as Buffer, this.type));
     }
 
     protected fillBufferWithOnes(size: number): Buffer {

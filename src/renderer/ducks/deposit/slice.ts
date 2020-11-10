@@ -9,7 +9,7 @@ interface IDepositState {
 const initialState: IDepositState = {
     waitingForDeposit: false,
     isDepositDetected: false,
-    depositTxData: ""
+    depositTxData: "",
 };
 
 export const depositSlice = createSlice({
@@ -20,7 +20,7 @@ export const depositSlice = createSlice({
             state.depositTxData = action.payload;
         },
         waitForDeposit: (state): void => {
-            state.waitingForDeposit = true;  
+            state.waitingForDeposit = true;
         },
         depositNotFound: (state): void => {
             state.waitingForDeposit = false;

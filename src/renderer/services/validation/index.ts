@@ -52,7 +52,4 @@ import {cryptoExtension} from "./rules/crypto";
  *      numOfNums()
  *          - complexity.numbers
  */
-export const Joi = joi.extend(
-    passwordExtension,
-    cryptoExtension
-);
+export const Joi = joi.extend(passwordExtension, cryptoExtension);

@@ -20,8 +20,8 @@ sagaMiddleware.run(rootSaga);
 
 if (typeof module.hot !== "undefined") {
     module.hot.accept("./reducers", () =>
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-        store.replaceReducer(require("./reducers").rootReducer)
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        store.replaceReducer(require("./reducers").rootReducer),
     );
 }
 

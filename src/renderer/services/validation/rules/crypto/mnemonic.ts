@@ -9,13 +9,13 @@ const joiMnemonicKey: ExtensionRule & ThisType<SchemaInternals> = {
         return this.$_addRule("mnemonic");
     },
     validate(value: string, helpers: CustomHelpers): any {
-        if(validateMnemonic(value)) {
+        if (validateMnemonic(value)) {
             return value;
         }
         return helpers.error(ERR_CODE_MNEMONIC);
-    }
+    },
 };
 
 export const mnemonicRule = {
-    mnemonic: joiMnemonicKey
+    mnemonic: joiMnemonicKey,
 };

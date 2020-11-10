@@ -16,7 +16,7 @@ describe("Onboarding configure screens", () => {
         await stopApp(app);
     });
 
-    it("has rendered properly", async function() {
+    it("has rendered properly", async function () {
         const {client} = app;
         expect(await (await client.$(".back-tab")).isExisting()).to.be.true;
         expect(await (await client.$(".dropdown-container")).isExisting()).to.be.true;
@@ -32,15 +32,12 @@ describe("Onboarding configure screens", () => {
         const {client} = app;
         await (await client.$("#run-node")).click();
         const beaconNodeUrl = await client.getUrl();
-        expect(beaconNodeUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
-            OnBoardingRoutes.CONFIGURE_BEACON_NODE
-        ))).to.be.true;
+        expect(beaconNodeUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE_BEACON_NODE))).to.be
+            .true;
 
         await (await client.$("#next")).click();
         const url = await client.getUrl();
-        expect(url.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
-            OnBoardingRoutes.PASSWORD
-        ))).to.be.true;
+        expect(url.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD))).to.be.true;
     });
 });
 
@@ -50,8 +47,10 @@ describe("Onboarding configure screens from start", () => {
         const {client} = appFromWithdrawal;
 
         // Process withdrawal key step
-        await client.replaceValue(".inputform",
-            "0x92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff4990daa18");
+        await client.replaceValue(
+            ".inputform",
+            "0x92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff4990daa18",
+        );
         await (await client.$("#submit")).isDisplayed();
         await (await client.$("#submit")).click();
         // Process configure step with running node

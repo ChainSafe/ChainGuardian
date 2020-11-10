@@ -1,27 +1,29 @@
-import {MenuItemConstructorOptions, MenuItem, Menu, shell, app}from "electron";
+import {MenuItemConstructorOptions, MenuItem, Menu, shell, app} from "electron";
 
 const template = [
     // { role: 'appMenu' }
-    ...(process.platform === "darwin" ? [{
-        label: app.getName(),
-        submenu: [
-            {role: "about"},
-            {type: "separator"},
-            {role: "services"},
-            {type: "separator"},
-            {role: "hide"},
-            {role: "hideothers"},
-            {role: "unhide"},
-            {type: "separator"},
-            {role: "quit"}
-        ]
-    }] : []),
+    ...(process.platform === "darwin"
+        ? [
+              {
+                  label: app.getName(),
+                  submenu: [
+                      {role: "about"},
+                      {type: "separator"},
+                      {role: "services"},
+                      {type: "separator"},
+                      {role: "hide"},
+                      {role: "hideothers"},
+                      {role: "unhide"},
+                      {type: "separator"},
+                      {role: "quit"},
+                  ],
+              },
+          ]
+        : []),
     // { role: 'fileMenu' }
     {
         label: "File",
-        submenu: [
-            process.platform === "darwin" ? {role: "close"} : {role: "quit"}
-        ]
+        submenu: [process.platform === "darwin" ? {role: "close"} : {role: "quit"}],
     },
     // { role: 'editMenu' }
     {
@@ -33,24 +35,19 @@ const template = [
             {role: "cut"},
             {role: "copy"},
             {role: "paste"},
-            ...(process.platform === "darwin" ? [
-                {role: "pasteAndMatchStyle"},
-                {role: "delete"},
-                {role: "selectAll"},
-                {type: "separator"},
-                {
-                    label: "Speech",
-                    submenu: [
-                        {role: "startspeaking"},
-                        {role: "stopspeaking"}
-                    ]
-                }
-            ] : [
-                {role: "delete"},
-                {type: "separator"},
-                {role: "selectAll"}
-            ])
-        ]
+            ...(process.platform === "darwin"
+                ? [
+                      {role: "pasteAndMatchStyle"},
+                      {role: "delete"},
+                      {role: "selectAll"},
+                      {type: "separator"},
+                      {
+                          label: "Speech",
+                          submenu: [{role: "startspeaking"}, {role: "stopspeaking"}],
+                      },
+                  ]
+                : [{role: "delete"}, {type: "separator"}, {role: "selectAll"}]),
+        ],
     },
     // { role: 'viewMenu' }
     {
@@ -64,8 +61,8 @@ const template = [
             {role: "zoomin"},
             {role: "zoomout"},
             {type: "separator"},
-            {role: "togglefullscreen"}
-        ]
+            {role: "togglefullscreen"},
+        ],
     },
     // { role: 'windowMenu' }
     {
@@ -73,15 +70,10 @@ const template = [
         submenu: [
             {role: "minimize"},
             {role: "zoom"},
-            ...(process.platform === "darwin" ? [
-                {type: "separator"},
-                {role: "front"},
-                {type: "separator"},
-                {role: "window"}
-            ] : [
-                {role: "close"}
-            ])
-        ]
+            ...(process.platform === "darwin"
+                ? [{type: "separator"}, {role: "front"}, {type: "separator"}, {role: "window"}]
+                : [{role: "close"}]),
+        ],
     },
     {
         role: "help",
@@ -90,16 +82,16 @@ const template = [
                 label: "Github repo",
                 click: async (): Promise<void> => {
                     await shell.openExternal("https://github.com/NodeFactoryIo/ChainGuardian");
-                }
+                },
             },
             {
                 label: "Search Issues",
                 click: async (): Promise<void> => {
                     await shell.openExternal("https://github.com/NodeFactoryIo/ChainGuardian/issues");
-                }
-            }
-        ]
-    }
+                },
+            },
+        ],
+    },
 ];
 
 export function setApplicationMenu(): void {

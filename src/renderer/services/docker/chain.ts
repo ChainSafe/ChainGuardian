@@ -31,7 +31,9 @@ export class BeaconChain extends Container {
         await bc.run();
         logger.info(`${imageName} docker beacon chain should be up!`);
         if (waitUntilReady) {
-            while (!(await bc.isRunning())) { /* */ }
+            while (!(await bc.isRunning())) {
+                /* */
+            }
         }
         return bc;
     }
@@ -40,7 +42,7 @@ export class BeaconChain extends Container {
         const savedNodes = await database.beaconNodes.getAll();
         logger.info("Going to start all stopped local beacon nodes...");
         for (let i = 0; i < savedNodes.length; i++) {
-            savedNodes[i].nodes.map(async(node) => {
+            savedNodes[i].nodes.map(async (node) => {
                 if (node.localDockerId) {
                     const image = await Container.getImageName(node.localDockerId);
                     if (image) {

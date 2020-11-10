@@ -2,7 +2,7 @@ import {ipcRenderer} from "electron";
 
 import {Container} from "./container";
 
-type Registry = { [network: string]: Container };
+type Registry = {[network: string]: Container};
 
 class DockerRegistryClass {
     private DockerRegistry: Registry = {};
@@ -15,14 +15,12 @@ class DockerRegistryClass {
         delete this.DockerRegistry[name];
     }
 
-    public getContainer(name: string): Container|null {
+    public getContainer(name: string): Container | null {
         return this.DockerRegistry[name];
     }
 
     public async stopAll(): Promise<void> {
-        await Promise.all(
-            Object.values(this.DockerRegistry).map(container => container.stop())
-        );
+        await Promise.all(Object.values(this.DockerRegistry).map((container) => container.stop()));
     }
 
     public async removeContainerPermanently(name: string): Promise<void> {
@@ -39,6 +37,7 @@ class DockerRegistryClass {
 export const DockerRegistry = new DockerRegistryClass();
 Object.freeze(DockerRegistry);
 
-ipcRenderer && ipcRenderer.on("stop-docker", async() => {
-    await DockerRegistry.stopAll();
-});
+ipcRenderer &&
+    ipcRenderer.on("stop-docker", async () => {
+        await DockerRegistry.stopAll();
+    });

@@ -1,10 +1,8 @@
 import {Joi} from "../../../../src/renderer/services/validation";
 
-const passwordSchema =
-    Joi.password().min(6).max(12).numOfLower(1).numOfUpper(1).numOfNumbers(1).numOfSigns(1);
+const passwordSchema = Joi.password().min(6).max(12).numOfLower(1).numOfUpper(1).numOfNumbers(1).numOfSigns(1);
 
 describe("Joi custom crypto validation functions unit tests.", () => {
-
     it("should reject a password that is too short", () => {
         const validation = passwordSchema.validate("123");
         expect(validation.error).toBeDefined();
@@ -61,5 +59,4 @@ describe("Joi custom crypto validation functions unit tests.", () => {
         expect(validation.error).toBeDefined();
         expect(validation.error.details[0].type === "string.empty");
     });
-
 });

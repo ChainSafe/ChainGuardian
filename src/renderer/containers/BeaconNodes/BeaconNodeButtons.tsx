@@ -24,32 +24,36 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
     const [confirmModal, setConfirmModal] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const onStopClick = async(image: string, url: string): Promise<void> => {
+    const onStopClick = async (image: string, url: string): Promise<void> => {
         setLoading(true);
         try {
-            await (DockerRegistry.getContainer(image)!).stop();
+            await DockerRegistry.getContainer(image)!.stop();
             props.updateNodeStatus(url, false);
         } catch (e) {
             logger.error(e);
-            dispatch(createNotification({
-                source: history.location.pathname,
-                title: "Error while trying to stop beacon node container"
-            }));
+            dispatch(
+                createNotification({
+                    source: history.location.pathname,
+                    title: "Error while trying to stop beacon node container",
+                }),
+            );
         }
         setLoading(false);
     };
 
-    const onStartClick = async(image: string, url: string): Promise<void> => {
+    const onStartClick = async (image: string, url: string): Promise<void> => {
         setLoading(true);
         try {
-            await (DockerRegistry.getContainer(image)!).startStoppedContainer();
+            await DockerRegistry.getContainer(image)!.startStoppedContainer();
             props.updateNodeStatus(url, true);
         } catch (e) {
             logger.error(e);
-            dispatch(createNotification({
-                source: history.location.pathname,
-                title: "Error while trying to start beacon node container"
-            }));
+            dispatch(
+                createNotification({
+                    source: history.location.pathname,
+                    title: "Error while trying to start beacon node container",
+                }),
+            );
         }
         setLoading(false);
     };
@@ -58,7 +62,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
         setConfirmModal(true);
     };
 
-    const removeContainer = async(): Promise<void> => {
+    const removeContainer = async (): Promise<void> => {
         setLoading(true);
         try {
             const container = DockerRegistry.getContainer(image);
@@ -69,31 +73,28 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
             props.validators.map((validator) => dispatch(removeBeaconNode(image, validator)));
         } catch (e) {
             logger.error(e);
-            dispatch(createNotification({
-                source: history.location.pathname,
-                title: "Error while trying to remove beacon node container"
-            }));
+            dispatch(
+                createNotification({
+                    source: history.location.pathname,
+                    title: "Error while trying to remove beacon node container",
+                }),
+            );
         }
         setLoading(false);
     };
 
     return (
         <>
-            <div className="row buttons">
-                {
-                    image ?
-                        <>
-                            {isRunning ?
-                                <ButtonInverted onClick={(): Promise<void> => onStopClick(image, url)}>
-                                    Stop
-                                </ButtonInverted>
-                                :
-                                <ButtonPrimary onClick={(): Promise<void> => onStartClick(image, url)}>
-                                    Start
-                                </ButtonPrimary>
-                            }
-                        </> : null
-                }
+            <div className='row buttons'>
+                {image ? (
+                    <>
+                        {isRunning ? (
+                            <ButtonInverted onClick={(): Promise<void> => onStopClick(image, url)}>Stop</ButtonInverted>
+                        ) : (
+                            <ButtonPrimary onClick={(): Promise<void> => onStartClick(image, url)}>Start</ButtonPrimary>
+                        )}
+                    </>
+                ) : null}
                 <ButtonDestructive onClick={onRemoveClick}>Remove</ButtonDestructive>
             </div>
 
@@ -105,7 +106,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
                 onCancelClick={(): void => setConfirmModal(false)}
             />
 
-            <Loading visible={loading} title="Loading" />
+            <Loading visible={loading} title='Loading' />
         </>
     );
 };

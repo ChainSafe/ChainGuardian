@@ -4,33 +4,33 @@ import {isStackedNotification} from "../../services/notification/isStackedNotifi
 
 export interface INotificationProps {
     /** history.location.pathname */
-    source: string,
-    isVisible?: boolean,
-    title: string,
-    content?: string,
-    level?: Level,
-    horizontalPosition?: Horizontal,
-    verticalPosition?: Vertical,
+    source: string;
+    isVisible?: boolean;
+    title: string;
+    content?: string;
+    level?: Level;
+    horizontalPosition?: Horizontal;
+    verticalPosition?: Vertical;
     /** seconds */
-    expireTime?: number
+    expireTime?: number;
 }
 
 export interface INotificationState extends INotificationProps {
-    horizontalPosition: Horizontal,
-    verticalPosition: Vertical,
-    level: Level,
-    isVisible: boolean,
-    id: string
+    horizontalPosition: Horizontal;
+    verticalPosition: Vertical;
+    level: Level;
+    isVisible: boolean;
+    id: string;
 }
 
 export interface INotificationStateObject {
-    stacked: Array<INotificationState>,
-    other: Array<INotificationState>
+    stacked: Array<INotificationState>;
+    other: Array<INotificationState>;
 }
 
 const initialState: INotificationStateObject = {
     stacked: [],
-    other: []
+    other: [],
 };
 
 export const notificationSlice = createSlice({
@@ -38,7 +38,7 @@ export const notificationSlice = createSlice({
     initialState,
     reducers: {
         addNotification: (state, action: PayloadAction<INotificationState>): void => {
-            if(isStackedNotification(action.payload.horizontalPosition, action.payload.verticalPosition)) {
+            if (isStackedNotification(action.payload.horizontalPosition, action.payload.verticalPosition)) {
                 state.stacked.push(action.payload);
             } else {
                 state.other.push(action.payload);
@@ -55,5 +55,5 @@ export const notificationSlice = createSlice({
                 state.stacked.splice(stackedIndex, 1);
             }
         },
-    }
+    },
 });

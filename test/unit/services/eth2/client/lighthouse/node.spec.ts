@@ -10,39 +10,34 @@ import {LighthouseNodeApiClient} from "../../../../../../src/renderer/services/e
 
 const httpMock = new MockAxiosAdapter(axios);
 
-describe("ligthhouse node client", function() {
-
+describe("ligthhouse node client", function () {
     const client = new LighthouseNodeApiClient({
         config,
         logger: sinon.createStubInstance(WinstonLogger),
-        baseUrl: ""
+        baseUrl: "",
     });
 
-    it("get version", async function() {
-        httpMock.onGet(LighthouseRoutes.GET_VERSION).reply(
-            200,
-            "Lighthouse"
-        );
+    it("get version", async function () {
+        httpMock.onGet(LighthouseRoutes.GET_VERSION).reply(200, "Lighthouse");
         const head = await client.getVersion();
         expect(head).toBe("Lighthouse");
     });
 
-    it("get sync status - synced", async function() {
-        httpMock.onGet(LighthouseRoutes.GET_SYNC_STATUS).reply(200,
-            fs.readFileSync(path.join(__dirname, "./payloads/node/sync_status_synced.json"), "utf-8")
-        );
+    it("get sync status - synced", async function () {
+        httpMock
+            .onGet(LighthouseRoutes.GET_SYNC_STATUS)
+            .reply(200, fs.readFileSync(path.join(__dirname, "./payloads/node/sync_status_synced.json"), "utf-8"));
         const status = await client.getSyncingStatus();
         expect(status.syncDistance.toString()).toEqual("0");
         expect(status.headSlot.toString()).toEqual("200");
     });
 
-    it("get sync status - syncing", async function() {
-        httpMock.onGet(LighthouseRoutes.GET_SYNC_STATUS).reply(200,
-            fs.readFileSync(path.join(__dirname, "./payloads/node/sync_status_syncing.json"), "utf-8")
-        );
+    it("get sync status - syncing", async function () {
+        httpMock
+            .onGet(LighthouseRoutes.GET_SYNC_STATUS)
+            .reply(200, fs.readFileSync(path.join(__dirname, "./payloads/node/sync_status_syncing.json"), "utf-8"));
         const status = await client.getSyncingStatus();
         expect(status.syncDistance.toString()).toEqual("100");
         expect(status.headSlot.toString()).toEqual("200");
     });
-
 });

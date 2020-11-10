@@ -4,7 +4,7 @@ export async function installExtensions(): Promise<void | string[]> {
     const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
     const extensions = ["REACT_DEVELOPER_TOOLS", "REDUX_DEVTOOLS"];
 
-    return Promise.all(extensions.map(name => installer.default(installer[name], forceDownload))).catch(console.log);
+    return Promise.all(extensions.map((name) => installer.default(installer[name], forceDownload))).catch(console.log);
 }
 
 export const iconExtensions = {
@@ -16,5 +16,5 @@ export const iconExtensions = {
     freebsd: ".png",
     openbsd: ".png",
     sunos: ".png",
-    cygwin: ".png"
+    cygwin: ".png",
 };

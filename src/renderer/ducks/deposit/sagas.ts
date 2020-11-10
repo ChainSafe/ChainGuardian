@@ -7,12 +7,14 @@ import {
     generateDeposit as generateDepositAction,
     verifyDeposit as verifyDepositAction,
     storeDepositTx,
-    depositDetected, depositNotFound
+    depositDetected,
+    depositNotFound,
 } from "./actions";
 import {getRegisterSigningKey, getRegisterWithdrawalKey} from "../register/selectors";
 
-function* generateDepositSaga({payload: networkConfig}: ReturnType<typeof generateDepositAction>):
-Generator<SelectEffect | PutEffect, void, string> {
+function* generateDepositSaga({
+    payload: networkConfig,
+}: ReturnType<typeof generateDepositAction>): Generator<SelectEffect | PutEffect, void, string> {
     const withdrawalKey = yield select(getRegisterWithdrawalKey);
     const signingKey = yield select(getRegisterSigningKey);
 
@@ -28,18 +30,23 @@ Generator<SelectEffect | PutEffect, void, string> {
         depositData,
         networkConfig.contract.address,
         networkConfig.eth2Config,
-        networkConfig.contract.depositAmount);
+        networkConfig.contract.depositAmount,
+    );
 
     // Ask Question about this
-    const txData = typeof depositTx.data === "object" ?
-        `0x${depositTx.data.toString("hex")}` : `0x${depositTx.data}`;
+    const txData = typeof depositTx.data === "object" ? `0x${depositTx.data.toString("hex")}` : `0x${depositTx.data}`;
     // ENDq
 
     yield put(storeDepositTx(txData));
 }
 
-function* verifyDeposit({payload: {networkConfig, timeout}}: ReturnType<typeof verifyDepositAction>):
-Generator<SelectEffect | Promise<BigInt> | Promise<boolean> | PutEffect, void, (string & boolean)> {
+function* verifyDeposit({
+    payload: {networkConfig, timeout},
+}: ReturnType<typeof verifyDepositAction>): Generator<
+    SelectEffect | Promise<BigInt> | Promise<boolean> | PutEffect,
+    void,
+    string & boolean
+> {
     const signingKey: string = yield select(getRegisterSigningKey);
 
     const keyPair = new Keypair(PrivateKey.fromHexString(signingKey));
@@ -58,14 +65,11 @@ Generator<SelectEffect | Promise<BigInt> | Promise<boolean> | PutEffect, void, (
 
     // Is there point of using logic like this? or will be better to use different approach
     const hasDeposited: boolean = yield ethersNotifier.hasUserDeposited(keyPair.publicKey);
-    if(hasDeposited) {
+    if (hasDeposited) {
         yield put(depositDetected());
     }
 }
 
 export function* depositSagaWatcher(): Generator {
-    yield all([
-        takeEvery(generateDepositAction, generateDepositSaga),
-        takeEvery(verifyDepositAction, verifyDeposit),
-    ]);
+    yield all([takeEvery(generateDepositAction, generateDepositSaga), takeEvery(verifyDepositAction, verifyDeposit)]);
 }

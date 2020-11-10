@@ -24,34 +24,29 @@ export class CGAccount implements IAccount {
     private keystoreTarget: ICGKeystoreFactory;
     private validatorsNetwork: IValidatorNetwork = {};
 
-    public constructor(
-        account: IAccount,
-        keystoreTarget: ICGKeystoreFactory = V4KeystoreFactory
-    ) {
+    public constructor(account: IAccount, keystoreTarget: ICGKeystoreFactory = V4KeystoreFactory) {
         this.name = account.name;
         // Add / to the end if not provided
-        this.directory =
-            account.directory + (account.directory.endsWith("/") ? "" : "/");
+        this.directory = account.directory + (account.directory.endsWith("/") ? "" : "/");
         this.sendStats = account.sendStats;
         this.keystoreTarget = keystoreTarget;
     }
 
     /**
-   * should return addresses from validator keystores in account directory
-   */
+     * should return addresses from validator keystores in account directory
+     */
     public getValidatorsAddresses(): string[] {
         // Loop trough files in account directory
         const keystoreFiles: ICGKeystore[] = this.getKeystoreFiles();
 
-        const validatorAddresses: string[] = keystoreFiles
-            .map(keystore => keystore.getPublicKey());
+        const validatorAddresses: string[] = keystoreFiles.map((keystore) => keystore.getPublicKey());
 
         return validatorAddresses;
     }
 
     /**
-   * returns all validators addresses
-   */
+     * returns all validators addresses
+     */
     public getValidators(): ICGKeystore[] {
         return this.validators;
     }
@@ -84,25 +79,27 @@ export class CGAccount implements IAccount {
             }
 
             return await Promise.all(
-                loadedNodes.nodes.map(async(node: BeaconNode): Promise<BeaconNode> => {
-                    const beaconNode = getEth2ApiClient(node.url, currentNetwork.name);
-                    return {
-                        ...node,
-                        client: beaconNode,
-                    };
-                })
+                loadedNodes.nodes.map(
+                    async (node: BeaconNode): Promise<BeaconNode> => {
+                        const beaconNode = getEth2ApiClient(node.url, currentNetwork.name);
+                        return {
+                            ...node,
+                            client: beaconNode,
+                        };
+                    },
+                ),
             );
         }
         return [];
     }
 
     /**
-   * should try to decrypt keystores using given password,
-   * throw exception if wrong password (save unlocked keypairs into private field)
-   * @param password decryption password of the keystore
-   * @param keystore keystore that should be descryted
-   */
-    public async unlockKeystore(password: string, keystore: ICGKeystore): Promise<Keypair|undefined> {
+     * should try to decrypt keystores using given password,
+     * throw exception if wrong password (save unlocked keypairs into private field)
+     * @param password decryption password of the keystore
+     * @param keystore keystore that should be descryted
+     */
+    public async unlockKeystore(password: string, keystore: ICGKeystore): Promise<Keypair | undefined> {
         try {
             return await keystore.decrypt(password);
         } catch (e) {
@@ -115,7 +112,7 @@ export class CGAccount implements IAccount {
     }
 
     public loadKeystore(publicKey: string): ICGKeystore {
-        const file = path.join(this.directory,  `${publicKey}.json`);
+        const file = path.join(this.directory, `${publicKey}.json`);
         return new this.keystoreTarget(file);
     }
 
@@ -124,17 +121,17 @@ export class CGAccount implements IAccount {
         try {
             keystores = readdirSync(this.directory);
             keystores = keystores
-                .filter(file => {
+                .filter((file) => {
                     return file.toLowerCase().endsWith(".json");
                 })
-                .map(file => this.directory + file);
+                .map((file) => this.directory + file);
         } catch (e) {
             error(e);
             return [];
         }
 
         return keystores
-            .map(file => {
+            .map((file) => {
                 try {
                     return new this.keystoreTarget(file);
                 } catch (e) {

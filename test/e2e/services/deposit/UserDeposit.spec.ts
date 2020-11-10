@@ -17,7 +17,6 @@ const EVENT_TIMEOUT = 30000;
 // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
 const ganache = require("ganache-cli");
 
-
 describe("Deposit transaction service unit tests", () => {
     let wallet: Wallet;
     let invalidWallet: Wallet;
@@ -31,20 +30,24 @@ describe("Deposit transaction service unit tests", () => {
         const deployWallet = ethers.Wallet.createRandom();
         const accountWallet = PrivateKey.random();
         const invalidDepositWallet = PrivateKey.random();
-        provider = new ethers.providers.Web3Provider(ganache.provider({
-            accounts: [{
-                balance: "100000000000000000000",
-                secretKey: accountWallet.toHexString(),
-            },
-            {
-                balance: "100000000000000000000",
-                secretKey: invalidDepositWallet.toHexString(),
-            },
-            {
-                balance: "100000000000000000000",
-                secretKey: toHexString(deployWallet.privateKey),
-            }],
-        }));
+        provider = new ethers.providers.Web3Provider(
+            ganache.provider({
+                accounts: [
+                    {
+                        balance: "100000000000000000000",
+                        secretKey: accountWallet.toHexString(),
+                    },
+                    {
+                        balance: "100000000000000000000",
+                        secretKey: invalidDepositWallet.toHexString(),
+                    },
+                    {
+                        balance: "100000000000000000000",
+                        secretKey: toHexString(deployWallet.privateKey),
+                    },
+                ],
+            }),
+        );
         wallet = new ethers.Wallet(accountWallet.toHexString());
         invalidWallet = new ethers.Wallet(invalidDepositWallet.toHexString());
         depositContractAddress = await deployDepositContract(provider, toHexString(deployWallet.privateKey));
@@ -57,12 +60,12 @@ describe("Deposit transaction service unit tests", () => {
                 address: depositContractAddress,
                 bytecode: DepositContract.bytecode,
                 depositAmount: 32,
-                deployedAtBlock: await provider.getBlockNumber()
+                deployedAtBlock: await provider.getBlockNumber(),
             },
             dockerConfig: {
                 name: "UserDepositTest",
                 image: "not-important",
-            }
+            },
         };
     });
 
@@ -74,7 +77,6 @@ describe("Deposit transaction service unit tests", () => {
         const isValidDepositAmount = await ethersNotifier.hasUserDeposited(keyPair.publicKey);
         expect(isValidDepositAmount).toBe(true);
     });
-
 
     it("should fail because user deposit sum is invalid", async () => {
         const keyPair = new KeyPair(PrivateKey.fromHexString(invalidWallet.privateKey));
@@ -89,12 +91,11 @@ describe("Deposit transaction service unit tests", () => {
         const keyPair = new KeyPair(PrivateKey.fromHexString(wallet.privateKey));
         const ethersNotifier = new EthersNotifier(networkConfig, provider);
 
-        ethersNotifier.depositEventListener(keyPair.publicKey, EVENT_TIMEOUT)
-            .then((amountGwei: bigint) => {
-                const expectedAmount = BigInt(ethers.utils.parseUnits("15", "gwei").toString());
-                expect(amountGwei === expectedAmount);
-                done();
-            });
+        ethersNotifier.depositEventListener(keyPair.publicKey, EVENT_TIMEOUT).then((amountGwei: bigint) => {
+            const expectedAmount = BigInt(ethers.utils.parseUnits("15", "gwei").toString());
+            expect(amountGwei === expectedAmount);
+            done();
+        });
 
         const amounts = ["15"];
         await generateMultilpleTransactions(keyPair, depositContractAddress, wallet, provider, amounts);
@@ -105,11 +106,10 @@ describe("Deposit transaction service unit tests", () => {
         const ethersNotifier = new EthersNotifier(networkConfig, provider);
 
         // Reduce timeout for test time
-        ethersNotifier.depositEventListener(keyPair.publicKey, 3000)
-            .catch(err => {
-                expect(err).toEqual(new Error(DEPOSIT_EVENT_TIMEOUT_MESSAGE));
-                done();
-            });
+        ethersNotifier.depositEventListener(keyPair.publicKey, 3000).catch((err) => {
+            expect(err).toEqual(new Error(DEPOSIT_EVENT_TIMEOUT_MESSAGE));
+            done();
+        });
     });
 });
 
@@ -118,8 +118,8 @@ async function generateMultilpleTransactions(
     depositContractAddress: string,
     wallet: Wallet,
     provider: ethers.providers.Web3Provider,
-    amounts: string[]): Promise<void> {
-
+    amounts: string[],
+): Promise<void> {
     await asyncForEach(amounts, async (amount: string) => {
         const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1, "hex"), amount, config);
         const depositTx = DepositTx.generateDepositTx(depositData, depositContractAddress, config, amount);
@@ -134,5 +134,3 @@ async function asyncForEach(array: string[], callback: any): Promise<void> {
         await callback(array[index], index, array);
     }
 }
-
-

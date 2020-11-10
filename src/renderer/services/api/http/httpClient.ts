@@ -4,13 +4,13 @@ export class HttpClient {
     private client: AxiosInstance;
 
     public constructor(baseURL: string, options: {axios?: AxiosRequestConfig} = {}) {
-        if(!options) {
+        if (!options) {
             // eslint-disable-next-line no-param-reassign
             options = {axios: {}};
         }
         this.client = axios.create({
             baseURL,
-            ...options.axios
+            ...options.axios,
         });
     }
 

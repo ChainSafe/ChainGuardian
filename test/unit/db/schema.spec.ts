@@ -12,11 +12,11 @@ describe("encodeKey", () => {
         {input: {bucket: BucketMock, key: Buffer.from([0, 1, 0, 1])}, type: "Buffer"},
         {input: {bucket: BucketMock, key: 5}, type: "number"},
         {input: {bucket: BucketMock, key: BigInt(5)}, type: "bigint"},
-        {input: {bucket: BucketMock, key: "test"}, type: "string"}
+        {input: {bucket: BucketMock, key: "test"}, type: "string"},
     ];
     for (const {
         input: {bucket, key},
-        type
+        type,
     } of testCases) {
         it(`should properly encode ${type}`, () => {
             let expected;

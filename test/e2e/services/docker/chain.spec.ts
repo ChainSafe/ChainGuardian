@@ -5,10 +5,8 @@ import {runCmdAsync} from "../../../../src/renderer/services/utils/cmd";
 import {assert} from "chai";
 
 // run docker e2e test suit if env variable set
-if (process.env["RUN_DOCKER_TESTS"] === "yes")
-    describe("docker container e2e tests", tests);
-else
-    describe.skip("skipping docker container e2e tests", tests);
+if (process.env["RUN_DOCKER_TESTS"] === "yes") describe("docker container e2e tests", tests);
+else describe.skip("skipping docker container e2e tests", tests);
 
 function tests(): void {
     let beaconChain: BeaconChain;
@@ -32,11 +30,13 @@ function tests(): void {
      * 1) run docker instance of schlesi beacon chain
      * 2) check if instance is running using cmdRun
      */
-    it("should execute test case: run-check", async done => {
+    it("should execute test case: run-check", async (done) => {
         if (await BeaconChain.isDockerInstalled()) {
             beaconChain = await BeaconChain.startBeaconChain(SupportedNetworks.LOCALHOST);
             // wait for docker instance to start
-            while (!(await beaconChain.isRunning())) { /* */}
+            while (!(await beaconChain.isRunning())) {
+                /* */
+            }
             done();
         }
     }, 10000);
@@ -51,7 +51,9 @@ function tests(): void {
         if (await BeaconChain.isDockerInstalled()) {
             beaconChain = await BeaconChain.startBeaconChain(SupportedNetworks.LOCALHOST);
             // wait for docker instance to start
-            while (!(await beaconChain.isRunning())) { /* */ }
+            while (!(await beaconChain.isRunning())) {
+                /* */
+            }
             for await (const logs of beaconChain.getLogs()) {
                 assert(logs.length > 0);
                 break;

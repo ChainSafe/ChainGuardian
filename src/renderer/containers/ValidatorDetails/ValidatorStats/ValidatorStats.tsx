@@ -21,28 +21,30 @@ export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps): 
         const result = exportKeystore(validator);
         // show notification only if success or error, not on cancel
         if (result) {
-            dispatch(createNotification({
-                source: history.location.pathname,
-                title: result.message,
-                level: result.level
-            }));
+            dispatch(
+                createNotification({
+                    source: history.location.pathname,
+                    title: result.message,
+                    level: result.level,
+                }),
+            );
         }
     };
 
     /* eslint-disable @typescript-eslint/no-unused-vars */
     const renderBalanceGraph = (): React.ReactElement => (
-        <div className="row">
+        <div className='row'>
             <LineGraph
-                title="Validator Balance"
+                title='Validator Balance'
                 defaultInterval={IntervalEnum.MONTH}
-                getData={async (): Promise<number[]> => [2356,3213,8934,7924,7924]}
+                getData={async (): Promise<number[]> => [2356, 3213, 8934, 7924, 7924]}
             />
         </div>
     );
 
     return (
-        <div className="validator-details-stats">
-            <div className="row space-between">
+        <div className='validator-details-stats'>
+            <div className='row space-between'>
                 <h2>Validator {validatorId}</h2>
                 <ButtonSecondary onClick={onExportValidator}>EXPORT</ButtonSecondary>
             </div>

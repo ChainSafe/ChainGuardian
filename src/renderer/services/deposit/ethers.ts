@@ -16,7 +16,7 @@ export interface IEth1Client {
     hasUserDeposited(validatorPublicKey: PublicKey): Promise<boolean>;
 }
 
-export class EthersNotifier implements IEth1Client{
+export class EthersNotifier implements IEth1Client {
     private networkConfig: INetworkConfig;
     private provider: ethers.providers.BaseProvider;
 
@@ -25,7 +25,7 @@ export class EthersNotifier implements IEth1Client{
         this.provider = provider;
     }
 
-    public depositEventListener(validatorPublicKey: PublicKey, timeout = 20000): Promise<bigint>{
+    public depositEventListener(validatorPublicKey: PublicKey, timeout = 20000): Promise<bigint> {
         return new Promise((resolve, reject) => {
             const contract = new Contract(this.networkConfig.contract.address, DepositContract.abi, this.provider);
             const filter = contract.filters.DepositEvent(null);
@@ -34,7 +34,7 @@ export class EthersNotifier implements IEth1Client{
             contract.on(filter, (pubkey, withdrawalCredentials, amount) => {
                 if (pubkey === validatorPublicKey.toHexString()) {
                     const amountGwei = this.networkConfig.eth2Config.types.Gwei.deserialize(
-                        Buffer.from(amount.slice(2), "hex")
+                        Buffer.from(amount.slice(2), "hex"),
                     ) as Gwei;
                     clearTimeout(timer);
                     contract.removeAllListeners(DEPOSIT_EVENT);
@@ -53,21 +53,21 @@ export class EthersNotifier implements IEth1Client{
         try {
             const filter = {
                 fromBlock: this.networkConfig.contract.deployedAtBlock,
-                address: this.networkConfig.contract.address
+                address: this.networkConfig.contract.address,
             };
             const logs = await this.provider.getLogs(filter);
             let amountSum = BigInt(0);
             logs.forEach((log) => {
                 const data = utils.defaultAbiCoder.decode(
                     DepositContract.abi[0].inputs.map((parameter: utils.ParamType) => parameter.type),
-                    log.data
+                    log.data,
                 );
 
                 const validatorPubKey = data[PUBKEY_INDEX];
 
                 if (validatorPubKey === validatorPublicKey.toHexString()) {
                     const amount = this.networkConfig.eth2Config.types.Gwei.deserialize(
-                        Buffer.from(data[DATA_INDEX].slice(2), "hex")
+                        Buffer.from(data[DATA_INDEX].slice(2), "hex"),
                     ) as Gwei;
                     amountSum += amount;
                 }
@@ -78,6 +78,5 @@ export class EthersNotifier implements IEth1Client{
             warn("Failed to get eth1 deposit logs. Reason: " + e.message);
             return false;
         }
-
     }
 }

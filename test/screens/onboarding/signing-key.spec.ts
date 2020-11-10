@@ -6,14 +6,13 @@ import {IMPORT_SIGNING_KEY_PLACEHOLDER} from "../../../src/renderer/constants/st
 import {
     PRIVATE_KEY_WRONG_CHARACTERS_MESSAGE,
     MNEMONIC_INVALID_MESSAGE,
-    PRIVATE_KEY_WRONG_LENGTH_MESSAGE
+    PRIVATE_KEY_WRONG_LENGTH_MESSAGE,
 } from "../../../src/renderer/containers/Onboard/SigningKey/Import/validation";
 
 jest.setTimeout(TIMEOUT);
 
 const mnemonic = "hard caught annual spread green step avocado shine scare warm chronic pond";
 const privateKeyStr = "0xd68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
-
 
 describe("Onboarding signing key import screen", () => {
     let app: Application;
@@ -55,7 +54,6 @@ describe("Onboarding signing key import screen", () => {
         expect(errorMessage).to.be.equal(PRIVATE_KEY_WRONG_CHARACTERS_MESSAGE);
     });
 
-
     it("should work valid inputs", async () => {
         const {client} = app;
 
@@ -86,11 +84,8 @@ describe("Onboarding signing key import screen", () => {
         await client.replaceValue(".inputform", mnemonic);
         await (await client.$("#submit")).click();
         postClickUrl = await client.getUrl();
-        expect(postClickUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
-            OnBoardingRoutes.DEPOSIT_TX
-        ))).to.be.true;
+        expect(postClickUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX))).to.be.true;
     });
-
 });
 
 describe("Onboarding signing key validate screen", () => {
@@ -108,9 +103,8 @@ describe("Onboarding signing key validate screen", () => {
         const {client} = app;
         await (await client.$("#savedSigningMnemonic")).click();
         const verificationUrl = await client.getUrl();
-        expect(verificationUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(
-            OnBoardingRoutes.SIGNING_KEY_VALIDATE
-        ))).to.be.true;
+        expect(verificationUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_KEY_VALIDATE))).to.be
+            .true;
 
         await (await client.$(".verify-button-container button[datafield=true]")).click();
 

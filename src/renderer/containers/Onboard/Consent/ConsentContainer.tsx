@@ -29,12 +29,18 @@ class Consent extends Component<Pick<RouteComponentProps, "history"> & IInjected
         return (
             <>
                 <h1>Do you want to send your error reports?</h1>
-                <p>By sharing ChainGuardian bug reports that might occur we will be able to improve your app experience.
-                    Don&#39;t worry! We will never be able to access your keys.</p>
+                <p>
+                    By sharing ChainGuardian bug reports that might occur we will be able to improve your app
+                    experience. Don&#39;t worry! We will never be able to access your keys.
+                </p>
 
-                <div className="action-buttons">
-                    <ButtonSecondary onClick={this.onNoClick.bind(this)} large>NO</ButtonSecondary>
-                    <ButtonPrimary onClick={this.onYesClick.bind(this)} large>YES</ButtonPrimary>
+                <div className='action-buttons'>
+                    <ButtonSecondary onClick={this.onNoClick.bind(this)} large>
+                        NO
+                    </ButtonSecondary>
+                    <ButtonPrimary onClick={this.onYesClick.bind(this)} large>
+                        YES
+                    </ButtonPrimary>
                 </div>
             </>
         );
@@ -42,14 +48,11 @@ class Consent extends Component<Pick<RouteComponentProps, "history"> & IInjected
 }
 
 interface IInjectedProps {
-    saveSettings: typeof saveAccountSettings,
+    saveSettings: typeof saveAccountSettings;
 }
 
-const mapDispatchToProps: IInjectedProps = ({
+const mapDispatchToProps: IInjectedProps = {
     saveSettings: saveAccountSettings,
-});
+};
 
-export const ConsentContainer = connect(
-    null,
-    mapDispatchToProps
-)(Consent);
+export const ConsentContainer = connect(null, mapDispatchToProps)(Consent);

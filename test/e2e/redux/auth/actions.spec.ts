@@ -7,7 +7,7 @@ describe("auth actions", () => {
         const account = new CGAccount({
             name: "TestName",
             directory: "/testdirectory/",
-            sendStats: false
+            sendStats: false,
         });
         expect(storeAuth(account)).toEqual({payload: account, type: "auth/storeAuth"});
     });
@@ -18,8 +18,10 @@ describe("auth actions", () => {
         });
 
         it("should return whit entered param", () => {
-            expect(requireAuthorization("superUser"))
-                .toEqual({payload: "superUser", type: "auth/requireAuthorization"});
+            expect(requireAuthorization("superUser")).toEqual({
+                payload: "superUser",
+                type: "auth/requireAuthorization",
+            });
         });
     });
 });

@@ -9,15 +9,15 @@ export interface IDropdownProps {
 }
 
 export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdownProps) => {
-    const [visible, setVisible]=useState("none");
+    const [visible, setVisible] = useState("none");
 
     const options = Array.isArray(props.options) ? {...props.options} : props.options;
 
-    function showHide(): void{
+    function showHide(): void {
         visible === "none" ? setVisible("block") : setVisible("none");
     }
 
-    function hide(): void{
+    function hide(): void {
         visible === "block" ? setVisible("none") : null;
     }
 
@@ -30,32 +30,31 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdo
     }
 
     function renderOption(key: number): any {
-        return <div
-            key={options[key]}
-            onClick={(): void => onOptionClick(key)}
-            className={
-                `dropdown-item
+        return (
+            <div
+                key={options[key]}
+                onClick={(): void => onOptionClick(key)}
+                className={`dropdown-item
                 ${visible}
-                ${key === props.current ? "selected" : ""}`
-            }>
-            {options[key]}</div>;
+                ${key === props.current ? "selected" : ""}`}>
+                {options[key]}
+            </div>
+        );
     }
-    
-    return(
+
+    return (
         <div>
             {props.label && <h3>{props.label}</h3>}
-            <div onClick={(): void=> hide()} className="dropdown-screen">
-                <div className="dropdown-container">
-                    <div onClick={(): void => props.onChange && showHide()} className="dropdown-selected">
+            <div onClick={(): void => hide()} className='dropdown-screen'>
+                <div className='dropdown-container'>
+                    <div onClick={(): void => props.onChange && showHide()} className='dropdown-selected'>
                         <div>{props.options[props.current]}</div>
                     </div>
-                    <div className="dropdown-items-container">
-                        <div className="dropdown-items">
-                            {
-                                Object.keys(options)
-                                    .map(v => parseInt(v))
-                                    .map(key => renderOption(key))
-                            }
+                    <div className='dropdown-items-container'>
+                        <div className='dropdown-items'>
+                            {Object.keys(options)
+                                .map((v) => parseInt(v))
+                                .map((key) => renderOption(key))}
                         </div>
                     </div>
                 </div>

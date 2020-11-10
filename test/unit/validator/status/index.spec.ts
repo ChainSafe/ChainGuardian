@@ -1,9 +1,7 @@
-describe("validator status", function() {
-
-    it("dummy", function() {
+describe("validator status", function () {
+    it("dummy", function () {
         expect(true).toBeTruthy();
     });
-    
 });
 
 // import sinon, {SinonStub, SinonStubbedInstance} from "sinon";

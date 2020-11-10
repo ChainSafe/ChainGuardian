@@ -11,34 +11,36 @@ interface IPrivateKeyFieldProps extends IInputFormProps {
 }
 
 export const PrivateKeyField: React.FunctionComponent<IPrivateKeyFieldProps> = (props: IPrivateKeyFieldProps) => {
-    const [showPrompt,setShowPrompt] = useState<boolean>(false);
+    const [showPrompt, setShowPrompt] = useState<boolean>(false);
     const [passwordType, setPasswordType] = useState<string>("password");
     const [eyeSlash, setEyeSlash] = useState<boolean>(false);
     const [privateKey, setPrivateKey] = useState<string>("encrypted");
 
     const handlePromptSubmit = async (keypair: Keypair): Promise<void> => {
         setPrivateKey(keypair.privateKey.toHexString());
-        setTimeout(setShowPrompt,200,false);
+        setTimeout(setShowPrompt, 200, false);
         setPasswordType("text");
         setEyeSlash(true);
     };
 
     const handleEyeClick = (): void => {
-        if(eyeSlash){
+        if (eyeSlash) {
             setPasswordType("password");
             setEyeSlash(false);
-        }else{
+        } else {
             setShowPrompt(true);
         }
     };
 
-    return(
+    return (
         <>
             <PasswordPrompt
                 keystore={props.keystore}
                 display={showPrompt}
                 onSubmit={handlePromptSubmit}
-                onCancel={(): void=>{setShowPrompt(false);}}
+                onCancel={(): void => {
+                    setShowPrompt(false);
+                }}
             />
             <InputForm
                 label={props.label}

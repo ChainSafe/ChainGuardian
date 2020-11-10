@@ -9,10 +9,7 @@ export class ValidatorLogger extends WinstonLogger {
 
     public constructor(options?: Partial<ILoggerOptions>, transports?: TransportStream[]) {
         const stream = new PassThrough();
-        transports = [
-            consoleTransport,
-            stream
-        ];
+        transports = [consoleTransport, stream];
         super(options, transports);
         this.bufferedLogger = new BufferedLogger({maxCache: 1000});
         this.bufferedLogger.addStreamSource(stream);
@@ -29,6 +26,4 @@ export class ValidatorLogger extends WinstonLogger {
     public stream(): Writable {
         throw new Error("not implemented");
     }
-
-
 }

@@ -14,7 +14,7 @@ export function generateAttestationData(
     sourceEpoch: Epoch,
     targetEpoch: Epoch,
     index: CommitteeIndex = 1,
-    slot: Slot = 1
+    slot: Slot = 1,
 ): AttestationData {
     return {
         slot: slot,
@@ -22,12 +22,12 @@ export function generateAttestationData(
         beaconBlockRoot: crypto.randomBytes(32),
         source: {
             epoch: sourceEpoch,
-            root: Buffer.alloc(32)
+            root: Buffer.alloc(32),
         },
         target: {
             epoch: targetEpoch,
-            root: Buffer.alloc(32)
-        }
+            root: Buffer.alloc(32),
+        },
     };
 }
 
@@ -41,15 +41,15 @@ export function generateAttestation(override: Partial<Attestation> = {}): Attest
             beaconBlockRoot: Buffer.alloc(32),
             source: {
                 epoch: 0,
-                root: Buffer.alloc(32)
+                root: Buffer.alloc(32),
             },
             target: {
                 epoch: 0,
-                root: Buffer.alloc(32)
-            }
+                root: Buffer.alloc(32),
+            },
         },
         signature: Buffer.alloc(96),
-        ...override
+        ...override,
     };
 }
 

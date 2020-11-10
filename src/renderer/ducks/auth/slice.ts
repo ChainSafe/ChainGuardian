@@ -2,7 +2,7 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {CGAccount} from "../../models/account";
 
 export interface IAuthState {
-    account: CGAccount | null,
+    account: CGAccount | null;
 }
 
 const initialState: IAuthState = {account: null};

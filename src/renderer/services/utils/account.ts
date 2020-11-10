@@ -12,7 +12,7 @@ import {copyFile, removeDirRecursive} from "./file";
 import {networks} from "../eth2/networks";
 import {IValidator} from "../../ducks/validator/slice";
 
-export const cleanUpAccount = async(): Promise<void> => {
+export const cleanUpAccount = async (): Promise<void> => {
     const config = getConfig(electron.remote.app);
     try {
         await Promise.all([
@@ -25,44 +25,54 @@ export const cleanUpAccount = async(): Promise<void> => {
     }
 };
 
-export const importKeystore =
-    async (from: string, publicKey: string, password: string, name: string): Promise<string> => {
-        const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
-        const to = path.join(accountDirectory, publicKey, ".json");
-        await V4Keystore.import(from, to, password, name);
+export const importKeystore = async (
+    from: string,
+    publicKey: string,
+    password: string,
+    name: string,
+): Promise<string> => {
+    const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
+    const to = path.join(accountDirectory, publicKey, ".json");
+    await V4Keystore.import(from, to, password, name);
 
-        return accountDirectory;
-    };
+    return accountDirectory;
+};
 
-export const saveKeystore =
-    async(signingKey: PrivateKey, password: string, keyPath: string, name = ""): Promise<string> => {
-        const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
-        await V4Keystore.create(
-            path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
-            password,
-            new Keypair(signingKey),
-            keyPath,
-            name
-        );
+export const saveKeystore = async (
+    signingKey: PrivateKey,
+    password: string,
+    keyPath: string,
+    name = "",
+): Promise<string> => {
+    const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
+    await V4Keystore.create(
+        path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
+        password,
+        new Keypair(signingKey),
+        keyPath,
+        name,
+    );
 
-        return accountDirectory;
-    };
+    return accountDirectory;
+};
 
 export const deleteKeystore = (directory: string, publicKey: string): void => {
     const selectedV4Keystore = new V4Keystore(path.join(directory, `${publicKey}.json`));
     selectedV4Keystore.destroy();
 };
 
-export const deleteBeaconNodeContainers = async(): Promise<void> => {
-    await Promise.all(networks.map(async(network) => {
-        if (network.networkName !== "localhost") {
-            try {
-                await DockerRegistry.removeContainerPermanently(network.dockerConfig.name);
-            } catch (e) {
-                logger.error(`Failed to remove Docker container: ${e.message}`);
+export const deleteBeaconNodeContainers = async (): Promise<void> => {
+    await Promise.all(
+        networks.map(async (network) => {
+            if (network.networkName !== "localhost") {
+                try {
+                    await DockerRegistry.removeContainerPermanently(network.dockerConfig.name);
+                } catch (e) {
+                    logger.error(`Failed to remove Docker container: ${e.message}`);
+                }
             }
-        }
-    }));
+        }),
+    );
 };
 
 export interface IExportStatus {
@@ -71,7 +81,7 @@ export interface IExportStatus {
 }
 
 export const exportKeystore = (validator: IValidator): IExportStatus | null => {
-    const savePath = remote.dialog.showSaveDialogSync(remote.getCurrentWindow(),{
+    const savePath = remote.dialog.showSaveDialogSync(remote.getCurrentWindow(), {
         title: `Saving keystore for validator "${validator.name}"`,
         buttonLabel: "Export",
         filters: [{name: "Keystore", extensions: ["json"]}],
@@ -83,9 +93,9 @@ export const exportKeystore = (validator: IValidator): IExportStatus | null => {
         const copyResult = copyFile(keystorePath, savePath);
         return {
             level: copyResult.success ? Level.INFO : Level.ERROR,
-            message: copyResult.success ?
-                `Successfully exported keystore for validator ${validator.name} to ${savePath}.` :
-                `Export failed: ${copyResult.message}.`
+            message: copyResult.success
+                ? `Successfully exported keystore for validator ${validator.name} to ${savePath}.`
+                : `Export failed: ${copyResult.message}.`,
         };
     }
     // destination path not selected

@@ -9,20 +9,19 @@ import {ILogger} from "@chainsafe/lodestar-utils";
 import {INodeApi} from "@chainsafe/lodestar-validator/lib/api/interface/node";
 
 export interface IEth2BeaconApi extends IBeaconApi {
-    getValidator(pubkey: BLSPubkey): Promise<ValidatorResponse|null>;
+    getValidator(pubkey: BLSPubkey): Promise<ValidatorResponse | null>;
     getValidators(pubkeys: BLSPubkey[]): Promise<ValidatorResponse[]>;
     getChainHead(): Promise<IEth2ChainHead>;
     getSpec(): Promise<ISpecResponse>;
 }
 
-export type IEth2NodeApi  = INodeApi;
-export type IEth2ValidatorApi  = IValidatorApi;
+export type IEth2NodeApi = INodeApi;
+export type IEth2ValidatorApi = IValidatorApi;
 
 /**
  * Extends minimal interface(IApiClient) required by lodestar validator
  */
 export interface IGenericEth2Client extends IApiClient {
-
     config: IBeaconConfig;
 
     beacon: IEth2BeaconApi;
@@ -34,11 +33,11 @@ export interface IGenericEth2Client extends IApiClient {
     onNewChainHead(callback: (head: IEth2ChainHead) => void): NodeJS.Timeout;
 }
 
-export type IValidatorBeaconClient  =  IApiClient;
+export type IValidatorBeaconClient = IApiClient;
 
 export interface IBeaconClientOptions {
     // Add more options if needed
     baseUrl: string;
-    logger: ILogger,
+    logger: ILogger;
     config: IBeaconConfig;
 }

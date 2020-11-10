@@ -28,8 +28,8 @@ class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
         );
     }
 
-    private handleSubmit= (input: string): void => {
-        if(input.startsWith("0x")) {
+    private handleSubmit = (input: string): void => {
+        if (input.startsWith("0x")) {
             try {
                 PrivateKey.fromHexString(input);
             } catch (e) {
@@ -41,19 +41,15 @@ class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
             this.props.history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
         } else {
             const validatorIndex = 1;
-            const validatorKeys = deriveEth2ValidatorKeys(
-                deriveKeyFromMnemonic(input),
-                validatorIndex
-            );
+            const validatorKeys = deriveEth2ValidatorKeys(deriveKeyFromMnemonic(input), validatorIndex);
             this.props.storeValidatorKeys(
                 PrivateKey.fromBytes(validatorKeys.signing).toHexString(),
                 PrivateKey.fromBytes(validatorKeys.withdrawal).toPublicKey().toHexString(),
-                `m/12381/3600/${validatorIndex}/0/0`
+                `m/12381/3600/${validatorIndex}/0/0`,
             );
             this.props.history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
         }
     };
-
 }
 
 // redux
@@ -69,10 +65,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
             storeSigningKey: storeSigningKey,
             storeValidatorKeys: storeValidatorKeys,
         },
-        dispatch
+        dispatch,
     );
 
-export const SigningKeyImportContainer = connect(
-    null,
-    mapDispatchToProps
-)(SigningKeyImport);
+export const SigningKeyImportContainer = connect(null, mapDispatchToProps)(SigningKeyImport);

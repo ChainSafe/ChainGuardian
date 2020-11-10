@@ -7,32 +7,30 @@ interface IBackgroundProps {
     topBar?: any;
 }
 
-export const Background: React.FunctionComponent<React.PropsWithChildren<IBackgroundProps>> = (
-    {
-        children,
-        basic,
-        scrollable,
-        topBar,
-    }) => ( basic ?
-    <div className={`background${scrollable ? " scrollable-y" : ""}`}>
-        <div className={"top"}>
-            <img className="logo" src={logo} />
-            {topBar ? topBar : <DefaultTopBar />}
-        </div>
-        <div className="children">{children}</div>
-    </div> 
-    : 
-    <div className="background">
-        <div className={`illustration${scrollable ? " scrollable-y" : ""}`} >
+export const Background: React.FunctionComponent<React.PropsWithChildren<IBackgroundProps>> = ({
+    children,
+    basic,
+    scrollable,
+    topBar,
+}) =>
+    basic ? (
+        <div className={`background${scrollable ? " scrollable-y" : ""}`}>
             <div className={"top"}>
-                <img className="logo" src={logo} />
+                <img className='logo' src={logo} />
                 {topBar ? topBar : <DefaultTopBar />}
             </div>
-            <div className="children">{children}</div>
+            <div className='children'>{children}</div>
         </div>
-    </div>
-);
+    ) : (
+        <div className='background'>
+            <div className={`illustration${scrollable ? " scrollable-y" : ""}`}>
+                <div className={"top"}>
+                    <img className='logo' src={logo} />
+                    {topBar ? topBar : <DefaultTopBar />}
+                </div>
+                <div className='children'>{children}</div>
+            </div>
+        </div>
+    );
 
-const DefaultTopBar: React.FunctionComponent = () => (
-    <span className="background-top-bar"></span>
-);
+const DefaultTopBar: React.FunctionComponent = () => <span className='background-top-bar'></span>;

@@ -11,13 +11,13 @@ export async function runCmdAsync(command: string): Promise<ICmdRunAsync> {
         const process = child.exec(command);
         const result: ICmdRunAsync = {stdout: "", stderr: ""};
         if (process.stdout && process.stderr) {
-            process.stdout.on("data", data => {
+            process.stdout.on("data", (data) => {
                 result.stdout += data;
             });
-            process.stderr.on("data", data => {
+            process.stderr.on("data", (data) => {
                 result.stderr += data;
             });
-            process.on("close", code => {
+            process.on("close", (code) => {
                 code !== 0 ? reject(result) : resolve(result);
             });
         } else {
@@ -36,7 +36,7 @@ export function runCmd(command: string): ICmdRun {
     if (process.stdout && process.stderr) {
         return {
             stdout: process.stdout,
-            stderr: process.stderr
+            stderr: process.stderr,
         } as ICmdRun;
     }
     throw new Error(`Executing command ${command} failed.`);
@@ -55,7 +55,7 @@ export function runDetached(command: string): ICmdRun {
 
         return {
             stdout: process.stdout,
-            stderr: process.stderr
+            stderr: process.stderr,
         } as ICmdRun;
     }
     throw new Error(`Executing command ${command} failed.`);
@@ -64,7 +64,7 @@ export function runDetached(command: string): ICmdRun {
 export function streamToString(stream: Readable): Promise<string> {
     const chunks: string[] = [];
     return new Promise((resolve, reject) => {
-        stream.on("data", chunk => chunks.push(chunk));
+        stream.on("data", (chunk) => chunks.push(chunk));
         stream.on("error", reject);
         stream.on("end", () => resolve(chunks.join("")));
     });

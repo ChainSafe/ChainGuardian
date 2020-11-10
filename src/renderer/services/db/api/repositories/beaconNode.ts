@@ -35,7 +35,7 @@ export class BeaconNodeRepository extends Repository<BeaconNodes> {
         const validatorBeaconNodes = await this.get(id);
         if (validatorBeaconNodes) {
             const newList = BeaconNodes.createNodes(validatorBeaconNodes.nodes);
-            value.nodes.map(node => newList.addNode(node.url, node.localDockerId));
+            value.nodes.map((node) => newList.addNode(node.url, node.localDockerId));
             return await this.set(id, newList);
         } else {
             return await this.set(id, value);

@@ -8,13 +8,12 @@ export interface IBufferedLoggerOptions {
 }
 
 export class BufferedLogger implements ICGLogger {
-
     private cachedLogs: FifoQueue<ILogRecord>;
 
     private readonly opts: IBufferedLoggerOptions;
 
     public constructor(opts?: Partial<IBufferedLoggerOptions>) {
-        this.opts = Object.assign({},{maxCache: 1000}, opts);
+        this.opts = Object.assign({}, {maxCache: 1000}, opts);
         this.cachedLogs = new FifoQueue<ILogRecord>(this.opts.maxCache);
     }
 
@@ -26,9 +25,9 @@ export class BufferedLogger implements ICGLogger {
         const cachedLogs = this.cachedLogs.getAll();
         const logSource = this.cachedLogs;
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-        return (async function*(){
+        return (async function* () {
             yield cachedLogs;
-            yield * new EventIterator<ILogRecord[]>((push) => {
+            yield* new EventIterator<ILogRecord[]>((push) => {
                 const logHandler = (log: ILogRecord): void => {
                     push([log]);
                 };
@@ -47,19 +46,18 @@ export class BufferedLogger implements ICGLogger {
     }
 
     public push(log: string | Uint8Array, source: LogSource = "unknown"): void {
-        if(Buffer.isBuffer(log)) {
+        if (Buffer.isBuffer(log)) {
             log = log.toString();
         }
-        if(log && typeof log === "string") {
+        if (log && typeof log === "string") {
             log.split("\n")
                 .filter((l) => !!l)
                 .forEach((logLine) => {
                     this.cachedLogs.push({
                         log: logLine,
-                        source
+                        source,
                     });
                 });
         }
     }
-
 }

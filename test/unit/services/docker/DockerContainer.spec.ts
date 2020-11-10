@@ -19,7 +19,7 @@ describe("docker container isDockerInstalled method unit tests", () => {
     it("should successfully check if docker is installed", async () => {
         runCmdStub.resolves({
             stdout: "docker version 12.02.2, build 21a1",
-            stderr: ""
+            stderr: "",
         });
         expect(await Container.isDockerInstalled()).toBeTruthy();
     });
@@ -27,7 +27,7 @@ describe("docker container isDockerInstalled method unit tests", () => {
     it("should successfully check if specific docker version is installed", async () => {
         runCmdStub.resolves({
             stdout: "docker version 12.02.2, build 21a1",
-            stderr: ""
+            stderr: "",
         });
         expect(await Container.isDockerInstalled("12.02.2")).toBeTruthy();
         expect(await Container.isDockerInstalled("13.02.2")).toBeFalsy();
@@ -36,7 +36,7 @@ describe("docker container isDockerInstalled method unit tests", () => {
     it("should check if docker installed when docker is not installed", async () => {
         runCmdStub.resolves({
             stdout: "docker is not recognized as an internal or external command, operable program or batch file.",
-            stderr: ""
+            stderr: "",
         });
         expect(await Container.isDockerInstalled("11.02.2")).toBeFalsy();
     });

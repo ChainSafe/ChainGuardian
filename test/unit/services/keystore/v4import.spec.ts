@@ -8,7 +8,6 @@ const keyStoreFilePath = `keystore-${Math.random() * 1000}.json`;
 const password = "test";
 const wrongPassword = "wrongOne";
 
-
 describe("V4Keystore", () => {
     let sandbox: sinon.SinonSandbox;
 
@@ -26,9 +25,9 @@ describe("V4Keystore", () => {
     });
 
     it("should fail to import file with wrong password", async () => {
-        await expect(
-            V4Keystore.import(importingKeystoreFilePath, keyStoreFilePath, wrongPassword)
-        ).rejects.toThrow("Invalid password");
+        await expect(V4Keystore.import(importingKeystoreFilePath, keyStoreFilePath, wrongPassword)).rejects.toThrow(
+            "Invalid password",
+        );
     }, 10000);
 
     it("should import file", async () => {

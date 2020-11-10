@@ -1,7 +1,6 @@
 import {EventEmitter} from "events";
 
 export class FifoQueue<T> extends EventEmitter {
-
     private array: T[] = [];
 
     private readonly max: number;
@@ -13,7 +12,7 @@ export class FifoQueue<T> extends EventEmitter {
 
     public push(item: T): void {
         this.array.push(item);
-        if(this.array.length > this.max) {
+        if (this.array.length > this.max) {
             this.array.shift();
         }
         this.emit("data", item);
@@ -22,5 +21,4 @@ export class FifoQueue<T> extends EventEmitter {
     public getAll(): T[] {
         return this.array.slice();
     }
-
 }

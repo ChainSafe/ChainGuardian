@@ -5,11 +5,12 @@ import KeyModalContent from "../../src/renderer/components/KeyModalContent/KeyMo
 describe("KeyModalContent", () => {
     it("renders correctly", () => {
         const tree = renderer
-            .create(<KeyModalContent
-                title="Test" 
-                onSubmit={(): void => { }}
-                placeholder="Test placeholder"
-            ></KeyModalContent>)
+            .create(
+                <KeyModalContent
+                    title='Test'
+                    onSubmit={(): void => {}}
+                    placeholder='Test placeholder'></KeyModalContent>,
+            )
             .toJSON();
         expect(tree).toMatchSnapshot();
     });
@@ -17,11 +18,11 @@ describe("KeyModalContent", () => {
         const tree = renderer
             .create(
                 <KeyModalContent
-                    title="Test"
-                    onSubmit={(): void => { }}
-                    description="Test description"
-                    placeholder="Test placeholder"
-                />
+                    title='Test'
+                    onSubmit={(): void => {}}
+                    description='Test description'
+                    placeholder='Test placeholder'
+                />,
             )
             .toJSON();
         expect(tree).toMatchSnapshot();

@@ -5,13 +5,15 @@ import {InputPrompt, ISubmitStatus} from "../../src/renderer/components/Prompt/I
 describe("Input prompt", () => {
     it("renders correctly", () => {
         const tree = renderer
-            .create(<InputPrompt
-                title={"Make input"}
-                display={true}
-                onSubmit={async (): Promise<ISubmitStatus> => {return {valid: true};}}
-                onCancel={(): void => {}}
-            >
-            </InputPrompt >)
+            .create(
+                <InputPrompt
+                    title={"Make input"}
+                    display={true}
+                    onSubmit={async (): Promise<ISubmitStatus> => {
+                        return {valid: true};
+                    }}
+                    onCancel={(): void => {}}></InputPrompt>,
+            )
             .toJSON();
         expect(tree).toMatchSnapshot();
     });

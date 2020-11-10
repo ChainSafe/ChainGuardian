@@ -16,7 +16,7 @@ describe("Onboarding start screen", () => {
         await stopApp(app);
     });
 
-    it("has rendered properly", async function() {
+    it("has rendered properly", async function () {
         const {client} = app;
         expect(await (await client.$(".back-tab")).isExisting()).to.be.true;
         expect((await (await client.$(".step")).getValue()).length).to.be.equal(6);
@@ -35,5 +35,4 @@ describe("Onboarding start screen", () => {
     //     const url = await client.getUrl();
     //     expect(url.endsWith(Routes.LOGIN_ROUTE)).to.be.true;
     // });
-
 });

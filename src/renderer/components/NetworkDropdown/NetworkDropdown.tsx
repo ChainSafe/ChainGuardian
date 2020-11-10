@@ -16,11 +16,7 @@ export const NetworkDropdown = (): ReactElement => {
 
     return (
         <div className={"validator-dropdown"}>
-            <Dropdown
-                options={networkOptions}
-                current={currentNetworkIndex}
-                onChange={onChange}
-            />
+            <Dropdown options={networkOptions} current={currentNetworkIndex} onChange={onChange} />
         </div>
     );
 };

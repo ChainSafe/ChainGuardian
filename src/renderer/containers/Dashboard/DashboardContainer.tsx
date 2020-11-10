@@ -48,40 +48,43 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
         });
     };
 
-    useEffect(()=> {
+    useEffect(() => {
         props.loadValidators();
         setLoading(false);
-    },[props.account !== null]);
+    }, [props.account !== null]);
 
-    useEffect(()=> {
+    useEffect(() => {
         props.loadAccount();
-    },[]);
+    }, []);
 
     return (
-        <Background
-            topBar={<Topbar />}
-            scrollable={true}
-        >
-            {props.validatorsList.length > 0 ?
+        <Background topBar={<Topbar />} scrollable={true}>
+            {props.validatorsList.length > 0 ? (
                 <div className={"validators-display"}>
                     {props.validatorsList.map((publicKey, index) => {
-                        return <div key={index} className={"validator-wrapper"}>
-                            <Validator
-                                publicKey={publicKey}
-                                onBeaconNodeClick={(() => (): void => {
-                                    props.history.push(
-                                        Routes.VALIDATOR_DETAILS.replace(":publicKey", publicKey),
-                                        {tab: "BN"}
-                                    );
-                                })}
-                                onRemoveClick={(): void => {onRemoveValidator(index);}}
-                                onDetailsClick={(): void =>
-                                    props.history.push(Routes.VALIDATOR_DETAILS.replace(":publicKey", publicKey))}
-                            />
-                        </div>;
+                        return (
+                            <div key={index} className={"validator-wrapper"}>
+                                <Validator
+                                    publicKey={publicKey}
+                                    onBeaconNodeClick={() => (): void => {
+                                        props.history.push(Routes.VALIDATOR_DETAILS.replace(":publicKey", publicKey), {
+                                            tab: "BN",
+                                        });
+                                    }}
+                                    onRemoveClick={(): void => {
+                                        onRemoveValidator(index);
+                                    }}
+                                    onDetailsClick={(): void =>
+                                        props.history.push(Routes.VALIDATOR_DETAILS.replace(":publicKey", publicKey))
+                                    }
+                                />
+                            </div>
+                        );
                     })}
                 </div>
-                : !loading ? <EmptyValidatorsList /> : null}
+            ) : !loading ? (
+                <EmptyValidatorsList />
+            ) : null}
 
             <ConfirmModal
                 showModal={confirmModal}
@@ -99,7 +102,7 @@ interface IStateProps {
     validatorsList: ReturnType<typeof getNetworkValidators>;
 }
 
-interface IInjectedProps{
+interface IInjectedProps {
     notification: typeof createNotification;
     loadValidators: typeof loadValidatorsAction;
     loadAccount: typeof requireAuthorization;
@@ -119,10 +122,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
             loadAccount: requireAuthorization,
             removeValidator: removeActiveValidator,
         },
-        dispatch
+        dispatch,
     );
 
-export const DashboardContainer = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Dashboard);
+export const DashboardContainer = connect(mapStateToProps, mapDispatchToProps)(Dashboard);

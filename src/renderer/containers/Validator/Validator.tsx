@@ -14,27 +14,29 @@ import {NodeCard} from "../../components/Cards/NodeCard";
 import {Keypair} from "@chainsafe/bls";
 import {IRootState} from "../../ducks/reducers";
 import {
-    updateValidatorChainData, stopActiveValidatorService, startNewValidatorService
+    updateValidatorChainData,
+    stopActiveValidatorService,
+    startNewValidatorService,
 } from "../../ducks/validator/actions";
 import {getSelectedNetwork, getBeaconNodes} from "../../ducks/network/selectors";
 import {getValidator} from "../../ducks/validator/selectors";
 
 export interface IValidatorSimpleProps {
-    publicKey: string,
+    publicKey: string;
     onRemoveClick: () => void;
     onDetailsClick: () => void;
     onBeaconNodeClick: (id: string) => () => void;
 }
 
-export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
-    props: IValidatorSimpleProps) => {
+export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props: IValidatorSimpleProps) => {
     const [askPassword, setAskPassword] = useState<string>(null);
     const dispatch = useDispatch();
     const history = useHistory();
     const network = useSelector(getSelectedNetwork);
     const validatorBeaconNodes = useSelector(getBeaconNodes);
-    const nodes = Object.prototype.hasOwnProperty.call(validatorBeaconNodes, props.publicKey) ?
-        validatorBeaconNodes[props.publicKey] : [];
+    const nodes = Object.prototype.hasOwnProperty.call(validatorBeaconNodes, props.publicKey)
+        ? validatorBeaconNodes[props.publicKey]
+        : [];
     const validator = useSelector((state: IRootState) => getValidator(state, props));
 
     const isLoaded = !!validator;
@@ -51,9 +53,9 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
 
     const renderBeaconNodes = (): React.ReactElement => {
         return (
-            <div className="validator-nodes">
-                <div className="box node-container">
-                    <div className="node-grid-container">
+            <div className='validator-nodes'>
+                <div className='box node-container'>
+                    <div className='node-grid-container'>
                         {nodes.length === 0 ? <p>No working beacon nodes.</p> : null}
 
                         {nodes.map((node, index) => (
@@ -76,7 +78,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
         );
     };
 
-    const controlValidator = async(keypair: Keypair): Promise<void> => {
+    const controlValidator = async (keypair: Keypair): Promise<void> => {
         if (askPassword === "stop") {
             dispatch(stopActiveValidatorService(keypair));
         } else if (askPassword === "start") {
@@ -89,25 +91,21 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
 
     const renderValidatorButtons = (): React.ReactElement => {
         return (
-            <div className="flex validator-service-button">
-                {validator.isRunning ?
-                    <ButtonDestructive onClick={(): void => setAskPassword("stop")}>
-                        Stop
-                    </ButtonDestructive>
-                    :
-                    <ButtonPrimary onClick={(): void => setAskPassword("start")}>
-                        Start
-                    </ButtonPrimary>
-                }
+            <div className='flex validator-service-button'>
+                {validator.isRunning ? (
+                    <ButtonDestructive onClick={(): void => setAskPassword("stop")}>Stop</ButtonDestructive>
+                ) : (
+                    <ButtonPrimary onClick={(): void => setAskPassword("start")}>Start</ButtonPrimary>
+                )}
             </div>
         );
     };
 
-    return(
+    return (
         <>
-            <div className="validator-container">
-                <div className="validator-simple-keys">
-                    <div className="row">
+            <div className='validator-container'>
+                <div className='validator-simple-keys'>
+                    <div className='row'>
                         <h2>{validator.name}</h2>
                         {renderValidatorButtons()}
                     </div>
@@ -115,30 +113,27 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
 
                     <br />
 
-                    <div className="row validator-stat-container ">
-                        <ValidatorStat title="Balance" type="ETH" value={balance}/>
-                        <ValidatorStat title="Return (ETH)" type="ROI" value={ROI}/>
-                        <ValidatorStat title="Validator" type="Status" value={validator.status}/>
+                    <div className='row validator-stat-container '>
+                        <ValidatorStat title='Balance' type='ETH' value={balance} />
+                        <ValidatorStat title='Return (ETH)' type='ROI' value={ROI} />
+                        <ValidatorStat title='Validator' type='Status' value={validator.status} />
                     </div>
 
                     <br />
 
                     <InputForm
-                        label="PUBLIC KEY"
+                        label='PUBLIC KEY'
                         focused={false}
                         inputValue={props.publicKey}
                         readOnly={true}
-                        type="text"
+                        type='text'
                     />
 
-                    <PrivateKeyField
-                        label="PRIVATE KEY"
-                        keystore={validator.keystore}
-                    />
+                    <PrivateKeyField label='PRIVATE KEY' keystore={validator.keystore} />
                 </div>
-                <div className="validator-status">
+                <div className='validator-status'>
                     {renderBeaconNodes()}
-                    <div className="validator-buttons">
+                    <div className='validator-buttons'>
                         <ButtonDestructive onClick={(): void => setAskPassword("remove")}>REMOVE</ButtonDestructive>
                         <ButtonPrimary onClick={props.onDetailsClick}>DETAILS</ButtonPrimary>
                     </div>
@@ -149,7 +144,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (
                 keystore={validator.keystore}
                 display={!!askPassword}
                 onSubmit={controlValidator}
-                onCancel={(): void=> setAskPassword(null)}
+                onCancel={(): void => setAskPassword(null)}
             />
         </>
     );

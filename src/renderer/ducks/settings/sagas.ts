@@ -10,7 +10,5 @@ function* saveAccountSettings(action: ReturnType<typeof saveAccountSettingsActio
 }
 
 export function* settingsSagaWatcher(): Generator {
-    yield all([
-        takeEvery(saveAccountSettingsAction, saveAccountSettings),
-    ]);
+    yield all([takeEvery(saveAccountSettingsAction, saveAccountSettings)]);
 }

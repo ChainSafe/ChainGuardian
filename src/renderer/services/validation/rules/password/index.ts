@@ -13,5 +13,5 @@ export const passwordExtension = (joi: Joi.Root): Extension => ({
         ...lowerRule,
         ...numberRule,
         ...signsRule,
-    }
+    },
 });

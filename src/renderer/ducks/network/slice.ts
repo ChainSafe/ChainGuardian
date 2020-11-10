@@ -15,20 +15,21 @@ export const networkSlice = createSlice({
     initialState,
     reducers: {
         loadedValidatorBeaconNodes: {
-            reducer: (state, action: PayloadAction<BeaconNode[], string, string>): void =>
-            {
+            reducer: (state, action: PayloadAction<BeaconNode[], string, string>): void => {
                 state.validatorBeaconNodes[action.meta] = action.payload;
             },
-            prepare: (beaconNodes: BeaconNode[], validator: string): { payload: BeaconNode[]; meta: string } => ({
-                payload: beaconNodes, meta: validator,
+            prepare: (beaconNodes: BeaconNode[], validator: string): {payload: BeaconNode[]; meta: string} => ({
+                payload: beaconNodes,
+                meta: validator,
             }),
         },
         subscribeToBlockListening: {
             reducer: (state, action: PayloadAction<NodeJS.Timeout, string, string>): void => {
                 state.blockSubscriptions[action.meta] = action.payload;
             },
-            prepare: (timeoutId: NodeJS.Timeout, validator: string): { payload: NodeJS.Timeout; meta: string } => ({
-                payload: timeoutId, meta: validator,
+            prepare: (timeoutId: NodeJS.Timeout, validator: string): {payload: NodeJS.Timeout; meta: string} => ({
+                payload: timeoutId,
+                meta: validator,
             }),
         },
         selectNetwork: (state, action: PayloadAction<string>): void => {

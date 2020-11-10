@@ -22,23 +22,27 @@ describe("Deposit transaction service unit tests", () => {
         // create accounts and deploy deposit contract
         const deployWallet = ethers.Wallet.createRandom();
         const accountWallet = PrivateKey.random();
-        provider = new ethers.providers.Web3Provider(ganache.provider({
-            accounts: [{
-                balance: "100000000000000000000",
-                secretKey: accountWallet.toHexString(),
-            },
-            {
-                balance: "100000000000000000000",
-                secretKey: toHexString(deployWallet.privateKey),
-            }],
-        }));
+        provider = new ethers.providers.Web3Provider(
+            ganache.provider({
+                accounts: [
+                    {
+                        balance: "100000000000000000000",
+                        secretKey: accountWallet.toHexString(),
+                    },
+                    {
+                        balance: "100000000000000000000",
+                        secretKey: toHexString(deployWallet.privateKey),
+                    },
+                ],
+            }),
+        );
         wallet = new ethers.Wallet(accountWallet.toHexString());
         depositContractAddress = await deployDepositContract(provider, toHexString(deployWallet.privateKey));
     });
 
     it("should send deposit transaction successfully", async () => {
         const keyPair = new KeyPair(PrivateKey.fromHexString(wallet.privateKey));
-        const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1,"hex"), "32", config);
+        const depositData = generateDeposit(keyPair, Buffer.alloc(48, 1, "hex"), "32", config);
         const depositTx = DepositTx.generateDepositTx(depositData, depositContractAddress, config, "32");
         const signedTx = await depositTx.sign(wallet);
         const transactionResponse = await provider.sendTransaction(toHexString(signedTx));

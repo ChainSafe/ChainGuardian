@@ -20,8 +20,8 @@ export interface IState {
     password: string;
     confirm: string;
     errorMessages: {
-        password?: string,
-        confirm?: string
+        password?: string;
+        confirm?: string;
     };
     validated: boolean;
     loading: boolean;
@@ -50,22 +50,22 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
     public render(): ReactElement {
         const inputs: Array<IInputFormProps> = [
             {
-                inputId:"password",
+                inputId: "password",
                 focused: true,
                 onChange: !this.props.path ? this.handleChange : this.handleConfirmPassword,
                 placeholder: "Enter password",
                 valid: this.isValid(this.state.errorMessages.password),
                 errorMessage: this.state.errorMessages.password,
-            }
+            },
         ];
         if (!this.props.path) {
             inputs.push({
-                inputId:"confirm",
+                inputId: "confirm",
                 onChange: this.handleChange,
                 placeholder: "Confirm password",
-                valid: this.isValid(this.state.errorMessages.confirm) &&
-                    this.isValid(this.state.errorMessages.password),
-                errorMessage: this.state.errorMessages.confirm
+                valid:
+                    this.isValid(this.state.errorMessages.confirm) && this.isValid(this.state.errorMessages.password),
+                errorMessage: this.state.errorMessages.confirm,
             });
         }
 
@@ -74,30 +74,30 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
             <>
                 <h1>{!this.props.path ? "Create" : "Validate"} a password</h1>
                 {!this.props.path && <p>You will use this password to unlock applications and keys.</p>}
-                <div className="input-container input-container-vertical">
+                <div className='input-container input-container-vertical'>
                     <form
-                        onSubmit={(): void => {this.setState({loading: true}); this.handleSubmit();}}
-                        className="flex-column"
-                    >
-                        <MultipleInputVertical inputs={inputs}/>
-                        {this.state.validated ?
+                        onSubmit={(): void => {
+                            this.setState({loading: true});
+                            this.handleSubmit();
+                        }}
+                        className='flex-column'>
+                        <MultipleInputVertical inputs={inputs} />
+                        {this.state.validated ? (
                             <ButtonPrimary
-                                buttonId="next"
+                                buttonId='next'
                                 disabled={errorMessages.password !== "" || errorMessages.confirm !== ""}
-                                type="submit"
-                            >
+                                type='submit'>
                                 NEXT
                             </ButtonPrimary>
-                            :
+                        ) : (
                             <ButtonPrimary
                                 onClick={this.handleValidateClick}
-                                buttonId="validate"
+                                buttonId='validate'
                                 disabled={!this.state.password}
-                                type="button"
-                            >
+                                type='button'>
                                 VALIDATE
                             </ButtonPrimary>
-                        }
+                        )}
                     </form>
                 </div>
 
@@ -107,7 +107,7 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
     }
 
     private isValid(error: string | undefined): boolean | undefined {
-        return (typeof error === "undefined") ? error : (error === "");
+        return typeof error === "undefined" ? error : error === "";
     }
 
     private handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
@@ -130,13 +130,12 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
 
     private handleValidateClick = (): void => {
         this.setState({loading: true});
-        new V4Keystore(this.props.path).verifyPassword(this.state.password)
-            .then(ok => {
-                const newState = {loading: false, validated: false, errorMessages: {password: "", confirm: ""}};
-                if (!ok) newState.errorMessages.password = "Wrong password!";
-                else newState.validated = true;
-                this.setState(newState);
-            });
+        new V4Keystore(this.props.path).verifyPassword(this.state.password).then((ok) => {
+            const newState = {loading: false, validated: false, errorMessages: {password: "", confirm: ""}};
+            if (!ok) newState.errorMessages.password = "Wrong password!";
+            else newState.validated = true;
+            this.setState(newState);
+        });
     };
 
     private handleSubmit = (): void => {
@@ -161,7 +160,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
             afterCreatePassword,
             afterConfirmPassword,
         },
-        dispatch
+        dispatch,
     );
 
 const mapStateToProps = (state: IRootState): IStateProps => ({
@@ -169,7 +168,4 @@ const mapStateToProps = (state: IRootState): IStateProps => ({
     path: getKeystorePath(state),
 });
 
-export const CreatePasswordContainer = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CreatePassword);
+export const CreatePasswordContainer = connect(mapStateToProps, mapDispatchToProps)(CreatePassword);

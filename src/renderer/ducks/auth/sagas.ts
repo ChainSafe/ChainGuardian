@@ -4,8 +4,9 @@ import database from "../../services/db/api/database";
 import {CGAccount} from "../../models/account";
 import {error} from "electron-log";
 
-export function* authorize(action: ReturnType<typeof requireAuthorization>):
-Generator<Promise<CGAccount> | PutEffect, void, CGAccount & null> {
+export function* authorize(
+    action: ReturnType<typeof requireAuthorization>,
+): Generator<Promise<CGAccount> | PutEffect, void, CGAccount & null> {
     try {
         const account = yield database.account.get(action.payload);
         if (account !== null) {
@@ -17,7 +18,5 @@ Generator<Promise<CGAccount> | PutEffect, void, CGAccount & null> {
 }
 
 export function* authSagaWatcher(): Generator {
-    yield all([
-        takeEvery(requireAuthorization, authorize),
-    ]);
+    yield all([takeEvery(requireAuthorization, authorize)]);
 }
