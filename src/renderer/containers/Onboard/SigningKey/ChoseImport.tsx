@@ -9,7 +9,7 @@ export const ChoseImport: FC = () => (
         <p>You’ll need this for signing blocks and attestations on your behalf</p>
         <div className='action-buttons'>
             <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT_FILE)}>
-                <ButtonSecondary buttonId='import' large>
+                <ButtonSecondary buttonId='file' large>
                     KEYSTORE
                 </ButtonSecondary>
             </Link>
