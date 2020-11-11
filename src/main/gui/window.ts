@@ -24,6 +24,8 @@ export async function createWindow(): Promise<void> {
             nodeIntegrationInWorker: true,
             nodeIntegrationInSubFrames: true,
             webSecurity: false,
+            // TODO: https://github.com/electron/electron/issues/21408
+            enableRemoteModule: true,
             devTools: process.env.NODE_ENV !== "production",
         },
         backgroundColor: "#052437",
