@@ -12,6 +12,6 @@ export const SECRET_KEY_LENGTH = 32;
  * @param keyType - private || public
  */
 export function isValidKeyLength(key: string, keyType: "private" | "public"): boolean {
-    const expectedKeyLength = (keyType === "public") ? PUBLIC_KEY_LENGTH : SECRET_KEY_LENGTH;
+    const expectedKeyLength = keyType === "public" ? PUBLIC_KEY_LENGTH : SECRET_KEY_LENGTH;
     return Buffer.from(key, "hex").length === expectedKeyLength;
 }

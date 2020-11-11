@@ -9,31 +9,29 @@ import {Eth2ChainHeadType, IEth2ChainHead} from "../../../../models/types/head";
 import {ILogger} from "@chainsafe/lodestar-utils";
 import {axiosConfig} from "./axios";
 
-
 export class LighthouseBeaconApiClient implements IEth2BeaconApi {
-
     private client: HttpClient;
     private readonly config: IBeaconConfig;
     private readonly logger: ILogger;
 
     public constructor(options: IBeaconClientOptions) {
         this.client = new HttpClient(options.baseUrl, {
-            axios: axiosConfig
+            axios: axiosConfig,
         });
         this.config = options.config;
         this.logger = options.logger;
     }
 
-    public async getGenesis(): Promise<Genesis|null> {
+    public async getGenesis(): Promise<Genesis | null> {
         try {
             const [genesisTime, fork] = await Promise.all([
                 this.client.get<number>(LighthouseRoutes.GET_GENESIS_TIME),
-                this.getFork()
+                this.getFork(),
             ]);
             return {
                 genesisForkVersion: this.config.params.GENESIS_FORK_VERSION,
                 genesisValidatorsRoot: fork.genesisValidatorsRoot,
-                genesisTime: BigInt(genesisTime)
+                genesisTime: BigInt(genesisTime),
             };
         } catch (e) {
             this.logger.error("Failed to get genesis response");
@@ -48,23 +46,23 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
     }> {
         const [validatorsRootResponse, forkResponse] = await Promise.all([
             this.client.get<string>(LighthouseRoutes.GET_GENESIS_VALIDATORS_ROOT),
-            this.client.get<Json>(LighthouseRoutes.GET_FORK)
+            this.client.get<Json>(LighthouseRoutes.GET_FORK),
         ]);
         return {
             fork: this.config.types.Fork.fromJson(forkResponse, {case: "snake"}),
             genesisValidatorsRoot: this.config.types.Root.fromJson(validatorsRootResponse, {case: "snake"}),
-            chainId: BigInt(0)
+            chainId: BigInt(0),
         };
     }
 
     public async getValidator(pubkey: BLSPubkey): Promise<ValidatorResponse | null> {
-        const validatorResponse = await this.client.post<{ pubkeys: string[] }, Json[]>(
-            LighthouseRoutes.GET_VALIDATORS,
-            {pubkeys: [this.config.types.BLSPubkey.toJson(pubkey, {case: "snake"}) as string]}
-        );
-        const validator = validatorResponse.find((validatorJson) =>
-            // @ts-ignore
-            validatorJson.pubkey === toHexString(pubkey)
+        const validatorResponse = await this.client.post<{pubkeys: string[]}, Json[]>(LighthouseRoutes.GET_VALIDATORS, {
+            pubkeys: [this.config.types.BLSPubkey.toJson(pubkey, {case: "snake"}) as string],
+        });
+        const validator = validatorResponse.find(
+            (validatorJson) =>
+                // @ts-ignore
+                validatorJson.pubkey === toHexString(pubkey),
         );
         // @ts-ignore
         if (!validator || !validator.validator) {
@@ -77,15 +75,16 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
     }
 
     public async getValidators(pubkeys: BLSPubkey[]): Promise<ValidatorResponse[]> {
-        const publicKeys = pubkeys.map(pubkey => (
-            this.config.types.BLSPubkey.toJson(pubkey, {case: "snake"}) as string
-        ));
-        const validatorResponse = (await this.client.post<{ pubkeys: string[] }, Json[]>(
-            LighthouseRoutes.GET_VALIDATORS,
-            {pubkeys: publicKeys}
-        ))
-        // remove null validators
-        // @ts-ignore
+        const publicKeys = pubkeys.map(
+            (pubkey) => this.config.types.BLSPubkey.toJson(pubkey, {case: "snake"}) as string,
+        );
+        const validatorResponse = (
+            await this.client.post<{pubkeys: string[]}, Json[]>(LighthouseRoutes.GET_VALIDATORS, {
+                pubkeys: publicKeys,
+            })
+        )
+            // remove null validators
+            // @ts-ignore
             .filter((v) => !!v.validator_index);
 
         validatorResponse.forEach((_, i) => {
@@ -93,23 +92,14 @@ export class LighthouseBeaconApiClient implements IEth2BeaconApi {
             validatorResponse[i].index = validatorResponse[i].validator_index;
         });
 
-        return validatorResponse.map(v => (
-            this.config.types.ValidatorResponse.fromJson(v, {case: "snake"})
-        ));
+        return validatorResponse.map((v) => this.config.types.ValidatorResponse.fromJson(v, {case: "snake"}));
     }
 
     public async getChainHead(): Promise<IEth2ChainHead> {
-        return Eth2ChainHeadType.fromJson(
-            await this.client.get<Json>(LighthouseRoutes.GET_HEAD),
-            {case: "snake"}
-        );
+        return Eth2ChainHeadType.fromJson(await this.client.get<Json>(LighthouseRoutes.GET_HEAD), {case: "snake"});
     }
 
     public async getSpec(): Promise<ISpecResponse> {
-        return SpecType.fromJson(
-            await this.client.get<Json>(LighthouseRoutes.GET_SPEC),
-            {case: "snake"}
-        );
+        return SpecType.fromJson(await this.client.get<Json>(LighthouseRoutes.GET_SPEC), {case: "snake"});
     }
-
 }

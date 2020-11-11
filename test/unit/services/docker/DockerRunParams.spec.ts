@@ -16,10 +16,10 @@ describe("DockerRunParams unit tests", () => {
             restart: "always",
             publishAllPorts: true,
             image: "test-image",
-            cmd: "ls"
+            cmd: "ls",
         };
         expect(generateRunCommand(params).trim()).toBe(
-            `--name ${params.name} -d --privileged=true --ipc="none" --restart=always -P test-image ls`
+            `--name ${params.name} -d --privileged=true --ipc="none" --restart=always -P test-image ls`,
         );
     });
 });

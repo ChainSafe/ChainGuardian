@@ -6,7 +6,7 @@ describe("cmd utils unit tests", () => {
         // change platform property
         const originalPlatform = Object.getOwnPropertyDescriptor(process, "platform");
         Object.defineProperty(process, "platform", {
-            value: "linux"
+            value: "linux",
         });
         // test
         expect(isPlatform("lin")).toBeTruthy();

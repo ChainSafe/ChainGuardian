@@ -23,44 +23,40 @@ export interface IInputFormProps {
 }
 
 export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInputFormProps) => {
-    
     const classNamesValid = (props: boolean | undefined): string => {
-        switch(props) {
-            case undefined : return("");
-            case true : return("success");
-            case false : return("error");
+        switch (props) {
+            case undefined:
+                return "";
+            case true:
+                return "success";
+            case false:
+                return "error";
         }
     };
 
     const handleEyeStyle = (eyeTrue: boolean | undefined, eyeSlashed: boolean | undefined): string => {
-
         const value = eyeTrue ? "" : "none";
         const eyeType = eyeSlashed ? "input-eye-slash" : "input-eye";
         return eyeType + " " + value;
     };
 
-    return( 
+    return (
         <form onSubmit={props.onSubmit}>
-            <div className="label">{props.label}</div>
-            <div className="inputform-container">
+            <div className='label'>{props.label}</div>
+            <div className='inputform-container'>
                 <input
                     id={props.inputId}
                     autoFocus={props.focused}
                     placeholder={props.placeholder}
                     value={props.inputValue}
                     readOnly={props.readOnly}
-                    className={`inputform ${classNamesValid(props.valid)}`} 
+                    className={`inputform ${classNamesValid(props.valid)}`}
                     onChange={props.onChange}
                     type={props.type}
                 />
-                <div
-                    className={handleEyeStyle(props.eye,props.eyeSlash)}
-                    onClick={props.onEyeClick}
-                />
+                <div className={handleEyeStyle(props.eye, props.eyeSlash)} onClick={props.onEyeClick} />
             </div>
-            <div 
-                className={"error-message"}>
-                {props.valid === false && props.errorMessage}</div>
+            <div className={"error-message"}>{props.valid === false && props.errorMessage}</div>
         </form>
     );
 };

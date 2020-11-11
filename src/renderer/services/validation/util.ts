@@ -7,9 +7,9 @@ export interface IValidationErrors {
 export function joiValidationToErrorMessages(joiError: ValidationError): IValidationErrors {
     const errors: {[k: string]: string[]} = {};
     if (joiError) {
-        joiError.details.forEach(function(detail) {
+        joiError.details.forEach(function (detail) {
             detail.path.forEach((path) => {
-                if(errors[path]) {
+                if (errors[path]) {
                     errors[path].push(detail.message);
                 } else {
                     errors[path] = [detail.message];

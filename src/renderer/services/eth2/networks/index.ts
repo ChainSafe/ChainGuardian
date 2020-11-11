@@ -1,8 +1,7 @@
 import {INetworkConfig} from "../../interfaces";
 import {LocalhostConfig} from "./local";
 
-const networks: INetworkConfig[] = [
-];
+const networks: INetworkConfig[] = [];
 
 const isLocal = process.env.NODE_ENV !== "production";
 if (isLocal) {
@@ -13,7 +12,7 @@ const defaultNetworkIndex = 0;
 
 const getNetworkConfig = (name: string): INetworkConfig => {
     const result = networks.filter((network) => network.networkName === name);
-    return (result.length === 0) ? networks[defaultNetworkIndex] : result[0];
+    return result.length === 0 ? networks[defaultNetworkIndex] : result[0];
 };
 
 const networksList = networks.map((contract) => contract.networkName);
@@ -21,13 +20,7 @@ const networksList = networks.map((contract) => contract.networkName);
 const getNetworkConfigByGenesisVersion = (genesisVersion: string): null | INetworkConfig => {
     const genesisBuffer = Buffer.from(genesisVersion);
     const result = networks.filter((network) => genesisBuffer.equals(network.eth2Config.params.GENESIS_FORK_VERSION));
-    return (result.length > 0) ? result[0] : null;
+    return result.length > 0 ? result[0] : null;
 };
 
-export {
-    networks,
-    getNetworkConfig,
-    getNetworkConfigByGenesisVersion,
-    networksList,
-    defaultNetworkIndex,
-};
+export {networks, getNetworkConfig, getNetworkConfigByGenesisVersion, networksList, defaultNetworkIndex};

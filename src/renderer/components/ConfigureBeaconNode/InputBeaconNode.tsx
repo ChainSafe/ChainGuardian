@@ -1,8 +1,5 @@
 import React, {useState} from "react";
-import {
-    isSupportedBeaconChain,
-    readBeaconChainNetwork
-} from "../../services/eth2/client";
+import {isSupportedBeaconChain, readBeaconChainNetwork} from "../../services/eth2/client";
 import {defaultNetworkIndex, networks, networksList} from "../../services/eth2/networks";
 import {Joi} from "../../services/validation";
 import {ButtonPrimary, ButtonSecondary} from "../Button/ButtonStandard";
@@ -29,7 +26,7 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
         setBeaconNodeInput(e.currentTarget.value);
     };
 
-    const isValidBeaconNode = async(): Promise<boolean> => {
+    const isValidBeaconNode = async (): Promise<boolean> => {
         const beaconNodeInputSchema = Joi.string().uri();
         const validationResult = beaconNodeInputSchema.validate(beaconNodeInput);
         if (validationResult.error) {
@@ -56,7 +53,7 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
         return true;
     };
 
-    const onGoSubmit = async(): Promise<void> => {
+    const onGoSubmit = async (): Promise<void> => {
         if (await isValidBeaconNode()) {
             props.onGoSubmit(beaconNodeInput, getSelectedNetwork());
         }
@@ -75,29 +72,30 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
             <h1>Add your beacon node URL</h1>
             <p>Either add the URL or run a Dockerized beacon node on your device.</p>
 
-            <div className="action-buttons">
+            <div className='action-buttons'>
                 <InputForm
                     focused
                     onChange={onBeaconNodeInput}
                     inputValue={beaconNodeInput}
-                    placeholder="http://... beacon node URL"
-                    inputId="beaconURL"
+                    placeholder='http://... beacon node URL'
+                    inputId='beaconURL'
                     errorMessage={errorMessage}
                     valid={errorMessage !== "" ? false : null}
                     onSubmit={onGoSubmit}
                 />
 
-                <ButtonSecondary onClick={onGoSubmit} buttonId="go">GO</ButtonSecondary>
+                <ButtonSecondary onClick={onGoSubmit} buttonId='go'>
+                    GO
+                </ButtonSecondary>
             </div>
 
-            <h5 className="input-or">OR</h5>
+            <h5 className='input-or'>OR</h5>
 
-            {!props.displayNetwork ?
-                null :
+            {!props.displayNetwork ? null : (
                 <>
-                    <div className="row align-left">
+                    <div className='row align-left'>
                         <Dropdown
-                            label="Network"
+                            label='Network'
                             current={selectedNetworkIndex}
                             onChange={setSelectedNetworkIndex}
                             options={networksList}
@@ -105,11 +103,13 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
                     </div>
                     <br />
                 </>
-            }
+            )}
 
-            <ButtonPrimary buttonId="run-node" onClick={onRunNodeSubmit}>RUN OWN NODE</ButtonPrimary>
+            <ButtonPrimary buttonId='run-node' onClick={onRunNodeSubmit}>
+                RUN OWN NODE
+            </ButtonPrimary>
 
-            <div className="skip-notes">
+            <div className='skip-notes'>
                 This requires a Docker installed. We will run a Dockerized beacon node on your device.
             </div>
         </>

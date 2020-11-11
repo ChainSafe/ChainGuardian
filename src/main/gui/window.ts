@@ -6,7 +6,7 @@ import {dialog} from "electron";
 let win: BrowserWindow | null;
 
 export async function createWindow(): Promise<void> {
-    if(win) {
+    if (win) {
         return;
     }
     if (process.env.NODE_ENV !== "production") {
@@ -15,7 +15,7 @@ export async function createWindow(): Promise<void> {
 
     const iconPath = path.join(
         __dirname,
-        `../src/renderer/assets/ico/app_icon${(iconExtensions as Record<NodeJS.Platform, string>)[process.platform]}`
+        `../src/renderer/assets/ico/app_icon${(iconExtensions as Record<NodeJS.Platform, string>)[process.platform]}`,
     );
     // eslint-disable-next-line require-atomic-updates
     win = new BrowserWindow({
@@ -24,7 +24,7 @@ export async function createWindow(): Promise<void> {
             nodeIntegrationInWorker: true,
             nodeIntegrationInSubFrames: true,
             webSecurity: false,
-            devTools: process.env.NODE_ENV !== "production"
+            devTools: process.env.NODE_ENV !== "production",
         },
         backgroundColor: "#052437",
         show: false,
@@ -32,7 +32,9 @@ export async function createWindow(): Promise<void> {
     });
     win.maximize();
     win.once("ready-to-show", () => {
-        if (win !== null) { win.show(); }
+        if (win !== null) {
+            win.show();
+        }
     });
     win.webContents.on("did-finish-load", async () => {
         if (win !== null) {
@@ -46,7 +48,7 @@ export async function createWindow(): Promise<void> {
         win.loadURL("http://localhost:2003");
     } else {
         let append = "";
-        if(process.env.CG_INITIAL_ROUTE) {
+        if (process.env.CG_INITIAL_ROUTE) {
             append += "#" + process.env.CG_INITIAL_ROUTE;
         }
         win.loadURL("file://" + path.join(__dirname, "index.html") + append);
@@ -62,14 +64,13 @@ export async function createWindow(): Promise<void> {
 
     win.on("close", (e: Electron.Event) => {
         // TODO / Validator status - check if there is validator with status ACTIVE/VALIDATING
-        if (!process.env.IS_TESTING && win !== null){
-            const choice = dialog.showMessageBoxSync(win,
-                {
-                    type: "question",
-                    buttons: ["Yes", "No"],
-                    title: "Confirm",
-                    message: "Are you sure you want to quit?"
-                });
+        if (!process.env.IS_TESTING && win !== null) {
+            const choice = dialog.showMessageBoxSync(win, {
+                type: "question",
+                buttons: ["Yes", "No"],
+                title: "Confirm",
+                message: "Are you sure you want to quit?",
+            });
             if (choice === 1) {
                 e.preventDefault();
             } else {
@@ -80,7 +81,7 @@ export async function createWindow(): Promise<void> {
         }
     });
 
-    win.on("closed", function() {
+    win.on("closed", function () {
         win = null;
     });
 }

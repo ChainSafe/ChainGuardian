@@ -26,7 +26,7 @@ export class LevelDbController extends EventEmitter implements IDatabaseControll
 
     public constructor(opts: Partial<ILevelDBOptions>) {
         super();
-        if(!opts.db && !opts.location) {
+        if (!opts.db && !opts.location) {
             throw new Error("Please specify database location");
         }
         this.opts = opts as ILevelDBOptions;
@@ -34,12 +34,11 @@ export class LevelDbController extends EventEmitter implements IDatabaseControll
 
     public async start(): Promise<void> {
         if (!this.db) {
-            this.db = this.opts.db
-                || level(this.getDatabaseLocation(), {keyEncoding: "binary", valueEncoding: "binary"});
+            this.db =
+                this.opts.db || level(this.getDatabaseLocation(), {keyEncoding: "binary", valueEncoding: "binary"});
         } else {
             await this.db.open();
         }
-
     }
 
     public async stop(): Promise<void> {
@@ -61,15 +60,15 @@ export class LevelDbController extends EventEmitter implements IDatabaseControll
         return this.db.put(key, value);
     }
 
-    public async batchPut(items: { key: unknown; value: unknown }[]): Promise<any> {
+    public async batchPut(items: {key: unknown; value: unknown}[]): Promise<any> {
         const batch = this.db.batch();
-        items.forEach(item => batch.put(item.key, item.value));
+        items.forEach((item) => batch.put(item.key, item.value));
         await batch.write();
     }
 
     public async batchDelete(items: unknown[]): Promise<void> {
         const batch = this.db.batch();
-        items.forEach(item => batch.del(item));
+        items.forEach((item) => batch.del(item));
         await batch.write();
     }
 
@@ -78,11 +77,11 @@ export class LevelDbController extends EventEmitter implements IDatabaseControll
     }
 
     public search(opts: ISearchOptions): Promise<Buffer[]> {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             const searchData: Buffer[] = [];
             this.db
                 .createValueStream(opts)
-                .on("data", data => {
+                .on("data", (data) => {
                     searchData.push(data);
                 })
                 .on("close", () => {

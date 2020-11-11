@@ -24,7 +24,7 @@ class SigningMnemonic extends Component<IOwnProps & IInjectedProps & IInjectedSt
     };
 
     public render(): ReactElement {
-        if(this.props.signingVerification) {
+        if (this.props.signingVerification) {
             this.props.notification({
                 source: this.props.history.location.pathname,
                 title: "Oh no! That wasn’t the correct word.",
@@ -37,19 +37,20 @@ class SigningMnemonic extends Component<IOwnProps & IInjectedProps & IInjectedSt
         return (
             <>
                 <h1>Here’s your special signing key mnemonic</h1>
-                <p className="mnemonic-paragraph">This is yours and yours only! Please store it somewhere safe,
-                    like physically writing it down with pen and paper.
-                    You should never store your key in a note-taking app like Evernote,
-                    including cloud storage apps like Dropbox.</p>
-                <MnemonicCopyField
-                    value={mnemonic}
-                    onCopy={(): void => clipboard.writeText(mnemonic)}
-                />
+                <p className='mnemonic-paragraph'>
+                    This is yours and yours only! Please store it somewhere safe, like physically writing it down with
+                    pen and paper. You should never store your key in a note-taking app like Evernote, including cloud
+                    storage apps like Dropbox.
+                </p>
+                <MnemonicCopyField value={mnemonic} onCopy={(): void => clipboard.writeText(mnemonic)} />
                 <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_KEY_VALIDATE)}>
                     <ButtonPrimary
-                        onClick={(): void => {this.props.storeMnemonic(mnemonic);}}
-                        buttonId="savedSigningMnemonic"
-                    >I SAVED THIS MNEMONIC</ButtonPrimary>
+                        onClick={(): void => {
+                            this.props.storeMnemonic(mnemonic);
+                        }}
+                        buttonId='savedSigningMnemonic'>
+                        I SAVED THIS MNEMONIC
+                    </ButtonPrimary>
                 </Link>
             </>
         );
@@ -75,10 +76,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
             storeMnemonic: storeSigningMnemonic,
             notification: createNotification,
         },
-        dispatch
+        dispatch,
     );
 
-export const SigningKeyGenerateContainer = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(SigningMnemonic);
+export const SigningKeyGenerateContainer = connect(mapStateToProps, mapDispatchToProps)(SigningMnemonic);

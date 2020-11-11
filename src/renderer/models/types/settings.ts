@@ -4,7 +4,7 @@ import {Settings} from "../settings";
 
 export const SettingsType = new ContainerType<Settings>({
     fields: {
-        "dockerPath": new StringType(),
-        "reporting": new BooleanType(),
-    }
+        dockerPath: new StringType(),
+        reporting: new BooleanType(),
+    },
 });

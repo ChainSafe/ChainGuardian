@@ -18,20 +18,17 @@ document.body.appendChild(mainElement);
 
 // Render components
 const render = (Component: () => JSX.Element): void => {
-
     ReactDOM.render(
-        <AppContainer >
+        <AppContainer>
             <Provider store={store}>
                 <Component />
                 <NotificationRenderer />
             </Provider>
-        </AppContainer >,
-        mainElement
+        </AppContainer>,
+        mainElement,
     );
 };
 
 initBLS().then(() => {
     render(Application);
 });
-
-

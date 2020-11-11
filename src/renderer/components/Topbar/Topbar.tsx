@@ -5,7 +5,6 @@ import {OnBoardingRoutes, Routes} from "../../constants/routes";
 import {ButtonPrimary, ButtonSecondary} from "../Button/ButtonStandard";
 import {NetworkDropdown} from "../NetworkDropdown/NetworkDropdown";
 
-
 export const Topbar = (): ReactElement => {
     const history = useHistory();
 
@@ -19,11 +18,9 @@ export const Topbar = (): ReactElement => {
 
     return (
         <div className={"validator-top-bar"}>
-            <NetworkDropdown/>
+            <NetworkDropdown />
 
-            <ButtonSecondary onClick={onBeaconNodesClick}>
-                BEACON NODES
-            </ButtonSecondary>
+            <ButtonSecondary onClick={onBeaconNodesClick}>BEACON NODES</ButtonSecondary>
 
             <ButtonPrimary onClick={onAddNewValidator} buttonId={"add-validator"}>
                 ADD NEW VALIDATOR

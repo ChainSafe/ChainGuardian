@@ -9,7 +9,7 @@ describe("LevelDB controller", () => {
     const dbLocation = "./.__testdb";
     const testDb = level(dbLocation, {
         keyEncoding: "binary",
-        valueEncoding: "binary"
+        valueEncoding: "binary",
     });
     const db = new LevelDbController({db: testDb, location: dbLocation});
 
@@ -44,12 +44,12 @@ describe("LevelDB controller", () => {
         await db.batchPut([
             {
                 key: "test3",
-                value: "value"
+                value: "value",
             },
             {
                 key: "test3",
-                value: "value"
-            }
+                value: "value",
+            },
         ]);
         expect(true);
     });
@@ -58,16 +58,16 @@ describe("LevelDB controller", () => {
         await db.batchPut([
             {
                 key: "key1",
-                value: "value"
+                value: "value",
             },
             {
                 key: "key2",
-                value: "value"
-            }
+                value: "value",
+            },
         ]);
         const result = await db.search({
             gt: "key0",
-            lt: "key99"
+            lt: "key99",
         });
         expect(result.length).to.be.equal(2);
     });
@@ -76,16 +76,16 @@ describe("LevelDB controller", () => {
         await db.batchPut([
             {
                 key: "key1",
-                value: "value"
+                value: "value",
             },
             {
                 key: "key2",
-                value: "value"
-            }
+                value: "value",
+            },
         ]);
         const result = await db.search({
             gt: "key0",
-            lt: "key99"
+            lt: "key99",
         });
         expect(result.length).to.be.equal(2);
         await db.batchDelete(["key1", "key2"]);

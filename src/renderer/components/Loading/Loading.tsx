@@ -7,12 +7,15 @@ interface ILoadingProps {
 }
 
 export const Loading: React.FunctionComponent<React.PropsWithChildren<ILoadingProps>> = (
-    props: React.PropsWithChildren<ILoadingProps>) => {
+    props: React.PropsWithChildren<ILoadingProps>,
+) => {
     return (
-        <div className={`loading-container ${props.visible ? "":"none"}`}>
-            <div className="loading title"><h1>{props.title}</h1></div>
+        <div className={`loading-container ${props.visible ? "" : "none"}`}>
+            <div className='loading title'>
+                <h1>{props.title}</h1>
+            </div>
             <div>{props.children}</div>
-            <img className="loading-logo" src={logoWhiteLoading}/>
+            <img className='loading-logo' src={logoWhiteLoading} />
         </div>
     );
 };

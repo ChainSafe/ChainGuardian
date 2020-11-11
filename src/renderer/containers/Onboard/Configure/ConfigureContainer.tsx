@@ -20,7 +20,7 @@ interface IInjectedProps {
 }
 
 const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProps> = (props) => {
-    const onRunNodeSubmit = async(network: string): Promise<void> => {
+    const onRunNodeSubmit = async (network: string): Promise<void> => {
         props.setNetwork(network);
 
         if (await Container.isDockerInstalled()) {
@@ -30,19 +30,13 @@ const ConfigureContainerComponent: React.FunctionComponent<IOwnProps & IInjected
         }
     };
 
-
-    const onGoSubmit = async(beaconNodeInput: string, network: string): Promise<void> => {
+    const onGoSubmit = async (beaconNodeInput: string, network: string): Promise<void> => {
         props.saveBeaconNode(beaconNodeInput);
         props.setNetwork(network);
         props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX));
     };
 
-    return (
-        <InputBeaconNode
-            onGoSubmit={onGoSubmit}
-            onRunNodeSubmit={onRunNodeSubmit}
-        />
-    );
+    return <InputBeaconNode onGoSubmit={onGoSubmit} onRunNodeSubmit={onRunNodeSubmit} />;
 };
 
 const mapStateToProps = (state: IRootState): IStateProps => ({
@@ -55,10 +49,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
             setNetwork: setNetwork,
             saveBeaconNode: saveBeaconNode,
         },
-        dispatch
+        dispatch,
     );
 
-export const ConfigureContainer = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ConfigureContainerComponent);
+export const ConfigureContainer = connect(mapStateToProps, mapDispatchToProps)(ConfigureContainerComponent);

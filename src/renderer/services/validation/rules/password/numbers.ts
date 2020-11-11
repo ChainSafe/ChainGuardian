@@ -13,16 +13,18 @@ const joiNumberOfNumbers: ExtensionRule & ThisType<SchemaInternals> = {
             name: "n",
             ref: true,
             assert: (value: any): boolean => typeof value === "number" && !isNaN(value),
-            message: "must be a number"
-        }
+            message: "must be a number",
+        },
     ],
     validate(value: string, helpers: CustomHelpers, args: Record<string, any>): any {
         const numericCount = (value.match(/[0-9]/g) || []).length;
-        if (numericCount >= args.n) { return value; }
+        if (numericCount >= args.n) {
+            return value;
+        }
         return helpers.error(ERR_CODE_NUM_OF_NUMBERS, {n: args.n});
-    }
+    },
 };
 
 export const numberRule = {
-    numbers: joiNumberOfNumbers
+    numbers: joiNumberOfNumbers,
 };

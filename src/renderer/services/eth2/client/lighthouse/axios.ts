@@ -2,7 +2,7 @@ import {parse as bigIntParse} from "json-bigint";
 
 export const axiosConfig = {
     headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     },
     transformRequest: [
         (data: string): string => {
@@ -12,7 +12,7 @@ export const axiosConfig = {
             } catch (e) {
                 return data;
             }
-        }
+        },
     ],
     transformResponse: [
         (data: string): any => {
@@ -21,6 +21,6 @@ export const axiosConfig = {
             } catch (e) {
                 return data;
             }
-        }
-    ]
+        },
+    ],
 };

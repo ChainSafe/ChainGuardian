@@ -25,30 +25,39 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
             <h1>Configure Beacon node settings</h1>
             <p>You can skip customizing this data if you want to use the default values.</p>
 
-            <div className="configure-port">
-                <div className="row">
+            <div className='configure-port'>
+                <div className='row'>
                     <h3>Local RPC port</h3>
                     <p>(default: {defaultRpcPort})</p>
                 </div>
                 <InputForm
                     onChange={(e): void => setRpcPort(e.currentTarget.value)}
                     inputValue={rpcPort}
-                    onSubmit={(e): void => {e.preventDefault(); onSubmit();}}
+                    onSubmit={(e): void => {
+                        e.preventDefault();
+                        onSubmit();
+                    }}
                 />
             </div>
 
-            <div className="configure-port">
-                <div className="row">
-                    <h3>Local libp2p port</h3><p>(default: {defaultLibp2pPort})</p>
+            <div className='configure-port'>
+                <div className='row'>
+                    <h3>Local libp2p port</h3>
+                    <p>(default: {defaultLibp2pPort})</p>
                 </div>
                 <InputForm
                     onChange={(e): void => setLibp2pPort(e.currentTarget.value)}
                     inputValue={libp2pPort}
-                    onSubmit={(e): void => {e.preventDefault(); onSubmit();}}
+                    onSubmit={(e): void => {
+                        e.preventDefault();
+                        onSubmit();
+                    }}
                 />
             </div>
 
-            <ButtonPrimary onClick={onSubmit} buttonId="next">NEXT</ButtonPrimary>
+            <ButtonPrimary onClick={onSubmit} buttonId='next'>
+                NEXT
+            </ButtonPrimary>
         </>
     );
 };

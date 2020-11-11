@@ -7,7 +7,7 @@ import {DEPOSIT_TX_GAS} from "./constants";
 import {Wallet, utils} from "ethers";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 
-export class DepositTx implements ITx{
+export class DepositTx implements ITx {
     public data: string | Buffer;
     public to: string;
     public value: string;
@@ -30,7 +30,8 @@ export class DepositTx implements ITx{
         depositParams: DepositData,
         depositContractAddress: string,
         config: IBeaconConfig,
-        depositAmount: string|number): DepositTx {
+        depositAmount: string | number,
+    ): DepositTx {
         // calculate root
         const depositDataRoot = config.types.DepositData.hashTreeRoot(depositParams);
         const depositFunctionEncoded = abi.simpleEncode(
@@ -38,13 +39,13 @@ export class DepositTx implements ITx{
             depositParams.pubkey,
             depositParams.withdrawalCredentials,
             depositParams.signature,
-            depositDataRoot
+            depositDataRoot,
         );
 
         return new DepositTx(
             depositFunctionEncoded,
             depositContractAddress,
-            utils.parseEther(depositAmount.toString()).toHexString()
+            utils.parseEther(depositAmount.toString()).toHexString(),
         );
     }
 

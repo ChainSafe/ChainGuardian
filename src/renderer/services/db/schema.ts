@@ -20,7 +20,9 @@ export enum Key {}
  * Prepend a bucket to a key
  */
 export function encodeKey(
-    bucket: Bucket, key: Buffer| Uint8Array | string | number | bigint, useBuffer = true
+    bucket: Bucket,
+    key: Buffer | Uint8Array | string | number | bigint,
+    useBuffer = true,
 ): Buffer | string {
     let buf;
     if (typeof key === "string") {
@@ -32,7 +34,7 @@ export function encodeKey(
     } else if (typeof key === "number") {
         buf = Buffer.alloc(9);
         toBufferLE(BigInt(key), 8).copy(buf, 1);
-    }  else {
+    } else {
         buf = Buffer.alloc(key.length + 1);
         Buffer.from(key).copy(buf, 1);
     }

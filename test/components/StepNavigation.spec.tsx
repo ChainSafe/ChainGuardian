@@ -5,33 +5,33 @@ import {StepNavigation} from "../../src/renderer/components/StepNavigation/StepN
 describe("StepNavigation", () => {
     it("renders correctly", () => {
         const tree = renderer
-            .create(<StepNavigation 
-                current={1}
-                steps={
-                    [
+            .create(
+                <StepNavigation
+                    current={1}
+                    steps={[
                         {
                             stepId: 1,
-                            stepName:"Signing key"
+                            stepName: "Signing key",
                         },
                         {
                             stepId: 2,
-                            stepName:"Withdrawal key"
+                            stepName: "Withdrawal key",
                         },
                         {
                             stepId: 3,
-                            stepName:"Password"
+                            stepName: "Password",
                         },
                         {
                             stepId: 4,
-                            stepName:"Configure"
+                            stepName: "Configure",
                         },
                         {
                             stepId: 5,
-                            stepName:"Consent"
+                            stepName: "Consent",
                         },
-                    ]
-                }
-            />)
+                    ]}
+                />,
+            )
             .toJSON();
         expect(tree).toMatchSnapshot();
     });

@@ -9,8 +9,8 @@ let dbLocation = "";
 
 export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Application> {
     const isWin = process.platform === "win32";
-    let electronPath =  path.join(__dirname, "../../node_modules/.bin/electron");
-    if(isWin) {
+    let electronPath = path.join(__dirname, "../../node_modules/.bin/electron");
+    if (isWin) {
         electronPath += ".cmd";
     }
     dbLocation = path.join(__dirname, "./test-screens.db");
@@ -27,7 +27,6 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
         connectionRetryCount: 3,
         env: {NODE_ENV: "test", IS_TESTING: true, CG_DATABASE_LOCATION: dbLocation, CG_INITIAL_ROUTE: url},
     });
-
 
     try {
         // await initBLS();
@@ -59,9 +58,11 @@ function deleteFolderRecursive(path: string): void {
     if (existsSync(path)) {
         readdirSync(path).forEach(function (file) {
             const curPath = path + "/" + file;
-            if (lstatSync(curPath).isDirectory()) { // recurse
+            if (lstatSync(curPath).isDirectory()) {
+                // recurse
                 deleteFolderRecursive(curPath);
-            } else { // delete file
+            } else {
+                // delete file
                 unlinkSync(curPath);
             }
         });

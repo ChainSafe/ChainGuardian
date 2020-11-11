@@ -3,7 +3,6 @@ import {Attestation, BLSPubkey, SignedBeaconBlock} from "@chainsafe/lodestar-typ
 import {CGDatabase} from "./database";
 import {IpcDatabaseController} from "../controller/ipc";
 
-
 export class ValidatorDB implements IValidatorDB {
     private db: CGDatabase;
 

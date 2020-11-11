@@ -13,16 +13,18 @@ const joiNumberOfLowerCase: ExtensionRule & ThisType<SchemaInternals> = {
             name: "n",
             ref: true,
             assert: (value: any): boolean => typeof value === "number" && !isNaN(value),
-            message: "must be a number"
-        }
+            message: "must be a number",
+        },
     ],
     validate(value: string, helpers: CustomHelpers, args: Record<string, any>): any {
         const lowercaseCount = (value.match(/[a-z]/g) || []).length;
-        if (lowercaseCount >= args.n) { return value; }
+        if (lowercaseCount >= args.n) {
+            return value;
+        }
         return helpers.error(ERR_CODE_NUM_OF_LOWER, {n: args.n});
-    }
+    },
 };
 
 export const lowerRule = {
-    lower: joiNumberOfLowerCase
+    lower: joiNumberOfLowerCase,
 };

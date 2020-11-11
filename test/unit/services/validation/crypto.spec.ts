@@ -3,14 +3,10 @@ import {Joi} from "../../../../src/renderer/services/validation";
 // test data
 const VALID_PUBLIC_KEY =
     "92fffcc44e690220c190be41378baf6152560eb13fa73bdf8b45120b56096acc4b4e87a0e0b97f83e48f0ff4990daa18";
-const VALID_PRIVATE_KEY =
-    "d68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
-const INVALID_KEY =
-    "8ffdb8b97";
-const VALID_MNEMONIC =
-    "hard caught annual spread green step avocado shine scare warm chronic pond";
-const INVALID_MNEMONIC =
-    "fake attempt red";
+const VALID_PRIVATE_KEY = "d68ffdb8b9729cb02c5be506e9a2fad086746b4bdc2f50fb74d10ac8419c5259";
+const INVALID_KEY = "8ffdb8b97";
+const VALID_MNEMONIC = "hard caught annual spread green step avocado shine scare warm chronic pond";
+const INVALID_MNEMONIC = "fake attempt red";
 
 // custom joi schemas
 const publicKeySchema = Joi.crypto().key("public");
@@ -18,7 +14,6 @@ const privateKeySchema = Joi.crypto().key("private");
 const mnemonicSchema = Joi.crypto().mnemonic();
 
 describe("Joi custom crypto validation functions unit tests.", () => {
-
     it("should strip 0x prefix on key validation", () => {
         const v = publicKeySchema.validate(`0x${VALID_PUBLIC_KEY}`);
         expect(v.value).toBe(VALID_PUBLIC_KEY);
@@ -77,5 +72,4 @@ describe("Joi custom crypto validation functions unit tests.", () => {
         expect(validation.error).toBeDefined();
         expect(validation.error.details[0].type === "crypto.mnemonic.invalid");
     });
-
 });

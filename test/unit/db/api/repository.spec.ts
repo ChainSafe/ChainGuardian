@@ -11,9 +11,9 @@ chai.use(chaiAsPromised);
 
 const TestSSZType = new ContainerType<ITestType>({
     fields: {
-        "bool": new BooleanType(),
-        "bytes": new ByteVectorType({length: 32})
-    }
+        bool: new BooleanType(),
+        bytes: new ByteVectorType({length: 32}),
+    },
 });
 
 interface ITestType {
@@ -25,7 +25,7 @@ const BucketMock = "testBucket";
 
 class TestRepository extends BulkRepository<ITestType> {
     public constructor(db: IDatabaseController) {
-        super(db, JSONSerializer, BucketMock as unknown as Bucket, TestSSZType);
+        super(db, JSONSerializer, (BucketMock as unknown) as Bucket, TestSSZType);
     }
 }
 

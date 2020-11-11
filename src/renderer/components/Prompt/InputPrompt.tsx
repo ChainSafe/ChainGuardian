@@ -15,7 +15,7 @@ export interface IInputPromptProps {
 }
 
 export interface ISubmitStatus {
-    valid: boolean
+    valid: boolean;
     errorMessage?: string;
 }
 
@@ -33,10 +33,9 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
         setValid(result.valid);
         if (!result.valid) {
             setErrorMessage(result.errorMessage);
-        }
-        else {
-            setTimeout(setInputData,500,""); /** Prompt reset */
-            setTimeout(setValid,500,undefined);
+        } else {
+            setTimeout(setInputData, 500, ""); /** Prompt reset */
+            setTimeout(setValid, 500, undefined);
         }
     }
     function onCancelWrapper(): void {
@@ -61,24 +60,23 @@ export const InputPrompt: React.FunctionComponent<IInputPromptProps> = (props: I
                         errorMessage={errorMessage}
                         valid={valid}
                         onChange={handleOnChange}
-                        onSubmit={(e): Promise<void> => {e.preventDefault(); return onSubmitWrapper();}}
+                        onSubmit={(e): Promise<void> => {
+                            e.preventDefault();
+                            return onSubmitWrapper();
+                        }}
                         type={props.inputType}
                     />
                     <div className={"button-control"}>
                         <div className={"prompt-cancel-button"}>
-                            <ButtonDestructive onClick={onCancelWrapper}>
-                                Cancel
-                            </ButtonDestructive>
+                            <ButtonDestructive onClick={onCancelWrapper}>Cancel</ButtonDestructive>
                         </div>
                         <div className={"prompt-confirm-button"}>
-                            <ButtonPrimary onClick={onSubmitWrapper}>
-                                OK
-                            </ButtonPrimary>
+                            <ButtonPrimary onClick={onSubmitWrapper}>OK</ButtonPrimary>
                         </div>
                     </div>
                 </div>
             </div>
-            <Loading visible={loading} title="Confirming..." />
+            <Loading visible={loading} title='Confirming...' />
         </>
     );
 };

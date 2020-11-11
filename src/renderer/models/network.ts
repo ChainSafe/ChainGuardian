@@ -2,7 +2,7 @@ interface INetwork {
     name: string;
 }
 
-export interface IValidatorNetwork  {
+export interface IValidatorNetwork {
     [validatorAddress: string]: string;
 }
 

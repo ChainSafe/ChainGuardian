@@ -7,16 +7,14 @@ class SimpleDockerContainer extends Container {
             image: "alpine",
             name: "test-image",
             detached: true,
-            cmd: "tail -f /dev/null"
+            cmd: "tail -f /dev/null",
         });
     }
 }
 
 // run docker e2e test suit if env variable set
-if (process.env["RUN_DOCKER_TESTS"] === "yes")
-    describe("docker container e2e tests", tests);
-else
-    describe.skip("skipping docker container e2e tests", tests);
+if (process.env["RUN_DOCKER_TESTS"] === "yes") describe("docker container e2e tests", tests);
+else describe.skip("skipping docker container e2e tests", tests);
 
 function tests(): void {
     let dockerContainer: Container;
@@ -41,11 +39,13 @@ function tests(): void {
      * 1) run docker instance
      * 2) check if instance is running using cmdRun
      */
-    it("should execute test case: run-check", async done => {
+    it("should execute test case: run-check", async (done) => {
         if (await Container.isDockerInstalled()) {
             await dockerContainer.run();
             // wait for docker instance to start
-            while (!(await dockerContainer.isRunning())) { /* */ }
+            while (!(await dockerContainer.isRunning())) {
+                /* */
+            }
             done();
         }
     }, 10000);
@@ -63,7 +63,9 @@ function tests(): void {
         if (await Container.isDockerInstalled()) {
             // run docker instance
             await dockerContainer.run();
-            while (!(await dockerContainer.isRunning())) { /* */ }
+            while (!(await dockerContainer.isRunning())) {
+                /* */
+            }
             // check if instance is running
             expect(await dockerContainer.isRunning()).toBeTruthy();
             // stop docker instance
@@ -74,7 +76,9 @@ function tests(): void {
             // restart docker instance
             const started = await dockerContainer.restart();
             // check if instance is running
-            while (!(await dockerContainer.isRunning())) { /* */ }
+            while (!(await dockerContainer.isRunning())) {
+                /* */
+            }
             expect(started).toBeTruthy();
             expect(await dockerContainer.isRunning()).toBeTruthy();
         }
@@ -91,7 +95,9 @@ function tests(): void {
         if (await Container.isDockerInstalled()) {
             // run docker instance
             await dockerContainer.run();
-            while (!(await dockerContainer.isRunning())) { /* */ }
+            while (!(await dockerContainer.isRunning())) {
+                /* */
+            }
             // check if instance is running
             expect(await dockerContainer.isRunning()).toBeTruthy();
             // kill docker instance

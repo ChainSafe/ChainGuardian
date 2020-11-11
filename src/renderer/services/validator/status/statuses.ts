@@ -7,5 +7,5 @@ export enum ValidatorStatus {
     ACTIVE = "Active",
     SLASHED = "Slashed",
     EXIT_QUEUE = "Waiting exit queue...",
-    EXITED = "Exited"
+    EXITED = "Exited",
 }

@@ -13,7 +13,7 @@ describe("auth reducer", () => {
         const account = new CGAccount({
             name: "TestName",
             directory: "/testdirectory/",
-            sendStats: false
+            sendStats: false,
         });
         expect(authSlice.reducer(initialState, storeAuth(account))).toEqual({account});
     });

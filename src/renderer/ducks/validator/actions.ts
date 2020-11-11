@@ -4,20 +4,24 @@ import {Keypair} from "@chainsafe/bls";
 import {CGAccount} from "../../models/account";
 
 export const {
-    addValidator, startValidatorService,
-    loadValidators, loadedValidatorsBalance, loadValidatorStatus,
-    removeValidator, stopValidatorService
+    addValidator,
+    startValidatorService,
+    loadValidators,
+    loadedValidatorsBalance,
+    loadValidatorStatus,
+    removeValidator,
+    stopValidatorService,
 } = validatorSlice.actions;
 
 export const loadValidatorsAction = createAction("validator/loadValidatorsAction");
 
-type AddNewValidatorSaga = (publicKey: string, account: CGAccount) => {payload: string, meta: CGAccount};
+type AddNewValidatorSaga = (publicKey: string, account: CGAccount) => {payload: string; meta: CGAccount};
 export const addNewValidator = createAction<AddNewValidatorSaga>(
     "validator/addNewValidator",
     (publicKey: string, account: CGAccount) => ({payload: publicKey, meta: account}),
 );
 
-type RemoveActiveValidator = (publicKey: string, validatorIndex: number) => {payload: string, meta: number};
+type RemoveActiveValidator = (publicKey: string, validatorIndex: number) => {payload: string; meta: number};
 export const removeActiveValidator = createAction<RemoveActiveValidator>(
     "validator/removeActiveValidator",
     (publicKey: string, validatorIndex: number) => ({payload: publicKey, meta: validatorIndex}),

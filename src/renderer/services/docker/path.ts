@@ -40,7 +40,7 @@ export class DockerPath {
         throw new Error("Docker path is not set.");
     }
 
-    public async getDefaultBinary(): Promise<string|undefined> {
+    public async getDefaultBinary(): Promise<string | undefined> {
         for (let i = 0; i < this.defaultPaths.length; i++) {
             if (await DockerPath.isValidPath(this.defaultPaths[i])) {
                 logger.info(`Found Docker at default path: ${this.defaultPaths[i]}`);
@@ -49,7 +49,7 @@ export class DockerPath {
         }
     }
 
-    public async getDockerBinary(): Promise<string|null> {
+    public async getDockerBinary(): Promise<string | null> {
         const settings = await database.settings.get();
         // Check first if path is saved in db and valid
         if (settings && settings.dockerPath && DockerPath.isValidPath(settings.dockerPath)) {
@@ -62,7 +62,7 @@ export class DockerPath {
         if (foundDefaultPath) {
             this.path = foundDefaultPath;
             await database.settings.set(undefined, {
-                dockerPath: foundDefaultPath
+                dockerPath: foundDefaultPath,
             });
             logger.info("Saved Docker path in settings db.");
             return this.path;
@@ -74,6 +74,4 @@ export class DockerPath {
 
 const dockerPath = new DockerPath();
 
-export {
-    dockerPath,
-};
+export {dockerPath};

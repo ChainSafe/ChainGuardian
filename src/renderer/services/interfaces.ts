@@ -9,9 +9,9 @@ export interface IService {
     stop(): Promise<void>;
 }
 
-export interface IInputValidity{
-    isValid: boolean
-    message: string
+export interface IInputValidity {
+    isValid: boolean;
+    message: string;
 }
 
 /********************
@@ -57,15 +57,15 @@ export interface INetworkConfig {
     networkName: string;
     eth1Provider: ethers.providers.BaseProvider;
     contract: {
-        address: string,
-        bytecode: string,
-        depositAmount: string|number;
-        deployedAtBlock: number
+        address: string;
+        bytecode: string;
+        depositAmount: string | number;
+        deployedAtBlock: number;
     };
     dockerConfig: IDockerRunParams;
 }
 
 export interface IIpcDatabaseEntry {
-    id: string,
-    account: CGAccount
+    id: string;
+    account: CGAccount;
 }

@@ -17,7 +17,7 @@ interface IStateProps {
     pullingDockerImage: boolean;
     finishedPullingDockerImage: boolean;
 }
-type IOwnProps =  Pick<RouteComponentProps, "history">;
+type IOwnProps = Pick<RouteComponentProps, "history">;
 interface IInjectedProps {
     startBeaconChain: typeof startBeaconChain;
 }
@@ -26,7 +26,10 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProp
     const onSubmit = (ports: DockerPort[], libp2pPort: string, rpcPort: string): void => {
         // Start beacon chain with selected network and redirect to deposit
         if (props.network) {
-            props.startBeaconChain(props.network, [{...ports[0], local: libp2pPort}, {...ports[1], local: rpcPort}]);
+            props.startBeaconChain(props.network, [
+                {...ports[0], local: libp2pPort},
+                {...ports[1], local: rpcPort},
+            ]);
         }
     };
 
@@ -38,15 +41,11 @@ const Configure: React.FunctionComponent<IOwnProps & IInjectedProps & IStateProp
 
     return (
         <>
-            <ConfigureBeaconNode
-                network={props.network}
-                onSubmit={onSubmit}
-            />
-            <Loading visible={props.pullingDockerImage} title="Pulling Docker image..." />
+            <ConfigureBeaconNode network={props.network} onSubmit={onSubmit} />
+            <Loading visible={props.pullingDockerImage} title='Pulling Docker image...' />
         </>
     );
 };
-
 
 interface IInjectedProps {
     startBeaconChain: typeof startBeaconChain;
@@ -63,10 +62,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
         {
             startBeaconChain,
         },
-        dispatch
+        dispatch,
     );
 
-export const ConfigureBeaconNodeContainer = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Configure);
+export const ConfigureBeaconNodeContainer = connect(mapStateToProps, mapDispatchToProps)(Configure);

@@ -15,10 +15,12 @@ import {getRegisterSigningMnemonic} from "../../../../ducks/register/selectors";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
-const SigningMnemonicQuestion: React.FunctionComponent<
-IOwnProps & IInjectedProps & IInjectedStateProps
-> = ({signingMnemonic, storeValidatorKeys, history, setVerificationStatus}) => {
-
+const SigningMnemonicQuestion: React.FunctionComponent<IOwnProps & IInjectedProps & IInjectedStateProps> = ({
+    signingMnemonic,
+    storeValidatorKeys,
+    history,
+    setVerificationStatus,
+}) => {
     const mnemonic = signingMnemonic.split(" ");
     const randArray = getRandomIntArray(12);
     const correctAnswerIndex = randArray[getRandomInt(3)];
@@ -27,14 +29,12 @@ IOwnProps & IInjectedProps & IInjectedStateProps
         setVerificationStatus(false);
 
         const validatorIndex = 1;
-        const validatorKeys = deriveEth2ValidatorKeys(
-            deriveKeyFromMnemonic(signingMnemonic),
-            validatorIndex
-        );
+        const validatorKeys = deriveEth2ValidatorKeys(deriveKeyFromMnemonic(signingMnemonic), validatorIndex);
         storeValidatorKeys(
             toHexString(validatorKeys.signing),
             PrivateKey.fromBytes(validatorKeys.withdrawal).toPublicKey().toHexString(),
-            `m/12381/3600/${validatorIndex}/0/0`);
+            `m/12381/3600/${validatorIndex}/0/0`,
+        );
 
         history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
     };
@@ -46,18 +46,22 @@ IOwnProps & IInjectedProps & IInjectedStateProps
 
     return (
         <VerifyMnemonic
-            question={`What’s the ${ordinalSuffix(correctAnswerIndex+1)} word in the mnemonic?`}
+            question={`What’s the ${ordinalSuffix(correctAnswerIndex + 1)} word in the mnemonic?`}
             answers={[mnemonic[randArray[0]], mnemonic[randArray[1]], mnemonic[randArray[2]]]}
             correctAnswer={mnemonic[correctAnswerIndex]}
-            onCorrectAnswer={(): void => {setTimeout(handleCorrectAnswer, 500);}}
-            onInvalidAnswer={(): void => {setTimeout(handleInvalidAnswer, 500);}}
+            onCorrectAnswer={(): void => {
+                setTimeout(handleCorrectAnswer, 500);
+            }}
+            onInvalidAnswer={(): void => {
+                setTimeout(handleInvalidAnswer, 500);
+            }}
         />
     );
 };
 
 // redux
 interface IInjectedStateProps {
-    signingMnemonic: ReturnType<typeof getRegisterSigningMnemonic>
+    signingMnemonic: ReturnType<typeof getRegisterSigningMnemonic>;
 }
 
 interface IInjectedProps {
@@ -70,12 +74,12 @@ const mapStateToProps = (state: IRootState): IInjectedStateProps => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
-    bindActionCreators({
-        storeValidatorKeys: storeValidatorKeys,
-        setVerificationStatus: storeSigningVerificationStatus
-    }, dispatch);
+    bindActionCreators(
+        {
+            storeValidatorKeys: storeValidatorKeys,
+            setVerificationStatus: storeSigningVerificationStatus,
+        },
+        dispatch,
+    );
 
-export const SigningKeyVerifyContainer = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(SigningMnemonicQuestion);
+export const SigningKeyVerifyContainer = connect(mapStateToProps, mapDispatchToProps)(SigningMnemonicQuestion);

@@ -11,12 +11,9 @@ const db = new DatabaseIpcHandler();
 
 app.on("before-quit", db.stop.bind(db));
 
-app.whenReady().then(async function() {
+app.whenReady().then(async function () {
     await initBLS();
-    await Promise.all([
-        db.start(),
-        createWindow(),
-    ]);
+    await Promise.all([db.start(), createWindow()]);
 });
 
 app.on("activate", createWindow);

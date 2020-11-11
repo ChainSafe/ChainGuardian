@@ -4,6 +4,6 @@ import {ValidatorNetwork} from "../network";
 
 export const NetworkType = new ContainerType<ValidatorNetwork>({
     fields: {
-        "name": new StringType()
-    }
+        name: new StringType(),
+    },
 });

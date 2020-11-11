@@ -67,7 +67,7 @@ export abstract class Container {
         return cmdResult.stdout.includes("Status: Downloaded");
     }
 
-    public static async getImageName(dockerId: string): Promise<string|undefined> {
+    public static async getImageName(dockerId: string): Promise<string | undefined> {
         const cmdResult = await runCmdAsync(await Command.ps(dockerId));
         const instance = cmdResult.stdout.split("\n")[1];
         if (instance) {
@@ -78,7 +78,7 @@ export abstract class Container {
 
     public static async exists(name: string): Promise<boolean> {
         const cmdResult = (await runCmdAsync(await Command.lsContainer())).stdout.split("\n");
-        for (let i = 0 ; i < cmdResult.length; i++) {
+        for (let i = 0; i < cmdResult.length; i++) {
             // check last column for name
             if (cmdResult[i].includes(name)) {
                 return true;

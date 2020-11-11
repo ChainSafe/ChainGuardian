@@ -26,28 +26,28 @@ export interface IPasswordPromptProps {
 }
 
 export const PasswordPrompt: React.FunctionComponent<IPasswordPromptProps> = (props: IPasswordPromptProps) => {
-    const onSubmit = async(promptPassword: string): Promise<ISubmitStatus> => {
+    const onSubmit = async (promptPassword: string): Promise<ISubmitStatus> => {
         const account = await database.account.get(DEFAULT_ACCOUNT);
         if (account != null) {
             const keyPair = await account.unlockKeystore(promptPassword, props.keystore);
-            if(keyPair){
+            if (keyPair) {
                 await props.onSubmit(keyPair);
                 return {valid: true};
             } else {
                 return {
                     valid: false,
-                    errorMessage: "Invalid password"
+                    errorMessage: "Invalid password",
                 };
             }
         } else {
             return {
                 valid: false,
-                errorMessage: "Error, account not found"
+                errorMessage: "Error, account not found",
             };
         }
     };
 
-    return(
+    return (
         <InputPrompt
             onSubmit={onSubmit}
             onCancel={props.onCancel}

@@ -30,18 +30,17 @@ describe("Account Repository Test", () => {
         const account = new CGAccount({
             name: "TestAcc",
             directory: "./",
-            sendStats: false
+            sendStats: false,
         });
 
         await database.account.set(testId, account);
-
     });
 
     it("should be able to get the account from db", async () => {
         const account = new CGAccount({
             name: "TestAcc",
             directory: "./",
-            sendStats: false
+            sendStats: false,
         });
 
         await database.account.set(testId, account);
@@ -50,7 +49,7 @@ describe("Account Repository Test", () => {
 
         expect(fetchedAccount).not.toEqual(null);
 
-        if(fetchedAccount){
+        if (fetchedAccount) {
             expect(fetchedAccount.name).toEqual(account.name);
             expect(fetchedAccount.directory).toEqual(account.directory);
             expect(fetchedAccount.sendStats).toEqual(account.sendStats);

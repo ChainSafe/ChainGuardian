@@ -6,69 +6,64 @@ export interface IVerifyMnemonicProps {
     question: string;
     answers: string[];
     correctAnswer: string;
-    onCorrectAnswer:  () => void;
+    onCorrectAnswer: () => void;
     onInvalidAnswer: () => void;
 }
 
-export const VerifyMnemonic: React.FunctionComponent<IVerifyMnemonicProps> = (
-    props: IVerifyMnemonicProps) => {
+export const VerifyMnemonic: React.FunctionComponent<IVerifyMnemonicProps> = (props: IVerifyMnemonicProps) => {
     const [clicked, setClicked] = useState(false);
-    function isCorrect (
-        answer: string, 
-        correctAnswer: string, 
+    function isCorrect(
+        answer: string,
+        correctAnswer: string,
         onCorrectAnswer: () => void,
-        onInvalidAnswer: () => void): void {
+        onInvalidAnswer: () => void,
+    ): void {
         answer === correctAnswer ? onCorrectAnswer() : onInvalidAnswer();
         setClicked(true);
     }
 
-    return(
-        <div className="verify-mnemonic-container">
+    return (
+        <div className='verify-mnemonic-container'>
             <h1>{props.question}</h1>
-            <div className="verify-button-container">
-                {props.answers.map(answer => {
-                    if(clicked && (answer === props.correctAnswer)){
+            <div className='verify-button-container'>
+                {props.answers.map((answer) => {
+                    if (clicked && answer === props.correctAnswer) {
                         return (
                             <ButtonInverted
                                 disabled={clicked}
                                 key={answer}
-                                onClick={(): void => isCorrect(
-                                    answer,
-                                    props.correctAnswer,
-                                    props.onCorrectAnswer,
-                                    props.onInvalidAnswer)}>
+                                onClick={(): void =>
+                                    isCorrect(answer, props.correctAnswer, props.onCorrectAnswer, props.onInvalidAnswer)
+                                }>
                                 {answer}
-                            </ButtonInverted>);
-                    } else if(clicked && (answer !== props.correctAnswer)){
+                            </ButtonInverted>
+                        );
+                    } else if (clicked && answer !== props.correctAnswer) {
                         return (
-                            <ButtonDestructive 
-                                disabled={clicked} 
-                                key={answer} 
-                                onClick={(): void => isCorrect(
-                                    answer, 
-                                    props.correctAnswer, 
-                                    props.onCorrectAnswer, 
-                                    props.onInvalidAnswer)}>
+                            <ButtonDestructive
+                                disabled={clicked}
+                                key={answer}
+                                onClick={(): void =>
+                                    isCorrect(answer, props.correctAnswer, props.onCorrectAnswer, props.onInvalidAnswer)
+                                }>
                                 {answer}
-                            </ButtonDestructive>);
-                    } else{
+                            </ButtonDestructive>
+                        );
+                    } else {
                         return (
                             <ButtonInverted
                                 datafield={(answer === props.correctAnswer).toString()}
                                 disabled={clicked}
-                                key={answer} 
-                                onClick={(): void => isCorrect(
-                                    answer, 
-                                    props.correctAnswer, 
-                                    props.onCorrectAnswer, 
-                                    props.onInvalidAnswer)}>
+                                key={answer}
+                                onClick={(): void =>
+                                    isCorrect(answer, props.correctAnswer, props.onCorrectAnswer, props.onInvalidAnswer)
+                                }>
                                 {answer}
-                            </ButtonInverted>);
+                            </ButtonInverted>
+                        );
                     }
                 })}
             </div>
         </div>
     );
 };
-
-

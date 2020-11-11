@@ -18,8 +18,7 @@ import {getRegisterWithdrawalKey, getNetworkIndex} from "../../../ducks/register
  * required own props
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface IOwnProps extends Pick<RouteComponentProps, "history"> {
-}
+interface IOwnProps extends Pick<RouteComponentProps, "history"> {}
 
 interface IInjectedActions {
     generateDepositTxData: typeof generateDeposit;
@@ -41,14 +40,13 @@ interface IInjectedState {
  */
 type IInjectedProps = IInjectedState & IInjectedActions;
 
-
 class DepositTxComponent extends Component<IOwnProps & IInjectedProps> {
     public componentDidMount(): void {
         this.props.generateDepositTxData(networks[this.props.networkIndex]);
     }
 
     public shouldComponentUpdate(nextProps: Readonly<IOwnProps & IInjectedProps>): boolean {
-        if(nextProps.isDepositDetected) {
+        if (nextProps.isDepositDetected) {
             this.props.resetDepositState();
             this.onwards();
             return false;
@@ -72,39 +70,31 @@ class DepositTxComponent extends Component<IOwnProps & IInjectedProps> {
             <>
                 <h1>Deposit transaction</h1>
                 <p>Execute this transaction from your ETH1 wallet of choice along with 32 ETH to become validator.</p>
-                <div className="deposit-details-container">
-                    <Dropdown
-                        label="Network"
-                        current={0}
-                        options={[selectedContract.networkName]}
-                    />
+                <div className='deposit-details-container'>
+                    <Dropdown label='Network' current={0} options={[selectedContract.networkName]} />
 
                     <CopyField
-                        label="Deposit contract"
+                        label='Deposit contract'
                         value={selectedContract.contract.address}
-                        onCopy={(): void => copyToClipboard(selectedContract.contract.address)} />
+                        onCopy={(): void => copyToClipboard(selectedContract.contract.address)}
+                    />
                     <CopyField
-                        label="Transaction data"
+                        label='Transaction data'
                         value={this.props.depositTxData}
-                        onCopy={(): void => copyToClipboard(this.props.depositTxData)} />
+                        onCopy={(): void => copyToClipboard(this.props.depositTxData)}
+                    />
                 </div>
-                <div className="deposit-action-buttons">
-                    <ButtonSecondary
-                        buttonId="skip"
-                        onClick={this.onwards}
-                    >
+                <div className='deposit-action-buttons'>
+                    <ButtonSecondary buttonId='skip' onClick={this.onwards}>
                         SKIP
                     </ButtonSecondary>
-                    <ButtonPrimary
-                        buttonId="verify"
-                        onClick={this.handleVerify}
-                    >
+                    <ButtonPrimary buttonId='verify' onClick={this.handleVerify}>
                         Verify
                     </ButtonPrimary>
                 </div>
 
-                <Loading visible={!this.props.isDepositGenerated}/>
-                <Loading visible={this.props.waitingForDeposit} title="Waiting for eth1 deposit transaction"/>
+                <Loading visible={!this.props.isDepositGenerated} />
+                <Loading visible={this.props.waitingForDeposit} title='Waiting for eth1 deposit transaction' />
             </>
         );
     }
@@ -134,12 +124,9 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedActions =>
         {
             generateDepositTxData: generateDeposit,
             verifyDeposit: verifyDeposit,
-            resetDepositState: resetDepositData
+            resetDepositState: resetDepositData,
         },
-        dispatch
+        dispatch,
     );
 
-export const DepositTxContainer = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(DepositTxComponent);
+export const DepositTxContainer = connect(mapStateToProps, mapDispatchToProps)(DepositTxComponent);

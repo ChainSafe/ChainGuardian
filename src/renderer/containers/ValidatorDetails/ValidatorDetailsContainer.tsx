@@ -29,32 +29,33 @@ export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {ta
         {tabId: 1, tabName: "Validator logs", index: validatorId},
     ];
     // Load dynamically all validator's beacon node in tabs
-    validatorBeaconNodes.forEach((node, index) => tabs.push({
-        tabId: tabs.length + index,
-        tabName: "Beacon node",
-        index,
-    }));
+    validatorBeaconNodes.forEach((node, index) =>
+        tabs.push({
+            tabId: tabs.length + index,
+            tabName: "Beacon node",
+            index,
+        }),
+    );
 
     return (
         <Background scrollable={true}>
-            <div className="flex-column stretch validator-container">
-                <div className="validator-details-container row">
+            <div className='flex-column stretch validator-container'>
+                <div className='validator-details-container row'>
                     <BackButton onClick={(): void => history.goBack()} />
                     <TabNavigation onTab={setCurrentTab} tabs={tabs} current={currentTab} />
                 </div>
 
-                {currentTab === tabs[0].tabId ?
+                {currentTab === tabs[0].tabId ? (
                     <ValidatorStats validator={validator} validatorId={validatorId} />
-                    : null}
+                ) : null}
 
-                {currentTab === tabs[1].tabId ?
-                    <ValidatorLogs logger={validator.logger}/>
-                    : null}
+                {currentTab === tabs[1].tabId ? <ValidatorLogs logger={validator.logger} /> : null}
 
-                {tabs.map(tab => (tab.tabName === "Beacon node" && currentTab === tab.tabId ?
-                    <BeaconNode key={tab.tabId} node={validatorBeaconNodes[tab.index]} />
-                    : null
-                ))}
+                {tabs.map((tab) =>
+                    tab.tabName === "Beacon node" && currentTab === tab.tabId ? (
+                        <BeaconNode key={tab.tabId} node={validatorBeaconNodes[tab.index]} />
+                    ) : null,
+                )}
             </div>
         </Background>
     );

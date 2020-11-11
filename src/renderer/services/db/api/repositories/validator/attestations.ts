@@ -12,7 +12,7 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
         super(db, JSONSerializer, Bucket.validatorAttestations, mainnetConfig.types.Attestation);
     }
 
-    public async set(pubKey: Uint8Array|Buffer, attestation: Attestation): Promise<void> {
+    public async set(pubKey: Uint8Array | Buffer, attestation: Attestation): Promise<void> {
         const key = this.getAttestationKey(pubKey, attestation);
         await super.set(key, attestation);
     }
@@ -26,7 +26,7 @@ export class ValidatorAttestationsRepository extends BulkRepository<Attestation>
         await Promise.all(promises);
     }
 
-    public async getAll(pubKey: Uint8Array|Buffer, options?: IAttestationSearchOptions): Promise<Attestation[]> {
+    public async getAll(pubKey: Uint8Array | Buffer, options?: IAttestationSearchOptions): Promise<Attestation[]> {
         if (!options) {
             return await super.getAll(pubKey);
         }

@@ -13,7 +13,6 @@ const keyStoreFilePath = `keystore-${Math.random() * 1000}.json`;
 const password = "test";
 const newPassword = "newTest";
 
-
 describe("V4Keystore", () => {
     let v4Keystore: ICGKeystore;
     let sandbox: sinon.SinonSandbox;
@@ -24,15 +23,11 @@ describe("V4Keystore", () => {
         sandbox = sinon.createSandbox();
         sandbox.stub(fs, "existsSync").withArgs(keyStoreFilePath).returns(true);
         sandbox.stub(fs, "writeFileSync");
-        sandbox.stub(fs, "readFileSync")
+        sandbox
+            .stub(fs, "readFileSync")
             .withArgs(keyStoreFilePath)
-            .returns(
-                await JSON.stringify(example)
-            );
-        unlinkStub = sandbox
-            .stub(fs, "unlinkSync")
-            .withArgs(keyStoreFilePath)
-            .returns();
+            .returns(await JSON.stringify(example));
+        unlinkStub = sandbox.stub(fs, "unlinkSync").withArgs(keyStoreFilePath).returns();
         const priv = PrivateKey.fromHexString(privateKey);
         const keypair = new Keypair(priv);
 
@@ -58,9 +53,7 @@ describe("V4Keystore", () => {
     });
 
     it("should fail on decrypt with wrong password", async () => {
-        await expect(v4Keystore.decrypt("wrongPassword"))
-            .rejects
-            .toThrow("Invalid password");
+        await expect(v4Keystore.decrypt("wrongPassword")).rejects.toThrow("Invalid password");
     });
 
     it("should get private key with changed password", async () => {
@@ -71,9 +64,7 @@ describe("V4Keystore", () => {
 
     it("should fail to encrypt private key with old password", async () => {
         await v4Keystore.changePassword(password, newPassword);
-        await expect(v4Keystore.decrypt(password))
-            .rejects
-            .toThrow("Invalid password");
+        await expect(v4Keystore.decrypt(password)).rejects.toThrow("Invalid password");
     }, 10000);
 
     it("should destroy file", () => {

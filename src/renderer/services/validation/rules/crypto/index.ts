@@ -13,10 +13,10 @@ export const cryptoExtension = (joi: Joi.Root): Extension => ({
                 return {value: value.toString().split("x")[1]};
             }
             return {value};
-        }
+        },
     },
     rules: {
         ...keyRule,
-        ...mnemonicRule
-    }
+        ...mnemonicRule,
+    },
 });

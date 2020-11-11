@@ -12,16 +12,9 @@ export const getNetworkValidators = createSelector(
     getValidators,
     getValidatorKeys,
     getSelectedNetwork,
-    (validators, keys, network) => keys.filter(key => validators[key].network === network || !network),
+    (validators, keys, network) => keys.filter((key) => validators[key].network === network || !network),
 );
 
-export const getValidator = createSelector(
-    getValidators,
-    getPublicKeyFromProps,
-    (validators, key) => validators[key],
-);
+export const getValidator = createSelector(getValidators, getPublicKeyFromProps, (validators, key) => validators[key]);
 
-export const getValidatorNetwork = createSelector(
-    getValidator,
-    (validator) => validator?.network,
-);
+export const getValidatorNetwork = createSelector(getValidator, (validator) => validator?.network);

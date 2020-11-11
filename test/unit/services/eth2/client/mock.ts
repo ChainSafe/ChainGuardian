@@ -2,7 +2,7 @@ import {
     IEth2BeaconApi,
     IEth2NodeApi,
     IEth2ValidatorApi,
-    IGenericEth2Client
+    IGenericEth2Client,
 } from "../../../../../src/renderer/services/eth2/client/interface";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import sinon, {SinonStubbedInstance} from "sinon";
@@ -34,5 +34,4 @@ export class MockEth2ApiClient extends EventEmitter implements IGenericEth2Clien
         this.node = sinon.createStubInstance(LighthouseNodeApiClient);
         this.validator = sinon.createStubInstance(LighthouseValidatorApiClient);
     }
-
 }

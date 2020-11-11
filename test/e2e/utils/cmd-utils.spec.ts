@@ -4,7 +4,7 @@ import {
     isPlatform,
     streamToString,
     runCmdAsync,
-    ICmdRunAsync
+    ICmdRunAsync,
 } from "../../../src/renderer/services/utils/cmd";
 
 describe("Cmd utils unit tests", () => {

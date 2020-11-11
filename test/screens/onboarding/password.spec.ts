@@ -37,7 +37,7 @@ describe("Onboarding password setup screen", () => {
         let errorMessage = await client.getElementText("#password-error");
         expect(errorMessage).to.be.equal(
             // eslint-disable-next-line max-len
-            "Password must be at least 6 characters long"
+            "Password must be at least 6 characters long",
         );
 
         // next button disabled
@@ -48,7 +48,7 @@ describe("Onboarding password setup screen", () => {
         errorMessage = await client.getElementText("#password-error");
         expect(errorMessage).to.be.equal(
             // eslint-disable-next-line max-len
-            "Password must contain: 1 uppercase, 1 lowercase, 1 numeric and 1 special character"
+            "Password must contain: 1 uppercase, 1 lowercase, 1 numeric and 1 special character",
         );
 
         // next button disabled
@@ -59,7 +59,7 @@ describe("Onboarding password setup screen", () => {
         errorMessage = await client.getElementText("#password-error");
         expect(errorMessage).to.be.equal(
             // eslint-disable-next-line max-len
-            ""
+            "",
         );
 
         // next button disabled
@@ -70,13 +70,12 @@ describe("Onboarding password setup screen", () => {
         errorMessage = await client.getElementText("#confirm-error");
         expect(errorMessage).to.be.equal(
             // eslint-disable-next-line max-len
-            "That password doesn't match. Try again?"
+            "That password doesn't match. Try again?",
         );
 
         // next button disabled
         expect(await client.getElementAttribute("#next", "disabled")).to.be.eq("true");
     });
-
 
     it("should work valid inputs", async () => {
         const {client} = app;
@@ -100,5 +99,4 @@ describe("Onboarding password setup screen", () => {
         // next button enabled
         expect(await client.getElementAttribute("#next", "disabled")).to.be.eq(null);
     });
-
 });

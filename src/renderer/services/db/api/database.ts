@@ -26,11 +26,10 @@ export class CGDatabase extends DatabaseService {
         this.validator = {
             attestations: new ValidatorAttestationsRepository(this.db),
             blocks: new ValidatorBlocksRepository(this.db),
-            network: new ValidatorNetworkRepository(this.db)
+            network: new ValidatorNetworkRepository(this.db),
         };
         this.settings = new SettingsRepository(this.db);
     }
-
 }
 
 export default new CGDatabase({controller: new IpcDatabaseController()});

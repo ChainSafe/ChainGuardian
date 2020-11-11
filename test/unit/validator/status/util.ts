@@ -11,6 +11,6 @@ export function generateValidator(opts: Partial<Validator>): Validator {
         pubkey: Buffer.alloc(48, 1),
         withdrawableEpoch: FAR_FUTURE_EPOCH,
         withdrawalCredentials: Buffer.alloc(48, 1),
-        ...opts
+        ...opts,
     };
 }

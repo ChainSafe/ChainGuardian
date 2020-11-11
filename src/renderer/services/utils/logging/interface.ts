@@ -4,7 +4,7 @@ export type LogSource = "stdout" | "stderr" | "unknown";
 
 export interface ILogRecord {
     log: string;
-    source: LogSource,
+    source: LogSource;
 }
 
 export interface ICGLogger {

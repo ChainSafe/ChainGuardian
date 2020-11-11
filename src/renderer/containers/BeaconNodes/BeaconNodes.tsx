@@ -13,14 +13,14 @@ import {getBeaconNodes} from "../../ducks/network/selectors";
 import {getValidators} from "../../ducks/validator/selectors";
 
 interface IExtendedBeaconNode extends BeaconNode {
-    validators: string[]
+    validators: string[];
 }
 type BeaconNodes = {
     [url: string]: IExtendedBeaconNode;
 };
 
 type RunningBeaconNodes = {
-    [url: string]: boolean,
+    [url: string]: boolean;
 };
 
 export const BeaconNodesContainer: React.FunctionComponent = () => {
@@ -39,7 +39,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
         // Parse beacon nodes from all validators
         for (const [validatorAddress, beaconNodes] of Object.entries(validatorBeaconNodes)) {
             const beaconNodesList: BeaconNodes = {};
-            beaconNodes.map(node => {
+            beaconNodes.map((node) => {
                 const validators = allNodes[node.url] ? allNodes[node.url].validators : [];
                 validators.push(validatorAddress);
                 beaconNodesList[node.url] = {
@@ -62,7 +62,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                     const isRunning = await container.isRunning();
                     setRunningBeaconNodes({
                         ...runningBeaconNodes,
-                        [url]: isRunning
+                        [url]: isRunning,
                     });
                 }
             }
@@ -73,27 +73,27 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
     const onUpdateNodeStatus = (url: string, status: boolean): void => {
         setRunningBeaconNodes({
             ...runningBeaconNodes,
-            [url]: status
+            [url]: status,
         });
     };
 
     return (
         <>
             <Background scrollable={true}>
-                <div className="flex-column validator-container beacon-nodes-container">
-                    <div className="row">
+                <div className='flex-column validator-container beacon-nodes-container'>
+                    <div className='row'>
                         <BackButton onClick={(): void => history.goBack()} />
                         <h2>Beacon nodes management</h2>
                     </div>
 
-                    <div className="validator-nodes">
-                        <div className="flex-column">
+                    <div className='validator-nodes'>
+                        <div className='flex-column'>
                             {nodeList.length === 0 ? <h3>No beacon nodes found.</h3> : null}
 
                             {nodeList.map((url) => {
                                 const node = allNodes[url];
                                 return (
-                                    <div className="row box node-container" key={url}>
+                                    <div className='row box node-container' key={url}>
                                         <NodeCard
                                             onClick={() => (): void => {}}
                                             title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
@@ -102,17 +102,19 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                                             value={node.currentSlot || "N/A"}
                                         />
 
-                                        <div className="flex-column stretch space-between">
-                                            <div className="flex-column">
+                                        <div className='flex-column stretch space-between'>
+                                            <div className='flex-column'>
                                                 <h5>Connected validators:</h5>
 
-                                                {node && node.validators.map(validatorAddress => (
-                                                    <div className="flex-column" key={validatorAddress}>
-                                                        <p><b>{validators[validatorAddress].name} </b>
-                                                            - {truncatePublicKey(validatorAddress)}
-                                                        </p>
-                                                    </div>
-                                                ))}
+                                                {node &&
+                                                    node.validators.map((validatorAddress) => (
+                                                        <div className='flex-column' key={validatorAddress}>
+                                                            <p>
+                                                                <b>{validators[validatorAddress].name} </b>-{" "}
+                                                                {truncatePublicKey(validatorAddress)}
+                                                            </p>
+                                                        </div>
+                                                    ))}
                                             </div>
 
                                             <BeaconNodeButtons
@@ -131,7 +133,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                 </div>
             </Background>
 
-            <Loading visible={loading} title="Loading" />
+            <Loading visible={loading} title='Loading' />
         </>
     );
 };

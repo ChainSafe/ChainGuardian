@@ -2,12 +2,16 @@
 import {IDockerRunParams} from "./type";
 
 export function generateRunCommand(params: IDockerRunParams): string {
-    const ports = params.publishAllPorts ? " -P" : params.ports ?
-        ` -p=${params.ports.map(p => `${p.local}:${p.host}`).join(" -p ")}` : "";
+    const ports = params.publishAllPorts
+        ? " -P"
+        : params.ports
+        ? ` -p=${params.ports.map((p) => `${p.local}:${p.host}`).join(" -p ")}`
+        : "";
     const options = `--name ${params.name}${params.detached ? " -d" : ""}${
         params.privileged ? ` --privileged=${params.privileged}` : ""
-    }${params.ipc ? ` --ipc="${params.ipc}"` : ""}${params.restart ? ` --restart=${
-        params.restart}` : ""}${ports}${params.volume ? ` -v ${params.volume}` : ""}`;
+    }${params.ipc ? ` --ipc="${params.ipc}"` : ""}${params.restart ? ` --restart=${params.restart}` : ""}${ports}${
+        params.volume ? ` -v ${params.volume}` : ""
+    }`;
 
     return `${options} ${params.image} ${params.cmd ? params.cmd : ""}`.trim();
 }
@@ -17,7 +21,7 @@ export function extractDockerVersion(dockerLog: string): string | null {
     return regexp ? regexp[1] : null;
 }
 
-export type LogType = "info"|"error"|"debug"|"warn";
+export type LogType = "info" | "error" | "debug" | "warn";
 export function getLogMessageType(message: string): LogType {
     message = message.toLowerCase();
 
@@ -31,5 +35,4 @@ export function getLogMessageType(message: string): LogType {
     } else {
         return "info";
     }
-
 }

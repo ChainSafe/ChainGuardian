@@ -14,11 +14,11 @@ export interface ICopyButtonProps {
 }
 
 export const BackTab: React.FunctionComponent<IActionButtonProps> = ({onClick}) => {
-    return (<button
-        className={"back-tab"}
-        onClick={onClick}>
-        <img className={"icon"} src={arrow}/>
-    </button>);
+    return (
+        <button className={"back-tab"} onClick={onClick}>
+            <img className={"icon"} src={arrow} />
+        </button>
+    );
 };
 
 export const CopyButton: React.FunctionComponent<ICopyButtonProps> = (props: ICopyButtonProps) => {
@@ -44,32 +44,40 @@ export const CopyButton: React.FunctionComponent<ICopyButtonProps> = (props: ICo
 
     const toolTipId = `cg-tooltip-${getRandomInt(10000)}`;
 
-    return (<button
-        className={"copy-button"}
-        onClick={handleClick}>
-        <ReactTooltip id={toolTipId} effect="solid" place="right"
-            getContent={(): string => {
-                return clicked ? "Copied!" : "Copy All";
-            }}
-        />
-        <img alt="copy-button-icon" data-for={toolTipId} data-tip="Copy all" data-place="top" className={"icon copy"}
-            src={copyDefault}/>
-    </button>);
+    return (
+        <button className={"copy-button"} onClick={handleClick}>
+            <ReactTooltip
+                id={toolTipId}
+                effect='solid'
+                place='right'
+                getContent={(): string => {
+                    return clicked ? "Copied!" : "Copy All";
+                }}
+            />
+            <img
+                alt='copy-button-icon'
+                data-for={toolTipId}
+                data-tip='Copy all'
+                data-place='top'
+                className={"icon copy"}
+                src={copyDefault}
+            />
+        </button>
+    );
 };
 
 export const AddButton: React.FunctionComponent<IActionButtonProps> = ({onClick}) => {
-    return (<button
-        className={"add-button"}
-        onClick={onClick}>
-        <img className={"icon"} src={add}/>
-    </button>);
+    return (
+        <button className={"add-button"} onClick={onClick}>
+            <img className={"icon"} src={add} />
+        </button>
+    );
 };
 
 export const BackButton: React.FunctionComponent<IActionButtonProps> = ({onClick}) => {
-    return (<button
-        className={"back-button"}
-        onClick={onClick}>
-        <img className={"icon"} src={arrow}/>
-    </button>);
+    return (
+        <button className={"back-button"} onClick={onClick}>
+            <img className={"icon"} src={arrow} />
+        </button>
+    );
 };
-

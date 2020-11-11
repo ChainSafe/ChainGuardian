@@ -20,7 +20,7 @@ describe("auth selectors", () => {
             const account = new CGAccount({
                 name: "TestName",
                 directory: "/testdirectory/",
-                sendStats: false
+                sendStats: false,
             });
             populatedState.auth.account = account;
             expect(getAuthAccount(populatedState)).toEqual(account);

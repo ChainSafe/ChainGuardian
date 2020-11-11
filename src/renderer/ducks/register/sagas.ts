@@ -13,8 +13,9 @@ import {addNewValidator} from "../validator/actions";
 import {addNewValidatorSaga} from "../validator/sagas";
 import {getKeystorePath, getRegisterNetwork, getRegisterSigningKey, getRegisterSigningKeyPath} from "./selectors";
 
-function* afterCreatePasswordProcess({payload: {password, name}}: ReturnType<typeof afterCreatePassword>):
-Generator<SelectEffect | CallEffect, void, string> {
+function* afterCreatePasswordProcess({
+    payload: {password, name},
+}: ReturnType<typeof afterCreatePassword>): Generator<SelectEffect | CallEffect, void, string> {
     const signingKeyData = yield select(getRegisterSigningKey);
     const signingKey = PrivateKey.fromBytes(fromHex(signingKeyData));
 
@@ -25,14 +26,15 @@ Generator<SelectEffect | CallEffect, void, string> {
         signingKey,
         password,
         keyPath,
-        name ?? "Validator " + englishWordList[randBetween(0, englishWordList.length - 1)]
+        name ?? "Validator " + englishWordList[randBetween(0, englishWordList.length - 1)],
     );
 
     yield call(saveAccount, signingKey, accountDirectory);
 }
 
-function* afterConfirmPasswordProcess({payload: {password, name}}: ReturnType<typeof afterConfirmPassword>):
-Generator<SelectEffect | CallEffect, void, string> {
+function* afterConfirmPasswordProcess({
+    payload: {password, name},
+}: ReturnType<typeof afterConfirmPassword>): Generator<SelectEffect | CallEffect, void, string> {
     const publicKey = yield select(getRegisterSigningKey);
     const fromPath = yield select(getKeystorePath);
 
@@ -42,19 +44,21 @@ Generator<SelectEffect | CallEffect, void, string> {
         fromPath,
         publicKey,
         password,
-        name ?? "Validator " + englishWordList[randBetween(0, englishWordList.length - 1)]
+        name ?? "Validator " + englishWordList[randBetween(0, englishWordList.length - 1)],
     );
 
     yield call(saveAccount, publicKey, accountDirectory);
 }
 
-function* saveAccount(signingKey: PrivateKey | string, directory: string):
-Generator<CallEffect | Promise<void> | SelectEffect, void, string> {
+function* saveAccount(
+    signingKey: PrivateKey | string,
+    directory: string,
+): Generator<CallEffect | Promise<void> | SelectEffect, void, string> {
     // Save account to db
     const account = new CGAccount({
         name: "Default",
         directory: directory,
-        sendStats: false
+        sendStats: false,
     });
 
     yield database.account.set(DEFAULT_ACCOUNT, account);

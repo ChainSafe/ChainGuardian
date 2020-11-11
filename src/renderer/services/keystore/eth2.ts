@@ -24,7 +24,11 @@ export class V4Keystore implements ICGKeystore {
      * @param name
      */
     public static async create(
-        file: string, password: string, keypair: Keypair, keyPath: string, name = ""
+        file: string,
+        password: string,
+        keypair: Keypair,
+        keyPath: string,
+        name = "",
     ): Promise<ICGKeystore> {
         try {
             const keystore = await Keystore.create(
@@ -32,7 +36,7 @@ export class V4Keystore implements ICGKeystore {
                 keypair.privateKey.toBytes(),
                 keypair.publicKey.toBytesCompressed(),
                 keyPath,
-                name
+                name,
             );
             ensureKeystoreDirectory(file);
             writeFileSync(file, keystore.stringify());
@@ -51,7 +55,7 @@ export class V4Keystore implements ICGKeystore {
      * @param name change description to be displayed as name at validator list
      */
     public static async import(from: string, to: string, password: string, name = ""): Promise<ICGKeystore> {
-        if(!await new V4Keystore(from).verifyPassword(password)) {
+        if (!(await new V4Keystore(from).verifyPassword(password))) {
             throw new Error("Invalid password");
         }
         try {
@@ -96,7 +100,7 @@ export class V4Keystore implements ICGKeystore {
             keypair.privateKey.toBytes(),
             keypair.publicKey.toBytesCompressed(),
             this.keystore.path,
-            this.keystore.description
+            this.keystore.description,
         );
         try {
             ensureKeystoreDirectory(this.file);
@@ -115,7 +119,7 @@ export class V4Keystore implements ICGKeystore {
         return `0x${this.keystore.pubkey}`;
     }
 
-    public getName(): string|null {
+    public getName(): string | null {
         return this.keystore.description;
     }
 
@@ -149,11 +153,10 @@ export class V4Keystore implements ICGKeystore {
 
 export const V4KeystoreFactory: ICGKeystoreFactory = V4Keystore;
 
-function ensureKeystoreDirectory(file: string): void{
+function ensureKeystoreDirectory(file: string): void {
     try {
         mkdirSync(dirname(file), {recursive: true});
-    }
-    catch (err) {
+    } catch (err) {
         warn("ensuring directory exists", err);
     }
 }

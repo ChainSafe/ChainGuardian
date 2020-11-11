@@ -17,15 +17,14 @@ import {ChoseImport} from "./SigningKey/Import/ChoseImport";
 import {FileUploadImport} from "./SigningKey/Import/FileUploadImport";
 
 interface IOnboardStep {
-    step: string
+    step: string;
 }
 
 interface IProps extends RouteComponentProps {
-    match: match<IOnboardStep>
+    match: match<IOnboardStep>;
 }
 
 export default class OnboardContainer extends Component<IProps, {}> {
-
     private Steper = {
         [OnBoardingRoutes.SIGNING]: <SigningKey />,
         [OnBoardingRoutes.SIGNING_KEY_GENERATE]: <SigningKeyGenerateContainer history={this.props.history} />,
@@ -33,12 +32,12 @@ export default class OnboardContainer extends Component<IProps, {}> {
         [OnBoardingRoutes.SIGNING_IMPORT]: <ChoseImport />,
         [OnBoardingRoutes.SIGNING_IMPORT_FILE]: <FileUploadImport history={this.props.history} />,
         [OnBoardingRoutes.SIGNING_IMPORT_MNEMONIC]: <SigningKeyImportContainer history={this.props.history} />,
-        [OnBoardingRoutes.CONFIGURE]: <ConfigureContainer history={this.props.history}/>,
-        [OnBoardingRoutes.CONFIGURE_BEACON_NODE]: <ConfigureBeaconNodeContainer history={this.props.history}/>,
-        [OnBoardingRoutes.CONFIGURE_DOCKER_PATH]: <ConfigureDockerPath history={this.props.history}/>,
-        [OnBoardingRoutes.DEPOSIT_TX]: <DepositTxContainer history={this.props.history}/>,
-        [OnBoardingRoutes.PASSWORD]: <CreatePasswordContainer history={this.props.history}/>,
-        [OnBoardingRoutes.CONSENT]: <ConsentContainer history={this.props.history}/>,
+        [OnBoardingRoutes.CONFIGURE]: <ConfigureContainer history={this.props.history} />,
+        [OnBoardingRoutes.CONFIGURE_BEACON_NODE]: <ConfigureBeaconNodeContainer history={this.props.history} />,
+        [OnBoardingRoutes.CONFIGURE_DOCKER_PATH]: <ConfigureDockerPath history={this.props.history} />,
+        [OnBoardingRoutes.DEPOSIT_TX]: <DepositTxContainer history={this.props.history} />,
+        [OnBoardingRoutes.PASSWORD]: <CreatePasswordContainer history={this.props.history} />,
+        [OnBoardingRoutes.CONSENT]: <ConsentContainer history={this.props.history} />,
     };
 
     private steps = [
@@ -46,7 +45,7 @@ export default class OnboardContainer extends Component<IProps, {}> {
         {stepId: 2, stepName: "Configure"},
         {stepId: 3, stepName: "Deposit"},
         {stepId: 4, stepName: "Password"},
-        {stepId: 5, stepName: "Consent"}
+        {stepId: 5, stepName: "Consent"},
     ];
 
     public render(): ReactElement {
@@ -56,8 +55,7 @@ export default class OnboardContainer extends Component<IProps, {}> {
                 <OnBoardModal
                     history={this.props.history}
                     currentStep={parseInt(step.split("_")[0])}
-                    steps={this.steps}
-                >
+                    steps={this.steps}>
                     {this.renderStep()}
                 </OnBoardModal>
             </Background>

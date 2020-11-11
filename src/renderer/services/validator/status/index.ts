@@ -11,29 +11,31 @@ export * from "./statuses";
 export async function getValidatorStatus(
     validatorPubKey: BLSPubkey,
     eth2Api: IGenericEth2Client,
-    eth1: IEth1Client
+    eth1: IEth1Client,
 ): Promise<ValidatorStatus> {
-    if(!(await isBeaconNodeWorking(eth2Api))) {
+    if (!(await isBeaconNodeWorking(eth2Api))) {
         return ValidatorStatus.BEACON_ERROR;
     }
-    if(!(await hasChainStarted(eth2Api))) {
+    if (!(await hasChainStarted(eth2Api))) {
         return ValidatorStatus.WAITING_START;
     }
-    if(await isBeaconNodeSyncing(eth2Api)) {
+    if (await isBeaconNodeSyncing(eth2Api)) {
         return ValidatorStatus.SYNCING;
     }
     const validator = await eth2Api.beacon.getValidator(validatorPubKey);
-    if(validator) {
+    if (validator) {
         const currentEpoch = computeEpochAtSlot(eth2Api.config, eth2Api.getCurrentSlot());
-        if(validator.validator.activationEpoch !== FAR_FUTURE_EPOCH
-            && currentEpoch < validator.validator.activationEpoch) {
+        if (
+            validator.validator.activationEpoch !== FAR_FUTURE_EPOCH &&
+            currentEpoch < validator.validator.activationEpoch
+        ) {
             return ValidatorStatus.ACTIVATION_QUEUE;
         }
-        if(validator.validator.slashed) {
+        if (validator.validator.slashed) {
             return ValidatorStatus.SLASHED;
         }
-        if(validator.validator.exitEpoch !== FAR_FUTURE_EPOCH) {
-            if(currentEpoch > validator.validator.exitEpoch) {
+        if (validator.validator.exitEpoch !== FAR_FUTURE_EPOCH) {
+            if (currentEpoch > validator.validator.exitEpoch) {
                 return ValidatorStatus.EXITED;
             } else {
                 return ValidatorStatus.EXIT_QUEUE;
@@ -41,7 +43,7 @@ export async function getValidatorStatus(
         }
         return ValidatorStatus.ACTIVE;
     } else {
-        if(await hasDeposited(validatorPubKey, eth1)) {
+        if (await hasDeposited(validatorPubKey, eth1)) {
             return ValidatorStatus.ACTIVATION_QUEUE;
         } else {
             return ValidatorStatus.WAITING_DEPOSIT;
@@ -49,8 +51,8 @@ export async function getValidatorStatus(
     }
 }
 
-async function isBeaconNodeWorking(eth2Api: IGenericEth2Client|null): Promise<boolean> {
-    if(!eth2Api) return false;
+async function isBeaconNodeWorking(eth2Api: IGenericEth2Client | null): Promise<boolean> {
+    if (!eth2Api) return false;
     try {
         await eth2Api.getVersion();
         return true;

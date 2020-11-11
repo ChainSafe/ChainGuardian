@@ -17,7 +17,7 @@ import {computeDomain, DomainType, computeSigningRoot} from "@chainsafe/lodestar
 export function functionSignatureFromABI(rawAbi: (string | any)[] | string, functionName: string): string {
     let hasFunction = false;
     const inputs: string[] = [];
-    const abi = (typeof rawAbi == "string") ? JSON.parse(rawAbi) : rawAbi;
+    const abi = typeof rawAbi == "string" ? JSON.parse(rawAbi) : rawAbi;
     for (const field of abi) {
         if (field["type"] === "function") {
             if (field["name"] === functionName) {
@@ -31,8 +31,8 @@ export function functionSignatureFromABI(rawAbi: (string | any)[] | string, func
     return hasFunction ? `${functionName}(${inputs.join(",")})` : "";
 }
 
-export function etherToGwei(ether: string|number|bigint): bigint {
-    return BigInt(ether) * (BigInt(ethers.utils.parseUnits("1", "gwei").toString()));
+export function etherToGwei(ether: string | number | bigint): bigint {
+    return BigInt(ether) * BigInt(ethers.utils.parseUnits("1", "gwei").toString());
 }
 
 /**
@@ -47,7 +47,7 @@ export function etherToGwei(ether: string|number|bigint): bigint {
 export function generateDeposit(
     signingKey: KeyPair,
     withdrawalPubKey: BLSPubKey,
-    depositAmount: string|number,
+    depositAmount: string | number,
     config: IBeaconConfig,
 ): DepositData {
     // signing public key
@@ -55,27 +55,28 @@ export function generateDeposit(
     // BLS_WITHDRAWAL_PREFIX + hash(withdrawal_pubkey)[1:]
     const withdrawalCredentials: Buffer = Buffer.concat([
         Buffer.alloc(1),
-        createHash("sha256").update(withdrawalPubKey.valueOf() as Uint8Array).digest().subarray(1)
+        createHash("sha256")
+            .update(withdrawalPubKey.valueOf() as Uint8Array)
+            .digest()
+            .subarray(1),
     ]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const amount = BigInt(
         // remove decimal zeroes
-        utils.formatUnits(utils.parseEther(depositAmount.toString()), "gwei").split(".")[0]
+        utils.formatUnits(utils.parseEther(depositAmount.toString()), "gwei").split(".")[0],
     );
     // define DepositData
     const depositMsg: DepositMessage = {
         pubkey: publicKey,
         withdrawalCredentials: withdrawalCredentials,
-        amount: amount
+        amount: amount,
     };
     // sign calculated root
     const domain = computeDomain(config, DomainType.DEPOSIT);
     const signingRoot = computeSigningRoot(config, config.types.DepositMessage, depositMsg, domain);
-    const signature = signingKey.privateKey.signMessage(
-        signingRoot,
-    ).toBytesCompressed();
+    const signature = signingKey.privateKey.signMessage(signingRoot).toBytesCompressed();
     return {
         ...depositMsg,
-        signature
+        signature,
     } as DepositData;
 }

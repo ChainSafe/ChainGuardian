@@ -10,7 +10,7 @@ export class Command {
 
     public static async ps(
         containerName?: string,
-        status?: "created" | "restarting" | "running" | "removing" | "paused" | "exited" | "dead"
+        status?: "created" | "restarting" | "running" | "removing" | "paused" | "exited" | "dead",
     ): Promise<string> {
         const nameFilter = containerName ? ` --no-trunc --filter name=^/${containerName}$` : "";
         const statusFilter = status ? ` --filter status=${status}` : "";
@@ -20,7 +20,7 @@ export class Command {
 
     // Passed argument is used to check installation and path correctness
     public static async version(defaultPath?: string): Promise<string> {
-        const path = defaultPath || await dockerPath.getPath();
+        const path = defaultPath || (await dockerPath.getPath());
         return `"${path}" -v`;
     }
 

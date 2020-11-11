@@ -39,5 +39,4 @@ describe("Main window", () => {
         const inputValue = await client.getElementValue(".inputform");
         expect(inputValue).toBe("testinput");
     });
-
 });

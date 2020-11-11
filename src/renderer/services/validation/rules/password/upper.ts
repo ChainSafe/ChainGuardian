@@ -13,16 +13,18 @@ const joiNumberOfUpperCase: ExtensionRule & ThisType<SchemaInternals> = {
             name: "n",
             ref: true,
             assert: (value: any): boolean => typeof value === "number" && !isNaN(value),
-            message: "must be a number"
-        }
+            message: "must be a number",
+        },
     ],
     validate(value: string, helpers: CustomHelpers, args: Record<string, any>): any {
         const upperCaseCount = (value.match(/[A-Z]/g) || []).length;
-        if (upperCaseCount >= args.n) { return value; }
+        if (upperCaseCount >= args.n) {
+            return value;
+        }
         return helpers.error(ERR_CODE_NUM_OF_UPPER, {n: args.n});
-    }
+    },
 };
 
 export const upperRule = {
-    upper: joiNumberOfUpperCase
+    upper: joiNumberOfUpperCase,
 };

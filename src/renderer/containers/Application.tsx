@@ -20,15 +20,15 @@ const Application = (): ReactElement => {
     }, []);
 
     return (
-        <div className="cg-app">
+        <div className='cg-app'>
             <Router>
                 <Switch>
-                    <Route path={Routes.ONBOARD_ROUTE} component={OnboardContainer}/>
-                    <Route path={Routes.DASHBOARD_ROUTE} component={DashboardContainer}/>
-                    <Route path={Routes.VALIDATOR_DETAILS} component={ValidatorDetailsContainer}/>
-                    <Route path={Routes.BEACON_NODES} component={BeaconNodesContainer}/>
-                    <Route path={Routes.ADD_BEACON_NODE} component={AddBeaconNodeContainer}/>
-                    <Redirect from="/" to={Routes.DASHBOARD_ROUTE}/>
+                    <Route path={Routes.ONBOARD_ROUTE} component={OnboardContainer} />
+                    <Route path={Routes.DASHBOARD_ROUTE} component={DashboardContainer} />
+                    <Route path={Routes.VALIDATOR_DETAILS} component={ValidatorDetailsContainer} />
+                    <Route path={Routes.BEACON_NODES} component={BeaconNodesContainer} />
+                    <Route path={Routes.ADD_BEACON_NODE} component={AddBeaconNodeContainer} />
+                    <Redirect from='/' to={Routes.DASHBOARD_ROUTE} />
                 </Switch>
             </Router>
         </div>
