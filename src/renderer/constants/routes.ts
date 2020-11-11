@@ -10,15 +10,8 @@ export class Routes {
 
 export enum OnBoardingRoutes {
     SIGNING = "1_0",
-    SIGNING_IMPORT = "1_a1",
-    SIGNING_IMPORT_MNEMONIC = "1_a1_mem",
-    SIGNING_IMPORT_FILE = "1_a1_fil",
-    SIGNING_KEY_GENERATE = "1_skg",
-    SIGNING_KEY_VALIDATE = "1_skv",
-    CONFIGURE = "2_0",
-    CONFIGURE_DOCKER_PATH = "2_0_1",
-    CONFIGURE_BEACON_NODE = "2_1",
-    DEPOSIT_TX = "3_0",
-    PASSWORD = "4_ps",
-    CONSENT = "5_0",
+    SIGNING_IMPORT_FILE = "1_1",
+    SIGNING_IMPORT_MNEMONIC = "1_2",
+    PASSWORD = "2_0",
+    CONSENT = "3_0",
 }
