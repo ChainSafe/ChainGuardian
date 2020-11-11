@@ -8,8 +8,6 @@ export interface IStoreValidatorKeysPayload {
 }
 
 export interface IRegisterState {
-    signingMnemonic: string;
-    signingVerification: boolean;
     signingKey: string;
     signingKeyPath: string;
     withdrawalKey: string;
@@ -19,8 +17,6 @@ export interface IRegisterState {
 }
 
 const initialState: IRegisterState = {
-    signingMnemonic: "",
-    signingVerification: false,
     signingKey: "",
     signingKeyPath: "",
     withdrawalKey: "",
@@ -31,12 +27,6 @@ export const registerSlice = createSlice({
     name: "register",
     initialState,
     reducers: {
-        storeSigningMnemonic: (state, action: PayloadAction<string>): void => {
-            state.signingMnemonic = action.payload;
-        },
-        storeSigningVerificationStatus: (state, action: PayloadAction<boolean>): void => {
-            state.signingVerification = action.payload;
-        },
         storeSigningKey: (state, action: PayloadAction<string>): void => {
             state.signingKey = action.payload;
         },
