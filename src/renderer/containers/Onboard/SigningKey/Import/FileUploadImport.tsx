@@ -5,8 +5,7 @@ import {setKeystorePath, setPublicKey as setPublicKeyAction} from "../../../../d
 import {ButtonPrimary} from "../../../../components/Button/ButtonStandard";
 import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
 import {RouteComponentProps} from "react-router-dom";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faExclamationTriangle, faUpload} from "@fortawesome/free-solid-svg-icons";
+import {FileImport} from "../../../../components/FileImport/FileImport";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
@@ -46,24 +45,14 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
         <>
             <h1>Upload your keystore file</h1>
             <div className={"key-input-container mt-32"}>
-                {/* TODO: improve styling */}
-                {/* TODO: implement drag and drop */}
-                <input
-                    type='file'
+                <FileImport
+                    onChange={onChange}
+                    fileName={fileName}
+                    error={error}
+                    accept='application/json'
                     id='file'
                     name='filename'
-                    accept='application/json'
-                    className='inputfile'
-                    onChange={onChange}
                 />
-                <label htmlFor='file' className={error && "error"}>
-                    <FontAwesomeIcon icon={faUpload} transform={{x: -10}} />
-                    {!fileName ? "Choose a file..." : fileName}
-                    {error && <FontAwesomeIcon icon={faExclamationTriangle} className='error-icon' size='lg' />}
-                </label>
-                <div className={"error-message error-message-wide"} style={{marginLeft: "28px"}}>
-                    {error}
-                </div>
                 <span className='submit-button-container'>
                     <ButtonPrimary buttonId='submit' disabled={!valid} onClick={onSubmit}>
                         Submit
