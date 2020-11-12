@@ -3,8 +3,6 @@ import {registerSlice} from "./slice";
 
 export const {
     storeSigningKey,
-    storeSigningMnemonic,
-    storeSigningVerificationStatus,
     storeValidatorKeys,
     completedRegistrationSubmission,
     setNetwork,

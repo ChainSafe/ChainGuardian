@@ -84,35 +84,6 @@ describe("Onboarding signing key import screen", () => {
         await client.replaceValue(".inputform", mnemonic);
         await (await client.$("#submit")).click();
         postClickUrl = await client.getUrl();
-        expect(postClickUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.DEPOSIT_TX))).to.be.true;
-    });
-});
-
-describe("Onboarding signing key validate screen", () => {
-    let app: Application;
-
-    beforeEach(async () => {
-        app = await setApp(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_KEY_GENERATE));
-    });
-
-    afterEach(async () => {
-        await stopApp(app);
-    });
-
-    it("should redirect to deposit flow on correct answer", async (done) => {
-        const {client} = app;
-        await (await client.$("#savedSigningMnemonic")).click();
-        const verificationUrl = await client.getUrl();
-        expect(verificationUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_KEY_VALIDATE))).to.be
-            .true;
-
-        await (await client.$(".verify-button-container button[datafield=true]")).click();
-
-        const timeoutHandler = async (): Promise<void> => {
-            const url = await client.getUrl();
-            expect(url.endsWith(OnBoardingRoutes.DEPOSIT_TX)).to.be.true;
-            done();
-        };
-        setTimeout(timeoutHandler, 1500);
+        expect(postClickUrl.endsWith(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD))).to.be.true;
     });
 });

@@ -19,20 +19,12 @@ describe("Onboarding start screen", () => {
     it("has rendered properly", async function () {
         const {client} = app;
         expect(await (await client.$(".back-tab")).isExisting()).to.be.true;
-        expect((await (await client.$(".step")).getValue()).length).to.be.equal(6);
-        const goButtonText = await client.getElementAttribute("#import", "textContent");
-        expect(goButtonText).to.be.equal("IMPORT");
-        const registerButtonText = await client.getElementAttribute("#generate", "textContent");
-        expect(registerButtonText).to.be.equal("GENERATE");
+        expect((await (await client.$(".step")).getValue()).length).to.be.equal(3);
+        const goButtonText = await client.getElementAttribute("#file", "textContent");
+        expect(goButtonText).to.be.equal("KEYSTORE");
+        const registerButtonText = await client.getElementAttribute("#mnemonic", "textContent");
+        expect(registerButtonText).to.be.equal("MNEMONIC OR PRIVATE KEY");
         const currentStep = await client.getElementAttribute(".step.current", "textContent");
         expect(currentStep).to.be.equal("Signing key");
     });
-    //
-    // it("back button leads to login", async function() {
-    //     const {client} = app;
-    //     await client.waitForVisible(".back-tab");
-    //     await client.$(".back-tab").click().pause(20000);
-    //     const url = await client.getUrl();
-    //     expect(url.endsWith(Routes.LOGIN_ROUTE)).to.be.true;
-    // });
 });

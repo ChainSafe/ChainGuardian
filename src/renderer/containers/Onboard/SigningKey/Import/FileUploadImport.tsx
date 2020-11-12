@@ -38,7 +38,7 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
     const onSubmit = (): void => {
         dispatch(setKeystorePath(path));
         dispatch(setPublicKeyAction(publicKey));
-        history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
+        history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
     };
 
     const valid = !error && !!path;
