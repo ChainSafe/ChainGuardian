@@ -8,6 +8,7 @@ export const {
     setNetwork,
     setKeystorePath,
     setPublicKey,
+    setSlashingPath,
 } = registerSlice.actions;
 
 type AfterCreatePassword = (password: string, name?: string) => {payload: {password: string; name?: string}};

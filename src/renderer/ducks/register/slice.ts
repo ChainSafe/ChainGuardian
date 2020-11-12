@@ -14,6 +14,7 @@ export interface IRegisterState {
     network: string;
     path?: string;
     publicKey?: string;
+    slashingPath?: string;
 }
 
 const initialState: IRegisterState = {
@@ -52,6 +53,9 @@ export const registerSlice = createSlice({
         },
         setPublicKey: (state, action: PayloadAction<string>): void => {
             state.publicKey = action.payload;
+        },
+        setSlashingPath: (state, action: PayloadAction<string>): void => {
+            state.slashingPath = action.payload;
         },
         completedRegistrationSubmission: (): IRegisterState => initialState,
     },
