@@ -16,7 +16,7 @@ import {
     getPassword,
     getRegisterNetwork,
     getRegisterSigningKey,
-    getRegisterSigningKeyPath
+    getRegisterSigningKeyPath,
 } from "./selectors";
 
 function* afterCreatePasswordProcess({
