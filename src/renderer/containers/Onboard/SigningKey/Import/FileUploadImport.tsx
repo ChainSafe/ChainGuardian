@@ -1,12 +1,14 @@
 import React, {ChangeEvent, FC, useState} from "react";
 import {processKeystore} from "../../../../services/utils/processKeystore";
 import {useDispatch} from "react-redux";
-import {setKeystorePath, setPublicKey as setPublicKeyAction} from "../../../../ducks/register/actions";
+import {storeKeystoreValues} from "../../../../ducks/register/actions";
 import {ButtonPrimary} from "../../../../components/Button/ButtonStandard";
 import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
 import {RouteComponentProps} from "react-router-dom";
 import {FileImport} from "../../../../components/FileImport/FileImport";
 import {CheckBox} from "../../../../components/CheckBox/CheckBox";
+import {InputPrompt, ISubmitStatus} from "../../../../components/Prompt/InputPrompt";
+import {V4Keystore} from "../../../../services/keystore";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
@@ -16,6 +18,7 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
     const [fileName, setFileName] = useState<null | string>(null);
     const [publicKey, setPublicKey] = useState("");
     const [checked, setChecked] = useState(false);
+    const [isShowingPromp, setShowingPromp] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -37,13 +40,26 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
     };
 
     const onSubmit = (): void => {
-        dispatch(setKeystorePath(path));
-        dispatch(setPublicKeyAction(publicKey));
+        setShowingPromp(true);
+    };
+
+    const onSubmitPassword = async (password: string): Promise<ISubmitStatus> => {
+        const ok = await new V4Keystore(path).verifyPassword(password);
+        if (!ok) {
+            return {valid: false, errorMessage: "Wrong password!"};
+        }
+
+        dispatch(storeKeystoreValues(path, publicKey, password));
         if (checked) {
             history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT_SLASHING_FILE));
         } else {
             history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
         }
+        return {valid: true};
+    };
+
+    const onCancel = (): void => {
+        setShowingPromp(false);
     };
 
     const onCheckboxClick = (): void => {
@@ -70,6 +86,14 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
                     </ButtonPrimary>
                 </span>
             </div>
+            <InputPrompt
+                onSubmit={onSubmitPassword}
+                onCancel={onCancel}
+                display={isShowingPromp}
+                title={"Confirm password"}
+                placeholder={"Please enter your password..."}
+                inputType={"password"}
+            />
         </>
     );
 };

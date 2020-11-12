@@ -9,7 +9,7 @@ interface ICheckboxProps {
 
 export const CheckBox: React.FC<ICheckboxProps> = ({onClick, checked, label, id = "chk"}) => (
     <>
-        <input className='checkbox' type='checkbox' id={id} checked={checked} onClick={onClick} />
+        <input className='checkbox' type='checkbox' id={id} checked={checked} onChange={onClick} />
         <label htmlFor={id}>{label}</label>
     </>
 );

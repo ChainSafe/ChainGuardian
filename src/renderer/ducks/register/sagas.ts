@@ -11,7 +11,13 @@ import {all, takeEvery, select, call, SelectEffect, CallEffect} from "redux-saga
 import {afterConfirmPassword, afterCreatePassword} from "./actions";
 import {addNewValidator} from "../validator/actions";
 import {addNewValidatorSaga} from "../validator/sagas";
-import {getKeystorePath, getRegisterNetwork, getRegisterSigningKey, getRegisterSigningKeyPath} from "./selectors";
+import {
+    getKeystorePath,
+    getPassword,
+    getRegisterNetwork,
+    getRegisterSigningKey,
+    getRegisterSigningKeyPath
+} from "./selectors";
 
 function* afterCreatePasswordProcess({
     payload: {password, name},
@@ -33,10 +39,11 @@ function* afterCreatePasswordProcess({
 }
 
 function* afterConfirmPasswordProcess({
-    payload: {password, name},
+    payload: {password: newPassword, name},
 }: ReturnType<typeof afterConfirmPassword>): Generator<SelectEffect | CallEffect, void, string> {
     const publicKey = yield select(getRegisterSigningKey);
     const fromPath = yield select(getKeystorePath);
+    const password = yield select(getPassword);
 
     const englishWordList = wordlists["english"];
     const accountDirectory = yield call(
@@ -45,6 +52,7 @@ function* afterConfirmPasswordProcess({
         publicKey,
         password,
         name ?? "Validator " + englishWordList[randBetween(0, englishWordList.length - 1)],
+        newPassword,
     );
 
     yield call(saveAccount, publicKey, accountDirectory);

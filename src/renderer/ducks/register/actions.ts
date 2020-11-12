@@ -9,6 +9,8 @@ export const {
     setKeystorePath,
     setPublicKey,
     setSlashingPath,
+    setPassword,
+    storeKeystoreValues,
 } = registerSlice.actions;
 
 type AfterCreatePassword = (password: string, name?: string) => {payload: {password: string; name?: string}};
@@ -17,8 +19,8 @@ export const afterCreatePassword = createAction<AfterCreatePassword>(
     (password: string, name?: string) => ({payload: {password, name}}),
 );
 
-type AfterConfirmPassword = (password: string, name?: string) => {payload: {password: string; name?: string}};
+type AfterConfirmPassword = (password?: string, name?: string) => {payload: {password?: string; name?: string}};
 export const afterConfirmPassword = createAction<AfterConfirmPassword>(
     "register/afterConfirmPassword",
-    (password: string, name?: string) => ({payload: {password, name}}),
+    (password?: string, name?: string) => ({payload: {password, name}}),
 );

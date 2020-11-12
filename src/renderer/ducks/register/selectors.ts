@@ -13,5 +13,7 @@ export const getRegisterNetwork = (state: IRootState): string => state.register.
 
 export const getKeystorePath = (state: IRootState): string | undefined => state.register.path;
 
+export const getPassword = (state: IRootState): string | undefined => state.register.password;
+
 export const getNetworkIndex = (state: IRootState): number =>
     state.register.network ? networks.map((n) => n.networkName).indexOf(state.register.network) : 0;

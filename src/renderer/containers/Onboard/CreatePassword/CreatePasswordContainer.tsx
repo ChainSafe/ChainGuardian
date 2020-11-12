@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Component, ReactElement} from "react";
 import {IInputFormProps} from "../../../components/Input/InputForm";
-import {ButtonPrimary} from "../../../components/Button/ButtonStandard";
+import {ButtonPrimary, ButtonSecondary} from "../../../components/Button/ButtonStandard";
 import {Loading} from "../../../components/Loading/Loading";
 import {MultipleInputVertical} from "../../../components/MultipleInputVertical/MultipleInputVertical";
 import {RouteComponentProps} from "react-router";
@@ -14,7 +14,6 @@ import {IRootState} from "../../../ducks/reducers";
 import {afterConfirmPassword, afterCreatePassword} from "../../../ducks/register/actions";
 import {getAuthAccount} from "../../../ducks/auth/selectors";
 import {getKeystorePath} from "../../../ducks/register/selectors";
-import {V4Keystore} from "../../../services/keystore";
 
 export interface IState {
     password: string;
@@ -23,7 +22,6 @@ export interface IState {
         password?: string;
         confirm?: string;
     };
-    validated: boolean;
     loading: boolean;
 }
 
@@ -43,7 +41,6 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
         password: "",
         confirm: "",
         errorMessages: {},
-        validated: !this.props.path,
         loading: false,
     };
 
@@ -52,28 +49,26 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
             {
                 inputId: "password",
                 focused: true,
-                onChange: !this.props.path ? this.handleChange : this.handleConfirmPassword,
+                onChange: this.handleChange,
                 placeholder: "Enter password",
                 valid: this.isValid(this.state.errorMessages.password),
                 errorMessage: this.state.errorMessages.password,
             },
-        ];
-        if (!this.props.path) {
-            inputs.push({
+            {
                 inputId: "confirm",
                 onChange: this.handleChange,
                 placeholder: "Confirm password",
                 valid:
                     this.isValid(this.state.errorMessages.confirm) && this.isValid(this.state.errorMessages.password),
                 errorMessage: this.state.errorMessages.confirm,
-            });
-        }
+            },
+        ];
 
         const {errorMessages, loading} = this.state;
         return (
             <>
-                <h1>{!this.props.path ? "Create" : "Validate"} a password</h1>
-                {!this.props.path && <p>You will use this password to unlock applications and keys.</p>}
+                <h1>{!this.props.path ? "Create" : "Change"} a password</h1>
+                <p>You will use this password to unlock applications and keys.</p>
                 <div className='input-container input-container-vertical'>
                     <form
                         onSubmit={(): void => {
@@ -82,26 +77,31 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
                         }}
                         className='flex-column'>
                         <MultipleInputVertical inputs={inputs} />
-                        {this.state.validated ? (
+                        {this.props.path ? (
+                            <div className='action-buttons'>
+                                <ButtonSecondary buttonId='file' large onClick={this.handleSkip}>
+                                    SKIP
+                                </ButtonSecondary>
+                                <ButtonPrimary
+                                    buttonId='next'
+                                    disabled={errorMessages.password !== "" || errorMessages.confirm !== ""}
+                                    type='submit'
+                                    large>
+                                    NEXT
+                                </ButtonPrimary>
+                            </div>
+                        ) : (
                             <ButtonPrimary
                                 buttonId='next'
                                 disabled={errorMessages.password !== "" || errorMessages.confirm !== ""}
                                 type='submit'>
                                 NEXT
                             </ButtonPrimary>
-                        ) : (
-                            <ButtonPrimary
-                                onClick={this.handleValidateClick}
-                                buttonId='validate'
-                                disabled={!this.state.password}
-                                type='button'>
-                                VALIDATE
-                            </ButtonPrimary>
                         )}
                     </form>
                 </div>
 
-                <Loading visible={loading} title={this.state.validated ? "Loading" : "Validating"} />
+                <Loading visible={loading} title={"Loading"} />
             </>
         );
     }
@@ -124,18 +124,9 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
         this.setState({errorMessages: m});
     };
 
-    private handleConfirmPassword = (event: React.FormEvent<HTMLInputElement>): void => {
-        this.setState({password: event.currentTarget.value, validated: false});
-    };
-
-    private handleValidateClick = (): void => {
-        this.setState({loading: true});
-        new V4Keystore(this.props.path).verifyPassword(this.state.password).then((ok) => {
-            const newState = {loading: false, validated: false, errorMessages: {password: "", confirm: ""}};
-            if (!ok) newState.errorMessages.password = "Wrong password!";
-            else newState.validated = true;
-            this.setState(newState);
-        });
+    private handleSkip = (): void => {
+        this.props.afterConfirmPassword();
+        this.finalizeSubmitOrSkip();
     };
 
     private handleSubmit = (): void => {
@@ -144,6 +135,10 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
         } else {
             this.props.afterConfirmPassword(this.state.password);
         }
+        this.finalizeSubmitOrSkip();
+    };
+
+    private finalizeSubmitOrSkip = (): void => {
         this.setState({loading: false});
 
         if (this.props.isFirstTimeRegistration) {
