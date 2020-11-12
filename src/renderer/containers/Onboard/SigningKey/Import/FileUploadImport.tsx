@@ -6,6 +6,7 @@ import {ButtonPrimary} from "../../../../components/Button/ButtonStandard";
 import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
 import {RouteComponentProps} from "react-router-dom";
 import {FileImport} from "../../../../components/FileImport/FileImport";
+import {CheckBox} from "../../../../components/CheckBox/CheckBox";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
@@ -14,6 +15,7 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
     const [path, setPath] = useState<null | string>(null);
     const [fileName, setFileName] = useState<null | string>(null);
     const [publicKey, setPublicKey] = useState("");
+    const [checked, setChecked] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -37,7 +39,15 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
     const onSubmit = (): void => {
         dispatch(setKeystorePath(path));
         dispatch(setPublicKeyAction(publicKey));
-        history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+        if (checked) {
+            history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT_SLASHING_FILE));
+        } else {
+            history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+        }
+    };
+
+    const onCheckboxClick = (): void => {
+        setChecked(!checked);
     };
 
     const valid = !error && !!path;
@@ -53,6 +63,7 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
                     id='file'
                     name='filename'
                 />
+                <CheckBox checked={checked} label="I'm switching validator" id='slashing' onClick={onCheckboxClick} />
                 <span className='submit-button-container'>
                     <ButtonPrimary buttonId='submit' disabled={!valid} onClick={onSubmit}>
                         Submit
