@@ -1,5 +1,5 @@
 import {IRootState} from "../reducers";
-import {IValidatorBeaconNodes} from "../../models/beaconNode";
+import {BeaconNode, IValidatorBeaconNodes} from "../../models/beaconNode";
 import {BlockSubscriptions} from "./types";
 import {createSelector} from "@reduxjs/toolkit";
 import {getValidatorFromProps} from "../fromProps";
@@ -14,6 +14,19 @@ export const getSelectedNetwork = (state: IRootState): string | undefined => sta
 export const getPullingDockerImage = (state: IRootState): boolean => state.network.pullingDockerImage;
 
 export const getFinishedPullingDockerImage = (state: IRootState): boolean => state.network.finishedPullingDockerImage;
+
+type BeaconNodesList = {length: number; keys: string[]} & {[url: string]: BeaconNode};
+export const getBeaconNodeList = createSelector(getBeaconNodes, (beacons) => {
+    const nodes = {} as BeaconNodesList;
+    Object.keys(beacons).forEach((key) => {
+        beacons[key].forEach((beacon) => {
+            nodes[beacon.url] = beacon;
+        });
+    });
+    nodes.keys = Object.keys(nodes);
+    nodes.length = nodes.keys.length;
+    return nodes;
+});
 
 export const getValidatorBlockSubscription = createSelector(
     getValidatorBlockSubscriptions,

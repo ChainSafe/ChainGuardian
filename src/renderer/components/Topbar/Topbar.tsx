@@ -1,11 +1,15 @@
-import React, {ReactElement} from "react";
+import React from "react";
 import {useHistory} from "react-router";
 import {OnBoardingRoutes, Routes} from "../../constants/routes";
 
 import {ButtonPrimary, ButtonSecondary} from "../Button/ButtonStandard";
 import {NetworkDropdown} from "../NetworkDropdown/NetworkDropdown";
 
-export const Topbar = (): ReactElement => {
+interface ITopbarProps {
+    canAddValidator: boolean;
+}
+
+export const Topbar: React.FC<ITopbarProps> = ({canAddValidator}) => {
     const history = useHistory();
 
     const onAddNewValidator = (): void => {
@@ -22,9 +26,11 @@ export const Topbar = (): ReactElement => {
 
             <ButtonSecondary onClick={onBeaconNodesClick}>BEACON NODES</ButtonSecondary>
 
-            <ButtonPrimary onClick={onAddNewValidator} buttonId={"add-validator"}>
-                ADD NEW VALIDATOR
-            </ButtonPrimary>
+            {canAddValidator && (
+                <ButtonPrimary onClick={onAddNewValidator} buttonId={"add-validator"}>
+                    ADD NEW VALIDATOR
+                </ButtonPrimary>
+            )}
         </div>
     );
 };
