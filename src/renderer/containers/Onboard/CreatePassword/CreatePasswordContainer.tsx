@@ -27,7 +27,7 @@ export interface IState {
 
 interface IStateProps {
     isFirstTimeRegistration: boolean;
-    path: string | undefined;
+    fromMnemonic: boolean;
 }
 
 interface IInjectedProps {
@@ -35,7 +35,6 @@ interface IInjectedProps {
     afterConfirmPassword: typeof afterConfirmPassword;
 }
 
-// TODO?: in case of import this component should ask for changing password os skip??
 export class CreatePassword extends Component<Pick<RouteComponentProps, "history"> & IInjectedProps & IStateProps> {
     public state: IState = {
         password: "",
@@ -67,8 +66,8 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
         const {errorMessages, loading} = this.state;
         return (
             <>
-                <h1>{!this.props.path ? "Create" : "Change"} a password</h1>
-                <p>You will use this password to unlock applications and keys.</p>
+                <h1>{this.props.fromMnemonic ? "Create" : "Change"} a password</h1>
+                <p>You will use this password to unlock validator account.</p>
                 <div className='input-container input-container-vertical'>
                     <form
                         onSubmit={(): void => {
@@ -77,7 +76,14 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
                         }}
                         className='flex-column'>
                         <MultipleInputVertical inputs={inputs} />
-                        {this.props.path ? (
+                        {this.props.fromMnemonic ? (
+                            <ButtonPrimary
+                                buttonId='next'
+                                disabled={errorMessages.password !== "" || errorMessages.confirm !== ""}
+                                type='submit'>
+                                NEXT
+                            </ButtonPrimary>
+                        ) : (
                             <div className='action-buttons'>
                                 <ButtonSecondary buttonId='file' large onClick={this.handleSkip}>
                                     SKIP
@@ -90,13 +96,6 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
                                     NEXT
                                 </ButtonPrimary>
                             </div>
-                        ) : (
-                            <ButtonPrimary
-                                buttonId='next'
-                                disabled={errorMessages.password !== "" || errorMessages.confirm !== ""}
-                                type='submit'>
-                                NEXT
-                            </ButtonPrimary>
                         )}
                     </form>
                 </div>
@@ -130,7 +129,7 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
     };
 
     private handleSubmit = (): void => {
-        if (!this.props.path) {
+        if (this.props.fromMnemonic) {
             this.props.afterCreatePassword(this.state.password);
         } else {
             this.props.afterConfirmPassword(this.state.password);
@@ -160,7 +159,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
 
 const mapStateToProps = (state: IRootState): IStateProps => ({
     isFirstTimeRegistration: !getAuthAccount(state),
-    path: getKeystorePath(state),
+    fromMnemonic: !getKeystorePath(state),
 });
 
 export const CreatePasswordContainer = connect(mapStateToProps, mapDispatchToProps)(CreatePassword);

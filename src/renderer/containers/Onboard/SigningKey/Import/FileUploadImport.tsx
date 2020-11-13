@@ -17,8 +17,8 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
     const [path, setPath] = useState<null | string>(null);
     const [fileName, setFileName] = useState<null | string>(null);
     const [publicKey, setPublicKey] = useState("");
-    const [checked, setChecked] = useState(false);
-    const [isShowingPromp, setShowingPromp] = useState(false);
+    const [isSwitching, setIsSwitching] = useState(false);
+    const [displayPasswordConfirmation, setDisplayPasswordConfirmation] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -40,7 +40,7 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
     };
 
     const onSubmit = (): void => {
-        setShowingPromp(true);
+        setDisplayPasswordConfirmation(true);
     };
 
     const onSubmitPassword = async (password: string): Promise<ISubmitStatus> => {
@@ -50,7 +50,7 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
         }
 
         dispatch(storeKeystoreValues(path, publicKey, password));
-        if (checked) {
+        if (isSwitching) {
             history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT_SLASHING_FILE));
         } else {
             history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
@@ -59,11 +59,11 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
     };
 
     const onCancel = (): void => {
-        setShowingPromp(false);
+        setDisplayPasswordConfirmation(false);
     };
 
     const onCheckboxClick = (): void => {
-        setChecked(!checked);
+        setIsSwitching(!isSwitching);
     };
 
     const valid = !error && !!path;
@@ -79,7 +79,12 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
                     id='file'
                     name='filename'
                 />
-                <CheckBox checked={checked} label="I'm switching validator" id='slashing' onClick={onCheckboxClick} />
+                <CheckBox
+                    checked={isSwitching}
+                    label="I'm switching validator software"
+                    id='slashing'
+                    onClick={onCheckboxClick}
+                />
                 <span className='submit-button-container'>
                     <ButtonPrimary buttonId='submit' disabled={!valid} onClick={onSubmit}>
                         Submit
@@ -89,7 +94,7 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
             <InputPrompt
                 onSubmit={onSubmitPassword}
                 onCancel={onCancel}
-                display={isShowingPromp}
+                display={displayPasswordConfirmation}
                 title={"Confirm password"}
                 placeholder={"Please enter your password..."}
                 inputType={"password"}

@@ -26,7 +26,7 @@ export const SlashingUploadImport: React.FC<IOwnProps> = ({history}) => {
         } else if (validateSlashingFile(filePath)) {
             setPath(filePath);
         } else {
-            setError("File is incorrect, try again whit different file");
+            setError("File is incorrect, try again with different file");
         }
     };
 
