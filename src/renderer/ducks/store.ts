@@ -5,6 +5,7 @@ import {IRootState, rootReducer} from "./reducers";
 // Logger with default options
 import logger from "redux-logger";
 import {rootSaga} from "./rootSaga";
+import {createAction} from "@reduxjs/toolkit";
 
 const sagaMiddleware = reduxSaga();
 
@@ -16,7 +17,12 @@ const configureStore = (initialState?: IRootState): Store<IRootState | undefined
 
 const store = configureStore();
 
+// special action - sagas can hook on it to make special actions required for app (can be async)
+export const postInit = createAction("@@POST_INIT");
+
 sagaMiddleware.run(rootSaga);
+
+store.dispatch(postInit());
 
 if (typeof module.hot !== "undefined") {
     module.hot.accept("./reducers", () =>
