@@ -7,6 +7,12 @@ export interface IStoreValidatorKeysPayload {
     signingKeyPath: string;
 }
 
+export interface IStoreKeystoreValuesPayload {
+    path: string;
+    publicKey: string;
+    password: string;
+}
+
 export interface IRegisterState {
     signingKey: string;
     signingKeyPath: string;
@@ -14,6 +20,8 @@ export interface IRegisterState {
     network: string;
     path?: string;
     publicKey?: string;
+    slashingPath?: string;
+    password?: string;
 }
 
 const initialState: IRegisterState = {
@@ -52,6 +60,22 @@ export const registerSlice = createSlice({
         },
         setPublicKey: (state, action: PayloadAction<string>): void => {
             state.publicKey = action.payload;
+        },
+        setSlashingPath: (state, action: PayloadAction<string>): void => {
+            state.slashingPath = action.payload;
+        },
+        setPassword: (state, action: PayloadAction<string>): void => {
+            state.password = action.payload;
+        },
+        storeKeystoreValues: {
+            reducer: (state, action: PayloadAction<IStoreKeystoreValuesPayload>): void => {
+                state.path = action.payload.path;
+                state.publicKey = action.payload.publicKey;
+                state.password = action.payload.password;
+            },
+            prepare: (path: string, publicKey: string, password: string): {payload: IStoreKeystoreValuesPayload} => ({
+                payload: {path, publicKey, password},
+            }),
         },
         completedRegistrationSubmission: (): IRegisterState => initialState,
     },

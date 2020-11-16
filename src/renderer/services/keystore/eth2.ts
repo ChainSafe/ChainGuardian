@@ -53,17 +53,28 @@ export class V4Keystore implements ICGKeystore {
      * @param to where file will be stored
      * @param password to validate keystore
      * @param name change description to be displayed as name at validator list
+     * @param newPassword new password after file is imported
      */
-    public static async import(from: string, to: string, password: string, name = ""): Promise<ICGKeystore> {
+    public static async import(
+        from: string,
+        to: string,
+        password: string,
+        name = "",
+        newPassword?: string,
+    ): Promise<ICGKeystore> {
         if (!(await new V4Keystore(from).verifyPassword(password))) {
             throw new Error("Invalid password");
         }
         try {
             ensureKeystoreDirectory(to);
-            const keystore = Keystore.parse(readFileSync(from).toString());
-            keystore.description = name;
-            writeFileSync(to, keystore.stringify());
-            return new V4Keystore(to);
+            const keystoreObject = Keystore.parse(readFileSync(from).toString());
+            keystoreObject.description = name;
+            writeFileSync(to, keystoreObject.stringify());
+            const keystore = new V4Keystore(to);
+            if (newPassword) {
+                await keystore.changePassword(password, newPassword);
+            }
+            return keystore;
         } catch (err) {
             throw new Error(`Failed to move file from ${from} to ${to}: ${err}`);
         }
