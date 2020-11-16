@@ -1,27 +1,29 @@
-import React, {ReactElement} from "react";
-import {useHistory} from "react-router";
+import React from "react";
 import {OnBoardingRoutes, Routes} from "../../constants/routes";
-import {ButtonPrimary} from "../Button/ButtonStandard";
+import {ButtonPrimary, ButtonSecondary} from "../Button/ButtonStandard";
+import {Link} from "react-router-dom";
 
-export const EmptyValidatorsList = (): ReactElement => {
-    const history = useHistory();
+interface IEmptyValidatorsListProps {
+    hasBeacons: boolean;
+}
 
-    const onCreateValidator = (): void => {
-        history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING));
-    };
-
-    return (
-        <div className='validator-container'>
-            <div className='box empty-list'>
-                <div className='flex-column centered'>
-                    <h2>No validators found.</h2>
-                    <p>Please create new account to start using ChainGuardian.</p>
-                </div>
-
-                <ButtonPrimary onClick={onCreateValidator} buttonId={"add-validator"}>
-                    CREATE VALIDATOR
-                </ButtonPrimary>
+export const EmptyValidatorsList: React.FC<IEmptyValidatorsListProps> = ({hasBeacons}) => (
+    <div className='validator-container'>
+        <div className='box empty-list'>
+            <div className='flex-column centered'>
+                <h2>No {hasBeacons ? "validators" : "beacon nodes"} found.</h2>
+                <p>Please add new {hasBeacons ? "validator" : "beacon node"} to start using ChainGuardian.</p>
             </div>
+
+            {hasBeacons ? (
+                <Link to={Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING)}>
+                    <ButtonPrimary buttonId={"add-validator"}>CREATE VALIDATOR</ButtonPrimary>
+                </Link>
+            ) : (
+                <Link to={Routes.ADD_BEACON_NODE}>
+                    <ButtonSecondary buttonId={"add-beacon"}>ADD NEW BEACON NODE</ButtonSecondary>
+                </Link>
+            )}
         </div>
-    );
-};
+    </div>
+);
