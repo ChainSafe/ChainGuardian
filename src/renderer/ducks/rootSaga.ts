@@ -5,6 +5,7 @@ import {notificationSagaWatcher} from "./notification/sagas";
 import {registerSagaWatcher} from "./register/sagas";
 import {settingsSagaWatcher} from "./settings/sagas";
 import {validatorSagaWatcher} from "./validator/sagas";
+import {beaconSagaWatcher} from "./beacon/sagas";
 
 export function* rootSaga(): Generator {
     yield all([
@@ -14,5 +15,6 @@ export function* rootSaga(): Generator {
         registerSagaWatcher(),
         settingsSagaWatcher(),
         validatorSagaWatcher(),
+        beaconSagaWatcher(),
     ]);
 }
