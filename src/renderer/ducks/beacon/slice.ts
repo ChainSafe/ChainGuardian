@@ -10,7 +10,7 @@ interface IBeaconDictionary {
     [key: string]: Beacon;
 }
 
-interface IBeaconState {
+export interface IBeaconState {
     beacons: IBeaconDictionary;
     keys: string[];
 }

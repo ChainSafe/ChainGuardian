@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import logger from "electron-log";
 import {useHistory} from "react-router";
@@ -7,28 +7,35 @@ import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {Loading} from "../../components/Loading/Loading";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 import {createNotification} from "../../ducks/notification/actions";
-import {removeBeaconNode} from "../../ducks/network/actions";
+import {Container} from "../../services/docker/container";
 
 interface IBeaconNodeButtonsProps {
-    image: string;
     url: string;
-    isRunning: boolean;
-    validators: string[];
-    updateNodeStatus(url: string, status: boolean): void;
+    image?: string;
 }
 
-export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps> = (props: IBeaconNodeButtonsProps) => {
+export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps> = ({
+    url,
+    image,
+}: IBeaconNodeButtonsProps) => {
     const dispatch = useDispatch();
     const history = useHistory();
-    const {image, url, isRunning} = props;
-    const [confirmModal, setConfirmModal] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false);
 
-    const onStopClick = async (image: string, url: string): Promise<void> => {
+    const [confirmModal, setConfirmModal] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [isRunning, setIsRunning] = useState(false);
+
+    useEffect(() => {
+        if (image) {
+            Container.isContainerRunning(image).then(setIsRunning);
+        }
+    }, []);
+
+    const onStopClick = async (image: string): Promise<void> => {
         setLoading(true);
         try {
             await DockerRegistry.getContainer(image)!.stop();
-            props.updateNodeStatus(url, false);
+            setIsRunning(false);
         } catch (e) {
             logger.error(e);
             dispatch(
@@ -41,11 +48,11 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
         setLoading(false);
     };
 
-    const onStartClick = async (image: string, url: string): Promise<void> => {
+    const onStartClick = async (image: string): Promise<void> => {
         setLoading(true);
         try {
             await DockerRegistry.getContainer(image)!.startStoppedContainer();
-            props.updateNodeStatus(url, true);
+            setIsRunning(true);
         } catch (e) {
             logger.error(e);
             dispatch(
@@ -70,7 +77,6 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
                 await container.stop();
                 await container.remove();
             }
-            props.validators.map((validator) => dispatch(removeBeaconNode(image, validator)));
         } catch (e) {
             logger.error(e);
             dispatch(
@@ -87,13 +93,11 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
         <>
             <div className='row buttons'>
                 {image ? (
-                    <>
-                        {isRunning ? (
-                            <ButtonInverted onClick={(): Promise<void> => onStopClick(image, url)}>Stop</ButtonInverted>
-                        ) : (
-                            <ButtonPrimary onClick={(): Promise<void> => onStartClick(image, url)}>Start</ButtonPrimary>
-                        )}
-                    </>
+                    isRunning ? (
+                        <ButtonInverted onClick={(): Promise<void> => onStopClick(image)}>Stop</ButtonInverted>
+                    ) : (
+                        <ButtonPrimary onClick={(): Promise<void> => onStartClick(image)}>Start</ButtonPrimary>
+                    )
                 ) : null}
                 <ButtonDestructive onClick={onRemoveClick}>Remove</ButtonDestructive>
             </div>
