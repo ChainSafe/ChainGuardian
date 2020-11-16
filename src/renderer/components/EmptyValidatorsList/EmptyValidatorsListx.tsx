@@ -11,8 +11,8 @@ export const EmptyValidatorsList: React.FC<IEmptyValidatorsListProps> = ({hasBea
     <div className='validator-container'>
         <div className='box empty-list'>
             <div className='flex-column centered'>
-                <h2>No {hasBeacons ? "validators" : "beacons"} found.</h2>
-                <p>Please add new {hasBeacons ? "validator" : "beacon"} to start using ChainGuardian.</p>
+                <h2>No {hasBeacons ? "validators" : "beacon nodes"} found.</h2>
+                <p>Please add new {hasBeacons ? "validator" : "beacon node"} to start using ChainGuardian.</p>
             </div>
 
             {hasBeacons ? (
