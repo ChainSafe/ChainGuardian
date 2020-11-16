@@ -4,6 +4,6 @@ export const processKeystore = (path: string): string => {
     try {
         return new V4Keystore(path).getPublicKey();
     } catch {
-        throw new Error("File is incorrect, try again whit different file");
+        throw new Error("File is incorrect, try again with different file");
     }
 };

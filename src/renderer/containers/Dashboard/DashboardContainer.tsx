@@ -17,6 +17,7 @@ import {requireAuthorization} from "../../ducks/auth/actions";
 import {loadValidatorsAction, removeActiveValidator} from "../../ducks/validator/actions";
 import {getAuthAccount} from "../../ducks/auth/selectors";
 import {getNetworkValidators} from "../../ducks/validator/selectors";
+import {getBeaconNodeList} from "../../ducks/network/selectors";
 
 type IOwnProps = {
     network: string;
@@ -24,7 +25,16 @@ type IOwnProps = {
 } & Pick<RouteComponentProps, "history" | "location">;
 
 type DashBoardProps = IOwnProps & IInjectedProps & IStateProps;
-const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
+const Dashboard: React.FunctionComponent<DashBoardProps> = ({
+    validatorsList,
+    removeValidator,
+    notification,
+    history,
+    loadValidators,
+    loadAccount,
+    account,
+    hasBeacons,
+}) => {
     const [confirmModal, setConfirmModal] = useState<boolean>(false);
     const [selectedValidatorIndex, setSelectedValidatorIndex] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
@@ -35,12 +45,12 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     };
 
     const onConfirmDelete = (): void => {
-        const selectedValidatorPublicKey = props.validatorsList[selectedValidatorIndex];
-        props.removeValidator(selectedValidatorPublicKey, selectedValidatorIndex);
+        const selectedValidatorPublicKey = validatorsList[selectedValidatorIndex];
+        removeValidator(selectedValidatorPublicKey, selectedValidatorIndex);
 
         setConfirmModal(false);
-        props.notification({
-            source: props.history.location.pathname,
+        notification({
+            source: history.location.pathname,
             title: "Validator removed.",
             horizontalPosition: Horizontal.RIGHT,
             verticalPosition: Vertical.BOTTOM,
@@ -49,25 +59,25 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
     };
 
     useEffect(() => {
-        props.loadValidators();
+        loadValidators();
         setLoading(false);
-    }, [props.account !== null]);
+    }, [account !== null]);
 
     useEffect(() => {
-        props.loadAccount();
+        loadAccount();
     }, []);
 
     return (
-        <Background topBar={<Topbar />} scrollable={true}>
-            {props.validatorsList.length > 0 ? (
+        <Background topBar={<Topbar canAddValidator={!!validatorsList.length} />} scrollable={true}>
+            {validatorsList.length > 0 ? (
                 <div className={"validators-display"}>
-                    {props.validatorsList.map((publicKey, index) => {
+                    {validatorsList.map((publicKey, index) => {
                         return (
                             <div key={index} className={"validator-wrapper"}>
                                 <Validator
                                     publicKey={publicKey}
                                     onBeaconNodeClick={() => (): void => {
-                                        props.history.push(Routes.VALIDATOR_DETAILS.replace(":publicKey", publicKey), {
+                                        history.push(Routes.VALIDATOR_DETAILS.replace(":publicKey", publicKey), {
                                             tab: "BN",
                                         });
                                     }}
@@ -75,7 +85,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
                                         onRemoveValidator(index);
                                     }}
                                     onDetailsClick={(): void =>
-                                        props.history.push(Routes.VALIDATOR_DETAILS.replace(":publicKey", publicKey))
+                                        history.push(Routes.VALIDATOR_DETAILS.replace(":publicKey", publicKey))
                                     }
                                 />
                             </div>
@@ -83,7 +93,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
                     })}
                 </div>
             ) : !loading ? (
-                <EmptyValidatorsList />
+                <EmptyValidatorsList hasBeacons={hasBeacons} />
             ) : null}
 
             <ConfirmModal
@@ -100,6 +110,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = (props) => {
 interface IStateProps {
     account: ReturnType<typeof getAuthAccount>;
     validatorsList: ReturnType<typeof getNetworkValidators>;
+    hasBeacons: boolean;
 }
 
 interface IInjectedProps {
@@ -112,6 +123,7 @@ interface IInjectedProps {
 const mapStateToProps = (state: IRootState): IStateProps => ({
     account: getAuthAccount(state),
     validatorsList: getNetworkValidators(state),
+    hasBeacons: !!getBeaconNodeList(state).length,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>

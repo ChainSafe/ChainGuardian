@@ -8,6 +8,7 @@ import {SigningKeyImportContainer} from "./SigningKey/Import/SigningKeyImport";
 import {CreatePasswordContainer} from "./CreatePassword/CreatePasswordContainer";
 import {ChoseImport} from "./SigningKey/ChoseImport";
 import {FileUploadImport} from "./SigningKey/Import/FileUploadImport";
+import {SlashingUploadImport} from "./SigningKey/Import/SlashingUploadImport";
 
 interface IOnboardStep {
     step: string;
@@ -21,6 +22,7 @@ export default class OnboardContainer extends Component<IProps, {}> {
     private Steper = {
         [OnBoardingRoutes.SIGNING]: <ChoseImport />,
         [OnBoardingRoutes.SIGNING_IMPORT_FILE]: <FileUploadImport history={this.props.history} />,
+        [OnBoardingRoutes.SIGNING_IMPORT_SLASHING_FILE]: <SlashingUploadImport history={this.props.history} />,
         [OnBoardingRoutes.SIGNING_IMPORT_MNEMONIC]: <SigningKeyImportContainer history={this.props.history} />,
         [OnBoardingRoutes.PASSWORD]: <CreatePasswordContainer history={this.props.history} />,
         [OnBoardingRoutes.CONSENT]: <ConsentContainer history={this.props.history} />,
