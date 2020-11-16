@@ -6,6 +6,7 @@ import {SettingsRepository} from "./repositories/settings";
 import {ValidatorAttestationsRepository} from "./repositories/validator/attestations";
 import {ValidatorBlocksRepository} from "./repositories/validator/blocks";
 import {ValidatorNetworkRepository} from "./repositories/validator/network";
+import {BeaconsRepository} from "./repositories/beacons";
 
 interface IValidatorDB {
     attestations: ValidatorAttestationsRepository;
@@ -18,6 +19,7 @@ export class CGDatabase extends DatabaseService {
     public beaconNodes: BeaconNodeRepository;
     public validator: IValidatorDB;
     public settings: SettingsRepository;
+    public beacons: BeaconsRepository;
 
     public constructor(opts: IDatabaseApiOptions) {
         super(opts);
@@ -29,6 +31,7 @@ export class CGDatabase extends DatabaseService {
             network: new ValidatorNetworkRepository(this.db),
         };
         this.settings = new SettingsRepository(this.db);
+        this.beacons = new BeaconsRepository(this.db);
     }
 }
 
