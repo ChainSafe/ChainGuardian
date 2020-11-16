@@ -34,7 +34,7 @@ export class Beacons implements IBeacons {
     /**
      * Remove Beacon from list
      * @param url of beacon in the list
-     * @returns {[boolean, boolean]} first param represents if is beacon removed second represents if is local
+     * @returns [boolean, boolean] first param represents if is beacon removed second represents if is local
      * */
     public removeNode(url: string): [boolean, boolean] {
         const index = this.beacons.findIndex(({url: beaconUrl}) => beaconUrl !== url);
