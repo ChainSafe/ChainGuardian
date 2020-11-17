@@ -9,6 +9,7 @@ import {CreatePasswordContainer} from "./CreatePassword/CreatePasswordContainer"
 import {ChoseImport} from "./SigningKey/ChoseImport";
 import {FileUploadImport} from "./SigningKey/Import/FileUploadImport";
 import {SlashingUploadImport} from "./SigningKey/Import/SlashingUploadImport";
+import {FinalizeContainer} from "./Finalize/FinalizeContainer";
 
 interface IOnboardStep {
     step: string;
@@ -25,13 +26,15 @@ export default class OnboardContainer extends Component<IProps, {}> {
         [OnBoardingRoutes.SIGNING_IMPORT_SLASHING_FILE]: <SlashingUploadImport history={this.props.history} />,
         [OnBoardingRoutes.SIGNING_IMPORT_MNEMONIC]: <SigningKeyImportContainer history={this.props.history} />,
         [OnBoardingRoutes.PASSWORD]: <CreatePasswordContainer history={this.props.history} />,
+        [OnBoardingRoutes.FINALIZE]: <FinalizeContainer />,
         [OnBoardingRoutes.CONSENT]: <ConsentContainer history={this.props.history} />,
     };
 
     private steps = [
         {stepId: 1, stepName: "Signing key"},
         {stepId: 2, stepName: "Password"},
-        {stepId: 3, stepName: "Consent"},
+        {stepId: 3, stepName: "Finalize"},
+        {stepId: 4, stepName: "Consent"},
     ];
 
     public render(): ReactElement {
