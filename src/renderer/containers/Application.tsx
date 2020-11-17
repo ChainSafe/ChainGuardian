@@ -2,7 +2,7 @@ import {hot} from "react-hot-loader/root";
 import React, {useEffect} from "react";
 import {MemoryRouter as Router, Switch, Route, Redirect} from "react-router-dom";
 import {ReactElement} from "react";
-import OnboardContainer from "../containers/Onboard/OnboardContainer";
+import {OnboardContainer} from "./Onboard/OnboardContainer";
 import {BeaconChain} from "../services/docker/chain";
 import {Routes} from "../constants/routes";
 import {AddBeaconNodeContainer} from "./AddBeaconNode/AddBeaconNode";

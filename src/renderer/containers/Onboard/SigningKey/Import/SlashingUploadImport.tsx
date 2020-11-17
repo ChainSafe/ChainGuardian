@@ -3,18 +3,17 @@ import {useDispatch} from "react-redux";
 import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
 import {FileImport} from "../../../../components/FileImport/FileImport";
 import {ButtonPrimary} from "../../../../components/Button/ButtonStandard";
-import {RouteComponentProps} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {validateSlashingFile} from "../../../../services/jsonValidation";
 import {setSlashingPath} from "../../../../ducks/register/actions";
 
-type IOwnProps = Pick<RouteComponentProps, "history">;
-
-export const SlashingUploadImport: React.FC<IOwnProps> = ({history}) => {
+export const SlashingUploadImport: React.FC = () => {
     const [error, setError] = useState("");
     const [path, setPath] = useState<null | string>(null);
     const [fileName, setFileName] = useState<null | string>(null);
 
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const onChange = (event: ChangeEvent<HTMLInputElement>): void => {
         setError("");
