@@ -42,9 +42,7 @@ function* initializeBeaconsFromStore(): Generator<Promise<Beacons> | PutEffect |
     if (store !== null) {
         const {beacons} = store;
 
-        // TODO: refactor
-        yield BeaconChain.startAllLocalBeaconNodes2();
-        // TODO => yield BeaconChain.startAllLocalBeaconNodes();
+        yield BeaconChain.startAllLocalBeaconNodes();
 
         yield put(addBeacons(beacons.map(({url, localDockerId}) => ({url, localDockerId, status: "init"}))));
     }
