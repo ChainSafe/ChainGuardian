@@ -15,10 +15,14 @@ export const {
 
 export const loadValidatorsAction = createAction("validator/loadValidatorsAction");
 
-type AddNewValidatorSaga = (publicKey: string, account: CGAccount) => {payload: string; meta: CGAccount};
+type AddNewValidatorSaga = (
+    publicKey: string,
+    name: string,
+    account: CGAccount,
+) => {payload: {publicKey: string; name: string}; meta: CGAccount};
 export const addNewValidator = createAction<AddNewValidatorSaga>(
     "validator/addNewValidator",
-    (publicKey: string, account: CGAccount) => ({payload: publicKey, meta: account}),
+    (publicKey: string, name: string, account: CGAccount) => ({payload: {publicKey, name}, meta: account}),
 );
 
 type RemoveActiveValidator = (publicKey: string, validatorIndex: number) => {payload: string; meta: number};

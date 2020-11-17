@@ -66,11 +66,11 @@ function* loadValidatorsSaga(): Generator<
 }
 
 export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>): Generator<PutEffect> {
-    const keystore = action.meta.loadKeystore(action.payload);
+    const keystore = action.meta.loadKeystore(action.payload.publicKey);
     const validator: IValidator = {
-        name: `Validator ${action.meta.getValidators().length + 2}`,
-        publicKey: action.payload,
-        network: action.meta!.getValidatorNetwork(action.payload),
+        name: action.payload.name || `Validator ${action.meta.getValidators().length + 2}`,
+        publicKey: action.payload.publicKey,
+        network: action.meta!.getValidatorNetwork(action.payload.publicKey),
         keystore,
         status: undefined,
         isRunning: false,
