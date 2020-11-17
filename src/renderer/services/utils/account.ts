@@ -33,7 +33,7 @@ export const importKeystore = async (
     newPassword?: string,
 ): Promise<string> => {
     const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
-    const to = path.join(accountDirectory, publicKey, ".json");
+    const to = path.join(accountDirectory, publicKey + ".json");
     await V4Keystore.import(from, to, password, name, newPassword);
 
     return accountDirectory;
@@ -46,8 +46,9 @@ export const saveKeystore = async (
     name = "",
 ): Promise<string> => {
     const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
+    console.log(accountDirectory);
     await V4Keystore.create(
-        path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString(), ".json"),
+        path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
         password,
         new Keypair(signingKey),
         keyPath,

@@ -57,8 +57,8 @@ export class BeaconChain extends Container {
 
     public static async startAllLocalBeaconNodes2(): Promise<void> {
         const savedNodes = await database.beacons.get();
-        logger.info("Going to start all stopped local beacon nodes...");
         if (savedNodes) {
+            logger.info("Going to start all stopped local beacon nodes...");
             for (const beacon of savedNodes.beacons) {
                 if (beacon.localDockerId) {
                     const image = await Container.getImageName(beacon.localDockerId);
