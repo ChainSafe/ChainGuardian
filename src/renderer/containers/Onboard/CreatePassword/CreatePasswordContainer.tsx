@@ -139,7 +139,12 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
 
     private finalizeSubmitOrSkip = (): void => {
         this.setState({loading: false});
-        this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.FINALIZE));
+
+        if (this.props.isFirstTimeRegistration) {
+            this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONSENT));
+        } else {
+            this.props.history.push(Routes.DASHBOARD_ROUTE);
+        }
     };
 }
 

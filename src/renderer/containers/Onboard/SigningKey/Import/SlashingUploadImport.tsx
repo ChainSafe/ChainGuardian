@@ -32,7 +32,7 @@ export const SlashingUploadImport: React.FC<IOwnProps> = ({history}) => {
 
     const onSubmit = (): void => {
         dispatch(setSlashingPath(path));
-        history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+        history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
     };
 
     const valid = !error && !!path;

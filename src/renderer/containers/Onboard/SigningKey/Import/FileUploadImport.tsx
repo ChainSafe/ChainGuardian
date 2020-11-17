@@ -53,7 +53,7 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
         if (isSwitching) {
             history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT_SLASHING_FILE));
         } else {
-            history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+            history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
         }
         return {valid: true};
     };
