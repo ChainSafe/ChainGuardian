@@ -6,6 +6,9 @@ import {BackButton} from "../../components/Button/ButtonAction";
 import {NodeCard} from "../../components/Cards/NodeCard";
 import {BeaconNodeButtons} from "./BeaconNodeButtons";
 import {getBeacons} from "../../ducks/beacon/selectors";
+import {Link} from "react-router-dom";
+import {Routes} from "../../constants/routes";
+import {ButtonSecondary} from "../../components/Button/ButtonStandard";
 
 export const BeaconNodesContainer: React.FunctionComponent = () => {
     const history = useHistory();
@@ -18,6 +21,9 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                     <div className='row'>
                         <BackButton onClick={(): void => history.goBack()} />
                         <h2>Beacon nodes management</h2>
+                        <Link to={Routes.ADD_BEACON_NODE} className='add-beacon-node'>
+                            <ButtonSecondary>ADD BEACON NODE</ButtonSecondary>
+                        </Link>
                     </div>
 
                     <div className='validator-nodes'>
