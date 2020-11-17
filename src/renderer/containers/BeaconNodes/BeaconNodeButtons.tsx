@@ -15,6 +15,7 @@ interface IBeaconNodeButtonsProps {
 }
 
 export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps> = ({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     url,
     image,
 }: IBeaconNodeButtonsProps) => {
