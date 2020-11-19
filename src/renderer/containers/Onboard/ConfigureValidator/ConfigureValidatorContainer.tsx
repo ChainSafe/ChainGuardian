@@ -25,6 +25,10 @@ export const ConfigureValidatorContainer: React.FC = () => {
         );
     }, []);
 
+    useEffect(() => {
+        setName(defaultName);
+    }, [defaultName]);
+
     const dispatch = useDispatch();
 
     const onSubmit = (): void => {
@@ -42,7 +46,7 @@ export const ConfigureValidatorContainer: React.FC = () => {
                     <h3>Validator Name</h3>
                 </div>
                 <InputForm
-                    placeholder={`default: ${defaultName}`}
+                    placeholder='optional: Enter a Validator name'
                     onChange={(e): void => setName(e.currentTarget.value)}
                     inputValue={name}
                 />
