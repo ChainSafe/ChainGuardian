@@ -1,81 +1,18 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {useSelector} from "react-redux";
 import {useHistory} from "react-router";
 import {Background} from "../../components/Background/Background";
 import {BackButton} from "../../components/Button/ButtonAction";
 import {NodeCard} from "../../components/Cards/NodeCard";
-import {Loading} from "../../components/Loading/Loading";
-import {BeaconNode} from "../../models/beaconNode";
-import {DockerRegistry} from "../../services/docker/docker-registry";
-import {truncatePublicKey} from "../../services/utils/formatting";
 import {BeaconNodeButtons} from "./BeaconNodeButtons";
-import {getBeaconNodes} from "../../ducks/network/selectors";
-import {getValidators} from "../../ducks/validator/selectors";
-
-interface IExtendedBeaconNode extends BeaconNode {
-    validators: string[];
-}
-type BeaconNodes = {
-    [url: string]: IExtendedBeaconNode;
-};
-
-type RunningBeaconNodes = {
-    [url: string]: boolean;
-};
+import {getBeacons} from "../../ducks/beacon/selectors";
+import {Link} from "react-router-dom";
+import {Routes} from "../../constants/routes";
+import {ButtonSecondary} from "../../components/Button/ButtonStandard";
 
 export const BeaconNodesContainer: React.FunctionComponent = () => {
     const history = useHistory();
-    const validatorBeaconNodes = useSelector(getBeaconNodes);
-    const validators = useSelector(getValidators);
-
-    const [loading, setLoading] = useState<boolean>(true);
-    const [runningBeaconNodes, setRunningBeaconNodes] = useState<RunningBeaconNodes>({});
-    const [allNodes, setAllNodes] = useState<BeaconNodes>({});
-    const nodeList = Object.keys(allNodes);
-
-    useEffect(() => {
-        setLoading(true);
-        // TODO?: move this logic to selector?
-        // Parse beacon nodes from all validators
-        for (const [validatorAddress, beaconNodes] of Object.entries(validatorBeaconNodes)) {
-            const beaconNodesList: BeaconNodes = {};
-            beaconNodes.map((node) => {
-                const validators = allNodes[node.url] ? allNodes[node.url].validators : [];
-                validators.push(validatorAddress);
-                beaconNodesList[node.url] = {
-                    ...node,
-                    validators: [...new Set(validators)],
-                };
-            });
-            setAllNodes(beaconNodesList);
-        }
-        setLoading(false);
-    }, [validatorBeaconNodes]);
-
-    useEffect(() => {
-        setLoading(true);
-        // Load containers running status
-        nodeList.map(async (url) => {
-            if (allNodes[url].localDockerId) {
-                const container = DockerRegistry.getContainer(allNodes[url].localDockerId);
-                if (container) {
-                    const isRunning = await container.isRunning();
-                    setRunningBeaconNodes({
-                        ...runningBeaconNodes,
-                        [url]: isRunning,
-                    });
-                }
-            }
-        });
-        setLoading(false);
-    }, [allNodes]);
-
-    const onUpdateNodeStatus = (url: string, status: boolean): void => {
-        setRunningBeaconNodes({
-            ...runningBeaconNodes,
-            [url]: status,
-        });
-    };
+    const beacons = useSelector(getBeacons);
 
     return (
         <>
@@ -84,56 +21,43 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                     <div className='row'>
                         <BackButton onClick={(): void => history.goBack()} />
                         <h2>Beacon nodes management</h2>
+                        <Link to={Routes.ADD_BEACON_NODE} className='add-beacon-node'>
+                            <ButtonSecondary>ADD BEACON NODE</ButtonSecondary>
+                        </Link>
                     </div>
 
                     <div className='validator-nodes'>
                         <div className='flex-column'>
-                            {nodeList.length === 0 ? <h3>No beacon nodes found.</h3> : null}
+                            {beacons.keys.length === 0 ? <h3>No beacon nodes found.</h3> : null}
 
-                            {nodeList.map((url) => {
-                                const node = allNodes[url];
-                                return (
-                                    <div className='row box node-container' key={url}>
-                                        <NodeCard
-                                            onClick={() => (): void => {}}
-                                            title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
-                                            url={url}
-                                            isSyncing={node.isSyncing}
-                                            value={node.currentSlot || "N/A"}
-                                        />
+                            {beacons.keys.map((url) => (
+                                <div className='row box node-container' key={url}>
+                                    <NodeCard
+                                        onClick={() => (): void => {}}
+                                        title={
+                                            beacons.beacons[url].localDockerId
+                                                ? "Local Docker container"
+                                                : "Remote Beacon node"
+                                        }
+                                        url={url}
+                                        isSyncing={false}
+                                        value='N/A'
+                                    />
 
-                                        <div className='flex-column stretch space-between'>
-                                            <div className='flex-column'>
-                                                <h5>Connected validators:</h5>
-
-                                                {node &&
-                                                    node.validators.map((validatorAddress) => (
-                                                        <div className='flex-column' key={validatorAddress}>
-                                                            <p>
-                                                                <b>{validators[validatorAddress].name} </b>-{" "}
-                                                                {truncatePublicKey(validatorAddress)}
-                                                            </p>
-                                                        </div>
-                                                    ))}
-                                            </div>
-
-                                            <BeaconNodeButtons
-                                                updateNodeStatus={onUpdateNodeStatus}
-                                                image={node.localDockerId}
-                                                url={url}
-                                                isRunning={runningBeaconNodes[url]}
-                                                validators={node.validators}
-                                            />
+                                    <div className='flex-column stretch space-between'>
+                                        {/*TODO: implement validator list linked on beacon*/}
+                                        <div className='flex-column'>
+                                            <h5>Connected validators:</h5>
                                         </div>
+
+                                        <BeaconNodeButtons image={beacons.beacons[url].localDockerId} url={url} />
                                     </div>
-                                );
-                            })}
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
             </Background>
-
-            <Loading visible={loading} title='Loading' />
         </>
     );
 };

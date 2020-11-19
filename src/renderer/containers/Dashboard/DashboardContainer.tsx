@@ -17,7 +17,7 @@ import {requireAuthorization} from "../../ducks/auth/actions";
 import {loadValidatorsAction, removeActiveValidator} from "../../ducks/validator/actions";
 import {getAuthAccount} from "../../ducks/auth/selectors";
 import {getNetworkValidators} from "../../ducks/validator/selectors";
-import {getBeaconNodeList} from "../../ducks/network/selectors";
+import {getHasBeacons} from "../../ducks/beacon/selectors";
 
 type IOwnProps = {
     network: string;
@@ -68,7 +68,7 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = ({
     }, []);
 
     return (
-        <Background topBar={<Topbar canAddValidator={!!validatorsList.length} />} scrollable={true}>
+        <Background topBar={<Topbar canAddValidator={hasBeacons} />} scrollable={true}>
             {validatorsList.length > 0 ? (
                 <div className={"validators-display"}>
                     {validatorsList.map((publicKey, index) => {
@@ -123,7 +123,7 @@ interface IInjectedProps {
 const mapStateToProps = (state: IRootState): IStateProps => ({
     account: getAuthAccount(state),
     validatorsList: getNetworkValidators(state),
-    hasBeacons: !!getBeaconNodeList(state).length,
+    hasBeacons: getHasBeacons(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
