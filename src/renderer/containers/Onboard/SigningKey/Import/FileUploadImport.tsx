@@ -1,18 +1,16 @@
-import React, {ChangeEvent, FC, useState} from "react";
+import React, {ChangeEvent, useState} from "react";
 import {processKeystore} from "../../../../services/utils/processKeystore";
 import {useDispatch} from "react-redux";
 import {storeKeystoreValues} from "../../../../ducks/register/actions";
 import {ButtonPrimary} from "../../../../components/Button/ButtonStandard";
 import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
-import {RouteComponentProps} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {FileImport} from "../../../../components/FileImport/FileImport";
 import {CheckBox} from "../../../../components/CheckBox/CheckBox";
 import {InputPrompt, ISubmitStatus} from "../../../../components/Prompt/InputPrompt";
 import {V4Keystore} from "../../../../services/keystore";
 
-type IOwnProps = Pick<RouteComponentProps, "history">;
-
-export const FileUploadImport: FC<IOwnProps> = ({history}) => {
+export const FileUploadImport: React.FC = () => {
     const [error, setError] = useState("");
     const [path, setPath] = useState<null | string>(null);
     const [fileName, setFileName] = useState<null | string>(null);
@@ -21,6 +19,7 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
     const [displayPasswordConfirmation, setDisplayPasswordConfirmation] = useState(false);
 
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const onChange = (event: ChangeEvent<HTMLInputElement>): void => {
         setError("");
@@ -51,9 +50,9 @@ export const FileUploadImport: FC<IOwnProps> = ({history}) => {
 
         dispatch(storeKeystoreValues(path, publicKey, password));
         if (isSwitching) {
-            history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT_SLASHING_FILE));
+            history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT_SLASHING_FILE));
         } else {
-            history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.PASSWORD));
+            history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
         }
         return {valid: true};
     };

@@ -22,6 +22,7 @@ export interface IRegisterState {
     publicKey?: string;
     slashingPath?: string;
     password?: string;
+    name?: string;
 }
 
 const initialState: IRegisterState = {
@@ -66,6 +67,9 @@ export const registerSlice = createSlice({
         },
         setPassword: (state, action: PayloadAction<string>): void => {
             state.password = action.payload;
+        },
+        setName: (state, acton: PayloadAction<string>): void => {
+            state.name = acton.payload;
         },
         storeKeystoreValues: {
             reducer: (state, action: PayloadAction<IStoreKeystoreValuesPayload>): void => {

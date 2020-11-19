@@ -13,6 +13,7 @@ export enum OnBoardingRoutes {
     SIGNING_IMPORT_FILE = "1_1",
     SIGNING_IMPORT_SLASHING_FILE = "1_1_0",
     SIGNING_IMPORT_MNEMONIC = "1_2",
-    PASSWORD = "2_0",
-    CONSENT = "3_0",
+    CONFIGURE = "2_0",
+    PASSWORD = "3_0",
+    CONSENT = "4_0",
 }
