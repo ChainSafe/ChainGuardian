@@ -12,6 +12,7 @@ export enum Bucket {
     validatorBlocks,
     validatorNetwork,
     settings,
+    beacons,
 }
 
 export enum Key {}
