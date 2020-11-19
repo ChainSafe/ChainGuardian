@@ -17,8 +17,8 @@ import {
     stopActiveValidatorService,
     startNewValidatorService,
 } from "../../ducks/validator/actions";
-import {getSelectedNetwork, getBeaconNodes} from "../../ducks/network/selectors";
-import {getValidator} from "../../ducks/validator/selectors";
+import {getSelectedNetwork} from "../../ducks/network/selectors";
+import {getValidator, getValidatorBeaconNodes} from "../../ducks/validator/selectors";
 import {Link} from "react-router-dom";
 
 export interface IValidatorSimpleProps {
@@ -32,11 +32,10 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
     const [askPassword, setAskPassword] = useState<string>(null);
     const dispatch = useDispatch();
     const network = useSelector(getSelectedNetwork);
-    const validatorBeaconNodes = useSelector(getBeaconNodes);
-    const nodes = Object.prototype.hasOwnProperty.call(validatorBeaconNodes, props.publicKey)
-        ? validatorBeaconNodes[props.publicKey]
-        : [];
+    const nodes = useSelector((state: IRootState) => getValidatorBeaconNodes(state, props));
     const validator = useSelector((state: IRootState) => getValidator(state, props));
+
+    console.log(nodes);
 
     const isLoaded = !!validator;
     const balance = isLoaded ? validator.balance ?? BigInt(0) : BigInt(0);
@@ -60,8 +59,8 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
                                     onClick={props.onBeaconNodeClick(node.url)}
                                     title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
                                     url={node.url}
-                                    isSyncing={node.isSyncing}
-                                    value={node.currentSlot || "N/A"}
+                                    isSyncing={false}
+                                    value={"N/A"}
                                 />
                             </div>
                         ))}

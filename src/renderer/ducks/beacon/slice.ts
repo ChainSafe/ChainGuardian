@@ -6,7 +6,7 @@ type Beacon = {
     localDockerId?: string;
 };
 
-interface IBeaconDictionary {
+export interface IBeaconDictionary {
     [key: string]: Beacon;
 }
 
