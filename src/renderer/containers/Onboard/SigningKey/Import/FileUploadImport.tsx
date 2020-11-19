@@ -50,9 +50,9 @@ export const FileUploadImport: React.FC = () => {
 
         dispatch(storeKeystoreValues(path, publicKey, password));
         if (isSwitching) {
-            history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT_SLASHING_FILE));
+            history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT_SLASHING_FILE));
         } else {
-            history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
+            history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
         }
         return {valid: true};
     };

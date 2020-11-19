@@ -38,7 +38,7 @@ class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
                 return;
             }
             this.props.storeSigningKey(input);
-            this.props.history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
+            this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
         } else {
             const validatorIndex = 1;
             const validatorKeys = deriveEth2ValidatorKeys(deriveKeyFromMnemonic(input), validatorIndex);
@@ -47,7 +47,7 @@ class SigningKeyImport extends Component<IOwnProps & IInjectedProps, {}> {
                 PrivateKey.fromBytes(validatorKeys.withdrawal).toPublicKey().toHexString(),
                 `m/12381/3600/${validatorIndex}/0/0`,
             );
-            this.props.history.replace(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
+            this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
         }
     };
 }
