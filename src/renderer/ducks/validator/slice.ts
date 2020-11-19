@@ -13,6 +13,7 @@ export interface IValidator {
     balance?: bigint;
     keystore: ICGKeystore;
     isRunning: boolean;
+    beaconNodes: string[];
 }
 
 export interface IValidatorComplete extends IValidator {
@@ -71,6 +72,15 @@ export const validatorSlice = createSlice({
             },
             prepare: (logger: ValidatorLogger, publicKey: string): {payload: ValidatorLogger; meta: string} => ({
                 payload: logger,
+                meta: publicKey,
+            }),
+        },
+        storeValidatorBeaconNodes: {
+            reducer: (state, action: PayloadAction<string[], string, string>): void => {
+                state.byPublicKey[action.meta].beaconNodes = action.payload;
+            },
+            prepare: (beaconNodes: string[], publicKey: string): {payload: string[]; meta: string} => ({
+                payload: beaconNodes,
                 meta: publicKey,
             }),
         },

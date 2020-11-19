@@ -11,6 +11,7 @@ export const {
     loadValidatorStatus,
     removeValidator,
     stopValidatorService,
+    storeValidatorBeaconNodes,
 } = validatorSlice.actions;
 
 export const loadValidatorsAction = createAction("validator/loadValidatorsAction");
@@ -29,6 +30,12 @@ type RemoveActiveValidator = (publicKey: string, validatorIndex: number) => {pay
 export const removeActiveValidator = createAction<RemoveActiveValidator>(
     "validator/removeActiveValidator",
     (publicKey: string, validatorIndex: number) => ({payload: publicKey, meta: validatorIndex}),
+);
+
+type SetValidatorBeaconNode = (publicKey: string, beaconNode: string) => {payload: string; meta: string};
+export const setValidatorBeaconNode = createAction<SetValidatorBeaconNode>(
+    "validator/setValidatorBeaconNode",
+    (publicKey: string, beaconNode: string) => ({payload: beaconNode, meta: publicKey}),
 );
 
 export const updateValidatorChainData = createAction<string>("validator/updateValidatorChainData");
