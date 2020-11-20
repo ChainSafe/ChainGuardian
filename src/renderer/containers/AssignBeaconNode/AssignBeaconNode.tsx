@@ -31,10 +31,10 @@ export const AssignBeaconNode: React.FC = () => {
         <Background>
             <OnBoardModal history={history} currentStep={0}>
                 <h1>Validator Beacon Node</h1>
-                <p>Assigns Validator to selected Beacon Node.</p>
+                <p>Assigns Beacon Node to Validator.</p>
                 <br />
 
-                <div className='configure-port'>
+                <div className='dropdown-container'>
                     <Dropdown options={beaconNodes} current={beaconIndex} onChange={onChange} />
                 </div>
 

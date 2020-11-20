@@ -1,0 +1,10 @@
+.dropdown-container {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  width: 100%;
+
+  h3 {
+    margin-right: 0.2rem;
+  }
+}

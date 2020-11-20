@@ -6,6 +6,10 @@ import {DEFAULT_ACCOUNT} from "../../../../constants/account";
 import {ValidatorBeaconNodesType} from "../../../../models/types/validatorBeaconNodes";
 import {ValidatorBeaconNodes} from "../../../../models/validatorBeaconNodes";
 
+/**
+ * Repository for validators beacon node list
+ * stores beacon nodes url based on validator public key
+ * */
 export class ValidatorBeaconNodesRepository extends Repository<ValidatorBeaconNodes> {
     public constructor(db: IDatabaseController) {
         super(db, JSONSerializer, Bucket.validatorBeaconNodes, ValidatorBeaconNodesType);

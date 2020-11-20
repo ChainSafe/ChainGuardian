@@ -35,8 +35,6 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
     const nodes = useSelector((state: IRootState) => getValidatorBeaconNodes(state, props));
     const validator = useSelector((state: IRootState) => getValidator(state, props));
 
-    console.log(nodes);
-
     const isLoaded = !!validator;
     const balance = isLoaded ? validator.balance ?? BigInt(0) : BigInt(0);
     const ROI = calculateROI(balance, network);
