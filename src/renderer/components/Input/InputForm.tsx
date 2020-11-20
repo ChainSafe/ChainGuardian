@@ -13,6 +13,7 @@ export interface IInputFormProps {
      * @param e - form event
      */
     onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
+    onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
     focused?: boolean;
     readOnly?: boolean;
     inputId?: string;
@@ -52,6 +53,7 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
                     readOnly={props.readOnly}
                     className={`inputform ${classNamesValid(props.valid)}`}
                     onChange={props.onChange}
+                    onFocus={props.onFocus}
                     type={props.type}
                 />
                 <div className={handleEyeStyle(props.eye, props.eyeSlash)} onClick={props.onEyeClick} />

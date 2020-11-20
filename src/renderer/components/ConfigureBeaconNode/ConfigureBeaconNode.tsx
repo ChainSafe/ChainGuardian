@@ -1,8 +1,12 @@
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
+import path from "path";
 import {DockerPort} from "../../services/docker/type";
 import {getNetworkConfig} from "../../services/eth2/networks";
 import {ButtonPrimary} from "../Button/ButtonStandard";
 import {InputForm} from "../Input/InputForm";
+import {Dropdown} from "../Dropdown/Dropdown";
+import {remote} from "electron";
+import {getConfig} from "../../../config/config";
 
 interface IConfigureBNProps {
     network: string;
@@ -11,19 +15,82 @@ interface IConfigureBNProps {
 
 export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (props: IConfigureBNProps) => {
     const ports = getNetworkConfig(props.network).dockerConfig.ports;
-    const defaultRpcPort = ports[1].local;
+
+    // TODO: refactor to use list from src/renderer/services/eth2/networks/index.ts
+    const networks = ["Mainet", "Pyrmont", "Medalla", "localhost"];
+    const [networkIndex, setNetworkIndex] = useState(0);
+
+    const defaultPath = path.join(getConfig(remote.app).storage.dataDir);
+    const [folderPath, setPath] = useState(defaultPath);
+
+    const defaultEth1URL = "http://127.0.0.1:8545";
+    const [eth1Url, setEth1URL] = useState(defaultEth1URL);
+
+    const defaultRpcPort = "5052";
     const [rpcPort, setRpcPort] = useState(defaultRpcPort);
-    const defaultLibp2pPort = ports[0].local;
+
+    const defaultLibp2pPort = "9000";
     const [libp2pPort, setLibp2pPort] = useState(defaultLibp2pPort);
+
+    const defaultDiscoveryPort = "9000";
+    const [discoveryPort, setDiscoveryPort] = useState(defaultLibp2pPort);
 
     const onSubmit = (): void => {
         props.onSubmit(ports, libp2pPort, rpcPort);
+    };
+
+    const focused = useRef(false);
+    const onFocus = async (): Promise<void> => {
+        if (!focused.current) {
+            focused.current = true;
+            const result = await remote.dialog.showOpenDialog({defaultPath: folderPath, properties: ["openDirectory"]});
+            if (result.canceled) return;
+            setPath(result.filePaths[0]);
+        }
+        focused.current = false;
     };
 
     return (
         <>
             <h1>Configure Beacon node settings</h1>
             <p>You can skip customizing this data if you want to use the default values.</p>
+
+            <div className='configure-port'>
+                <div className='row'>
+                    <h3>Network</h3>
+                </div>
+                <Dropdown current={networkIndex} onChange={setNetworkIndex} options={networks} />
+            </div>
+
+            <div className='configure-port'>
+                <div className='row'>
+                    <h3>Chain data location</h3>
+                </div>
+                <InputForm
+                    onChange={(e): void => setPath(e.currentTarget.value)}
+                    inputValue={folderPath}
+                    onFocus={onFocus}
+                    onSubmit={(e): void => {
+                        e.preventDefault();
+                        onSubmit();
+                    }}
+                />
+            </div>
+
+            <div className='configure-port'>
+                <div className='row'>
+                    <h3>ETH1 endpoint</h3>
+                    <p>(default: http://127.0.0.1:8545/)</p>
+                </div>
+                <InputForm
+                    onChange={(e): void => setEth1URL(e.currentTarget.value)}
+                    inputValue={eth1Url}
+                    onSubmit={(e): void => {
+                        e.preventDefault();
+                        onSubmit();
+                    }}
+                />
+            </div>
 
             <div className='configure-port'>
                 <div className='row'>
@@ -48,6 +115,21 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                 <InputForm
                     onChange={(e): void => setLibp2pPort(e.currentTarget.value)}
                     inputValue={libp2pPort}
+                    onSubmit={(e): void => {
+                        e.preventDefault();
+                        onSubmit();
+                    }}
+                />
+            </div>
+
+            <div className='configure-port'>
+                <div className='row'>
+                    <h3>Local discovery port</h3>
+                    <p>(default: {defaultDiscoveryPort})</p>
+                </div>
+                <InputForm
+                    onChange={(e): void => setDiscoveryPort(e.currentTarget.value)}
+                    inputValue={discoveryPort}
                     onSubmit={(e): void => {
                         e.preventDefault();
                         onSubmit();
