@@ -34,7 +34,7 @@ export const AssignBeaconNode: React.FC = () => {
                 <p>Assigns Beacon Node to Validator.</p>
                 <br />
 
-                <div className='dropdown-container'>
+                <div className='dropdown-input-container'>
                     <Dropdown options={beaconNodes} current={beaconIndex} onChange={onChange} />
                 </div>
 
