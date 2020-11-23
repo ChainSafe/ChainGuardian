@@ -113,7 +113,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                     <p>(default: {defaultRpcPort})</p>
                 </div>
                 <InputForm
-                    labelValue='TCP'
+                    inputLabel='TCP'
                     onChange={(e): void => setRpcPort(e.currentTarget.value)}
                     inputValue={rpcPort}
                     onSubmit={(e): void => {
@@ -129,7 +129,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                     <p>(default: {defaultLibp2pPort})</p>
                 </div>
                 <InputForm
-                    labelValue='TCP'
+                    inputLabel='TCP'
                     onChange={(e): void => setLibp2pPort(e.currentTarget.value)}
                     inputValue={libp2pPort}
                     onSubmit={(e): void => {
@@ -145,7 +145,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                     <p>(default: {defaultDiscoveryPort})</p>
                 </div>
                 <InputForm
-                    labelValue='UDP'
+                    inputLabel='UDP'
                     onChange={(e): void => setDiscoveryPort(e.currentTarget.value)}
                     inputValue={discoveryPort}
                     onSubmit={(e): void => {

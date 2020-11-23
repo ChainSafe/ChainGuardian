@@ -22,7 +22,7 @@ export interface IInputFormProps {
     eye?: boolean;
     eyeSlash?: boolean;
     onEyeClick?: () => void;
-    labelValue?: string;
+    inputLabel?: string;
 }
 
 export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInputFormProps) => {
@@ -60,8 +60,8 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
         <form onSubmit={props.onSubmit}>
             <div className='label'>{props.label}</div>
             <div className='inputform-container'>
-                <div ref={labelValueRef} className='labelValue'>
-                    {props.labelValue}
+                <div ref={labelValueRef} className='input-label'>
+                    {props.inputLabel}
                 </div>
                 <input
                     ref={inputRef}
