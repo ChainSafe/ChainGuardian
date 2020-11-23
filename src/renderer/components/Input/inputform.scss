@@ -57,6 +57,9 @@
         background-position: bottom 18px right 16px;
         border: 2px solid $system-error-500;
     }
+    &.centered {
+        text-align: center;
+    }
 }
 
 .label{

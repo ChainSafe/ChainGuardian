@@ -21,6 +21,11 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
     const [errorMessage, setErrorMessage] = useState("");
     const [pubKey, setPubKey] = useState("Waiting for input");
 
+    const formatAndSetPubKey = (key: string): void => {
+        const middle = key.length / 2;
+        setPubKey(key.replace(key.slice(middle - 25, middle + 24), " . . .   . . . "));
+    };
+
     const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
         const input = e.currentTarget.value;
         setinput(input);
@@ -46,7 +51,7 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
         } else {
             if (input.startsWith("0x")) {
                 try {
-                    setPubKey(PrivateKey.fromHexString(input).toPublicKey().toHexString());
+                    formatAndSetPubKey(PrivateKey.fromHexString(input).toPublicKey().toHexString());
                 } catch (e) {
                     setPubKey("Invalid Private Key");
                     return;
@@ -56,7 +61,7 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
                     deriveKeyFromMnemonic(input),
                     Number(props.validatorIndex),
                 );
-                setPubKey(PrivateKey.fromBytes(validatorKeys.withdrawal).toPublicKey().toHexString());
+                formatAndSetPubKey(PrivateKey.fromBytes(validatorKeys.withdrawal).toPublicKey().toHexString());
             }
         }
     };
@@ -90,7 +95,7 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
                 <div className='info-container'>
                     <div>
                         <h3>Index</h3>
-                        <InputForm inputValue={props.validatorIndex} disabled />
+                        <InputForm inputValue={props.validatorIndex} disabled centered />
                     </div>
                     <div>
                         <h3>Public Key</h3>

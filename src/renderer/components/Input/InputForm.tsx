@@ -21,6 +21,7 @@ export interface IInputFormProps {
     eyeSlash?: boolean;
     onEyeClick?: () => void;
     disabled?: boolean;
+    centered?: boolean;
 }
 
 export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInputFormProps) => {
@@ -51,7 +52,7 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
                     placeholder={props.placeholder}
                     value={props.inputValue}
                     readOnly={props.readOnly}
-                    className={`inputform ${classNamesValid(props.valid)}`}
+                    className={`inputform ${classNamesValid(props.valid)} ${props.centered ? "centered" : ""}`}
                     onChange={props.onChange}
                     type={props.type}
                     disabled={props.disabled}
