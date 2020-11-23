@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
-import {useHistory} from "react-router";
 import {PasswordPrompt} from "../../components/Prompt/PasswordPrompt";
 import {Routes} from "../../constants/routes";
 
@@ -18,8 +17,9 @@ import {
     stopActiveValidatorService,
     startNewValidatorService,
 } from "../../ducks/validator/actions";
-import {getSelectedNetwork, getBeaconNodes} from "../../ducks/network/selectors";
-import {getValidator} from "../../ducks/validator/selectors";
+import {getSelectedNetwork} from "../../ducks/network/selectors";
+import {getValidator, getValidatorBeaconNodes} from "../../ducks/validator/selectors";
+import {Link} from "react-router-dom";
 
 export interface IValidatorSimpleProps {
     publicKey: string;
@@ -31,12 +31,8 @@ export interface IValidatorSimpleProps {
 export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props: IValidatorSimpleProps) => {
     const [askPassword, setAskPassword] = useState<string>(null);
     const dispatch = useDispatch();
-    const history = useHistory();
     const network = useSelector(getSelectedNetwork);
-    const validatorBeaconNodes = useSelector(getBeaconNodes);
-    const nodes = Object.prototype.hasOwnProperty.call(validatorBeaconNodes, props.publicKey)
-        ? validatorBeaconNodes[props.publicKey]
-        : [];
+    const nodes = useSelector((state: IRootState) => getValidatorBeaconNodes(state, props));
     const validator = useSelector((state: IRootState) => getValidator(state, props));
 
     const isLoaded = !!validator;
@@ -46,10 +42,6 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
     useEffect(() => {
         dispatch(updateValidatorChainData(props.publicKey));
     }, [props.publicKey]);
-
-    const onAddButtonClick = (): void => {
-        history.push(Routes.ADD_BEACON_NODE.replace(":validatorKey", props.publicKey));
-    };
 
     const renderBeaconNodes = (): React.ReactElement => {
         return (
@@ -65,14 +57,16 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
                                     onClick={props.onBeaconNodeClick(node.url)}
                                     title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
                                     url={node.url}
-                                    isSyncing={node.isSyncing}
-                                    value={node.currentSlot || "N/A"}
+                                    isSyncing={false}
+                                    value={"N/A"}
                                 />
                             </div>
                         ))}
                     </div>
 
-                    <AddButton onClick={onAddButtonClick} />
+                    <Link to={Routes.ASSIGN_BEACON_NODE.replace(":validatorKey", props.publicKey)}>
+                        <AddButton />
+                    </Link>
                 </div>
             </div>
         );
