@@ -1,6 +1,16 @@
+export type DockerConfig = {
+    id: string;
+    network: string;
+    folderPath: string;
+    eth1Url: string;
+    discoveryPort: string;
+    libp2pPort: string;
+    rpcPort: string;
+};
+
 export type Beacon = {
     url: string;
-    localDockerId?: string;
+    docker?: DockerConfig;
 };
 
 interface IBeacons {
@@ -12,22 +22,22 @@ export class Beacons implements IBeacons {
 
     public static createNodes(beacons: Beacon[]): Beacons | null {
         const list = new Beacons();
-        beacons.forEach(({url, localDockerId}) => list.addNode(url, localDockerId));
+        beacons.forEach(({url, docker}) => list.addNode(url, docker));
 
         return list;
     }
 
-    public static createBeacon(url: string, localDockerId?: string): Beacons | null {
+    public static createBeacon(url: string, docker?: DockerConfig): Beacons | null {
         const beacon = new Beacons();
-        beacon.addNode(url, localDockerId);
+        beacon.addNode(url, docker);
 
         return beacon;
     }
 
     // Add new node to the list that has unique values
-    public addNode(url: string, localDockerId?: string): void {
+    public addNode(url: string, docker?: DockerConfig): void {
         if (!this.beacons.some(({url: beaconUrl}) => beaconUrl === url)) {
-            this.beacons.push({url, localDockerId});
+            this.beacons.push({url, docker});
         }
     }
 
@@ -40,7 +50,7 @@ export class Beacons implements IBeacons {
         const index = this.beacons.findIndex(({url: beaconUrl}) => beaconUrl !== url);
         if (index !== -1) {
             const spliced = this.beacons.splice(index, 1)[0];
-            return [true, !!spliced.localDockerId];
+            return [true, !!spliced.docker];
         }
         return [false, false];
     }

@@ -56,6 +56,12 @@ export interface INetworkConfig {
     networkId: number;
     networkName: string;
     eth1Provider: ethers.providers.BaseProvider;
+    contract: {
+        address: string;
+        bytecode: string;
+        depositAmount: string | number;
+        deployedAtBlock: number;
+    };
     dockerConfig: IDockerRunParams;
 }
 

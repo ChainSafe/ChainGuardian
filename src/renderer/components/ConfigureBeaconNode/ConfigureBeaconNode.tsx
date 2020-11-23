@@ -1,24 +1,31 @@
 import React, {useRef, useState} from "react";
 import path from "path";
 import {DockerPort} from "../../services/docker/type";
-import {getNetworkConfig} from "../../services/eth2/networks";
+import {getNetworkConfig, networksList} from "../../services/eth2/networks";
 import {ButtonPrimary} from "../Button/ButtonStandard";
 import {InputForm} from "../Input/InputForm";
 import {Dropdown} from "../Dropdown/Dropdown";
 import {remote} from "electron";
 import {getConfig} from "../../../config/config";
 
-interface IConfigureBNProps {
+export interface IConfigureBNPSubmitOptions {
+    ports: DockerPort[];
     network: string;
-    onSubmit: (ports: DockerPort[], libp2pPort: string, rpcPort: string) => void;
+    folderPath: string;
+    eth1Url: string;
+    discoveryPort: string;
+    libp2pPort: string;
+    rpcPort: string;
+}
+
+interface IConfigureBNProps {
+    onSubmit: (values: IConfigureBNPSubmitOptions) => void;
 }
 
 export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (props: IConfigureBNProps) => {
-    const ports = getNetworkConfig(props.network).dockerConfig.ports;
-
     // TODO: refactor to use list from src/renderer/services/eth2/networks/index.ts
-    const networks = ["Mainet", "Pyrmont", "Medalla", "localhost"];
     const [networkIndex, setNetworkIndex] = useState(0);
+    const ports = getNetworkConfig(networksList[networkIndex]).dockerConfig.ports;
 
     const defaultPath = path.join(getConfig(remote.app).storage.dataDir);
     const [folderPath, setPath] = useState(defaultPath);
@@ -36,7 +43,15 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
     const [discoveryPort, setDiscoveryPort] = useState(defaultLibp2pPort);
 
     const onSubmit = (): void => {
-        props.onSubmit(ports, libp2pPort, rpcPort);
+        props.onSubmit({
+            ports,
+            folderPath,
+            eth1Url,
+            discoveryPort,
+            libp2pPort,
+            rpcPort,
+            network: networksList[networkIndex],
+        });
     };
 
     const focused = useRef(false);
@@ -59,7 +74,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                 <div className='row'>
                     <h3>Network</h3>
                 </div>
-                <Dropdown current={networkIndex} onChange={setNetworkIndex} options={networks} />
+                <Dropdown current={networkIndex} onChange={setNetworkIndex} options={networksList} />
             </div>
 
             <div className='configure-port'>

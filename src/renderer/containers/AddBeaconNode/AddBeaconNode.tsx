@@ -1,29 +1,24 @@
 import React, {useState, useCallback} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useHistory, useParams} from "react-router";
+import {useDispatch} from "react-redux";
+import {useHistory} from "react-router";
 import {Background} from "../../components/Background/Background";
-import {ConfigureBeaconNode} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
+import {
+    ConfigureBeaconNode,
+    IConfigureBNPSubmitOptions,
+} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 import {InputBeaconNode} from "../../components/ConfigureBeaconNode/InputBeaconNode";
 import {Routes} from "../../constants/routes";
 import {Container} from "../../services/docker/container";
-import {DockerPort} from "../../services/docker/type";
 import OnBoardModal from "../Onboard/OnBoardModal";
-import {IRootState} from "../../ducks/reducers";
-import {getValidatorNetwork} from "../../ducks/validator/selectors";
 import {addBeacon, startLocalBeacon} from "../../ducks/beacon/actions";
 
 export const AddBeaconNodeContainer: React.FunctionComponent = () => {
-    const {validatorKey} = useParams();
     const dispatch = useDispatch();
     const history = useHistory();
-    const validatorNetwork = useSelector((state: IRootState) => getValidatorNetwork(state, validatorKey));
     const [currentStep, setCurrentStep] = useState<number>(0);
-    const [network, setNetwork] = useState<string | undefined>();
 
     const renderFirstStep = (): React.ReactElement => {
         const onRunNodeSubmit = async (): Promise<void> => {
-            setNetwork(validatorNetwork);
-
             if (await Container.isDockerInstalled()) {
                 setCurrentStep(1);
             } else {
@@ -36,32 +31,31 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
             history.push(Routes.DASHBOARD_ROUTE);
         };
 
-        return (
-            <InputBeaconNode
-                validatorNetwork={validatorNetwork}
-                onGoSubmit={onGoSubmit}
-                onRunNodeSubmit={onRunNodeSubmit}
-                displayNetwork={false}
-            />
-        );
+        return <InputBeaconNode onGoSubmit={onGoSubmit} onRunNodeSubmit={onRunNodeSubmit} />;
     };
 
     const onDockerRunSubmit = useCallback(
-        (ports: DockerPort[], libp2pPort: string, rpcPort: string): void => {
-            // Start beacon chain with selected network and redirect to deposit
+        ({ports, libp2pPort, rpcPort, network, ...rest}: IConfigureBNPSubmitOptions): void => {
             dispatch(
-                startLocalBeacon(network, [
-                    {...ports[0], local: libp2pPort},
-                    {...ports[1], local: rpcPort},
-                ]),
+                startLocalBeacon({
+                    network,
+                    libp2pPort,
+                    rpcPort,
+                    ports: [
+                        {...ports[0], local: libp2pPort},
+                        {...ports[1], local: rpcPort},
+                    ],
+                    ...rest,
+                }),
             );
+            console.log(rest);
             history.push(Routes.DASHBOARD_ROUTE);
         },
-        [network],
+        [],
     );
 
     const renderSecondStep = (): React.ReactElement => {
-        return <ConfigureBeaconNode network={network} onSubmit={onDockerRunSubmit} />;
+        return <ConfigureBeaconNode onSubmit={onDockerRunSubmit} />;
     };
 
     const renderStepScreen = (): React.ReactElement => {
