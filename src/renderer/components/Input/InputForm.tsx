@@ -1,4 +1,5 @@
 import * as React from "react";
+import {useEffect, useRef} from "react";
 
 export interface IInputFormProps {
     label?: string;
@@ -21,6 +22,7 @@ export interface IInputFormProps {
     eye?: boolean;
     eyeSlash?: boolean;
     onEyeClick?: () => void;
+    labelValue?: string;
 }
 
 export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInputFormProps) => {
@@ -41,11 +43,28 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
         return eyeType + " " + value;
     };
 
+    const inputRef = useRef<HTMLInputElement>();
+    const labelValueRef = useRef<HTMLInputElement>();
+    useEffect(() => {
+        if (inputRef.current && labelValueRef.current) {
+            const {width} = labelValueRef.current.getBoundingClientRect();
+            if (width > 0) {
+                labelValueRef.current.style.paddingLeft = "15px";
+                inputRef.current.style.paddingLeft = `${21 + width}px`;
+                labelValueRef.current.style.marginRight = `-${width + 15}px`;
+            }
+        }
+    }, [inputRef, labelValueRef]);
+
     return (
         <form onSubmit={props.onSubmit}>
             <div className='label'>{props.label}</div>
             <div className='inputform-container'>
+                <div ref={labelValueRef} className='labelValue'>
+                    {props.labelValue}
+                </div>
                 <input
+                    ref={inputRef}
                     id={props.inputId}
                     autoFocus={props.focused}
                     placeholder={props.placeholder}
