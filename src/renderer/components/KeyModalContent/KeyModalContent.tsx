@@ -3,6 +3,8 @@ import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
 import {ValidationResult} from "@hapi/joi";
 import {Joi} from "../../services/validation";
+import {PrivateKey} from "@chainsafe/bls";
+import {deriveEth2ValidatorKeys, deriveKeyFromMnemonic} from "@chainsafe/bls-keygen";
 
 interface IKeyModalProps {
     title: string;
@@ -10,12 +12,14 @@ interface IKeyModalProps {
     onSubmit: (input: string) => void;
     placeholder: string;
     validate?: (input: string) => ValidationResult;
+    validatorIndex: string;
 }
 
 export default function KeyModalContent(props: IKeyModalProps): ReactElement {
     const [input, setinput] = useState("");
     const [valid, setvalid] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [pubKey, setPubKey] = useState("Waiting for input");
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
         const input = e.currentTarget.value;
@@ -24,6 +28,7 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
         if (input === "") {
             setvalid(false);
             setErrorMessage("");
+            setPubKey("Waiting for input");
             return;
         }
 
@@ -33,6 +38,26 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
         setvalid(isValid);
         if (!isValid) {
             setErrorMessage(validationResult.error.message);
+            if (input.startsWith("0x")) {
+                setPubKey("Invalid Private Key");
+            } else {
+                setPubKey("Invalid mnemonic");
+            }
+        } else {
+            if (input.startsWith("0x")) {
+                try {
+                    setPubKey(PrivateKey.fromHexString(input).toPublicKey().toHexString());
+                } catch (e) {
+                    setPubKey("Invalid Private Key");
+                    return;
+                }
+            } else {
+                const validatorKeys = deriveEth2ValidatorKeys(
+                    deriveKeyFromMnemonic(input),
+                    Number(props.validatorIndex),
+                );
+                setPubKey(PrivateKey.fromBytes(validatorKeys.withdrawal).toPublicKey().toHexString());
+            }
         }
     };
 
@@ -62,6 +87,16 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
                         handleSubmit();
                     }}
                 />
+                <div className='info-container'>
+                    <div>
+                        <h3>Index</h3>
+                        <InputForm inputValue={props.validatorIndex} disabled />
+                    </div>
+                    <div>
+                        <h3>Public Key</h3>
+                        <InputForm inputValue={pubKey} disabled />
+                    </div>
+                </div>
                 <span className='submit-button-container'>
                     <ButtonPrimary buttonId='submit' disabled={!valid} onClick={handleSubmit}>
                         Submit

@@ -9,6 +9,20 @@
     }
 }
 
+.info-container {
+    display: flex;
+    flex-wrap: nowrap;
+
+    div:first-child {
+        width: 10%;
+        margin-right: 5%;
+    }
+
+    div:last-child {
+        width: 85%;
+    }
+}
+
 .mt-32 {
     margin-top: 32px;
 }

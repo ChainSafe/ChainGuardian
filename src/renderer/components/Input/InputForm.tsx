@@ -20,6 +20,7 @@ export interface IInputFormProps {
     eye?: boolean;
     eyeSlash?: boolean;
     onEyeClick?: () => void;
+    disabled?: boolean;
 }
 
 export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInputFormProps) => {
@@ -53,6 +54,7 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
                     className={`inputform ${classNamesValid(props.valid)}`}
                     onChange={props.onChange}
                     type={props.type}
+                    disabled={props.disabled}
                 />
                 <div className={handleEyeStyle(props.eye, props.eyeSlash)} onClick={props.onEyeClick} />
             </div>
