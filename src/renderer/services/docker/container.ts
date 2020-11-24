@@ -144,6 +144,33 @@ export abstract class Container {
     }
 
     /**
+     * TODO: Testing idea of generic implementation
+     */
+    public async customRun(params: string): Promise<IDocker> {
+        if (!this.docker) {
+            if (!(await Container.isDockerInstalled())) {
+                throw new Error("Unable to run instance because docker not installed.");
+            }
+            try {
+                // start new docker instance
+                const run = runDetached(await Command.customRun(params));
+                this.docker = {name: this.params.name, stdout: run.stdout, stderr: run.stderr};
+                this.logger.addStreamSource(run.stdout, "stdout");
+                this.logger.addStreamSource(run.stderr, "stderr");
+                logger.info(`Docker instance ${this.docker.name} started.`);
+                return this.docker;
+            } catch (e) {
+                logger.error(e);
+                throw new Error(`Unable to run instance because ${e.message}.`);
+            }
+        } else {
+            // docker instance already running
+            logger.error(`Docker instance ${this.docker.name} already running.`);
+            throw new Error(`Docker instance ${this.docker.name} already running.`);
+        }
+    }
+
+    /**
      * Check if started docker instance is running.
      *
      * If instance never started with @{run()} this method will return false.

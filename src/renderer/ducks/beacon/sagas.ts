@@ -22,7 +22,13 @@ function* startLocalBeaconSaga({
         default:
             yield put(
                 addBeacon(`http://localhost:${ports[1].local}`, {
-                    id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports)).getName(),
+                    id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports, false, {
+                        folderPath,
+                        eth1Url,
+                        discoveryPort,
+                        libp2pPort,
+                        rpcPort,
+                    })).getName(),
                     network,
                     folderPath,
                     eth1Url,
@@ -42,14 +48,36 @@ function* removeBeaconSaga({payload}: ReturnType<typeof removeBeacon>): Generato
     yield database.beacons.remove(payload);
 }
 
-function* initializeBeaconsFromStore(): Generator<Promise<Beacons> | PutEffect | Promise<void>, void, Beacons> {
+function* initializeBeaconsFromStore(): Generator<
+    Promise<Beacons> | PutEffect | Promise<void> | Promise<Response[]>,
+    void,
+    // eslint-disable-next-line camelcase
+    Beacons & ({is_syncing: boolean} | null)[]
+> {
     const store = yield database.beacons.get();
     if (store !== null) {
-        const {beacons} = store;
+        const {beacons}: Beacons = store;
 
         yield BeaconChain.startAllLocalBeaconNodes();
 
-        yield put(addBeacons(beacons.map(({url, docker}) => ({url, docker, status: "init"}))));
+        // TODO: remove this temp solution!
+        const stats = yield Promise.all(
+            beacons.map(({url}) =>
+                fetch(url + "/eth/v1/node/syncing")
+                    .then((response) => response.json())
+                    .catch(() => null),
+            ),
+        );
+
+        yield put(
+            addBeacons(
+                beacons.map(({url, docker}, index) => ({
+                    url,
+                    docker,
+                    status: stats[index] !== null ? (stats[index] ? "syncing" : "active") : "offline",
+                })),
+            ),
+        );
     }
 }
 
