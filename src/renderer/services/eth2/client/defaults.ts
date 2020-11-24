@@ -21,7 +21,7 @@ export const getAllDefaults = (): IAllDefaults => {
     return context
         .keys()
         .map((path) => ({
-            name: path.split("/")[1] || "fail",
+            name: path.split("/")[1],
             beacon: context(path).beaconNode,
             validator: context(path).validator,
         }))

@@ -2,10 +2,7 @@ import React, {useState, useCallback} from "react";
 import {useDispatch} from "react-redux";
 import {useHistory} from "react-router";
 import {Background} from "../../components/Background/Background";
-import {
-    ConfigureBeaconNode,
-    IConfigureBNSubmitOptions,
-} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
+import {ConfigureBeaconNode, IConfigureBNSubmitOptions} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 import {InputBeaconNode} from "../../components/ConfigureBeaconNode/InputBeaconNode";
 import {Routes} from "../../constants/routes";
 import {Container} from "../../services/docker/container";
