@@ -35,7 +35,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                                     <NodeCard
                                         onClick={() => (): void => {}}
                                         title={
-                                            beacons.beacons[url].localDockerId
+                                            beacons.beacons[url].docker
                                                 ? "Local Docker container"
                                                 : "Remote Beacon node"
                                         }
@@ -50,7 +50,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                                             <h5>Connected validators:</h5>
                                         </div>
 
-                                        <BeaconNodeButtons image={beacons.beacons[url].localDockerId} url={url} />
+                                        <BeaconNodeButtons image={beacons.beacons[url].docker.id} url={url} />
                                     </div>
                                 </div>
                             ))}

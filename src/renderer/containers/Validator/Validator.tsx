@@ -55,7 +55,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
                                 <NodeCard
                                     //TODO: change to some other id when multinode is enabled
                                     onClick={props.onBeaconNodeClick(node.url)}
-                                    title={node.localDockerId ? "Local Docker container" : "Remote Beacon node"}
+                                    title={node.docker ? "Local Docker container" : "Remote Beacon node"}
                                     url={node.url}
                                     isSyncing={false}
                                     value={"N/A"}

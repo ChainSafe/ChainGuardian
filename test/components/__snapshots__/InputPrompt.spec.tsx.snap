@@ -22,6 +22,9 @@ Array [
         <div
           className="inputform-container"
         >
+          <div
+            className="input-label"
+          />
           <input
             className="inputform "
             id="prompt-input"
