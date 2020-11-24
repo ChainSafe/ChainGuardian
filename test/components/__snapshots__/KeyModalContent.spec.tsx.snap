@@ -22,7 +22,7 @@ Array [
         />
         <input
           autoFocus={true}
-          className="inputform "
+          className="inputform  "
           id="inputKey"
           onChange={[Function]}
           placeholder="Test placeholder"
@@ -36,6 +36,66 @@ Array [
         className="error-message"
       />
     </form>
+    <div
+      className="info-container"
+    >
+      <div>
+        <h3>
+          Index
+        </h3>
+        <form>
+          <div
+            className="label"
+          />
+          <div
+            className="inputform-container"
+          >
+            <div
+              className="input-label"
+            />
+            <input
+              className="inputform  centered"
+              disabled={true}
+              value="1"
+            />
+            <div
+              className="input-eye none"
+            />
+          </div>
+          <div
+            className="error-message"
+          />
+        </form>
+      </div>
+      <div>
+        <h3>
+          Public Key
+        </h3>
+        <form>
+          <div
+            className="label"
+          />
+          <div
+            className="inputform-container"
+          >
+            <div
+              className="input-label"
+            />
+            <input
+              className="inputform  "
+              disabled={true}
+              value="Waiting for input"
+            />
+            <div
+              className="input-eye none"
+            />
+          </div>
+          <div
+            className="error-message"
+          />
+        </form>
+      </div>
+    </div>
     <span
       className="submit-button-container"
     >
@@ -81,7 +141,7 @@ Array [
         />
         <input
           autoFocus={true}
-          className="inputform "
+          className="inputform  "
           id="inputKey"
           onChange={[Function]}
           placeholder="Test placeholder"
@@ -95,6 +155,66 @@ Array [
         className="error-message"
       />
     </form>
+    <div
+      className="info-container"
+    >
+      <div>
+        <h3>
+          Index
+        </h3>
+        <form>
+          <div
+            className="label"
+          />
+          <div
+            className="inputform-container"
+          >
+            <div
+              className="input-label"
+            />
+            <input
+              className="inputform  centered"
+              disabled={true}
+              value="1"
+            />
+            <div
+              className="input-eye none"
+            />
+          </div>
+          <div
+            className="error-message"
+          />
+        </form>
+      </div>
+      <div>
+        <h3>
+          Public Key
+        </h3>
+        <form>
+          <div
+            className="label"
+          />
+          <div
+            className="inputform-container"
+          >
+            <div
+              className="input-label"
+            />
+            <input
+              className="inputform  "
+              disabled={true}
+              value="Waiting for input"
+            />
+            <div
+              className="input-eye none"
+            />
+          </div>
+          <div
+            className="error-message"
+          />
+        </form>
+      </div>
+    </div>
     <span
       className="submit-button-container"
     >

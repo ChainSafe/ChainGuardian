@@ -9,6 +9,7 @@ describe("KeyModalContent", () => {
                 <KeyModalContent
                     title='Test'
                     onSubmit={(): void => {}}
+                    validatorIndex='1'
                     placeholder='Test placeholder'></KeyModalContent>,
             )
             .toJSON();
@@ -19,6 +20,7 @@ describe("KeyModalContent", () => {
             .create(
                 <KeyModalContent
                     title='Test'
+                    validatorIndex='1'
                     onSubmit={(): void => {}}
                     description='Test description'
                     placeholder='Test placeholder'
