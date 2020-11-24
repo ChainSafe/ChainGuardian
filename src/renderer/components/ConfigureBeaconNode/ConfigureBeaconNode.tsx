@@ -7,6 +7,7 @@ import {InputForm} from "../Input/InputForm";
 import {Dropdown} from "../Dropdown/Dropdown";
 import {remote} from "electron";
 import {getConfig} from "../../../config/config";
+import {getDefaultsForClient} from "../../services/eth2/client/defaults";
 
 export interface IConfigureBNPSubmitOptions {
     ports: DockerPort[];
@@ -20,12 +21,14 @@ export interface IConfigureBNPSubmitOptions {
 
 interface IConfigureBNProps {
     onSubmit: (values: IConfigureBNPSubmitOptions) => void;
+    clientName?: string;
 }
 
 export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (props: IConfigureBNProps) => {
     // TODO: refactor to use list from src/renderer/services/eth2/networks/index.ts
     const [networkIndex, setNetworkIndex] = useState(0);
     const ports = getNetworkConfig(networksList[networkIndex]).dockerConfig.ports;
+    const defaults = getDefaultsForClient(props.clientName);
 
     const defaultPath = path.join(getConfig(remote.app).storage.dataDir);
     const [folderPath, setPath] = useState(defaultPath);
@@ -33,14 +36,14 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
     const defaultEth1URL = "http://127.0.0.1:8545";
     const [eth1Url, setEth1URL] = useState(defaultEth1URL);
 
-    const defaultRpcPort = "5052";
+    const defaultRpcPort = String(defaults.beacon.rpcPort);
     const [rpcPort, setRpcPort] = useState(defaultRpcPort);
 
-    const defaultLibp2pPort = "9000";
+    const defaultLibp2pPort = String(defaults.beacon.libp2pPort);
     const [libp2pPort, setLibp2pPort] = useState(defaultLibp2pPort);
 
-    const defaultDiscoveryPort = "9000";
-    const [discoveryPort, setDiscoveryPort] = useState(defaultLibp2pPort);
+    const defaultDiscoveryPort = String(defaults.beacon.discoveryPort);
+    const [discoveryPort, setDiscoveryPort] = useState(defaultDiscoveryPort);
 
     const onSubmit = (): void => {
         props.onSubmit({
