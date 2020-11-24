@@ -26,6 +26,8 @@ import {
     addNewValidator,
     updateValidatorStatus,
     loadValidatorsAction,
+    setValidatorBeaconNode,
+    storeValidatorBeaconNodes,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {loadValidatorBeaconNodes, unsubscribeToBlockListening} from "../network/actions";
@@ -38,6 +40,7 @@ import * as logger from "electron-log";
 import {getAuthAccount} from "../auth/selectors";
 import {getBeaconNodes} from "../network/selectors";
 import {getValidators} from "./selectors";
+import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -46,21 +49,27 @@ interface IValidatorServices {
 const validatorServices: IValidatorServices = {};
 
 function* loadValidatorsSaga(): Generator<
-    SelectEffect | PutEffect | Promise<ICGKeystore[]>,
+    SelectEffect | PutEffect | Promise<ICGKeystore[]> | Promise<ValidatorBeaconNodes[]> | Promise<IValidator[]>,
     void,
-    ICGKeystore[] & (CGAccount | null)
+    ICGKeystore[] & (CGAccount | null) & ValidatorBeaconNodes[] & IValidator[]
 > {
     const auth: CGAccount | null = yield select(getAuthAccount);
     if (auth) {
         const validators: ICGKeystore[] = yield auth.loadValidators();
-        const validatorArray: IValidator[] = validators.map((keyStore, index) => ({
-            name: keyStore.getName() ?? `Validator - ${index}`,
-            status: undefined,
-            publicKey: keyStore.getPublicKey(),
-            network: auth.getValidatorNetwork(keyStore.getPublicKey()),
-            keystore: keyStore,
-            isRunning: undefined,
-        }));
+        const validatorArray: IValidator[] = yield Promise.all(
+            validators.map(async (keyStore, index) => {
+                const beaconNodes = await database.validatorBeaconNodes.get(keyStore.getPublicKey());
+                return {
+                    name: keyStore.getName() ?? `Validator - ${index}`,
+                    status: undefined,
+                    publicKey: keyStore.getPublicKey(),
+                    network: auth.getValidatorNetwork(keyStore.getPublicKey()),
+                    keystore: keyStore,
+                    isRunning: undefined,
+                    beaconNodes: beaconNodes?.nodes || [],
+                };
+            }),
+        );
         yield put(loadValidators(validatorArray));
     }
 }
@@ -74,6 +83,7 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
         keystore,
         status: undefined,
         isRunning: false,
+        beaconNodes: [],
     };
 
     yield put(addValidator(validator));
@@ -173,6 +183,18 @@ function* stopService(action: ReturnType<typeof stopActiveValidatorService>): Ge
     yield put(stopValidatorService(publicKey));
 }
 
+function* setValidatorBeacon({
+    payload,
+    meta,
+}: ReturnType<typeof setValidatorBeaconNode>): Generator<
+    PutEffect | Promise<ValidatorBeaconNodes>,
+    void,
+    ValidatorBeaconNodes
+> {
+    const beaconNodes = yield database.validatorBeaconNodes.upsert(meta, [payload]);
+    yield put(storeValidatorBeaconNodes(beaconNodes.nodes, meta));
+}
+
 export function* validatorSagaWatcher(): Generator {
     yield all([
         takeEvery(loadValidatorsAction, loadValidatorsSaga),
@@ -183,5 +205,6 @@ export function* validatorSagaWatcher(): Generator {
         takeEvery(updateValidatorStatus, loadValidatorStatusSaga),
         takeEvery(startNewValidatorService, startService),
         takeEvery(stopActiveValidatorService, stopService),
+        takeEvery(setValidatorBeaconNode, setValidatorBeacon),
     ]);
 }

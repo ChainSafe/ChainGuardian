@@ -30,6 +30,14 @@
     margin-right: 24px;
     display: flex;
     align-items: center;
+
+    .input-label {
+        font-family: 'Palanquin', sans-serif;
+        font-size: 18px;
+        font-weight: normal;
+        color: $neutral-300;
+        z-index: 100;
+    }
 }
 .inputform{
     width: 100%;

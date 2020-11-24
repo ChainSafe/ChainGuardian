@@ -8,6 +8,7 @@ import {AddBeaconNodeContainer} from "./AddBeaconNode/AddBeaconNode";
 import {BeaconNodesContainer} from "./BeaconNodes/BeaconNodes";
 import {DashboardContainer} from "./Dashboard/DashboardContainer";
 import {ValidatorDetailsContainer} from "./ValidatorDetails/ValidatorDetailsContainer";
+import {AssignBeaconNode} from "./AssignBeaconNode/AssignBeaconNode";
 
 const Application = (): ReactElement => (
     <div className='cg-app'>
@@ -18,6 +19,7 @@ const Application = (): ReactElement => (
                 <Route path={Routes.VALIDATOR_DETAILS} component={ValidatorDetailsContainer} />
                 <Route path={Routes.BEACON_NODES} component={BeaconNodesContainer} />
                 <Route path={Routes.ADD_BEACON_NODE} component={AddBeaconNodeContainer} />
+                <Route path={Routes.ASSIGN_BEACON_NODE} component={AssignBeaconNode} />
                 <Redirect from='/' to={Routes.DASHBOARD_ROUTE} />
             </Switch>
         </Router>

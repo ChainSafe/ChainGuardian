@@ -23,14 +23,14 @@ export class BeaconsRepository extends Repository<Beacons> {
         await super.delete(id);
     }
 
-    public async upsert({url, localDockerId}: Beacon): Promise<void> {
+    public async upsert({url, docker}: Beacon): Promise<void> {
         const beacons = await this.get(DEFAULT_ACCOUNT);
         if (beacons) {
             const newList = Beacons.createNodes(beacons.beacons);
-            newList.addNode(url, localDockerId);
+            newList.addNode(url, docker);
             await this.set(DEFAULT_ACCOUNT, newList);
         } else {
-            await this.set(DEFAULT_ACCOUNT, Beacons.createBeacon(url, localDockerId));
+            await this.set(DEFAULT_ACCOUNT, Beacons.createBeacon(url, docker));
         }
     }
 

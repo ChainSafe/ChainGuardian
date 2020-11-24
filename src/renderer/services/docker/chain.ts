@@ -43,12 +43,12 @@ export class BeaconChain extends Container {
         if (savedNodes) {
             logger.info("Going to start all stopped local beacon nodes...");
             for (const beacon of savedNodes.beacons) {
-                if (beacon.localDockerId) {
-                    const image = await Container.getImageName(beacon.localDockerId);
+                if (beacon.docker) {
+                    const image = await Container.getImageName(beacon.docker.id);
                     if (image) {
-                        await BeaconChain.restartBeaconChainContainer(beacon.localDockerId, image);
+                        await BeaconChain.restartBeaconChainContainer(beacon.docker.id, image);
                     } else {
-                        logger.info(`Container ${beacon.localDockerId} not found.`);
+                        logger.info(`Container ${beacon.docker.id} not found.`);
                     }
                 }
             }

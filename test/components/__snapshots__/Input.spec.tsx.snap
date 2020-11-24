@@ -10,6 +10,9 @@ exports[`InputForm renders correctly 1`] = `
   <div
     className="inputform-container"
   >
+    <div
+      className="input-label"
+    />
     <input
       className="inputform "
     />
@@ -33,6 +36,9 @@ exports[`InputForm renders error and message 1`] = `
   <div
     className="inputform-container"
   >
+    <div
+      className="input-label"
+    />
     <input
       className="inputform error"
     />
@@ -58,6 +64,9 @@ exports[`InputForm renders focused input 1`] = `
   <div
     className="inputform-container"
   >
+    <div
+      className="input-label"
+    />
     <input
       autoFocus={true}
       className="inputform "
@@ -82,6 +91,9 @@ exports[`InputForm renders input id 1`] = `
   <div
     className="inputform-container"
   >
+    <div
+      className="input-label"
+    />
     <input
       className="inputform "
       id="testid"
@@ -106,6 +118,9 @@ exports[`InputForm renders success 1`] = `
   <div
     className="inputform-container"
   >
+    <div
+      className="input-label"
+    />
     <input
       className="inputform success"
     />
@@ -129,6 +144,9 @@ exports[`InputForm renders value 1`] = `
   <div
     className="inputform-container"
   >
+    <div
+      className="input-label"
+    />
     <input
       className="inputform "
       value="textfortest"

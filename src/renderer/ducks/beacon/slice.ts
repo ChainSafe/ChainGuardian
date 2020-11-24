@@ -1,12 +1,13 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {DockerConfig} from "../../models/beacons";
 
 type Beacon = {
     url: string;
     status: string;
-    localDockerId?: string;
+    docker?: DockerConfig;
 };
 
-interface IBeaconDictionary {
+export interface IBeaconDictionary {
     [key: string]: Beacon;
 }
 
@@ -39,8 +40,8 @@ export const beaconSlice = createSlice({
                     state.keys.push(action.payload.url);
                 }
             },
-            prepare: (url: string, localDockerId?: string): {payload: Beacon} => ({
-                payload: {url, localDockerId, status: "init"},
+            prepare: (url: string, docker?: DockerConfig): {payload: Beacon} => ({
+                payload: {url, docker, status: "init"},
             }),
         },
         removeBeacon: (state, action: PayloadAction<string>): void => {

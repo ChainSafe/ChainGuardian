@@ -9,7 +9,7 @@ import {Beacons} from "../../models/beacons";
 import {postInit} from "../store";
 
 function* startLocalBeaconSaga({
-    payload: {network, ports},
+    payload: {network, ports, folderPath, eth1Url, discoveryPort, libp2pPort, rpcPort},
 }: ReturnType<typeof startLocalBeacon>): Generator<PutEffect | CallEffect, void, BeaconChain> {
     // Pull image first
     yield put(startDockerImagePull());
@@ -21,16 +21,21 @@ function* startLocalBeaconSaga({
     switch (network) {
         default:
             yield put(
-                addBeacon(
-                    `http://localhost:${ports[1].local}`,
-                    (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports)).getName(),
-                ),
+                addBeacon(`http://localhost:${ports[1].local}`, {
+                    id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports)).getName(),
+                    network,
+                    folderPath,
+                    eth1Url,
+                    discoveryPort,
+                    libp2pPort,
+                    rpcPort,
+                }),
             );
     }
 }
 
-function* storeBeacon({payload: {url, localDockerId}}: ReturnType<typeof addBeacon>): Generator<Promise<void>> {
-    yield database.beacons.upsert({url, localDockerId});
+function* storeBeacon({payload: {url, docker}}: ReturnType<typeof addBeacon>): Generator<Promise<void>> {
+    yield database.beacons.upsert({url, docker});
 }
 
 function* removeBeaconSaga({payload}: ReturnType<typeof removeBeacon>): Generator<Promise<[boolean, boolean]>> {
@@ -44,7 +49,7 @@ function* initializeBeaconsFromStore(): Generator<Promise<Beacons> | PutEffect |
 
         yield BeaconChain.startAllLocalBeaconNodes();
 
-        yield put(addBeacons(beacons.map(({url, localDockerId}) => ({url, localDockerId, status: "init"}))));
+        yield put(addBeacons(beacons.map(({url, docker}) => ({url, docker, status: "init"}))));
     }
 }
 
