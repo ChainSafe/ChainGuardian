@@ -3,6 +3,7 @@ import {createSelector} from "@reduxjs/toolkit";
 import {getPublicKeyFromProps} from "../fromProps";
 import {IByPublicKey} from "./slice";
 import {getSelectedNetwork} from "../network/selectors";
+import {getBeaconDictionary} from "../beacon/selectors";
 
 export const getValidators = (state: IRootState): IByPublicKey => state.validators.byPublicKey;
 
@@ -18,3 +19,9 @@ export const getNetworkValidators = createSelector(
 export const getValidator = createSelector(getValidators, getPublicKeyFromProps, (validators, key) => validators[key]);
 
 export const getValidatorNetwork = createSelector(getValidator, (validator) => validator?.network);
+
+export const getValidatorBeaconNodes = createSelector(
+    getValidator,
+    getBeaconDictionary,
+    (validator, beacons) => validator?.beaconNodes.map((url) => beacons[url]).filter((beacon) => !!beacon) || [],
+);
