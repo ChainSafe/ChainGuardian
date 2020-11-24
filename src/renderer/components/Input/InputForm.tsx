@@ -1,5 +1,4 @@
-import * as React from "react";
-import {useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 
 export interface IInputFormProps {
     label?: string;
@@ -22,6 +21,8 @@ export interface IInputFormProps {
     eye?: boolean;
     eyeSlash?: boolean;
     onEyeClick?: () => void;
+    disabled?: boolean;
+    centered?: boolean;
     inputLabel?: string;
 }
 
@@ -70,10 +71,11 @@ export const InputForm: React.FunctionComponent<IInputFormProps> = (props: IInpu
                     placeholder={props.placeholder}
                     value={props.inputValue}
                     readOnly={props.readOnly}
-                    className={`inputform ${classNamesValid(props.valid)}`}
+                    className={`inputform ${classNamesValid(props.valid)} ${props.centered ? "centered" : ""}`}
                     onChange={props.onChange}
                     onFocus={props.onFocus}
                     type={props.type}
+                    disabled={props.disabled}
                 />
                 <div className={handleEyeStyle(props.eye, props.eyeSlash)} onClick={props.onEyeClick} />
             </div>

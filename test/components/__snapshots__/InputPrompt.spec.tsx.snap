@@ -26,7 +26,7 @@ Array [
             className="input-label"
           />
           <input
-            className="inputform "
+            className="inputform  "
             id="prompt-input"
             onChange={[Function]}
             value=""
