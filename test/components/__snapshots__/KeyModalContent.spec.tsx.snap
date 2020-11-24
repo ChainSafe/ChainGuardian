@@ -17,6 +17,9 @@ Array [
       <div
         className="inputform-container"
       >
+        <div
+          className="input-label"
+        />
         <input
           autoFocus={true}
           className="inputform "
@@ -73,6 +76,9 @@ Array [
       <div
         className="inputform-container"
       >
+        <div
+          className="input-label"
+        />
         <input
           autoFocus={true}
           className="inputform "

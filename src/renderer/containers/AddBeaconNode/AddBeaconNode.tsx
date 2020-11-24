@@ -4,7 +4,7 @@ import {useHistory} from "react-router";
 import {Background} from "../../components/Background/Background";
 import {
     ConfigureBeaconNode,
-    IConfigureBNPSubmitOptions,
+    IConfigureBNSubmitOptions,
 } from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 import {InputBeaconNode} from "../../components/ConfigureBeaconNode/InputBeaconNode";
 import {Routes} from "../../constants/routes";
@@ -35,7 +35,7 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
     };
 
     const onDockerRunSubmit = useCallback(
-        ({ports, libp2pPort, rpcPort, network, ...rest}: IConfigureBNPSubmitOptions): void => {
+        ({ports, libp2pPort, rpcPort, network, ...rest}: IConfigureBNSubmitOptions): void => {
             dispatch(
                 startLocalBeacon({
                     network,

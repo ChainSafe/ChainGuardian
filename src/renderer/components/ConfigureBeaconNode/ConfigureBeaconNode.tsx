@@ -9,7 +9,7 @@ import {remote} from "electron";
 import {getConfig} from "../../../config/config";
 import {getDefaultsForClient} from "../../services/eth2/client/defaults";
 
-export interface IConfigureBNPSubmitOptions {
+export interface IConfigureBNSubmitOptions {
     ports: DockerPort[];
     network: string;
     folderPath: string;
@@ -20,7 +20,7 @@ export interface IConfigureBNPSubmitOptions {
 }
 
 interface IConfigureBNProps {
-    onSubmit: (values: IConfigureBNPSubmitOptions) => void;
+    onSubmit: (values: IConfigureBNSubmitOptions) => void;
     clientName?: string;
 }
 
