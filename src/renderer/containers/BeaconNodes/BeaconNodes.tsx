@@ -9,13 +9,13 @@ import {getBeacons} from "../../ducks/beacon/selectors";
 import {Link} from "react-router-dom";
 import {Routes} from "../../constants/routes";
 import {ButtonSecondary} from "../../components/Button/ButtonStandard";
-import {getBeaconNodesValidators} from "../../ducks/validator/selectors";
+import {getValidatorsByBeaconNode} from "../../ducks/validator/selectors";
 import {truncatePublicKey} from "../../services/utils/formatting";
 
 export const BeaconNodesContainer: React.FunctionComponent = () => {
     const history = useHistory();
     const beacons = useSelector(getBeacons);
-    const beaconValidators = useSelector(getBeaconNodesValidators);
+    const beaconValidators = useSelector(getValidatorsByBeaconNode);
 
     return (
         <>

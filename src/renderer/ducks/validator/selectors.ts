@@ -26,7 +26,7 @@ export const getValidatorBeaconNodes = createSelector(
     (validator, beacons) => validator?.beaconNodes.map((url) => beacons[url]).filter((beacon) => !!beacon) || [],
 );
 
-export const getBeaconNodesValidators = createSelector(getValidators, getValidatorKeys, (validators, keys) => {
+export const getValidatorsByBeaconNode = createSelector(getValidators, getValidatorKeys, (validators, keys) => {
     const dictionary: {[url: string]: {name: string; publicKey: string}[]} = {};
     keys.forEach((key) => {
         const {name, publicKey, beaconNodes} = validators[key];
