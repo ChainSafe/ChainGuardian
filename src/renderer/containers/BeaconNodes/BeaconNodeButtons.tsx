@@ -9,6 +9,14 @@ import {DockerRegistry} from "../../services/docker/docker-registry";
 import {createNotification} from "../../ducks/notification/actions";
 import {Container} from "../../services/docker/container";
 
+enum Modal {
+    none,
+    start,
+    stop,
+    kill,
+    remove,
+}
+
 interface IBeaconNodeButtonsProps {
     url: string;
     image?: string;
@@ -22,7 +30,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
     const dispatch = useDispatch();
     const history = useHistory();
 
-    const [confirmModal, setConfirmModal] = useState(false);
+    const [confirmModal, setConfirmModal] = useState(Modal.none);
     const [loading, setLoading] = useState(false);
     const [isRunning, setIsRunning] = useState(false);
 
@@ -32,7 +40,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
         }
     }, []);
 
-    const onStopClick = async (image: string): Promise<void> => {
+    const stopContainer = async (): Promise<void> => {
         setLoading(true);
         try {
             await DockerRegistry.getContainer(image)!.stop();
@@ -46,10 +54,11 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
                 }),
             );
         }
+        setConfirmModal(Modal.none);
         setLoading(false);
     };
 
-    const onStartClick = async (image: string): Promise<void> => {
+    const startContainer = async (): Promise<void> => {
         setLoading(true);
         try {
             await DockerRegistry.getContainer(image)!.startStoppedContainer();
@@ -63,11 +72,26 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
                 }),
             );
         }
+        setConfirmModal(Modal.none);
         setLoading(false);
     };
 
-    const onRemoveClick = (): void => {
-        setConfirmModal(true);
+    const killContainer = async (): Promise<void> => {
+        setLoading(true);
+        try {
+            await DockerRegistry.getContainer(image)!.kill();
+            setIsRunning(false);
+        } catch (e) {
+            logger.error(e);
+            dispatch(
+                createNotification({
+                    source: history.location.pathname,
+                    title: "Error while trying to kill beacon node container",
+                }),
+            );
+        }
+        setConfirmModal(Modal.none);
+        setLoading(false);
     };
 
     const removeContainer = async (): Promise<void> => {
@@ -95,20 +119,49 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
             <div className='row buttons'>
                 {image ? (
                     isRunning ? (
-                        <ButtonInverted onClick={(): Promise<void> => onStopClick(image)}>Stop</ButtonInverted>
+                        <>
+                            <ButtonInverted onClick={(): void => setConfirmModal(Modal.stop)}>Stop</ButtonInverted>
+                            <ButtonDestructive onClick={(): void => setConfirmModal(Modal.kill)}>
+                                Kill
+                            </ButtonDestructive>
+                        </>
                     ) : (
-                        <ButtonPrimary onClick={(): Promise<void> => onStartClick(image)}>Start</ButtonPrimary>
+                        <ButtonPrimary onClick={(): void => setConfirmModal(Modal.start)}>Start</ButtonPrimary>
                     )
                 ) : null}
-                <ButtonDestructive onClick={onRemoveClick}>Remove</ButtonDestructive>
+                <ButtonDestructive onClick={(): void => setConfirmModal(Modal.remove)}>Remove</ButtonDestructive>
             </div>
 
             <ConfirmModal
-                showModal={confirmModal}
+                showModal={confirmModal === Modal.remove}
                 question={"Are you sure?"}
                 description={"This will remove all your beacon chain data."}
                 onOKClick={removeContainer}
-                onCancelClick={(): void => setConfirmModal(false)}
+                onCancelClick={(): void => setConfirmModal(Modal.none)}
+            />
+
+            <ConfirmModal
+                showModal={confirmModal === Modal.start}
+                question={"Are you sure?"}
+                description={"This will start your beacon chain container."}
+                onOKClick={startContainer}
+                onCancelClick={(): void => setConfirmModal(Modal.none)}
+            />
+
+            <ConfirmModal
+                showModal={confirmModal === Modal.stop}
+                question={"Are you sure?"}
+                description={"This will stop your beacon chain container."}
+                onOKClick={stopContainer}
+                onCancelClick={(): void => setConfirmModal(Modal.none)}
+            />
+
+            <ConfirmModal
+                showModal={confirmModal === Modal.kill}
+                question={"Are you sure?"}
+                description={"This will kill your beacon chain container."}
+                onOKClick={killContainer}
+                onCancelClick={(): void => setConfirmModal(Modal.none)}
             />
 
             <Loading visible={loading} title='Loading' />
