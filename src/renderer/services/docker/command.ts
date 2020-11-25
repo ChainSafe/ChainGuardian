@@ -8,11 +8,6 @@ export class Command {
         return `"${path}" run ${generateRunCommand(params)}`;
     }
 
-    public static async customRun(params: string): Promise<string> {
-        const path = await dockerPath.getPath();
-        return `"${path}" run ${params}`;
-    }
-
     public static async ps(
         containerName?: string,
         status?: "created" | "restarting" | "running" | "removing" | "paused" | "exited" | "dead",

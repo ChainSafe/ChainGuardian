@@ -23,13 +23,7 @@ function* startLocalBeaconSaga({
         default:
             yield put(
                 addBeacon(`http://localhost:${ports[1].local}`, {
-                    id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports, false, {
-                        folderPath,
-                        eth1Url,
-                        discoveryPort,
-                        libp2pPort,
-                        rpcPort,
-                    })).getName(),
+                    id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports)).getName(),
                     network,
                     folderPath,
                     eth1Url,
