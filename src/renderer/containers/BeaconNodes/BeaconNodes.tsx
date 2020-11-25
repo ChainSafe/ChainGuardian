@@ -9,6 +9,7 @@ import {getBeacons} from "../../ducks/beacon/selectors";
 import {Link} from "react-router-dom";
 import {Routes} from "../../constants/routes";
 import {ButtonSecondary} from "../../components/Button/ButtonStandard";
+import {BeaconStatus} from "../../ducks/beacon/slice";
 
 export const BeaconNodesContainer: React.FunctionComponent = () => {
     const history = useHistory();
@@ -32,17 +33,19 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
 
                             {beacons.keys.map((url) => (
                                 <div className='row box node-container' key={url}>
-                                    <NodeCard
-                                        onClick={() => (): void => {}}
-                                        title={
-                                            beacons.beacons[url].docker
-                                                ? "Local Docker container"
-                                                : "Remote Beacon node"
-                                        }
-                                        url={url}
-                                        isSyncing={false}
-                                        value='N/A'
-                                    />
+                                    <Link to={Routes.BEACON_NODE_DETAILS.replace(":url", encodeURIComponent(url))}>
+                                        <NodeCard
+                                            onClick={() => (): void => {}}
+                                            title={
+                                                beacons.beacons[url].docker
+                                                    ? "Local Docker container"
+                                                    : "Remote Beacon node"
+                                            }
+                                            url={url}
+                                            isSyncing={beacons.beacons[url].status === BeaconStatus.syncing}
+                                            value='N/A'
+                                        />
+                                    </Link>
 
                                     <div className='flex-column stretch space-between'>
                                         {/*TODO: implement validator list linked on beacon*/}
