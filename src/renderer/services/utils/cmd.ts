@@ -4,12 +4,17 @@ import {Readable} from "stream";
 export interface ICmdRunAsync {
     stdout: string;
     stderr: string;
+    abort: () => void;
 }
 
 export async function runCmdAsync(command: string): Promise<ICmdRunAsync> {
     return new Promise((resolve, reject) => {
         const process = child.exec(command);
-        const result: ICmdRunAsync = {stdout: "", stderr: ""};
+        const result: ICmdRunAsync = {
+            stdout: "",
+            stderr: "",
+            abort: () => process.kill(),
+        };
         if (process.stdout && process.stderr) {
             process.stdout.on("data", (data) => {
                 result.stdout += data;
