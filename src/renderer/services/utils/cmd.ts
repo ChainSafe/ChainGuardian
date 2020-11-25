@@ -34,14 +34,20 @@ export async function runCmdAsync(command: string): Promise<ICmdRunAsync> {
 export interface ICmdRun {
     stdout: Readable;
     stderr: Readable;
+    abort: () => void;
 }
 
-export function runCmd(command: string): ICmdRun {
+export function runCmd(command: string, onClose?: (code: number) => void): ICmdRun {
     const process = child.exec(command);
     if (process.stdout && process.stderr) {
+        if (onClose) {
+            process.on("close", (code) => onClose(code));
+        }
+
         return {
             stdout: process.stdout,
             stderr: process.stderr,
+            abort: () => process.kill(),
         } as ICmdRun;
     }
     throw new Error(`Executing command ${command} failed.`);

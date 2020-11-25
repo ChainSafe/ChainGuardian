@@ -64,15 +64,31 @@ export abstract class Container {
 
     public static async pullImage(
         image: string,
+        onFinish?: (success: boolean) => void,
     ): Promise<{
-        success: boolean;
-        cancel: () => void;
+        abort: () => void;
     }> {
-        const cmdResult = await runCmdAsync(await Command.pull(image));
-        const success = cmdResult.stdout.includes("Status: Downloaded");
+        let onClose = undefined;
+        let output = "";
+        // Setup onFinish callback that returns success status
+        if (onFinish) {
+            onClose = (code: number): void => {
+                if (code === 0) {
+                    const success = output.includes("Status: Downloaded");
+                    onFinish(success);
+                } else {
+                    onFinish(false);
+                }
+            }
+        }
+        const cmdResult = runCmd(await Command.pull(image), onClose);
+        // Save all stdout messages
+        cmdResult.stdout.on("data", (data) => {
+            output += data;
+        });
+
         return {
-            success,
-            cancel: cmdResult.abort,
+            abort: cmdResult.abort,
         };
     }
 
