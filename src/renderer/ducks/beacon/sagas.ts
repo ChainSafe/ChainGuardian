@@ -1,7 +1,5 @@
 import {all, call, put, takeEvery, PutEffect, CallEffect} from "redux-saga/effects";
 import {startLocalBeacon, removeBeacon, addBeacon, addBeacons} from "./actions";
-import {endDockerImagePull, startDockerImagePull} from "../network/actions";
-import {getNetworkConfig} from "../../services/eth2/networks";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import database from "../../services/db/api/database";
@@ -11,13 +9,6 @@ import {postInit} from "../store";
 function* startLocalBeaconSaga({
     payload: {network, ports, folderPath, eth1Url, discoveryPort, libp2pPort, rpcPort},
 }: ReturnType<typeof startLocalBeacon>): Generator<PutEffect | CallEffect, void, BeaconChain> {
-    // Pull image first
-    yield put(startDockerImagePull());
-    const image = getNetworkConfig(network).dockerConfig.image;
-    yield call(BeaconChain.pullImage, image);
-    yield put(endDockerImagePull());
-
-    // Start chain
     switch (network) {
         default:
             yield put(

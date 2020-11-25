@@ -79,7 +79,7 @@ export abstract class Container {
                 } else {
                     onFinish(false);
                 }
-            }
+            };
         }
         const cmdResult = runCmd(await Command.pull(image), onClose);
         // Save all stdout messages

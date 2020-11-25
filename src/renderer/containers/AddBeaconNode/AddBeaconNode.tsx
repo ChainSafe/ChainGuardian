@@ -1,18 +1,25 @@
 import React, {useState, useCallback} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router";
 import {Background} from "../../components/Background/Background";
 import {ConfigureBeaconNode, IConfigureBNSubmitOptions} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 import {InputBeaconNode} from "../../components/ConfigureBeaconNode/InputBeaconNode";
+import {Loading} from "../../components/Loading/Loading";
 import {Routes} from "../../constants/routes";
+import {endDockerImagePull, startDockerImagePull} from "../../ducks/network/actions";
+import {getPullingDockerImage} from "../../ducks/network/selectors";
+import {BeaconChain} from "../../services/docker/chain";
 import {Container} from "../../services/docker/container";
+import {getNetworkConfig} from "../../services/eth2/networks";
 import OnBoardModal from "../Onboard/OnBoardModal";
 import {addBeacon, startLocalBeacon} from "../../ducks/beacon/actions";
 
 export const AddBeaconNodeContainer: React.FunctionComponent = () => {
+    const isPullingImage = useSelector(getPullingDockerImage);
     const dispatch = useDispatch();
     const history = useHistory();
     const [currentStep, setCurrentStep] = useState<number>(0);
+    const [abortCall, setAbortCall] = useState<() => void | undefined>(undefined);
 
     const renderFirstStep = (): React.ReactElement => {
         const onRunNodeSubmit = async (): Promise<void> => {
@@ -32,7 +39,9 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
     };
 
     const onDockerRunSubmit = useCallback(
-        ({ports, libp2pPort, rpcPort, network, ...rest}: IConfigureBNSubmitOptions): void => {
+        async ({ports, libp2pPort, rpcPort, network, ...rest}: IConfigureBNSubmitOptions): Promise<void> => {
+            await pullDockerImage(network);
+
             dispatch(
                 startLocalBeacon({
                     network,
@@ -45,11 +54,18 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
                     ...rest,
                 }),
             );
-            console.log(rest);
             history.push(Routes.DASHBOARD_ROUTE);
         },
         [],
     );
+
+    const pullDockerImage = async (network: string): Promise<void> => {
+        dispatch(startDockerImagePull());
+        const image = getNetworkConfig(network).dockerConfig.image;
+        const onFinish = () => dispatch(endDockerImagePull());
+        const {abort} = await BeaconChain.pullImage(image, onFinish);
+        setAbortCall(abort);
+    };
 
     const renderSecondStep = (): React.ReactElement => {
         return <ConfigureBeaconNode onSubmit={onDockerRunSubmit} />;
@@ -64,6 +80,8 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
         <Background>
             <OnBoardModal history={history} currentStep={currentStep}>
                 {renderStepScreen()}
+
+                <Loading visible={isPullingImage} title='Pulling Docker image...' />
             </OnBoardModal>
         </Background>
     );
