@@ -7,6 +7,7 @@ import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import database from "../../services/db/api/database";
 import {Beacons} from "../../models/beacons";
 import {postInit} from "../store";
+import {BeaconStatus} from "./slice";
 
 function* startLocalBeaconSaga({
     payload: {network, ports, folderPath, eth1Url, discoveryPort, libp2pPort, rpcPort},
@@ -74,7 +75,12 @@ function* initializeBeaconsFromStore(): Generator<
                 beacons.map(({url, docker}, index) => ({
                     url,
                     docker,
-                    status: stats[index] !== null ? (stats[index] ? "syncing" : "active") : "offline",
+                    status:
+                        stats[index] !== null
+                            ? stats[index]
+                                ? BeaconStatus.syncing
+                                : BeaconStatus.active
+                            : BeaconStatus.offline,
                 })),
             ),
         );
