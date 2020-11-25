@@ -25,3 +25,18 @@ export const getValidatorBeaconNodes = createSelector(
     getBeaconDictionary,
     (validator, beacons) => validator?.beaconNodes.map((url) => beacons[url]).filter((beacon) => !!beacon) || [],
 );
+
+export const getValidatorsByBeaconNode = createSelector(getValidators, getValidatorKeys, (validators, keys) => {
+    const dictionary: {[url: string]: {name: string; publicKey: string}[]} = {};
+    keys.forEach((key) => {
+        const {name, publicKey, beaconNodes} = validators[key];
+        beaconNodes.forEach((url) => {
+            if (!dictionary[url]) {
+                dictionary[url] = [];
+            }
+
+            dictionary[url].push({name, publicKey});
+        });
+    });
+    return dictionary;
+});

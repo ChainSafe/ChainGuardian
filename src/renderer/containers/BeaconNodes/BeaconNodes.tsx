@@ -9,10 +9,13 @@ import {getBeacons} from "../../ducks/beacon/selectors";
 import {Link} from "react-router-dom";
 import {Routes} from "../../constants/routes";
 import {ButtonSecondary} from "../../components/Button/ButtonStandard";
+import {getValidatorsByBeaconNode} from "../../ducks/validator/selectors";
+import {truncatePublicKey} from "../../services/utils/formatting";
 
 export const BeaconNodesContainer: React.FunctionComponent = () => {
     const history = useHistory();
     const beacons = useSelector(getBeacons);
+    const beaconValidators = useSelector(getValidatorsByBeaconNode);
 
     return (
         <>
@@ -45,9 +48,17 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                                     />
 
                                     <div className='flex-column stretch space-between'>
-                                        {/*TODO: implement validator list linked on beacon*/}
                                         <div className='flex-column'>
                                             <h5>Connected validators:</h5>
+
+                                            {beaconValidators[url] &&
+                                                beaconValidators[url].map(({name, publicKey}) => (
+                                                    <div className='flex-column' key={name}>
+                                                        <p>
+                                                            <b>{name} </b>- {truncatePublicKey(publicKey)}
+                                                        </p>
+                                                    </div>
+                                                ))}
                                         </div>
 
                                         <BeaconNodeButtons image={beacons.beacons[url].docker.id} url={url} />
