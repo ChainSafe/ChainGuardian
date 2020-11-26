@@ -81,9 +81,13 @@ export abstract class Container {
                 }
             };
         }
-        const cmdResult = runCmd(await Command.pull(image), onClose);
-        // Save all stdout messages
+        const cmd = await Command.pull(image);
+        const cmdResult = runCmd(cmd, onClose);
+        // Save all stdout and stderr messages
         cmdResult.stdout.on("data", (data) => {
+            output += data;
+        });
+        cmdResult.stderr.on("data", (data) => {
             output += data;
         });
 

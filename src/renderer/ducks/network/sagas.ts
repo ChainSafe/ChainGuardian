@@ -26,13 +26,6 @@ import {getAuthAccount} from "../auth/selectors";
 function* startBeaconChainSaga({
     payload: {network, ports},
 }: ReturnType<typeof startBeaconChain>): Generator<PutEffect | CallEffect, void> {
-    // Pull image first
-    yield put(startDockerImagePull());
-    const image = getNetworkConfig(network).dockerConfig.image;
-    yield call(BeaconChain.pullImage, image);
-    yield put(endDockerImagePull());
-
-    // Start chain
     switch (network) {
         default:
             yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports);

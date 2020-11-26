@@ -2,6 +2,7 @@ import React, {useState, useCallback} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router";
 import {Background} from "../../components/Background/Background";
+import {ButtonDestructive} from "../../components/Button/ButtonStandard";
 import {ConfigureBeaconNode, IConfigureBNSubmitOptions} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 import {InputBeaconNode} from "../../components/ConfigureBeaconNode/InputBeaconNode";
 import {Loading} from "../../components/Loading/Loading";
@@ -59,12 +60,18 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
         [],
     );
 
-    const pullDockerImage = async (network: string): Promise<void> => {
+    const pullDockerImage = (network: string): Promise<void> => {
         dispatch(startDockerImagePull());
-        const image = getNetworkConfig(network).dockerConfig.image;
-        const onFinish = () => dispatch(endDockerImagePull());
-        const {abort} = await BeaconChain.pullImage(image, onFinish);
-        setAbortCall(abort);
+
+        return new Promise(async(resolve) => {
+            const image = getNetworkConfig(network).dockerConfig.image;
+            const onFinish = (): void => {
+                dispatch(endDockerImagePull());
+                resolve();
+            };
+            const {abort} = await BeaconChain.pullImage(image, onFinish);
+            setAbortCall(() => abort);
+        })
     };
 
     const renderSecondStep = (): React.ReactElement => {
@@ -81,7 +88,9 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
             <OnBoardModal history={history} currentStep={currentStep}>
                 {renderStepScreen()}
 
-                <Loading visible={isPullingImage} title='Pulling Docker image...' />
+                <Loading visible={isPullingImage} title='Pulling Docker image...'>
+                    <ButtonDestructive onClick={abortCall}>Cancel</ButtonDestructive>
+                </Loading>
             </OnBoardModal>
         </Background>
     );
