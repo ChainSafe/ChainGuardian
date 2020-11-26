@@ -143,7 +143,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
             <ConfirmModal
                 showModal={confirmModal === Modal.start}
                 question={"Are you sure?"}
-                description={"This will start your beacon chain container."}
+                description={"This will start your beacon node container."}
                 onOKClick={startContainer}
                 onCancelClick={(): void => setConfirmModal(Modal.none)}
             />
@@ -151,7 +151,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
             <ConfirmModal
                 showModal={confirmModal === Modal.stop}
                 question={"Are you sure?"}
-                description={"This will stop your beacon chain container."}
+                description={"This will stop your beacon node container."}
                 onOKClick={stopContainer}
                 onCancelClick={(): void => setConfirmModal(Modal.none)}
             />
@@ -159,7 +159,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
             <ConfirmModal
                 showModal={confirmModal === Modal.kill}
                 question={"Are you sure?"}
-                description={"This will kill your beacon chain container."}
+                description={"This will kill your beacon node container."}
                 onOKClick={killContainer}
                 onCancelClick={(): void => setConfirmModal(Modal.none)}
             />
