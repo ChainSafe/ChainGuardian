@@ -1,5 +1,4 @@
 import {all, takeEvery, put, call, select, PutEffect, CallEffect, SelectEffect, AllEffect} from "redux-saga/effects";
-import {getNetworkConfig} from "../../services/eth2/networks";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import {PrivateKey} from "@chainsafe/bls";
@@ -9,8 +8,6 @@ import database from "../../services/db/api/database";
 import * as logger from "electron-log";
 import {IEth2ChainHead} from "../../models/types/head";
 import {
-    startDockerImagePull,
-    endDockerImagePull,
     startBeaconChain,
     saveBeaconNode,
     loadedValidatorBeaconNodes,

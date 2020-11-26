@@ -41,37 +41,42 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
 
     const onDockerRunSubmit = useCallback(
         async ({ports, libp2pPort, rpcPort, network, ...rest}: IConfigureBNSubmitOptions): Promise<void> => {
-            await pullDockerImage(network);
+            // Pull docker image first
+            dispatch(startDockerImagePull());
+            const image = getNetworkConfig(network).dockerConfig.image;
 
-            dispatch(
-                startLocalBeacon({
-                    network,
-                    libp2pPort,
-                    rpcPort,
-                    ports: [
-                        {...ports[0], local: libp2pPort},
-                        {...ports[1], local: rpcPort},
-                    ],
-                    ...rest,
-                }),
-            );
-            history.push(Routes.DASHBOARD_ROUTE);
+            const onFinish = (success: boolean): void => {
+                if (!success) {
+                    return;
+                }
+
+                dispatch(endDockerImagePull());
+                // Start chain
+                dispatch(
+                    startLocalBeacon({
+                        network,
+                        libp2pPort,
+                        rpcPort,
+                        ports: [
+                            {...ports[0], local: libp2pPort},
+                            {...ports[1], local: rpcPort},
+                        ],
+                        ...rest,
+                    }),
+                );
+                history.push(Routes.BEACON_NODES);
+            };
+
+            const {abort} = await BeaconChain.pullImage(image, onFinish);
+            setAbortCall(() => abort);
         },
         [],
     );
 
-    const pullDockerImage = (network: string): Promise<void> => {
-        dispatch(startDockerImagePull());
-
-        return new Promise(async(resolve) => {
-            const image = getNetworkConfig(network).dockerConfig.image;
-            const onFinish = (): void => {
-                dispatch(endDockerImagePull());
-                resolve();
-            };
-            const {abort} = await BeaconChain.pullImage(image, onFinish);
-            setAbortCall(() => abort);
-        })
+    const onCancelClick = (): void => {
+        abortCall();
+        dispatch(endDockerImagePull());
+        history.push(Routes.DASHBOARD_ROUTE);
     };
 
     const renderSecondStep = (): React.ReactElement => {
@@ -89,7 +94,7 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
                 {renderStepScreen()}
 
                 <Loading visible={isPullingImage} title='Pulling Docker image...'>
-                    <ButtonDestructive onClick={abortCall}>Cancel</ButtonDestructive>
+                    <ButtonDestructive onClick={onCancelClick}>Cancel</ButtonDestructive>
                 </Loading>
             </OnBoardModal>
         </Background>

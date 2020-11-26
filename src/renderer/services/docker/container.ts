@@ -74,7 +74,8 @@ export abstract class Container {
         if (onFinish) {
             onClose = (code: number): void => {
                 if (code === 0) {
-                    const success = output.includes("Status: Downloaded");
+                    const success =
+                        output.includes("Status: Downloaded") || output.includes("Status: Image is up to date");
                     onFinish(success);
                 } else {
                     onFinish(false);
