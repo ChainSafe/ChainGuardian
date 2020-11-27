@@ -39,19 +39,20 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
     const onDockerRunSubmit = useCallback(
         async ({ports, libp2pPort, rpcPort, network, ...rest}: IConfigureBNSubmitOptions): Promise<void> => {
             dispatch(
-                startLocalBeacon({
-                    network,
-                    libp2pPort,
-                    rpcPort,
-                    ports: [
-                        {...ports[0], local: libp2pPort},
-                        {...ports[1], local: rpcPort},
-                    ],
-                    ...rest,
-                }),
+                startLocalBeacon(
+                    {
+                        network,
+                        libp2pPort,
+                        rpcPort,
+                        ports: [
+                            {...ports[0], local: libp2pPort},
+                            {...ports[1], local: rpcPort},
+                        ],
+                        ...rest,
+                    },
+                    () => history.push(Routes.BEACON_NODES),
+                ),
             );
-
-            // history.push(Routes.BEACON_NODES);
         },
         [],
     );
