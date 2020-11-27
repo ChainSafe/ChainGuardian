@@ -7,9 +7,20 @@ export interface ICmdRunAsync {
     abort: () => void;
 }
 
-export async function runCmdAsync(command: string): Promise<ICmdRunAsync> {
+export const liveProcesses: {[name: string]: child.ChildProcess} = {};
+
+export const deleteProcess = (processName?: string): void => {
+    if (liveProcesses[processName]) {
+        delete liveProcesses[processName];
+    }
+};
+
+export async function runCmdAsync(command: string, processName?: string): Promise<ICmdRunAsync> {
     return new Promise((resolve, reject) => {
         const process = child.exec(command);
+        if (processName) {
+            liveProcesses[processName] = process;
+        }
         const result: ICmdRunAsync = {
             stdout: "",
             stderr: "",
@@ -24,6 +35,10 @@ export async function runCmdAsync(command: string): Promise<ICmdRunAsync> {
             });
             process.on("close", (code) => {
                 code !== 0 ? reject(result) : resolve(result);
+                deleteProcess(processName);
+            });
+            process.on("kill", () => {
+                deleteProcess(processName);
             });
         } else {
             reject();

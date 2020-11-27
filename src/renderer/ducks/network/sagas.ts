@@ -7,6 +7,7 @@ import {BeaconNode, BeaconNodes} from "../../models/beaconNode";
 import database from "../../services/db/api/database";
 import * as logger from "electron-log";
 import {IEth2ChainHead} from "../../models/types/head";
+import {pullDockerImage} from "../beacon/sagas";
 import {
     startBeaconChain,
     saveBeaconNode,
@@ -22,14 +23,20 @@ import {getAuthAccount} from "../auth/selectors";
 
 function* startBeaconChainSaga({
     payload: {network, ports},
-}: ReturnType<typeof startBeaconChain>): Generator<PutEffect | CallEffect, void> {
-    switch (network) {
-        default:
-            yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports);
-    }
+}: ReturnType<typeof startBeaconChain>): Generator<PutEffect | CallEffect, void, boolean> {
+    console.log("Going to pull...");
+    // @ts-ignore
+    const pullSuccess = yield* pullDockerImage(network);
+    console.log("pullSuccess: ", pullSuccess);
+    if (pullSuccess) {
+        switch (network) {
+            default:
+                yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports);
+        }
 
-    // Save local beacon node to db
-    yield call(saveBeaconNodeSaga, saveBeaconNode(`http://localhost:${ports[1].local}`, network));
+        // Save local beacon node to db
+        yield call(saveBeaconNodeSaga, saveBeaconNode(`http://localhost:${ports[1].local}`, network));
+    }
 }
 
 function* saveBeaconNodeSaga({

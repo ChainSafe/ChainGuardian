@@ -62,39 +62,10 @@ export abstract class Container {
         return runningInstance !== "";
     }
 
-    public static async pullImage(
-        image: string,
-        onFinish?: (success: boolean) => void,
-    ): Promise<{
-        abort: () => void;
-    }> {
-        let onClose = undefined;
-        let output = "";
-        // Setup onFinish callback that returns success status
-        if (onFinish) {
-            onClose = (code: number): void => {
-                if (code === 0) {
-                    const success =
-                        output.includes("Status: Downloaded") || output.includes("Status: Image is up to date");
-                    onFinish(success);
-                } else {
-                    onFinish(false);
-                }
-            };
-        }
-        const cmd = await Command.pull(image);
-        const cmdResult = runCmd(cmd, onClose);
-        // Save all stdout and stderr messages
-        cmdResult.stdout.on("data", (data) => {
-            output += data;
-        });
-        cmdResult.stderr.on("data", (data) => {
-            output += data;
-        });
-
-        return {
-            abort: cmdResult.abort,
-        };
+    public static async pullImage(image: string): Promise<boolean> {
+        const cmdResult = await runCmdAsync(await Command.pull(image), "pullImage");
+        const output = cmdResult.stdout;
+        return output.includes("Status: Downloaded") || output.includes("Status: Image is up to date");
     }
 
     public static async getImageName(dockerId: string): Promise<string | undefined> {

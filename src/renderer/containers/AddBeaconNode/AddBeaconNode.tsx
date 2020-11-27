@@ -7,11 +7,9 @@ import {ConfigureBeaconNode, IConfigureBNSubmitOptions} from "../../components/C
 import {InputBeaconNode} from "../../components/ConfigureBeaconNode/InputBeaconNode";
 import {Loading} from "../../components/Loading/Loading";
 import {Routes} from "../../constants/routes";
-import {endDockerImagePull, startDockerImagePull} from "../../ducks/network/actions";
+import {cancelDockerPull} from "../../ducks/network/actions";
 import {getPullingDockerImage} from "../../ducks/network/selectors";
-import {BeaconChain} from "../../services/docker/chain";
 import {Container} from "../../services/docker/container";
-import {getNetworkConfig} from "../../services/eth2/networks";
 import OnBoardModal from "../Onboard/OnBoardModal";
 import {addBeacon, startLocalBeacon} from "../../ducks/beacon/actions";
 
@@ -20,7 +18,6 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     const [currentStep, setCurrentStep] = useState<number>(0);
-    const [abortCall, setAbortCall] = useState<() => void | undefined>(undefined);
 
     const renderFirstStep = (): React.ReactElement => {
         const onRunNodeSubmit = async (): Promise<void> => {
@@ -41,41 +38,25 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
 
     const onDockerRunSubmit = useCallback(
         async ({ports, libp2pPort, rpcPort, network, ...rest}: IConfigureBNSubmitOptions): Promise<void> => {
-            // Pull docker image first
-            dispatch(startDockerImagePull());
-            const image = getNetworkConfig(network).dockerConfig.image;
-
-            const onFinish = (success: boolean): void => {
-                if (!success) {
-                    return;
-                }
-
-                dispatch(endDockerImagePull());
-                // Start chain
-                dispatch(
-                    startLocalBeacon({
-                        network,
-                        libp2pPort,
-                        rpcPort,
-                        ports: [
-                            {...ports[0], local: libp2pPort},
-                            {...ports[1], local: rpcPort},
-                        ],
-                        ...rest,
-                    }),
-                );
-                history.push(Routes.BEACON_NODES);
-            };
-
-            const {abort} = await BeaconChain.pullImage(image, onFinish);
-            setAbortCall(() => abort);
+            dispatch(
+                startLocalBeacon({
+                    network,
+                    libp2pPort,
+                    rpcPort,
+                    ports: [
+                        {...ports[0], local: libp2pPort},
+                        {...ports[1], local: rpcPort},
+                    ],
+                    ...rest,
+                }),
+            );
+            // history.push(Routes.BEACON_NODES);
         },
         [],
     );
 
     const onCancelClick = (): void => {
-        abortCall();
-        dispatch(endDockerImagePull());
+        dispatch(cancelDockerPull());
         history.push(Routes.DASHBOARD_ROUTE);
     };
 

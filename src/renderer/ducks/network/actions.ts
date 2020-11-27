@@ -12,6 +12,8 @@ export const {
     unsubscribeToBlockListening,
 } = networkSlice.actions;
 
+export const cancelDockerPull = createAction("network/cancelDockerPull");
+
 export const startBeaconChain = createAction<StartBeaconChain>(
     "network/startBeaconChain",
     (network: string, ports?: DockerPort[]) => ({payload: {network, ports}}),
