@@ -50,6 +50,7 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
                     ...rest,
                 }),
             );
+
             // history.push(Routes.BEACON_NODES);
         },
         [],

@@ -26,11 +26,9 @@ export function* pullDockerImage(
 
 function* startLocalBeaconSaga({
     payload: {network, ports, folderPath, eth1Url, discoveryPort, libp2pPort, rpcPort},
-}: ReturnType<typeof startLocalBeacon>): Generator<PutEffect | CallEffect, void, BeaconChain> {
-    console.log("Going to pull...");
+}: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
     // @ts-ignore
     const pullSuccess = yield* pullDockerImage(network);
-    console.log("pullSuccess: ", pullSuccess);
     if (pullSuccess) {
         switch (network) {
             default:
