@@ -63,8 +63,9 @@ export abstract class Container {
     }
 
     public static async pullImage(image: string): Promise<boolean> {
-        const cmdResult = await runCmdAsync(await Command.pull(image));
-        return cmdResult.stdout.includes("Status: Downloaded");
+        const cmdResult = await runCmdAsync(await Command.pull(image), "pullImage");
+        const output = cmdResult.stdout;
+        return output.includes("Status: Downloaded") || output.includes("Status: Image is up to date");
     }
 
     public static async getImageName(dockerId: string): Promise<string | undefined> {

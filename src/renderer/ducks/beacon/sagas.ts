@@ -1,7 +1,9 @@
-import {all, call, put, takeEvery, PutEffect, CallEffect} from "redux-saga/effects";
-import {startLocalBeacon, removeBeacon, addBeacon, addBeacons} from "./actions";
-import {endDockerImagePull, startDockerImagePull} from "../network/actions";
+import {Action} from "redux";
+import {all, call, put, takeEvery, PutEffect, CallEffect, RaceEffect, TakeEffect, race, take} from "redux-saga/effects";
 import {getNetworkConfig} from "../../services/eth2/networks";
+import {liveProcesses} from "../../services/utils/cmd";
+import {cancelDockerPull, endDockerImagePull, startDockerImagePull} from "../network/actions";
+import {startLocalBeacon, removeBeacon, addBeacon, addBeacons} from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import database from "../../services/db/api/database";
@@ -9,29 +11,41 @@ import {Beacons} from "../../models/beacons";
 import {postInit} from "../store";
 import {BeaconStatus} from "./slice";
 
-function* startLocalBeaconSaga({
-    payload: {network, ports, folderPath, eth1Url, discoveryPort, libp2pPort, rpcPort},
-}: ReturnType<typeof startLocalBeacon>): Generator<PutEffect | CallEffect, void, BeaconChain> {
-    // Pull image first
+export function* pullDockerImage(
+    network: string,
+): Generator<PutEffect | RaceEffect<CallEffect | TakeEffect>, boolean, [boolean, Action]> {
     yield put(startDockerImagePull());
     const image = getNetworkConfig(network).dockerConfig.image;
-    yield call(BeaconChain.pullImage, image);
+    const [pullSuccess, effect] = yield race([call(BeaconChain.pullImage, image), take(cancelDockerPull)]);
+    if (effect) {
+        liveProcesses["pullImage"].kill();
+    }
     yield put(endDockerImagePull());
 
-    // Start chain
-    switch (network) {
-        default:
-            yield put(
-                addBeacon(`http://localhost:${ports[1].local}`, {
-                    id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports)).getName(),
-                    network,
-                    folderPath,
-                    eth1Url,
-                    discoveryPort,
-                    libp2pPort,
-                    rpcPort,
-                }),
-            );
+    return effect !== undefined ? false : pullSuccess;
+}
+
+function* startLocalBeaconSaga({
+    payload: {network, ports, folderPath, eth1Url, discoveryPort, libp2pPort, rpcPort},
+    meta: {onComplete},
+}: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
+    const pullSuccess = yield call(pullDockerImage, network);
+    if (pullSuccess) {
+        switch (network) {
+            default:
+                yield put(
+                    addBeacon(`http://localhost:${ports[1].local}`, {
+                        id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports)).getName(),
+                        network,
+                        folderPath,
+                        eth1Url,
+                        discoveryPort,
+                        libp2pPort,
+                        rpcPort,
+                    }),
+                );
+        }
+        onComplete();
     }
 }
 

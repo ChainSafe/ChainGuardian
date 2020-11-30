@@ -4,12 +4,28 @@ import {Readable} from "stream";
 export interface ICmdRunAsync {
     stdout: string;
     stderr: string;
+    abort: () => void;
 }
 
-export async function runCmdAsync(command: string): Promise<ICmdRunAsync> {
+export const liveProcesses: {[name: string]: child.ChildProcess} = {};
+
+export const deleteProcess = (processName?: string): void => {
+    if (liveProcesses[processName]) {
+        delete liveProcesses[processName];
+    }
+};
+
+export async function runCmdAsync(command: string, processName?: string): Promise<ICmdRunAsync> {
     return new Promise((resolve, reject) => {
         const process = child.exec(command);
-        const result: ICmdRunAsync = {stdout: "", stderr: ""};
+        if (processName) {
+            liveProcesses[processName] = process;
+        }
+        const result: ICmdRunAsync = {
+            stdout: "",
+            stderr: "",
+            abort: () => process.kill(),
+        };
         if (process.stdout && process.stderr) {
             process.stdout.on("data", (data) => {
                 result.stdout += data;
@@ -19,6 +35,10 @@ export async function runCmdAsync(command: string): Promise<ICmdRunAsync> {
             });
             process.on("close", (code) => {
                 code !== 0 ? reject(result) : resolve(result);
+                deleteProcess(processName);
+            });
+            process.on("kill", () => {
+                deleteProcess(processName);
             });
         } else {
             reject();
@@ -29,14 +49,20 @@ export async function runCmdAsync(command: string): Promise<ICmdRunAsync> {
 export interface ICmdRun {
     stdout: Readable;
     stderr: Readable;
+    abort: () => void;
 }
 
-export function runCmd(command: string): ICmdRun {
+export function runCmd(command: string, onClose?: (code: number) => void): ICmdRun {
     const process = child.exec(command);
     if (process.stdout && process.stderr) {
+        if (onClose) {
+            process.on("close", (code) => onClose(code));
+        }
+
         return {
             stdout: process.stdout,
             stderr: process.stderr,
+            abort: () => process.kill(),
         } as ICmdRun;
     }
     throw new Error(`Executing command ${command} failed.`);
