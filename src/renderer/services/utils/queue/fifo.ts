@@ -10,12 +10,12 @@ export class FifoQueue<T> extends EventEmitter {
         this.max = maxElements;
     }
 
-    public push(item: T): void {
-        this.array.push(item);
+    public push(...items: T[]): void {
+        this.array.push(...items);
         if (this.array.length > this.max) {
-            this.array.shift();
+            this.array.splice(0, this.array.length - this.max);
         }
-        this.emit("data", item);
+        this.emit("data", items);
     }
 
     public getAll(): T[] {

@@ -28,8 +28,8 @@ export class BufferedLogger implements ICGLogger {
         return (async function* () {
             yield cachedLogs;
             yield* new EventIterator<ILogRecord[]>((push) => {
-                const logHandler = (log: ILogRecord): void => {
-                    push([log]);
+                const logHandler = (log: ILogRecord[]): void => {
+                    push(log);
                 };
                 logSource.on("data", logHandler);
                 return (): void => {
@@ -50,14 +50,15 @@ export class BufferedLogger implements ICGLogger {
             log = log.toString();
         }
         if (log && typeof log === "string") {
-            log.split("\n")
-                .filter((l) => !!l)
-                .forEach((logLine) => {
-                    this.cachedLogs.push({
+            this.cachedLogs.push(
+                ...log
+                    .split("\n")
+                    .filter((l) => !!l)
+                    .map((logLine) => ({
                         log: logLine,
                         source,
-                    });
-                });
+                    })),
+            );
         }
     }
 }
