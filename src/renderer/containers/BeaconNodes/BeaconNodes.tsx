@@ -9,10 +9,14 @@ import {getBeacons} from "../../ducks/beacon/selectors";
 import {Link} from "react-router-dom";
 import {Routes} from "../../constants/routes";
 import {ButtonSecondary} from "../../components/Button/ButtonStandard";
+import {BeaconStatus} from "../../ducks/beacon/slice";
+import {getValidatorsByBeaconNode} from "../../ducks/validator/selectors";
+import {truncatePublicKey} from "../../services/utils/formatting";
 
 export const BeaconNodesContainer: React.FunctionComponent = () => {
     const history = useHistory();
     const beacons = useSelector(getBeacons);
+    const beaconValidators = useSelector(getValidatorsByBeaconNode);
 
     return (
         <>
@@ -32,22 +36,32 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
 
                             {beacons.keys.map((url) => (
                                 <div className='row box node-container' key={url}>
-                                    <NodeCard
-                                        onClick={() => (): void => {}}
-                                        title={
-                                            beacons.beacons[url].docker
-                                                ? "Local Docker container"
-                                                : "Remote Beacon node"
-                                        }
-                                        url={url}
-                                        isSyncing={false}
-                                        value='N/A'
-                                    />
+                                    <Link to={Routes.BEACON_NODE_DETAILS.replace(":url", encodeURIComponent(url))}>
+                                        <NodeCard
+                                            onClick={() => (): void => {}}
+                                            title={
+                                                beacons.beacons[url].docker
+                                                    ? "Local Docker container"
+                                                    : "Remote Beacon node"
+                                            }
+                                            url={url}
+                                            isSyncing={beacons.beacons[url].status === BeaconStatus.syncing}
+                                            value='N/A'
+                                        />
+                                    </Link>
 
                                     <div className='flex-column stretch space-between'>
-                                        {/*TODO: implement validator list linked on beacon*/}
                                         <div className='flex-column'>
                                             <h5>Connected validators:</h5>
+
+                                            {beaconValidators[url] &&
+                                                beaconValidators[url].map(({name, publicKey}) => (
+                                                    <div className='flex-column' key={name}>
+                                                        <p>
+                                                            <b>{name} </b>- {truncatePublicKey(publicKey)}
+                                                        </p>
+                                                    </div>
+                                                ))}
                                         </div>
 
                                         <BeaconNodeButtons image={beacons.beacons[url].docker.id} url={url} />

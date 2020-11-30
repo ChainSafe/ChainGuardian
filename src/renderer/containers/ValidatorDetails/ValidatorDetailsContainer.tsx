@@ -11,7 +11,7 @@ import {ValidatorLogs} from "./ValidatorLogs";
 import {ValidatorStats} from "./ValidatorStats/ValidatorStats";
 import {IRootState} from "../../ducks/reducers";
 import {getValidator, getValidatorKeys} from "../../ducks/validator/selectors";
-import {getBeaconNodes} from "../../ducks/network/selectors";
+import {getBeaconDictionary} from "../../ducks/beacon/selectors";
 
 export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {tab: "BN"}>): ReactElement => {
     const [currentTab, setCurrentTab] = useState(props.location?.state?.tab! === "BN" ? 2 : 0);
@@ -21,15 +21,14 @@ export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {ta
     const validatorsIndex = validatorKeys.indexOf(publicKey);
     const validator = useSelector((state: IRootState) => getValidator(state, {publicKey}));
     const validatorId = validatorsIndex > 0 ? validatorsIndex : 0;
-    const beaconNodes = useSelector(getBeaconNodes);
-    const validatorBeaconNodes = beaconNodes[publicKey] || [];
+    const beacons = useSelector(getBeaconDictionary);
 
     const tabs = [
         {tabId: 0, tabName: "Validator stats", index: validatorId},
         {tabId: 1, tabName: "Validator logs", index: validatorId},
     ];
     // Load dynamically all validator's beacon node in tabs
-    validatorBeaconNodes.forEach((node, index) =>
+    validator.beaconNodes.forEach((node, index) =>
         tabs.push({
             tabId: tabs.length + index,
             tabName: "Beacon node",
@@ -53,7 +52,7 @@ export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {ta
 
                 {tabs.map((tab) =>
                     tab.tabName === "Beacon node" && currentTab === tab.tabId ? (
-                        <BeaconNode key={tab.tabId} node={validatorBeaconNodes[tab.index]} />
+                        <BeaconNode key={tab.tabId} beacon={beacons[validator.beaconNodes[tab.index]]} />
                     ) : null,
                 )}
             </div>
