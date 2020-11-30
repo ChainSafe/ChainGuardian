@@ -5,22 +5,29 @@ import {ILogRecord} from "../../services/utils/logging/interface";
 
 export interface ILogStreamProps {
     source?: AsyncIterable<ILogRecord[]>;
+    linesLimit?: number;
 }
 
-export const LogStream: React.FunctionComponent<ILogStreamProps> = (props: ILogStreamProps) => {
+export const LogStream: React.FC<ILogStreamProps> = ({source, linesLimit = 1000}) => {
     const [logs, setLogs] = useState<string[]>([]);
 
     const addLogs = useCallback(
         (logRecords: ILogRecord[]) => {
-            setLogs((logs) => logs.concat(logRecords.map((l) => l.log)));
+            setLogs((logs) => {
+                const newState = [...new Set([...logs, ...logRecords.map(({log}) => log)])];
+                if (newState.length > linesLimit) {
+                    newState.splice(0, newState.length - linesLimit);
+                }
+                return newState;
+            });
         },
         [setLogs],
     );
 
     useEffect(() => {
-        if (props.source) {
+        if (source) {
             (async function (): Promise<void> {
-                for await (const logRecords of props.source) {
+                for await (const logRecords of source) {
                     addLogs(logRecords);
                 }
             })();
