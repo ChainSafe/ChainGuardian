@@ -24,8 +24,7 @@ import {getAuthAccount} from "../auth/selectors";
 function* startBeaconChainSaga({
     payload: {network, ports},
 }: ReturnType<typeof startBeaconChain>): Generator<PutEffect | CallEffect, void, boolean> {
-    // @ts-ignore
-    const pullSuccess = yield* pullDockerImage(network);
+    const pullSuccess = yield call(pullDockerImage, network);
     if (pullSuccess) {
         switch (network) {
             default:

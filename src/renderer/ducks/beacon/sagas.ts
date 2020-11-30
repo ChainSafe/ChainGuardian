@@ -28,8 +28,7 @@ function* startLocalBeaconSaga({
     payload: {network, ports, folderPath, eth1Url, discoveryPort, libp2pPort, rpcPort},
     meta: {onComplete},
 }: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
-    // @ts-ignore
-    const pullSuccess = yield* pullDockerImage(network);
+    const pullSuccess = yield call(pullDockerImage, network);
     if (pullSuccess) {
         switch (network) {
             default:
