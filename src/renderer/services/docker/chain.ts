@@ -28,7 +28,7 @@ export class BeaconChain extends Container {
         DockerRegistry.addContainer(imageName, bc);
 
         logger.info(`Going to run docker beacon chain ${imageName}...`);
-        await bc.run();
+        bc.run();
         logger.info(`${imageName} docker beacon chain should be up!`);
         if (waitUntilReady) {
             while (!(await bc.isRunning())) {

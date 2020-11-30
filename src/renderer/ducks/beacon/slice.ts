@@ -1,9 +1,15 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {DockerConfig} from "../../models/beacons";
 
-type Beacon = {
+export enum BeaconStatus {
+    active,
+    syncing,
+    offline,
+}
+
+export type Beacon = {
     url: string;
-    status: string;
+    status: BeaconStatus;
     docker?: DockerConfig;
 };
 
@@ -41,7 +47,7 @@ export const beaconSlice = createSlice({
                 }
             },
             prepare: (url: string, docker?: DockerConfig): {payload: Beacon} => ({
-                payload: {url, docker, status: "init"},
+                payload: {url, docker, status: BeaconStatus.syncing},
             }),
         },
         removeBeacon: (state, action: PayloadAction<string>): void => {

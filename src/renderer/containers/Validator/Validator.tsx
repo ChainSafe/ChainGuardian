@@ -20,6 +20,7 @@ import {
 import {getSelectedNetwork} from "../../ducks/network/selectors";
 import {getValidator, getValidatorBeaconNodes} from "../../ducks/validator/selectors";
 import {Link} from "react-router-dom";
+import {BeaconStatus} from "../../ducks/beacon/slice";
 
 export interface IValidatorSimpleProps {
     publicKey: string;
@@ -57,7 +58,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
                                     onClick={props.onBeaconNodeClick(node.url)}
                                     title={node.docker ? "Local Docker container" : "Remote Beacon node"}
                                     url={node.url}
-                                    isSyncing={false}
+                                    isSyncing={node.status === BeaconStatus.syncing}
                                     value={"N/A"}
                                 />
                             </div>
