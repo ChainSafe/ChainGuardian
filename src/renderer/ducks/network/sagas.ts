@@ -1,15 +1,12 @@
 import {all, takeEvery, put, call, select, PutEffect, CallEffect, SelectEffect, AllEffect} from "redux-saga/effects";
 import {BeaconChain} from "../../services/docker/chain";
-import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import {PrivateKey} from "@chainsafe/bls";
 import {fromHex} from "../../services/utils/bytes";
 import {BeaconNode, BeaconNodes} from "../../models/beaconNode";
 import database from "../../services/db/api/database";
 import * as logger from "electron-log";
 import {IEth2ChainHead} from "../../models/types/head";
-import {pullDockerImage} from "../beacon/sagas";
 import {
-    startBeaconChain,
     saveBeaconNode,
     loadedValidatorBeaconNodes,
     removeBeaconNode,
@@ -20,21 +17,6 @@ import {CGAccount} from "../../models/account";
 import {getRegisterSigningKey} from "../register/selectors";
 import {getValidatorBeaconNodes, getValidatorBlockSubscription} from "./selectors";
 import {getAuthAccount} from "../auth/selectors";
-
-function* startBeaconChainSaga({
-    payload: {network, ports},
-}: ReturnType<typeof startBeaconChain>): Generator<PutEffect | CallEffect, void, boolean> {
-    const pullSuccess = yield call(pullDockerImage, network);
-    if (pullSuccess) {
-        switch (network) {
-            default:
-                yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports);
-        }
-
-        // Save local beacon node to db
-        yield call(saveBeaconNodeSaga, saveBeaconNode(`http://localhost:${ports[1].local}`, network));
-    }
-}
 
 function* saveBeaconNodeSaga({
     payload: {url, network, validatorKey},
@@ -138,7 +120,6 @@ function* refreshBeaconNodeStatus(
 
 export function* networkSagaWatcher(): Generator {
     yield all([
-        takeEvery(startBeaconChain, startBeaconChainSaga),
         takeEvery(saveBeaconNode, saveBeaconNodeSaga),
         takeEvery(removeBeaconNode, removeBeaconNodeSaga),
         takeEvery(loadValidatorBeaconNodes, loadValidatorBeaconNodesSaga),
