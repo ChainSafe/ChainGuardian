@@ -34,7 +34,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
     const defaultPath = path.join(getConfig(remote.app).storage.dataDir);
     const [folderPath, setPath] = useState(defaultPath);
 
-    const defaultEth1URL = "http://127.0.0.1:8545";
+    const defaultEth1URL = "https://goerli.infura.io/v3/73d4045fe98a406faa2334ad7306b313";
     const [eth1Url, setEth1URL] = useState(defaultEth1URL);
 
     const defaultRpcPort = String(defaults.beacon.rpcPort);
@@ -101,7 +101,6 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
             <div className='configure-port'>
                 <div className='row'>
                     <h3>ETH1 endpoint</h3>
-                    <p>(default: http://127.0.0.1:8545/)</p>
                 </div>
                 <InputForm
                     onChange={(e): void => setEth1URL(e.currentTarget.value)}
