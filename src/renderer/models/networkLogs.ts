@@ -24,6 +24,11 @@ export class NetworkLogs implements INetworkLogs {
         return this.records.filter(({time}) => time > from && time < to);
     }
 
+    public getNetworkAverageTime(from: Date | number, to?: Date | number): number {
+        const records = this.getRecordsFromRange(from, to);
+        return records.reduce((prev, curr) => prev + curr.latency, 0) / records.length;
+    }
+
     public addRecord(record: NetworkLog): void {
         this.records.push(record);
         this.prune();
