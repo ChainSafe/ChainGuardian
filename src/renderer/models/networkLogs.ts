@@ -12,6 +12,10 @@ export interface INetworkLogs {
 export class NetworkLogs implements INetworkLogs {
     public records: NetworkLog[] = [];
 
+    public constructor(networkLogs: INetworkLogs | null) {
+        if (networkLogs !== null) this.records = networkLogs.records;
+    }
+
     public getRecordsFromRange(from: Date | number, to: Date | number = Date.now()): NetworkLog[] {
         // eslint-disable-next-line no-param-reassign
         if (typeof from !== "number") from = from.getTime();
