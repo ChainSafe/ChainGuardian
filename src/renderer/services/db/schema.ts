@@ -14,6 +14,7 @@ export enum Bucket {
     settings,
     beacons,
     validatorBeaconNodes,
+    networkLogs,
 }
 
 export enum Key {}
