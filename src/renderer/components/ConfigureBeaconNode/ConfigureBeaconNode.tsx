@@ -1,7 +1,6 @@
 import React, {useRef, useState} from "react";
 import path from "path";
-import {DockerPort} from "../../services/docker/type";
-import {getNetworkConfig, networksList} from "../../services/eth2/networks";
+import {networksList} from "../../services/eth2/networks";
 import {ButtonPrimary} from "../Button/ButtonStandard";
 import {InputForm} from "../Input/InputForm";
 import {Dropdown} from "../Dropdown/Dropdown";
@@ -11,7 +10,6 @@ import {getDefaultsForClient} from "../../services/eth2/client/defaults";
 import {Accordion} from "../Accordion/Accordion";
 
 export interface IConfigureBNSubmitOptions {
-    ports: DockerPort[];
     network: string;
     folderPath: string;
     eth1Url: string;
@@ -28,7 +26,6 @@ interface IConfigureBNProps {
 export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (props: IConfigureBNProps) => {
     // TODO: refactor to use list from src/renderer/services/eth2/networks/index.ts
     const [networkIndex, setNetworkIndex] = useState(0);
-    const ports = getNetworkConfig(networksList[networkIndex]).dockerConfig.ports;
     const defaults = getDefaultsForClient(props.clientName);
 
     const defaultPath = path.join(getConfig(remote.app).storage.dataDir);
@@ -48,7 +45,6 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
 
     const onSubmit = (): void => {
         props.onSubmit({
-            ports,
             folderPath,
             eth1Url,
             discoveryPort,
