@@ -1,10 +1,10 @@
 import {ContainerType, ListType, NumberUintType} from "@chainsafe/ssz";
 import {StringType} from "./basic";
-import {NetworkLog, NetworkLogs} from "../networkLogs";
+import {NetworkMetric, NetworkMetrics} from "../networkMetrics";
 
 const MILLION = 1000000;
 
-export const NetworkLogType = new ContainerType<NetworkLog>({
+export const NetworkMetricType = new ContainerType<NetworkMetric>({
     fields: {
         url: new StringType(),
         code: new NumberUintType({byteLength: 32}),
@@ -13,8 +13,8 @@ export const NetworkLogType = new ContainerType<NetworkLog>({
     },
 });
 
-export const NetworkLogsType = new ContainerType<NetworkLogs>({
+export const NetworkMetricsType = new ContainerType<NetworkMetrics>({
     fields: {
-        records: new ListType({elementType: NetworkLogType, limit: MILLION}),
+        records: new ListType({elementType: NetworkMetricType, limit: MILLION}),
     },
 });

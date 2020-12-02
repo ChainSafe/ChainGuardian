@@ -8,7 +8,7 @@ import {ValidatorBlocksRepository} from "./repositories/validator/blocks";
 import {ValidatorNetworkRepository} from "./repositories/validator/network";
 import {BeaconsRepository} from "./repositories/beacons";
 import {ValidatorBeaconNodesRepository} from "./repositories/validatorBeaconNodes";
-import {NetworkLogsRepository} from "./repositories/networkLogs";
+import {NetworkMetricsRepository} from "./repositories/networkMetrics";
 
 interface IValidatorDB {
     attestations: ValidatorAttestationsRepository;
@@ -23,7 +23,7 @@ export class CGDatabase extends DatabaseService {
     public settings: SettingsRepository;
     public beacons: BeaconsRepository;
     public validatorBeaconNodes: ValidatorBeaconNodesRepository;
-    public networkLogs: NetworkLogsRepository;
+    public networkMetrics: NetworkMetricsRepository;
 
     public constructor(opts: IDatabaseApiOptions) {
         super(opts);
@@ -37,7 +37,7 @@ export class CGDatabase extends DatabaseService {
         this.settings = new SettingsRepository(this.db);
         this.beacons = new BeaconsRepository(this.db);
         this.validatorBeaconNodes = new ValidatorBeaconNodesRepository(this.db);
-        this.networkLogs = new NetworkLogsRepository(this.db);
+        this.networkMetrics = new NetworkMetricsRepository(this.db);
     }
 }
 

@@ -1,22 +1,22 @@
-export type NetworkLog = {
+export type NetworkMetric = {
     url: string;
     code: number;
     latency: number;
     time: number;
 };
 
-export interface INetworkLogs {
-    records: NetworkLog[];
+export interface INetworkMetrics {
+    records: NetworkMetric[];
 }
 
-export class NetworkLogs implements INetworkLogs {
-    public records: NetworkLog[] = [];
+export class NetworkMetrics implements INetworkMetrics {
+    public records: NetworkMetric[] = [];
 
-    public constructor(networkLogs: INetworkLogs | null) {
-        if (networkLogs !== null) this.records = networkLogs.records;
+    public constructor(networkMetric: INetworkMetrics | null) {
+        if (networkMetric !== null) this.records = networkMetric.records;
     }
 
-    public getRecordsFromRange(from: Date | number, to: Date | number = Date.now()): NetworkLog[] {
+    public getRecordsFromRange(from: Date | number, to: Date | number = Date.now()): NetworkMetric[] {
         // eslint-disable-next-line no-param-reassign
         if (typeof from !== "number") from = from.getTime();
         // eslint-disable-next-line no-param-reassign
@@ -24,12 +24,12 @@ export class NetworkLogs implements INetworkLogs {
         return this.records.filter(({time}) => time > from && time < to);
     }
 
-    public getNetworkAverageTime(from: Date | number, to?: Date | number): number {
+    public getNetworkAverageLatency(from: Date | number, to?: Date | number): number {
         const records = this.getRecordsFromRange(from, to);
         return records.reduce((prev, curr) => prev + curr.latency, 0) / records.length;
     }
 
-    public addRecord(record: NetworkLog): void {
+    public addRecord(record: NetworkMetric): void {
         this.records.push(record);
         this.prune();
     }

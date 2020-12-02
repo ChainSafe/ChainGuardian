@@ -3,14 +3,14 @@ import database from "../../db/api/database";
 
 export class HttpClient {
     private client: AxiosInstance;
-    private readonly loggerKey?: string;
+    private readonly metricKey?: string;
 
-    public constructor(baseURL: string, options: {axios?: AxiosRequestConfig; loggerKey?: string} = {}) {
+    public constructor(baseURL: string, options: {axios?: AxiosRequestConfig; metricKey?: string} = {}) {
         if (!options) {
             // eslint-disable-next-line no-param-reassign
             options = {axios: {}};
         }
-        this.loggerKey = options.loggerKey;
+        this.metricKey = options.metricKey;
         this.client = axios.create({
             baseURL,
             ...options.axios,
@@ -23,7 +23,7 @@ export class HttpClient {
      * @param config
      */
     public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-        const {onComplete, onError} = this.requestLogger();
+        const {onComplete, onError} = this.networkMetrics();
         try {
             const result: AxiosResponse<T> = await this.client.get<T>(url, config);
             onComplete(result);
@@ -40,7 +40,7 @@ export class HttpClient {
      * @param data request body
      */
     public async post<T, T2>(url: string, data: T): Promise<T2> {
-        const {onComplete, onError} = this.requestLogger();
+        const {onComplete, onError} = this.networkMetrics();
         try {
             const result: AxiosResponse<T2> = await this.client.post(url, data);
             onComplete(result);
@@ -52,17 +52,17 @@ export class HttpClient {
     }
 
     /**
-     * Method that handles logging
+     * Method that store and handles metrics data
      */
-    private requestLogger = (): {
+    private networkMetrics = (): {
         onComplete: (status: AxiosResponse) => void;
         onError: (error: AxiosError) => void;
     } => {
         const start = Date.now();
         return {
             onComplete: ({request, status}: AxiosResponse): void => {
-                if (this.loggerKey)
-                    database.networkLogs.addRecord(this.loggerKey, {
+                if (this.metricKey)
+                    database.networkMetrics.addRecord(this.metricKey, {
                         url: request.responseURL,
                         code: status,
                         latency: Date.now() - start,
@@ -70,8 +70,8 @@ export class HttpClient {
                     });
             },
             onError: (error: AxiosError): void => {
-                if (this.loggerKey)
-                    database.networkLogs.addRecord(this.loggerKey, {
+                if (this.metricKey)
+                    database.networkMetrics.addRecord(this.metricKey, {
                         url: error.config.url,
                         code: error.response?.status || 0,
                         latency: Date.now() - start,
