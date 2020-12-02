@@ -85,22 +85,8 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
 
             <div className='configure-port'>
                 <div className='row'>
-                    <h3>Chain data location</h3>
-                </div>
-                <InputForm
-                    onChange={(e): void => setPath(e.currentTarget.value)}
-                    inputValue={folderPath}
-                    onFocus={onFocus}
-                    onSubmit={(e): void => {
-                        e.preventDefault();
-                        onSubmit();
-                    }}
-                />
-            </div>
-
-            <div className='configure-port'>
-                <div className='row'>
                     <h3>ETH1 endpoint</h3>
+                    <p>(strongly suggest getting own Infura access key)</p>
                 </div>
                 <InputForm
                     onChange={(e): void => setEth1URL(e.currentTarget.value)}
@@ -113,6 +99,21 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
             </div>
 
             <Accordion label='Advanced' isOpen={showAdvanced} onClick={(): void => setShowAdvanced(!showAdvanced)}>
+                <div className='configure-port'>
+                    <div className='row'>
+                        <h3>Chain data location</h3>
+                    </div>
+                    <InputForm
+                        onChange={(e): void => setPath(e.currentTarget.value)}
+                        inputValue={folderPath}
+                        onFocus={onFocus}
+                        onSubmit={(e): void => {
+                            e.preventDefault();
+                            onSubmit();
+                        }}
+                    />
+                </div>
+
                 <div className='configure-port'>
                     <div className='row'>
                         <h3>Local RPC port</h3>
