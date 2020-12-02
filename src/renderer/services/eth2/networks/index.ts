@@ -1,7 +1,9 @@
 import {INetworkConfig} from "../../interfaces";
 import {LocalhostConfig} from "./local";
+import {PyrmontConfig} from "./pyrmont";
+import {MedallaConfig} from "./medalla";
 
-const networks: INetworkConfig[] = [];
+const networks: INetworkConfig[] = [PyrmontConfig, MedallaConfig];
 
 const isLocal = process.env.NODE_ENV !== "production";
 if (isLocal) {
