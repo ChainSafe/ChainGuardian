@@ -7,7 +7,8 @@ import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {Loading} from "../../components/Loading/Loading";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 import {createNotification} from "../../ducks/notification/actions";
-import {Container} from "../../services/docker/container";
+import {removeBeacon} from "../../ducks/beacon/actions";
+import {Routes} from "../../constants/routes";
 
 enum Modal {
     none,
@@ -23,7 +24,6 @@ interface IBeaconNodeButtonsProps {
 }
 
 export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps> = ({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     url,
     image,
 }: IBeaconNodeButtonsProps) => {
@@ -36,7 +36,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
 
     useEffect(() => {
         if (image) {
-            Container.isContainerRunning(image).then(setIsRunning);
+            DockerRegistry.getContainer(image).isRunning().then(setIsRunning);
         }
     }, []);
 
@@ -102,6 +102,12 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
                 await container.stop();
                 await container.remove();
             }
+            if (
+                history.location.pathname.includes(Routes.BEACON_NODE_DETAILS.replace(":url", encodeURIComponent(url)))
+            ) {
+                history.push(Routes.BEACON_NODES);
+            }
+            dispatch(removeBeacon(url));
         } catch (e) {
             logger.error(e);
             dispatch(
