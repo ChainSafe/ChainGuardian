@@ -1,4 +1,4 @@
-import {CustomHelpers, ExtensionRule, SchemaInternals} from "@hapi/joi";
+import {CustomHelpers, ExtensionRule, SchemaInternals} from "joi";
 
 export const ERR_CODE_NUM_OF_LOWER = "complexity.lower";
 

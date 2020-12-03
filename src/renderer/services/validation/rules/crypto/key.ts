@@ -1,4 +1,4 @@
-import {CustomHelpers, ExtensionRule, SchemaInternals} from "@hapi/joi";
+import {CustomHelpers, ExtensionRule, SchemaInternals} from "joi";
 import {isValidKeyLength} from "./util";
 
 export const ERR_CODE_KEY = "crypto.key.not.hex";

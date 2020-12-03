@@ -5,7 +5,7 @@ import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
 import {IMPORT_SIGNING_KEY_PLACEHOLDER, IMPORT_SIGNING_KEY_TITLE} from "../../../../constants/strings";
 import {useDispatch} from "react-redux";
 import {mnemonicSchema, privateKeySchema} from "./validation";
-import {ValidationResult} from "@hapi/joi";
+import {ValidationResult} from "joi";
 import {PrivateKey} from "@chainsafe/bls";
 import {deriveEth2ValidatorKeys, deriveKeyFromMnemonic} from "@chainsafe/bls-keygen";
 import {storeSigningKey, storeValidatorKeys} from "../../../../ducks/register/actions";

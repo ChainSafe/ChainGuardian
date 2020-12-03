@@ -1,4 +1,4 @@
-import {ObjectSchema} from "@hapi/joi";
+import {ObjectSchema} from "joi";
 import {Joi} from "../../../services/validation";
 
 export const passwordFormSchema = Joi.object()
