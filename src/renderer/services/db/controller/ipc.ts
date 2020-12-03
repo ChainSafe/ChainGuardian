@@ -5,7 +5,7 @@ import {EventIterator} from "event-iterator";
 import {randomBytes} from "crypto";
 import {IpcRendererEvent} from "electron/main";
 
-export class IpcDatabaseController implements IDatabaseController<unknown, Buffer> {
+export class IpcDatabaseController implements IDatabaseController<Buffer, Buffer> {
     public async start(): Promise<void> {
         return;
     }
@@ -14,23 +14,23 @@ export class IpcDatabaseController implements IDatabaseController<unknown, Buffe
         return;
     }
 
-    public async get(key: unknown): Promise<Buffer | null> {
+    public async get(key: Buffer): Promise<Buffer | null> {
         return await ipcRenderer.invoke(IpcDatabaseEvents.DATABASE_GET, key);
     }
 
-    public async search(opts: IFilterOptions<unknown>): Promise<unknown[]> {
+    public async search(opts: IFilterOptions<Buffer>): Promise<Buffer[]> {
         return await ipcRenderer.invoke(IpcDatabaseEvents.DATABASE_SEARCH, opts.gt, opts.lt);
     }
 
-    public async put(key: unknown, value: unknown): Promise<void> {
+    public async put(key: Buffer, value: Buffer): Promise<void> {
         await ipcRenderer.send(IpcDatabaseEvents.DATABASE_PUT, key, value);
     }
 
-    public async delete(key: unknown): Promise<void> {
+    public async delete(key: Buffer): Promise<void> {
         await ipcRenderer.send(IpcDatabaseEvents.DATABASE_DELETE, key);
     }
 
-    public async batchPut(items: IKeyValue<unknown, Buffer>[]): Promise<void> {
+    public async batchPut(items: IKeyValue<Buffer, Buffer>[]): Promise<void> {
         await ipcRenderer.send(IpcDatabaseEvents.DATABASE_BATCH_PUT, items);
     }
 
@@ -38,11 +38,11 @@ export class IpcDatabaseController implements IDatabaseController<unknown, Buffe
         throw new Error("Method not implemented.");
     }
 
-    public keysStream(): AsyncIterable<unknown> {
+    public keysStream(): AsyncIterable<Buffer> {
         throw new Error("Method not implemented.");
     }
 
-    public async keys(opts?: IFilterOptions<unknown>): Promise<unknown[]> {
+    public async keys(opts?: IFilterOptions<Buffer>): Promise<Buffer[]> {
         return await ipcRenderer.invoke(IpcDatabaseEvents.DATABASE_KEYS, opts);
     }
 
@@ -67,15 +67,15 @@ export class IpcDatabaseController implements IDatabaseController<unknown, Buffe
         });
     }
 
-    public async values(opts?: IFilterOptions<unknown>): Promise<Buffer[]> {
+    public async values(opts?: IFilterOptions<Buffer>): Promise<Buffer[]> {
         return await ipcRenderer.invoke(IpcDatabaseEvents.DATABASE_VALUES, opts);
     }
 
-    public entriesStream(): AsyncIterable<IKeyValue<unknown, Buffer>> {
+    public entriesStream(): AsyncIterable<IKeyValue<Buffer, Buffer>> {
         throw new Error("Method not implemented.");
     }
 
-    public async entries(): Promise<IKeyValue<unknown, Buffer>[]> {
+    public async entries(): Promise<IKeyValue<Buffer, Buffer>[]> {
         throw new Error("Method not implemented.");
     }
 }

@@ -1,13 +1,13 @@
 import {IService} from "../../interfaces";
 import {IpcDatabaseController} from "../controller/ipc";
-import {IDatabaseController} from "../../../../main/db/controller";
+import {IDatabaseController} from "@chainsafe/lodestar-db";
 
 export interface IDatabaseApiOptions {
-    controller?: IDatabaseController;
+    controller?: IDatabaseController<Buffer, Buffer>;
 }
 
 export abstract class DatabaseService implements IService {
-    protected readonly db: IDatabaseController;
+    protected readonly db: IDatabaseController<Buffer, Buffer>;
 
     protected constructor(opts: IDatabaseApiOptions) {
         this.db = opts.controller || new IpcDatabaseController();

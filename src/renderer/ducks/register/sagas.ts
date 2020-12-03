@@ -45,7 +45,7 @@ function* afterConfirmPasswordProcess({
 }
 
 function* saveAccount(
-    signingKey: PrivateKey | string,
+    signingKey: SecretKey | string,
     directory: string,
 ): Generator<CallEffect | Promise<void> | SelectEffect | PutEffect, void, string> {
     // Save account to db
@@ -60,7 +60,7 @@ function* saveAccount(
     // Save network
     const networkName = yield select(getRegisterNetwork);
     const network = new ValidatorNetwork(networkName);
-    const validatorPubKey = typeof signingKey === "string" ? signingKey : signingKey.toPublicKey().toHexString();
+    const validatorPubKey = typeof signingKey === "string" ? signingKey : signingKey.toPublicKey().toHex();
     yield database.validator.network.set(validatorPubKey, network);
 
     const name = yield select(getName);

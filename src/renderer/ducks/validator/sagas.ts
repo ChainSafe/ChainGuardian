@@ -6,7 +6,6 @@ import {getNetworkConfig} from "../../services/eth2/networks";
 import {EthersNotifier} from "../../services/deposit/ethers";
 import {getValidatorStatus, ValidatorStatus} from "../../services/validator/status";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
-import {ValidatorDB} from "../../services/db/api/validator";
 import database, {cgDbController} from "../../services/db/api/database";
 import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
 import {IByPublicKey, IValidator} from "./slice";
@@ -168,11 +167,11 @@ function* startService(
                 config,
                 controller: cgDbController,
             }),
-            db: new ValidatorDB(database),
             api: eth2API,
             config,
-            keypairs: [action.payload],
+            secretKeys: [action.payload.privateKey],
             logger,
+            graffiti: "ChainGuardian",
         });
     }
     yield validatorServices[publicKey].start();
@@ -181,7 +180,7 @@ function* startService(
 }
 
 function* stopService(action: ReturnType<typeof stopActiveValidatorService>): Generator<PutEffect | Promise<void>> {
-    const publicKey = action.payload.publicKey.toHexString();
+    const publicKey = action.payload.publicKey.toHex();
     yield validatorServices[publicKey].stop();
 
     yield put(stopValidatorService(publicKey));
