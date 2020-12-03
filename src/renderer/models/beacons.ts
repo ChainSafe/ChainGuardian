@@ -1,7 +1,7 @@
 export type DockerConfig = {
     id: string;
     network: string;
-    folderPath: string;
+    chainDataDir: string;
     eth1Url: string;
     discoveryPort: string;
     libp2pPort: string;
