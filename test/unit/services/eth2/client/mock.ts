@@ -6,10 +6,10 @@ import {
 } from "../../../../../src/renderer/services/eth2/client/interface";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import sinon, {SinonStubbedInstance} from "sinon";
-import {LighthouseBeaconApiClient} from "../../../../../src/renderer/services/eth2/client/lighthouse/beacon";
-import {LighthouseValidatorApiClient} from "../../../../../src/renderer/services/eth2/client/lighthouse/validator";
 import EventEmitter from "events";
-import {LighthouseNodeApiClient} from "../../../../../src/renderer/services/eth2/client/lighthouse/node";
+import {IEventsApi} from "@chainsafe/lodestar-validator/lib/api/interface/events";
+import {IBeaconClock} from "@chainsafe/lodestar-validator";
+import {Root} from "@chainsafe/lodestar-types";
 
 export class MockEth2ApiClient extends EventEmitter implements IGenericEth2Client {
     public config: IBeaconConfig;
@@ -17,7 +17,9 @@ export class MockEth2ApiClient extends EventEmitter implements IGenericEth2Clien
     public beacon: SinonStubbedInstance<IEth2BeaconApi>;
     public node: SinonStubbedInstance<IEth2NodeApi>;
     public validator: SinonStubbedInstance<IEth2ValidatorApi>;
-
+    public events: SinonStubbedInstance<IEventsApi>;
+    public clock: SinonStubbedInstance<IBeaconClock>;
+    public genesisValidatorsRoot: Root = Buffer.alloc(32, 0);
     public connect = sinon.stub();
     public disconnect = sinon.stub();
     public getCurrentSlot = sinon.stub();
@@ -30,8 +32,8 @@ export class MockEth2ApiClient extends EventEmitter implements IGenericEth2Clien
     public constructor(config: IBeaconConfig) {
         super();
         this.config = config;
-        this.beacon = sinon.createStubInstance(LighthouseBeaconApiClient);
-        this.node = sinon.createStubInstance(LighthouseNodeApiClient);
-        this.validator = sinon.createStubInstance(LighthouseValidatorApiClient);
+        // this.beacon = sinon.createStubInstance(LighthouseBeaconApiClient);
+        // this.node = sinon.createStubInstance(LighthouseNodeApiClient);
+        // this.validator = sinon.createStubInstance(LighthouseValidatorApiClient);
     }
 }

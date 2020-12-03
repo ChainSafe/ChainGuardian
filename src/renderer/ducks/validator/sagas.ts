@@ -124,9 +124,8 @@ function* loadValidatorsFromChain(
     if (beaconNodes && beaconNodes.length > 0) {
         // TODO: Use any working beacon node instead of first one
         const client = beaconNodes[0].client;
-        const pubKeys = action.payload.map((address) => fromHex(address));
         try {
-            const response = yield client.beacon.getValidators(pubKeys);
+            const response = yield client.beacon.state.getValidators("head", action.payload);
             yield put(loadedValidatorsBalance(response));
         } catch (e) {
             logger.warn("Error while fetching validator balance...", e.message);

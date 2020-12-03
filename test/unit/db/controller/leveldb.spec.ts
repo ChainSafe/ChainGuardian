@@ -4,6 +4,7 @@ import level from "level";
 import leveldown from "leveldown";
 import {promisify} from "util";
 import {LevelDbController} from "../../../../src/main/db/controller";
+import {encodeKey} from "../../../../src/renderer/services/db/schema";
 
 describe("LevelDB controller", () => {
     const dbLocation = "./.__testdb";
@@ -66,8 +67,8 @@ describe("LevelDB controller", () => {
             },
         ]);
         const result = await db.search({
-            gt: "key0",
-            lt: "key99",
+            gt: Buffer.from("key0"),
+            lt: Buffer.from("key99"),
         });
         expect(result.length).to.be.equal(2);
     });
@@ -84,8 +85,8 @@ describe("LevelDB controller", () => {
             },
         ]);
         const result = await db.search({
-            gt: "key0",
-            lt: "key99",
+            gt: Buffer.from("key0"),
+            lt: Buffer.from("key99"),
         });
         expect(result.length).to.be.equal(2);
         await db.batchDelete(["key1", "key2"]);

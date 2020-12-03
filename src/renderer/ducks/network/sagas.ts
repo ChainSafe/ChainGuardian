@@ -71,7 +71,10 @@ export function* loadValidatorBeaconNodesSaga({
         validatorBeaconNodes.map(function* (validatorBN) {
             if (validatorBN.client) {
                 try {
-                    const chainHead: IEth2ChainHead = yield validatorBN.client.beacon.getChainHead();
+                    const chainHead: IEth2ChainHead = yield validatorBN.client.beacon.state.getBlockHeader(
+                        "head",
+                        "head",
+                    );
                     const refreshFnWithContext = refreshBeaconNodeStatus.bind(null, validator);
                     yield call(refreshFnWithContext, chainHead);
 

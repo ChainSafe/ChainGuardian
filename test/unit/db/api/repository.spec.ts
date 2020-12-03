@@ -2,10 +2,11 @@ import sinon from "sinon";
 import chai, {expect} from "chai";
 import chaiAsPromised from "chai-as-promised";
 import {BulkRepository} from "../../../../src/renderer/services/db/api/repository";
-import {IDatabaseController, LevelDbController} from "../../../../src/main/db/controller";
+import {LevelDbController} from "../../../../src/main/db/controller";
 import {Bucket} from "../../../../src/renderer/services/db/schema";
 import {BooleanType, ByteVectorType, ContainerType} from "@chainsafe/ssz";
 import {JSONSerializer} from "../../../../src/renderer/services/db/serializers/json";
+import {IDatabaseController} from "@chainsafe/lodestar-db";
 
 chai.use(chaiAsPromised);
 
@@ -24,7 +25,7 @@ interface ITestType {
 const BucketMock = "testBucket";
 
 class TestRepository extends BulkRepository<ITestType> {
-    public constructor(db: IDatabaseController) {
+    public constructor(db: IDatabaseController<Buffer, Buffer>) {
         super(db, JSONSerializer, (BucketMock as unknown) as Bucket, TestSSZType);
     }
 }
