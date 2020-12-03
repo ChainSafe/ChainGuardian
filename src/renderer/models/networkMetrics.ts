@@ -36,7 +36,8 @@ export class NetworkMetrics implements INetworkMetrics {
 
     // remove logs older that 1 day
     private prune(): void {
-        const dayBefore = Date.now() - 25 * 60 * 60 * 1000;
+        const unixDayWhitExtraHour = 25 * 60 * 60 * 1000;
+        const dayBefore = Date.now() - unixDayWhitExtraHour;
         this.records = this.records.filter(({time}) => time > dayBefore);
     }
 }
