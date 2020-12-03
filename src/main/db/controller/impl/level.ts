@@ -4,12 +4,13 @@
  */
 
 import {LevelUp} from "levelup";
-import {IDatabaseController, ISearchOptions} from "../interface";
-import {EventEmitter} from "events";
 // @ts-ignore
 import level from "level";
 import * as fs from "fs";
+import all from "it-all";
 import {warn} from "electron-log";
+import {IDatabaseController, IFilterOptions, IKeyValue} from "@chainsafe/lodestar-db";
+import pushable, {Pushable} from "it-pushable";
 
 export interface ILevelDBOptions {
     db?: LevelUp;
@@ -19,13 +20,12 @@ export interface ILevelDBOptions {
 /**
  * The LevelDB implementation of DB
  */
-export class LevelDbController extends EventEmitter implements IDatabaseController {
+export class LevelDbController implements IDatabaseController<Buffer, Buffer> {
     private db!: LevelUp;
 
     private opts: ILevelDBOptions;
 
     public constructor(opts: Partial<ILevelDBOptions>) {
-        super();
         if (!opts.db && !opts.location) {
             throw new Error("Please specify database location");
         }
@@ -76,7 +76,7 @@ export class LevelDbController extends EventEmitter implements IDatabaseControll
         await this.db.del(key);
     }
 
-    public search(opts: ISearchOptions): Promise<Buffer[]> {
+    public search(opts: IFilterOptions<Buffer>): Promise<Buffer[]> {
         return new Promise((resolve) => {
             const searchData: Buffer[] = [];
             this.db
@@ -91,6 +91,54 @@ export class LevelDbController extends EventEmitter implements IDatabaseControll
                     resolve(searchData);
                 });
         });
+    }
+
+    public keysStream(opts?: IFilterOptions<Buffer>): AsyncIterable<Buffer> {
+        const source: Pushable<Buffer> = pushable();
+        this.db
+            .createKeyStream({...opts})
+            .on("data", function (data) {
+                source.push(data);
+            })
+            .on("close", function () {
+                source.end();
+            })
+            .on("end", function () {
+                source.end();
+            });
+        return source;
+    }
+
+    public keys(opts?: IFilterOptions<Buffer>): Promise<Buffer[]> {
+        return all(this.keysStream(opts));
+    }
+
+    public valuesStream(opts?: IFilterOptions<Buffer>): AsyncIterable<Buffer> {
+        const source: Pushable<Buffer> = pushable();
+        this.db
+            .createValueStream({...opts})
+            .on("data", function (data) {
+                source.push(data);
+            })
+            .on("close", function () {
+                source.end();
+            })
+            .on("end", function () {
+                source.end();
+            });
+        return source;
+    }
+
+    public values(opts?: IFilterOptions<Buffer>): Promise<Buffer[]> {
+        return all(this.valuesStream(opts));
+    }
+
+    public entriesStream(): AsyncIterable<IKeyValue<Buffer, Buffer>> {
+        throw new Error("Method not implemented.");
+    }
+
+    public entries(): Promise<IKeyValue<Buffer, Buffer>[]> {
+        throw new Error("Method not implemented.");
     }
 
     private getDatabaseLocation(): string {

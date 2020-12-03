@@ -1,7 +1,7 @@
 import {validatorSlice} from "./slice";
 import {createAction} from "@reduxjs/toolkit";
-import {Keypair} from "@chainsafe/bls";
 import {CGAccount} from "../../models/account";
+import {BlsKeypair} from "../../types/keys";
 
 export const {
     addValidator,
@@ -44,6 +44,6 @@ export const updateValidatorsFromChain = createAction<string[]>("validator/updat
 
 export const updateValidatorStatus = createAction<string>("validator/updateValidatorStatus");
 
-export const startNewValidatorService = createAction<Keypair>("validator/startNewValidatorService");
+export const startNewValidatorService = createAction<BlsKeypair>("validator/startNewValidatorService");
 
-export const stopActiveValidatorService = createAction<Keypair>("validator/stopActiveValidatorService");
+export const stopActiveValidatorService = createAction<BlsKeypair>("validator/stopActiveValidatorService");

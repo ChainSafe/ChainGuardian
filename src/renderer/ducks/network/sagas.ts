@@ -1,6 +1,6 @@
 import {all, takeEvery, put, call, select, PutEffect, CallEffect, SelectEffect, AllEffect} from "redux-saga/effects";
 import {BeaconChain} from "../../services/docker/chain";
-import {PrivateKey} from "@chainsafe/bls";
+import {SecretKey} from "@chainsafe/bls";
 import {fromHex} from "../../services/utils/bytes";
 import {BeaconNode, BeaconNodes} from "../../models/beaconNode";
 import database from "../../services/db/api/database";
@@ -26,8 +26,8 @@ function* saveBeaconNodeSaga({
     // TODO: add logic to decode key in case of crating node
     if (validatorAddress === "") {
         const signingKeyState: string = yield select(getRegisterSigningKey);
-        const signingKey = PrivateKey.fromBytes(fromHex(signingKeyState));
-        validatorAddress = signingKey.toPublicKey().toHexString();
+        const signingKey = SecretKey.fromBytes(fromHex(signingKeyState));
+        validatorAddress = signingKey.toPublicKey().toHex();
     }
     const beaconNode = new BeaconNodes();
     beaconNode.addNode(url, localDockerName);

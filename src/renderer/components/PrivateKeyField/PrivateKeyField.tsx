@@ -1,8 +1,7 @@
 import React from "react";
 import {useState} from "react";
-import {Keypair} from "@chainsafe/bls";
-
 import {ICGKeystore} from "../../services/keystore";
+import { BlsKeypair } from "../../types";
 import {InputForm, IInputFormProps} from "../Input/InputForm";
 import {PasswordPrompt} from "../Prompt/PasswordPrompt";
 
@@ -16,8 +15,8 @@ export const PrivateKeyField: React.FunctionComponent<IPrivateKeyFieldProps> = (
     const [eyeSlash, setEyeSlash] = useState<boolean>(false);
     const [privateKey, setPrivateKey] = useState<string>("encrypted");
 
-    const handlePromptSubmit = async (keypair: Keypair): Promise<void> => {
-        setPrivateKey(keypair.privateKey.toHexString());
+    const handlePromptSubmit = async (keypair: BlsKeypair): Promise<void> => {
+        setPrivateKey(keypair.privateKey.toHex());
         setTimeout(setShowPrompt, 200, false);
         setPasswordType("text");
         setEyeSlash(true);

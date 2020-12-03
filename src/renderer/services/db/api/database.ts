@@ -38,4 +38,8 @@ export class CGDatabase extends DatabaseService {
     }
 }
 
-export default new CGDatabase({controller: new IpcDatabaseController()});
+export const cgDbController = new IpcDatabaseController();
+
+export const cgDatabase = new CGDatabase({controller: cgDbController});
+
+export default cgDatabase;

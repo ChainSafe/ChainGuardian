@@ -1,4 +1,4 @@
-import {PrivateKey} from "@chainsafe/bls";
+import {SecretKey} from "@chainsafe/bls";
 import {ValidatorNetwork} from "../../models/network";
 import database from "../../services/db/api/database";
 import {fromHex} from "../../services/utils/bytes";
@@ -22,7 +22,7 @@ function* afterCreatePasswordProcess({
     payload,
 }: ReturnType<typeof afterCreatePassword>): Generator<SelectEffect | CallEffect, void, string> {
     const signingKeyData = yield select(getRegisterSigningKey);
-    const signingKey = PrivateKey.fromBytes(fromHex(signingKeyData));
+    const signingKey = SecretKey.fromBytes(fromHex(signingKeyData));
 
     const name = yield select(getName);
     const keyPath = yield select(getRegisterSigningKeyPath);
