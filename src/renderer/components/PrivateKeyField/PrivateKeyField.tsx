@@ -1,7 +1,7 @@
 import React from "react";
 import {useState} from "react";
 import {ICGKeystore} from "../../services/keystore";
-import { BlsKeypair } from "../../types";
+import {BlsKeypair} from "../../types";
 import {InputForm, IInputFormProps} from "../Input/InputForm";
 import {PasswordPrompt} from "../Prompt/PasswordPrompt";
 

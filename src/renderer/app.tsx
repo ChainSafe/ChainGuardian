@@ -29,6 +29,8 @@ const render = (Component: () => JSX.Element): void => {
     );
 };
 
-initBLS("herumi").then(() => {
-    render(Application);
-});
+initBLS("herumi")
+    .then(() => {
+        render(Application);
+    })
+    .catch((e) => console.error(e));

@@ -19,7 +19,7 @@ import {getSelectedNetwork} from "../../ducks/network/selectors";
 import {getValidator, getValidatorBeaconNodes} from "../../ducks/validator/selectors";
 import {Link} from "react-router-dom";
 import {BeaconStatus} from "../../ducks/beacon/slice";
-import { BlsKeypair } from '../../types/keys';
+import {BlsKeypair} from "../../types/keys";
 
 export interface IValidatorSimpleProps {
     publicKey: string;

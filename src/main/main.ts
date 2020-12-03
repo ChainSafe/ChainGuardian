@@ -5,15 +5,26 @@ import {createWindow} from "./gui/window";
 import {DatabaseIpcHandler} from "./db/ipc";
 import {initSentry} from "./sentry";
 
-initSentry();
+console.error("starting")
+// initSentry();
 
-const db = new DatabaseIpcHandler();
+let db: DatabaseIpcHandler;
+try {
+    db = new DatabaseIpcHandler()
+} catch(e) {
+    console.error(e);
+    process.exit(1);
+}
 
 app.on("before-quit", db.stop.bind(db));
 
 app.whenReady().then(async function () {
-    await initBLS("herumi");
-    await Promise.all([db.start(), createWindow()]);
+    try {
+        await initBLS("herumi");
+        await Promise.all([db.start(), createWindow()]);
+    } catch (e) {
+        console.error(e);
+    }
 });
 
 app.on("activate", createWindow);

@@ -92,10 +92,10 @@ describe("database repository", () => {
         const item = {bool: true, bytes: Buffer.alloc(32)};
         const itemSerialized = Buffer.from(JSONSerializer.serialize(item, TestSSZType as any));
         const items = [itemSerialized, itemSerialized, itemSerialized];
-        controller.search.resolves(items);
+        controller.values.resolves(items);
         const result = await repository.getAll();
         expect(result).to.be.deep.equal([item, item, item]);
-        expect(controller.search.calledOnce).to.be.true;
+        expect(controller.values.calledOnce).to.be.true;
     });
 
     // it("should delete given items", async () => {

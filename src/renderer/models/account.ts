@@ -7,7 +7,7 @@ import {BeaconNode} from "./beaconNode";
 import database from "../services/db/api/database";
 import {IValidatorNetwork} from "./network";
 import {error} from "electron-log";
-import { BlsKeypair } from '../types/keys';
+import {BlsKeypair} from "../types/keys";
 
 export interface IAccount {
     name: string;

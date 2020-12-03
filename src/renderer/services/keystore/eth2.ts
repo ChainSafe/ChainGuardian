@@ -1,10 +1,10 @@
-import { SecretKey } from "@chainsafe/bls";
-import { IKeystore, Keystore } from "@chainsafe/bls-keystore";
-import { warn } from "electron-log";
-import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from "fs";
-import { dirname } from "path";
-import { BlsKeypair } from "../../types/keys";
-import { ICGKeystore, ICGKeystoreFactory } from "./interface";
+import {SecretKey} from "@chainsafe/bls";
+import {IKeystore, Keystore} from "@chainsafe/bls-keystore";
+import {warn} from "electron-log";
+import {existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync} from "fs";
+import {dirname} from "path";
+import {BlsKeypair} from "../../types/keys";
+import {ICGKeystore, ICGKeystoreFactory} from "./interface";
 
 export class V4Keystore implements ICGKeystore {
     private keystore: Keystore;

@@ -55,6 +55,7 @@ async function isBeaconNodeSyncing(eth2Api: IGenericEth2Client): Promise<boolean
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function hasDeposited(pubkey: BLSPubkey, eth1: IEth1Client): Promise<boolean> {
     return await eth1.hasUserDeposited(PublicKey.fromBytes(pubkey as Uint8Array));
 }

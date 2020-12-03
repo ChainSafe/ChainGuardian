@@ -4,7 +4,6 @@ import level from "level";
 import leveldown from "leveldown";
 import {promisify} from "util";
 import {LevelDbController} from "../../../../src/main/db/controller";
-import {encodeKey} from "../../../../src/renderer/services/db/schema";
 
 describe("LevelDB controller", () => {
     const dbLocation = "./.__testdb";

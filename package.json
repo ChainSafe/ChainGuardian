@@ -34,7 +34,7 @@
     "build-renderer": "cross-env NODE_ENV=production webpack --config webpack.renderer.prod.config.js",
     "build": "yarn run build-main && yarn run build-renderer",
     "start-renderer-dev": "webpack-dev-server --config webpack.renderer.dev.config.js",
-    "start-main-dev": "webpack --config webpack.main.config.js && electron ./dist/main.js",
+    "start-main-dev": "webpack --config webpack.main.config.js && electron --enable-logging ./dist/main.js",
     "start-dev": "cross-env ELECTRON=1 cross-env START_HOT=1 yarn run start-renderer-dev",
     "prepare": "env-prompt",
     "prestart": "yarn run build",
