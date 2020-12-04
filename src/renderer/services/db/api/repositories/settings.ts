@@ -1,13 +1,13 @@
 import {Repository} from "../repository";
 import {Settings} from "../../../../models/settings";
 import {Bucket} from "../../schema";
-import {IDatabaseController} from "../../../../../main/db/controller";
 import {JSONSerializer} from "../../serializers/json";
 import {DEFAULT_ACCOUNT} from "../../../../constants/account";
 import {SettingsType} from "../../../../models/types/settings";
+import {IDatabaseController} from "@chainsafe/lodestar-db";
 
 export class SettingsRepository extends Repository<Settings> {
-    public constructor(db: IDatabaseController) {
+    public constructor(db: IDatabaseController<Buffer, Buffer>) {
         super(db, JSONSerializer, Bucket.settings, SettingsType);
     }
 

@@ -1,12 +1,12 @@
 import {Bucket, encodeKey} from "../schema";
 import {ICGSerialization} from "../abstract";
-import {IDatabaseController, ISearchOptions} from "../../../../main/db/controller";
 import {Type} from "@chainsafe/ssz";
+import {IDatabaseController, IFilterOptions} from "@chainsafe/lodestar-db";
 
 export type Id = Buffer | Uint8Array | string | number | bigint;
 
 export abstract class Repository<T> {
-    protected db: IDatabaseController;
+    protected db: IDatabaseController<Buffer, Buffer>;
 
     protected bucket: Bucket;
 
@@ -14,7 +14,12 @@ export abstract class Repository<T> {
 
     protected serializer: ICGSerialization<unknown>;
 
-    public constructor(db: IDatabaseController, serializer: ICGSerialization<unknown>, bucket: Bucket, type: Type<T>) {
+    public constructor(
+        db: IDatabaseController<Buffer, Buffer>,
+        serializer: ICGSerialization<unknown>,
+        bucket: Bucket,
+        type: Type<T>,
+    ) {
         this.db = db;
         this.serializer = serializer;
         this.bucket = bucket;
@@ -48,7 +53,7 @@ export abstract class Repository<T> {
     }
 
     public async getAll(): Promise<T[]> {
-        const data = await this.db.search({
+        const data = await this.db.values({
             gt: encodeKey(this.bucket, Buffer.alloc(0)),
             lt: encodeKey(this.bucket + 1, Buffer.alloc(0)),
         });
@@ -57,8 +62,8 @@ export abstract class Repository<T> {
 }
 
 export abstract class BulkRepository<T> extends Repository<T> {
-    public async getAll(id: Buffer | Uint8Array = Buffer.alloc(0), options?: ISearchOptions): Promise<T[]> {
-        let searchFilter: ISearchOptions;
+    public async getAll(id: Buffer | Uint8Array = Buffer.alloc(0), options?: IFilterOptions<Buffer>): Promise<T[]> {
+        let searchFilter: IFilterOptions<Buffer>;
         if (options) {
             searchFilter = options;
         } else {
@@ -69,7 +74,7 @@ export abstract class BulkRepository<T> extends Repository<T> {
             };
         }
 
-        const data = await this.db.search(searchFilter);
+        const data = await this.db.values(searchFilter);
         return (data || []).map((data) => this.serializer.deserialize(data as Buffer, this.type));
     }
 

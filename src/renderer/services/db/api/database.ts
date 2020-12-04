@@ -1,20 +1,15 @@
+import {IpcDatabaseController} from "../controller/ipc";
 import {DatabaseService, IDatabaseApiOptions} from "./abstract";
 import {AccountRepository} from "./repositories/account";
-import {IpcDatabaseController} from "../controller/ipc";
 import {BeaconNodeRepository} from "./repositories/beaconNode";
-import {SettingsRepository} from "./repositories/settings";
-import {ValidatorAttestationsRepository} from "./repositories/validator/attestations";
-import {ValidatorBlocksRepository} from "./repositories/validator/blocks";
-import {ValidatorNetworkRepository} from "./repositories/validator/network";
 import {BeaconsRepository} from "./repositories/beacons";
+import {SettingsRepository} from "./repositories/settings";
+import {ValidatorNetworkRepository} from "./repositories/validator/network";
 import {ValidatorBeaconNodesRepository} from "./repositories/validatorBeaconNodes";
 
 interface IValidatorDB {
-    attestations: ValidatorAttestationsRepository;
-    blocks: ValidatorBlocksRepository;
     network: ValidatorNetworkRepository;
 }
-
 export class CGDatabase extends DatabaseService {
     public account: AccountRepository;
     public beaconNodes: BeaconNodeRepository;
@@ -28,8 +23,6 @@ export class CGDatabase extends DatabaseService {
         this.account = new AccountRepository(this.db);
         this.beaconNodes = new BeaconNodeRepository(this.db);
         this.validator = {
-            attestations: new ValidatorAttestationsRepository(this.db),
-            blocks: new ValidatorBlocksRepository(this.db),
             network: new ValidatorNetworkRepository(this.db),
         };
         this.settings = new SettingsRepository(this.db);
@@ -38,4 +31,8 @@ export class CGDatabase extends DatabaseService {
     }
 }
 
-export default new CGDatabase({controller: new IpcDatabaseController()});
+export const cgDbController = new IpcDatabaseController();
+
+export const cgDatabase = new CGDatabase({controller: cgDbController});
+
+export default cgDatabase;

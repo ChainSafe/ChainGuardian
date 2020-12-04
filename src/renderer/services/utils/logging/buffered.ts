@@ -27,7 +27,7 @@ export class BufferedLogger implements ICGLogger {
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         return (async function* () {
             yield cachedLogs;
-            yield* new EventIterator<ILogRecord[]>((push) => {
+            yield* new EventIterator<ILogRecord[]>(({push}) => {
                 const logHandler = (log: ILogRecord[]): void => {
                     push(log);
                 };

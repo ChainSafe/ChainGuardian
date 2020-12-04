@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import {Provider} from "react-redux";
 import {AppContainer} from "react-hot-loader";
-import {initBLS} from "@chainsafe/bls";
+import {init as initBLS} from "@chainsafe/bls";
 
 import {initSentry} from "../main/sentry";
 import {NotificationRenderer} from "./NotificationRenderer";
@@ -29,6 +29,8 @@ const render = (Component: () => JSX.Element): void => {
     );
 };
 
-initBLS().then(() => {
-    render(Application);
-});
+initBLS("herumi")
+    .then(() => {
+        render(Application);
+    })
+    .catch((e) => console.error(e));

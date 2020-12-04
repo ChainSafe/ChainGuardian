@@ -1,13 +1,13 @@
 import {Repository} from "../repository";
 import {Bucket} from "../../schema";
-import {IDatabaseController} from "../../../../../main/db/controller";
 import {JSONSerializer} from "../../serializers/json";
 import {DEFAULT_ACCOUNT} from "../../../../constants/account";
 import {BeaconsType} from "../../../../models/types/beacons";
 import {Beacon, Beacons} from "../../../../models/beacons";
+import {IDatabaseController} from "@chainsafe/lodestar-db";
 
 export class BeaconsRepository extends Repository<Beacons> {
-    public constructor(db: IDatabaseController) {
+    public constructor(db: IDatabaseController<Buffer, Buffer>) {
         super(db, JSONSerializer, Bucket.beacons, BeaconsType);
     }
 

@@ -1,9 +1,8 @@
 import * as React from "react";
-import {Keypair} from "@chainsafe/bls";
-
 import {DEFAULT_ACCOUNT} from "../../constants/account";
 import database from "../../services/db/api/database";
 import {ICGKeystore} from "../../services/keystore";
+import {BlsKeypair} from "../../types";
 import {InputPrompt, ISubmitStatus} from "./InputPrompt";
 
 export interface IPasswordPromptProps {
@@ -12,7 +11,7 @@ export interface IPasswordPromptProps {
      *
      * @param password - that is entered in password prompt dialog
      */
-    onSubmit: (keypair: Keypair) => Promise<void>;
+    onSubmit: (keypair: BlsKeypair) => Promise<void>;
     onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
     /**
      * Called on cancel password prompt.
