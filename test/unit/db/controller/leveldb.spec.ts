@@ -66,8 +66,8 @@ describe("LevelDB controller", () => {
             },
         ]);
         const result = await db.search({
-            gt: "key0",
-            lt: "key99",
+            gt: Buffer.from("key0"),
+            lt: Buffer.from("key99"),
         });
         expect(result.length).to.be.equal(2);
     });
@@ -84,8 +84,8 @@ describe("LevelDB controller", () => {
             },
         ]);
         const result = await db.search({
-            gt: "key0",
-            lt: "key99",
+            gt: Buffer.from("key0"),
+            lt: Buffer.from("key99"),
         });
         expect(result.length).to.be.equal(2);
         await db.batchDelete(["key1", "key2"]);

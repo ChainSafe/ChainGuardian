@@ -6,7 +6,7 @@ import {IMPORT_SIGNING_KEY_PLACEHOLDER, IMPORT_SIGNING_KEY_TITLE} from "../../..
 import {useDispatch} from "react-redux";
 import {mnemonicSchema, privateKeySchema} from "./validation";
 import {ValidationResult} from "@hapi/joi";
-import {PrivateKey} from "@chainsafe/bls";
+import {SecretKey} from "@chainsafe/bls";
 import {deriveEth2ValidatorKeys, deriveKeyFromMnemonic} from "@chainsafe/bls-keygen";
 import {storeSigningKey, storeValidatorKeys} from "../../../../ducks/register/actions";
 
@@ -20,7 +20,7 @@ export const SigningKeyImportContainer: React.FC<IOwnProps> = ({history}) => {
     const handleSubmit = (input: string): void => {
         if (input.startsWith("0x")) {
             try {
-                PrivateKey.fromHexString(input);
+                SecretKey.fromHex(input);
             } catch (e) {
                 //TODO: display error message
                 console.error("Invalid private key");
@@ -32,8 +32,7 @@ export const SigningKeyImportContainer: React.FC<IOwnProps> = ({history}) => {
             const validatorKeys = deriveEth2ValidatorKeys(deriveKeyFromMnemonic(input), Number(validatorIndex));
             dispatch(
                 storeValidatorKeys(
-                    PrivateKey.fromBytes(validatorKeys.signing).toHexString(),
-                    PrivateKey.fromBytes(validatorKeys.withdrawal).toPublicKey().toHexString(),
+                    SecretKey.fromBytes(validatorKeys.signing).toHex(),
                     `m/12381/3600/${validatorIndex}/0/0`,
                 ),
             );

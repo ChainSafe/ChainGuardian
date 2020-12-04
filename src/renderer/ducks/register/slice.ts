@@ -3,7 +3,6 @@ import {networks} from "../../services/eth2/networks";
 
 export interface IStoreValidatorKeysPayload {
     signingKey: string;
-    withdrawalKey: string;
     signingKeyPath: string;
 }
 
@@ -16,7 +15,6 @@ export interface IStoreKeystoreValuesPayload {
 export interface IRegisterState {
     signingKey: string;
     signingKeyPath: string;
-    withdrawalKey: string;
     network: string;
     path?: string;
     publicKey?: string;
@@ -28,7 +26,6 @@ export interface IRegisterState {
 const initialState: IRegisterState = {
     signingKey: "",
     signingKeyPath: "",
-    withdrawalKey: "",
     network: networks[0]?.networkName ?? "unknown",
 };
 
@@ -42,15 +39,10 @@ export const registerSlice = createSlice({
         storeValidatorKeys: {
             reducer: (state, action: PayloadAction<IStoreValidatorKeysPayload>): void => {
                 state.signingKey = action.payload.signingKey;
-                state.withdrawalKey = action.payload.withdrawalKey;
                 state.signingKeyPath = action.payload.signingKeyPath;
             },
-            prepare: (
-                signingKey: string,
-                withdrawalKey: string,
-                signingKeyPath: string,
-            ): {payload: IStoreValidatorKeysPayload} => ({
-                payload: {signingKey, withdrawalKey, signingKeyPath},
+            prepare: (signingKey: string, signingKeyPath: string): {payload: IStoreValidatorKeysPayload} => ({
+                payload: {signingKey, signingKeyPath},
             }),
         },
         setNetwork: (state, action: PayloadAction<string>): void => {

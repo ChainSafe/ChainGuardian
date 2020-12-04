@@ -2,11 +2,11 @@ import {Id, Repository} from "../repository";
 import {CGAccount} from "../../../../models/account";
 import {Bucket, encodeKey} from "../../schema";
 import {JSONSerializer} from "../../serializers/json";
-import {IDatabaseController} from "../../../../../main/db/controller";
 import {AccountType} from "../../../../models/types/account";
+import {IDatabaseController} from "@chainsafe/lodestar-db";
 
 export class AccountRepository extends Repository<CGAccount> {
-    public constructor(db: IDatabaseController) {
+    public constructor(db: IDatabaseController<Buffer, Buffer>) {
         super(db, JSONSerializer, Bucket.account, AccountType);
     }
 

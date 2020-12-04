@@ -1,16 +1,15 @@
-import {Keypair, PrivateKey, PublicKey} from "@chainsafe/bls";
-import path from "path";
+import {SecretKey} from "@chainsafe/bls";
 import electron, {remote} from "electron";
 import logger from "electron-log";
-
+import path from "path";
 import {getConfig} from "../../../config/config";
 import {Level} from "../../components/Notification/NotificationEnums";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
+import {IValidator} from "../../ducks/validator/slice";
 import {DockerRegistry} from "../docker/docker-registry";
+import {networks} from "../eth2/networks";
 import {V4Keystore} from "../keystore";
 import {copyFile, removeDirRecursive} from "./file";
-import {networks} from "../eth2/networks";
-import {IValidator} from "../../ducks/validator/slice";
 
 export const cleanUpAccount = async (): Promise<void> => {
     const config = getConfig(electron.remote.app);
@@ -40,17 +39,19 @@ export const importKeystore = async (
 };
 
 export const saveKeystore = async (
-    signingKey: PrivateKey,
+    signingKey: SecretKey,
     password: string,
     keyPath: string,
     name = "",
 ): Promise<string> => {
     const accountDirectory = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT);
-    console.log(accountDirectory);
     await V4Keystore.create(
-        path.join(accountDirectory, PublicKey.fromPrivateKey(signingKey).toHexString() + ".json"),
+        path.join(accountDirectory, signingKey.toPublicKey().toHex() + ".json"),
         password,
-        new Keypair(signingKey),
+        {
+            privateKey: signingKey,
+            publicKey: signingKey.toPublicKey(),
+        },
         keyPath,
         name,
     );

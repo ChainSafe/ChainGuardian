@@ -1,4 +1,3 @@
-import {Keypair} from "@chainsafe/bls";
 import {readdirSync} from "fs";
 import path from "path";
 
@@ -8,6 +7,7 @@ import {BeaconNode} from "./beaconNode";
 import database from "../services/db/api/database";
 import {IValidatorNetwork} from "./network";
 import {error} from "electron-log";
+import {BlsKeypair} from "../types/keys";
 
 export interface IAccount {
     name: string;
@@ -99,7 +99,7 @@ export class CGAccount implements IAccount {
      * @param password decryption password of the keystore
      * @param keystore keystore that should be descryted
      */
-    public async unlockKeystore(password: string, keystore: ICGKeystore): Promise<Keypair | undefined> {
+    public async unlockKeystore(password: string, keystore: ICGKeystore): Promise<BlsKeypair | undefined> {
         try {
             return await keystore.decrypt(password);
         } catch (e) {

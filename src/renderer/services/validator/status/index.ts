@@ -1,17 +1,17 @@
-import {ValidatorStatus} from "./statuses";
+import {PublicKey} from "@chainsafe/bls";
+import {BLSPubkey} from "@chainsafe/lodestar-types";
 import {warn} from "electron-log";
 import {IEth1Client} from "../../deposit/ethers";
 import {IGenericEth2Client} from "../../eth2/client/interface";
-import {BLSPubkey} from "@chainsafe/lodestar-types";
-import {computeEpochAtSlot, FAR_FUTURE_EPOCH} from "@chainsafe/lodestar-beacon-state-transition";
-import {PublicKey} from "@chainsafe/bls";
+import {ValidatorStatus} from "./statuses";
 
 export * from "./statuses";
 
 export async function getValidatorStatus(
     validatorPubKey: BLSPubkey,
     eth2Api: IGenericEth2Client,
-    eth1: IEth1Client,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    eth1Api: IEth1Client,
 ): Promise<ValidatorStatus> {
     if (!(await isBeaconNodeWorking(eth2Api))) {
         return ValidatorStatus.BEACON_ERROR;
@@ -22,33 +22,9 @@ export async function getValidatorStatus(
     if (await isBeaconNodeSyncing(eth2Api)) {
         return ValidatorStatus.SYNCING;
     }
-    const validator = await eth2Api.beacon.getValidator(validatorPubKey);
-    if (validator) {
-        const currentEpoch = computeEpochAtSlot(eth2Api.config, eth2Api.getCurrentSlot());
-        if (
-            validator.validator.activationEpoch !== FAR_FUTURE_EPOCH &&
-            currentEpoch < validator.validator.activationEpoch
-        ) {
-            return ValidatorStatus.ACTIVATION_QUEUE;
-        }
-        if (validator.validator.slashed) {
-            return ValidatorStatus.SLASHED;
-        }
-        if (validator.validator.exitEpoch !== FAR_FUTURE_EPOCH) {
-            if (currentEpoch > validator.validator.exitEpoch) {
-                return ValidatorStatus.EXITED;
-            } else {
-                return ValidatorStatus.EXIT_QUEUE;
-            }
-        }
-        return ValidatorStatus.ACTIVE;
-    } else {
-        if (await hasDeposited(validatorPubKey, eth1)) {
-            return ValidatorStatus.ACTIVATION_QUEUE;
-        } else {
-            return ValidatorStatus.WAITING_DEPOSIT;
-        }
-    }
+    const validator = await eth2Api.beacon.state.getValidator("head", validatorPubKey);
+    //TODO: convert to our validator
+    return (validator.status as unknown) as ValidatorStatus;
 }
 
 async function isBeaconNodeWorking(eth2Api: IGenericEth2Client | null): Promise<boolean> {
@@ -79,6 +55,7 @@ async function isBeaconNodeSyncing(eth2Api: IGenericEth2Client): Promise<boolean
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function hasDeposited(pubkey: BLSPubkey, eth1: IEth1Client): Promise<boolean> {
     return await eth1.hasUserDeposited(PublicKey.fromBytes(pubkey as Uint8Array));
 }

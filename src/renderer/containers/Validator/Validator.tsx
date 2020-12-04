@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {PasswordPrompt} from "../../components/Prompt/PasswordPrompt";
 import {Routes} from "../../constants/routes";
-
 import {calculateROI} from "../../services/utils/math";
 import {AddButton} from "../../components/Button/ButtonAction";
 import {ButtonDestructive, ButtonPrimary} from "../../components/Button/ButtonStandard";
@@ -10,7 +9,6 @@ import {ValidatorStat} from "../../components/Cards/ValidatorStat";
 import {PrivateKeyField} from "../../components/PrivateKeyField/PrivateKeyField";
 import {InputForm} from "../../components/Input/InputForm";
 import {NodeCard} from "../../components/Cards/NodeCard";
-import {Keypair} from "@chainsafe/bls";
 import {IRootState} from "../../ducks/reducers";
 import {
     updateValidatorChainData,
@@ -21,6 +19,7 @@ import {getSelectedNetwork} from "../../ducks/network/selectors";
 import {getValidator, getValidatorBeaconNodes} from "../../ducks/validator/selectors";
 import {Link} from "react-router-dom";
 import {BeaconStatus} from "../../ducks/beacon/slice";
+import {BlsKeypair} from "../../types/keys";
 
 export interface IValidatorSimpleProps {
     publicKey: string;
@@ -73,7 +72,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
         );
     };
 
-    const controlValidator = async (keypair: Keypair): Promise<void> => {
+    const controlValidator = async (keypair: BlsKeypair): Promise<void> => {
         if (askPassword === "stop") {
             dispatch(stopActiveValidatorService(keypair));
         } else if (askPassword === "start") {

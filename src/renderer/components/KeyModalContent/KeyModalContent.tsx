@@ -3,7 +3,7 @@ import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
 import {ValidationResult} from "@hapi/joi";
 import {Joi} from "../../services/validation";
-import {PrivateKey} from "@chainsafe/bls";
+import {SecretKey} from "@chainsafe/bls";
 import {deriveEth2ValidatorKeys, deriveKeyFromMnemonic} from "@chainsafe/bls-keygen";
 
 interface IKeyModalProps {
@@ -51,7 +51,7 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
         } else {
             if (input.startsWith("0x")) {
                 try {
-                    formatAndSetPubKey(PrivateKey.fromHexString(input).toPublicKey().toHexString());
+                    formatAndSetPubKey(SecretKey.fromHex(input).toPublicKey().toHex());
                 } catch (e) {
                     setPubKey("Invalid Private Key");
                     return;
@@ -61,7 +61,7 @@ export default function KeyModalContent(props: IKeyModalProps): ReactElement {
                     deriveKeyFromMnemonic(input),
                     Number(props.validatorIndex),
                 );
-                formatAndSetPubKey(PrivateKey.fromBytes(validatorKeys.withdrawal).toPublicKey().toHexString());
+                formatAndSetPubKey(SecretKey.fromBytes(validatorKeys.withdrawal).toPublicKey().toHex());
             }
         }
     };
