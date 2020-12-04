@@ -16,6 +16,7 @@ import {
     getRegisterSigningKey,
     getRegisterSigningKeyPath,
     getName,
+    getRegisterPublicKey,
 } from "./selectors";
 
 function* afterCreatePasswordProcess({
@@ -34,7 +35,7 @@ function* afterCreatePasswordProcess({
 function* afterConfirmPasswordProcess({
     payload,
 }: ReturnType<typeof afterConfirmPassword>): Generator<SelectEffect | CallEffect, void, string> {
-    const publicKey = yield select(getRegisterSigningKey);
+    const publicKey = yield select(getRegisterPublicKey);
     const fromPath = yield select(getKeystorePath);
     const password = yield select(getPassword);
 
