@@ -86,7 +86,6 @@
     "@babel/preset-react": "^7.9.4",
     "@babel/preset-typescript": "^7.9.0",
     "@hot-loader/react-dom": "^16.8.6",
-    "@machinomy/types-ethereumjs-wallet": "^0.0.12",
     "@nodefactory/axios-mock-adapter": "1.17.1",
     "@sentry/webpack-plugin": "^1.11.1",
     "@storybook/addon-actions": "5.2.8",
@@ -100,7 +99,6 @@
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/ethereumjs-abi": "^0.6.3",
     "@types/jest": "^26.0.9",
-    "@types/js-yaml": "^3.12.5",
     "@types/leveldown": "^4.0.0",
     "@types/levelup": "^3.1.1",
     "@types/node": "12.12.6",
@@ -165,14 +163,15 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@chainsafe/bls": "3.0.0",
+    "@chainsafe/bls": "5.0.1",
     "@chainsafe/bls-keygen": "0.3.0",
     "@chainsafe/bls-keystore": "2.0.0",
-    "@chainsafe/lodestar-beacon-state-transition": "0.11.0",
-    "@chainsafe/lodestar-config": "0.11.0",
-    "@chainsafe/lodestar-types": "0.11.0",
-    "@chainsafe/lodestar-utils": "0.11.0",
-    "@chainsafe/lodestar-validator": "0.11.0",
+    "@chainsafe/lodestar-beacon-state-transition": "0.12.0",
+    "@chainsafe/lodestar-config": "0.12.0",
+    "@chainsafe/lodestar-db": "^0.12.0",
+    "@chainsafe/lodestar-types": "0.12.0",
+    "@chainsafe/lodestar-utils": "0.12.0",
+    "@chainsafe/lodestar-validator": "0.12.0",
     "@chainsafe/ssz": "0.6.13",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
@@ -185,7 +184,9 @@
     "electron-log": "^3.0.9",
     "ethereumjs-abi": "^0.6.8",
     "ethers": "^5.0.19",
-    "event-iterator": "^1.2.0",
+    "event-iterator": "^2.0.0",
+    "it-all": "^1.0.4",
+    "it-pushable": "^1.4.0",
     "joi": "^17.3.0",
     "json-bigint": "^0.3.0",
     "level": "^6.0.1",
@@ -202,9 +203,9 @@
     "winston-transport": "^4.4.0"
   },
   "resolutions": {
-    "@chainsafe/bls": "3.0.0",
+    "@chainsafe/bls": "5.0.1",
     "terser": "4.6.3",
-    "bcrypto": "5.2.0",
+    "bcrypto": "5.3.0",
     "serialize-javascript": "3.1.0"
   }
 }

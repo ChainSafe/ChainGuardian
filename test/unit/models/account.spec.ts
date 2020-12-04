@@ -1,5 +1,5 @@
 import sinon from "sinon";
-import {initBLS, Keypair} from "@chainsafe/bls";
+import {init as initBLS, SecretKey} from "@chainsafe/bls";
 
 jest.mock("fs", () => {
     // Mock keystore, only address is important
@@ -76,7 +76,11 @@ describe("CGAccount tests", () => {
         sandbox.stub(V4KeystoreFactory.prototype, "getPublicKey").returns("0x001");
         sandbox.stub(V4KeystoreFactory.prototype, "decrypt").callsFake(function (password: string) {
             if (password === PRIMARY_KEYSTORE_PASSWORD) {
-                return Keypair.generate();
+                const privateKey = SecretKey.fromKeygen();
+                return {
+                    privateKey,
+                    publicKey: privateKey.toPublicKey(),
+                };
             } else {
                 throw new Error("Incorrect password");
             }
@@ -84,7 +88,7 @@ describe("CGAccount tests", () => {
     });
 
     beforeAll(async () => {
-        await initBLS();
+        await initBLS("herumi");
     });
 
     afterEach(() => {
