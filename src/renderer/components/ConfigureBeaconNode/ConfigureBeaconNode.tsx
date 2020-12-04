@@ -8,6 +8,7 @@ import {Dropdown} from "../Dropdown/Dropdown";
 import {remote} from "electron";
 import {getConfig} from "../../../config/config";
 import {getDefaultsForClient} from "../../services/eth2/client/defaults";
+import {Accordion} from "../Accordion/Accordion";
 
 export interface IConfigureBNSubmitOptions {
     ports: DockerPort[];
@@ -33,7 +34,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
     const defaultPath = path.join(getConfig(remote.app).storage.dataDir);
     const [folderPath, setPath] = useState(defaultPath);
 
-    const defaultEth1URL = "http://127.0.0.1:8545";
+    const defaultEth1URL = "https://goerli.infura.io/v3/73d4045fe98a406faa2334ad7306b313";
     const [eth1Url, setEth1URL] = useState(defaultEth1URL);
 
     const defaultRpcPort = String(defaults.beacon.rpcPort);
@@ -68,6 +69,8 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
         focused.current = false;
     };
 
+    const [showAdvanced, setShowAdvanced] = useState(false);
+
     return (
         <>
             <h1>Configure Beacon node settings</h1>
@@ -82,23 +85,8 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
 
             <div className='configure-port'>
                 <div className='row'>
-                    <h3>Chain data location</h3>
-                </div>
-                <InputForm
-                    onChange={(e): void => setPath(e.currentTarget.value)}
-                    inputValue={folderPath}
-                    onFocus={onFocus}
-                    onSubmit={(e): void => {
-                        e.preventDefault();
-                        onSubmit();
-                    }}
-                />
-            </div>
-
-            <div className='configure-port'>
-                <div className='row'>
                     <h3>ETH1 endpoint</h3>
-                    <p>(default: http://127.0.0.1:8545/)</p>
+                    <p>(strongly suggest getting own Infura access key)</p>
                 </div>
                 <InputForm
                     onChange={(e): void => setEth1URL(e.currentTarget.value)}
@@ -110,53 +98,70 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                 />
             </div>
 
-            <div className='configure-port'>
-                <div className='row'>
-                    <h3>Local RPC port</h3>
-                    <p>(default: {defaultRpcPort})</p>
+            <Accordion label='Advanced' isOpen={showAdvanced} onClick={(): void => setShowAdvanced(!showAdvanced)}>
+                <div className='configure-port'>
+                    <div className='row'>
+                        <h3>Chain data location</h3>
+                    </div>
+                    <InputForm
+                        onChange={(e): void => setPath(e.currentTarget.value)}
+                        inputValue={folderPath}
+                        onFocus={onFocus}
+                        onSubmit={(e): void => {
+                            e.preventDefault();
+                            onSubmit();
+                        }}
+                    />
                 </div>
-                <InputForm
-                    inputLabel='TCP'
-                    onChange={(e): void => setRpcPort(e.currentTarget.value)}
-                    inputValue={rpcPort}
-                    onSubmit={(e): void => {
-                        e.preventDefault();
-                        onSubmit();
-                    }}
-                />
-            </div>
 
-            <div className='configure-port'>
-                <div className='row'>
-                    <h3>Local libp2p port</h3>
-                    <p>(default: {defaultLibp2pPort})</p>
+                <div className='configure-port'>
+                    <div className='row'>
+                        <h3>Local RPC port</h3>
+                        <p>(default: {defaultRpcPort})</p>
+                    </div>
+                    <InputForm
+                        inputLabel='TCP'
+                        onChange={(e): void => setRpcPort(e.currentTarget.value)}
+                        inputValue={rpcPort}
+                        onSubmit={(e): void => {
+                            e.preventDefault();
+                            onSubmit();
+                        }}
+                    />
                 </div>
-                <InputForm
-                    inputLabel='TCP'
-                    onChange={(e): void => setLibp2pPort(e.currentTarget.value)}
-                    inputValue={libp2pPort}
-                    onSubmit={(e): void => {
-                        e.preventDefault();
-                        onSubmit();
-                    }}
-                />
-            </div>
 
-            <div className='configure-port'>
-                <div className='row'>
-                    <h3>Local discovery port</h3>
-                    <p>(default: {defaultDiscoveryPort})</p>
+                <div className='configure-port'>
+                    <div className='row'>
+                        <h3>Local libp2p port</h3>
+                        <p>(default: {defaultLibp2pPort})</p>
+                    </div>
+                    <InputForm
+                        inputLabel='TCP'
+                        onChange={(e): void => setLibp2pPort(e.currentTarget.value)}
+                        inputValue={libp2pPort}
+                        onSubmit={(e): void => {
+                            e.preventDefault();
+                            onSubmit();
+                        }}
+                    />
                 </div>
-                <InputForm
-                    inputLabel='UDP'
-                    onChange={(e): void => setDiscoveryPort(e.currentTarget.value)}
-                    inputValue={discoveryPort}
-                    onSubmit={(e): void => {
-                        e.preventDefault();
-                        onSubmit();
-                    }}
-                />
-            </div>
+
+                <div className='configure-port'>
+                    <div className='row'>
+                        <h3>Local discovery port</h3>
+                        <p>(default: {defaultDiscoveryPort})</p>
+                    </div>
+                    <InputForm
+                        inputLabel='UDP'
+                        onChange={(e): void => setDiscoveryPort(e.currentTarget.value)}
+                        inputValue={discoveryPort}
+                        onSubmit={(e): void => {
+                            e.preventDefault();
+                            onSubmit();
+                        }}
+                    />
+                </div>
+            </Accordion>
 
             <ButtonPrimary onClick={onSubmit} buttonId='next'>
                 NEXT
