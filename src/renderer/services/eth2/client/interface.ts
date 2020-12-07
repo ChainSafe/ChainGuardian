@@ -20,12 +20,14 @@ export type IEth2ValidatorApi = IValidatorApi;
 /**
  * Extends minimal interface(IApiClient) required by lodestar validator
  */
-export interface IGenericEth2Client extends IApiClient {
+export interface ICgEth2ApiClient extends IApiClient {
     config: IBeaconConfig;
 
     beacon: IEth2BeaconApi;
 
     validator: IEth2ValidatorApi;
+
+    node: IEth2NodeApi;
 
     getVersion(): Promise<string>;
 

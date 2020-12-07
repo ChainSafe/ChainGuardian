@@ -2,14 +2,14 @@ import {PublicKey} from "@chainsafe/bls";
 import {BLSPubkey} from "@chainsafe/lodestar-types";
 import {warn} from "electron-log";
 import {IEth1Client} from "../../deposit/ethers";
-import {IGenericEth2Client} from "../../eth2/client/interface";
+import {ICgEth2ApiClient} from "../../eth2/client/interface";
 import {ValidatorStatus} from "./statuses";
 
 export * from "./statuses";
 
 export async function getValidatorStatus(
     validatorPubKey: BLSPubkey,
-    eth2Api: IGenericEth2Client,
+    eth2Api: ICgEth2ApiClient,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     eth1Api: IEth1Client,
 ): Promise<ValidatorStatus> {
@@ -27,7 +27,7 @@ export async function getValidatorStatus(
     return (validator.status as unknown) as ValidatorStatus;
 }
 
-async function isBeaconNodeWorking(eth2Api: IGenericEth2Client | null): Promise<boolean> {
+async function isBeaconNodeWorking(eth2Api: ICgEth2ApiClient | null): Promise<boolean> {
     if (!eth2Api) return false;
     try {
         await eth2Api.getVersion();
@@ -37,7 +37,7 @@ async function isBeaconNodeWorking(eth2Api: IGenericEth2Client | null): Promise<
     }
 }
 
-async function hasChainStarted(eth2Api: IGenericEth2Client): Promise<boolean> {
+async function hasChainStarted(eth2Api: ICgEth2ApiClient): Promise<boolean> {
     try {
         return !!(await eth2Api.beacon.getGenesis())?.genesisTime;
     } catch (e) {
@@ -46,7 +46,7 @@ async function hasChainStarted(eth2Api: IGenericEth2Client): Promise<boolean> {
     }
 }
 
-async function isBeaconNodeSyncing(eth2Api: IGenericEth2Client): Promise<boolean> {
+async function isBeaconNodeSyncing(eth2Api: ICgEth2ApiClient): Promise<boolean> {
     try {
         return (await eth2Api.node.getSyncingStatus()).syncDistance === BigInt(0);
     } catch (e) {

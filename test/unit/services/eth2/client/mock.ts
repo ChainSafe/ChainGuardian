@@ -2,7 +2,7 @@ import {
     IEth2BeaconApi,
     IEth2NodeApi,
     IEth2ValidatorApi,
-    IGenericEth2Client,
+    ICgEth2ApiClient,
 } from "../../../../../src/renderer/services/eth2/client/interface";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import sinon, {SinonStubbedInstance} from "sinon";
@@ -11,7 +11,7 @@ import {IEventsApi} from "@chainsafe/lodestar-validator/lib/api/interface/events
 import {IBeaconClock} from "@chainsafe/lodestar-validator";
 import {Root} from "@chainsafe/lodestar-types";
 
-export class MockEth2ApiClient extends EventEmitter implements IGenericEth2Client {
+export class MockEth2ApiClient extends EventEmitter implements ICgEth2ApiClient {
     public config: IBeaconConfig;
     public url: string;
     public beacon: SinonStubbedInstance<IEth2BeaconApi>;
