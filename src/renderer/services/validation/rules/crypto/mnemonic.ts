@@ -1,4 +1,4 @@
-import {CustomHelpers, ExtensionRule, SchemaInternals} from "@hapi/joi";
+import {CustomHelpers, ExtensionRule, SchemaInternals} from "joi";
 import {validateMnemonic} from "bip39";
 
 export const ERR_CODE_MNEMONIC = "crypto.mnemonic.invalid";

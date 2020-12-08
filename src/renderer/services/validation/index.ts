@@ -1,4 +1,4 @@
-import * as joi from "@hapi/joi";
+import * as joi from "joi";
 import {passwordExtension} from "./rules/password";
 import {cryptoExtension} from "./rules/crypto";
 

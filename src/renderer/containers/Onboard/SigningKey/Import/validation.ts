@@ -1,5 +1,5 @@
 import {Joi} from "../../../../services/validation";
-import {StringSchema} from "@hapi/joi";
+import {StringSchema} from "joi";
 import {SECRET_KEY_LENGTH} from "@chainsafe/bls/lib/constants";
 
 export const PRIVATE_KEY_NOT_STRING_MESSAGE = "Value must be non empty string";
