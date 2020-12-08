@@ -1,11 +1,11 @@
-import {IGenericEth2Client} from "../services/eth2/client/interface";
+import {ICgEth2ApiClient} from "../services/eth2/client/interface";
 
 export type BeaconNode = {
     url: string;
     localDockerId: string;
     isSyncing?: boolean;
     currentSlot?: string;
-    client?: IGenericEth2Client;
+    client?: ICgEth2ApiClient;
 };
 
 interface IBeaconNodes {
