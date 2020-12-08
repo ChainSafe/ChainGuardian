@@ -1,5 +1,5 @@
 import {Repository} from "../repository";
-import {IDatabaseController} from "../../../../../main/db/controller";
+import {IDatabaseController} from "@chainsafe/lodestar-db";
 import {JSONSerializer} from "../../serializers/json";
 import {Bucket} from "../../schema";
 import {DEFAULT_ACCOUNT} from "../../../../constants/account";
@@ -7,7 +7,7 @@ import {NetworkMetric, NetworkMetrics} from "../../../../models/networkMetrics";
 import {NetworkMetricsType} from "../../../../models/types/networkMetrics";
 
 export class NetworkMetricsRepository extends Repository<NetworkMetrics> {
-    public constructor(db: IDatabaseController) {
+    public constructor(db: IDatabaseController<Buffer, Buffer>) {
         super(db, JSONSerializer, Bucket.networkMetrics, NetworkMetricsType);
     }
 
