@@ -2,6 +2,7 @@
 
 const path = require("path");
 const Dotenv = require("dotenv-webpack");
+const webpack = require("webpack");
 
 module.exports = {
     mode: "development",
@@ -13,6 +14,8 @@ module.exports = {
         "level": "require('level')",
         "bcrypto": "require('bcrypto')",
         "leveldown": "require('leveldown')",
+        "bufferutil": "require('bufferutil')",
+        "utf-8-validate": "require('utf-8-validate')",
     },
     devtool: "cheap-source-map",
     node: {
@@ -21,9 +24,12 @@ module.exports = {
     },
     resolve: {
         mainFields: ["main", "module"],
-        extensions: [".tsx", ".ts", ".js", ".json"]
+        extensions: [".tsx", ".ts", ".js", ".json"],
     },
     plugins: [
         new Dotenv(),
+        new webpack.IgnorePlugin({
+            resourceRegExp: /\@chainsafe\/blst/,
+          })
     ]
 };

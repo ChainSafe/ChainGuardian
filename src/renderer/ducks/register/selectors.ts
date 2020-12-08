@@ -1,8 +1,6 @@
 import {IRootState} from "../reducers";
 import {networks} from "../../services/eth2/networks";
 
-export const getRegisterWithdrawalKey = (state: IRootState): string => state.register.withdrawalKey;
-
 export const getRegisterSigningKey = (state: IRootState): string => state.register.signingKey;
 
 export const getRegisterPublicKey = (state: IRootState): string => state.register.publicKey;

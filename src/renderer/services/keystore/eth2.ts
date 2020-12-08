@@ -1,10 +1,10 @@
-import {ICGKeystore, ICGKeystoreFactory} from "./interface";
-import {Keypair} from "@chainsafe/bls";
-import {existsSync, readFileSync, unlinkSync, writeFileSync, mkdirSync} from "fs";
-import {PrivateKey} from "@chainsafe/bls";
-import {Keystore, IKeystore} from "@chainsafe/bls-keystore";
-import {dirname} from "path";
+import {SecretKey} from "@chainsafe/bls";
+import {IKeystore, Keystore} from "@chainsafe/bls-keystore";
 import {warn} from "electron-log";
+import {existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync} from "fs";
+import {dirname} from "path";
+import {BlsKeypair} from "../../types/keys";
+import {ICGKeystore, ICGKeystoreFactory} from "./interface";
 
 export class V4Keystore implements ICGKeystore {
     private keystore: Keystore;
@@ -26,7 +26,7 @@ export class V4Keystore implements ICGKeystore {
     public static async create(
         file: string,
         password: string,
-        keypair: Keypair,
+        keypair: BlsKeypair,
         keyPath: string,
         name = "",
     ): Promise<ICGKeystore> {
@@ -34,7 +34,7 @@ export class V4Keystore implements ICGKeystore {
             const keystore = await Keystore.create(
                 password,
                 keypair.privateKey.toBytes(),
-                keypair.publicKey.toBytesCompressed(),
+                keypair.publicKey.toBytes(),
                 keyPath,
                 name,
             );
@@ -92,10 +92,13 @@ export class V4Keystore implements ICGKeystore {
      * Method used to decrypt encrypted private key from keystore file
      * @param password
      */
-    public async decrypt(password: string): Promise<Keypair> {
+    public async decrypt(password: string): Promise<BlsKeypair> {
         const privateKeyBuffer: Buffer = await this.keystore.decrypt(password);
-        const priv = PrivateKey.fromBytes(privateKeyBuffer);
-        return new Keypair(priv);
+        const priv = SecretKey.fromBytes(privateKeyBuffer);
+        return {
+            privateKey: priv,
+            publicKey: priv.toPublicKey(),
+        };
     }
 
     /**
@@ -109,7 +112,7 @@ export class V4Keystore implements ICGKeystore {
         const keystore = await Keystore.create(
             newPassword,
             keypair.privateKey.toBytes(),
-            keypair.publicKey.toBytesCompressed(),
+            keypair.publicKey.toBytes(),
             this.keystore.path,
             this.keystore.description,
         );

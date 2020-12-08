@@ -1,4 +1,4 @@
-import {functionSignatureFromABI} from "../../../../src/renderer/services/deposit";
+import {functionSignatureFromABI} from "../../../../src/renderer/services/deposit/utils";
 import options from "../../../../src/renderer/services/deposit/options";
 
 describe("deposit utils unit test", () => {

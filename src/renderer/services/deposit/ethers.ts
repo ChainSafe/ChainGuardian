@@ -32,7 +32,7 @@ export class EthersNotifier implements IEth1Client {
 
             // Listen for our filtered results
             contract.on(filter, (pubkey, withdrawalCredentials, amount) => {
-                if (pubkey === validatorPublicKey.toHexString()) {
+                if (pubkey === validatorPublicKey.toHex()) {
                     const amountGwei = this.networkConfig.eth2Config.types.Gwei.deserialize(
                         Buffer.from(amount.slice(2), "hex"),
                     ) as Gwei;
@@ -65,7 +65,7 @@ export class EthersNotifier implements IEth1Client {
 
                 const validatorPubKey = data[PUBKEY_INDEX];
 
-                if (validatorPubKey === validatorPublicKey.toHexString()) {
+                if (validatorPubKey === validatorPublicKey.toHex()) {
                     const amount = this.networkConfig.eth2Config.types.Gwei.deserialize(
                         Buffer.from(data[DATA_INDEX].slice(2), "hex"),
                     ) as Gwei;

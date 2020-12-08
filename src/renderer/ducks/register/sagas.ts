@@ -1,4 +1,4 @@
-import {PrivateKey} from "@chainsafe/bls";
+import {SecretKey} from "@chainsafe/bls";
 import {ValidatorNetwork} from "../../models/network";
 import database from "../../services/db/api/database";
 import {fromHex} from "../../services/utils/bytes";
@@ -16,13 +16,14 @@ import {
     getRegisterSigningKey,
     getRegisterSigningKeyPath,
     getName,
+    getRegisterPublicKey,
 } from "./selectors";
 
 function* afterCreatePasswordProcess({
     payload,
 }: ReturnType<typeof afterCreatePassword>): Generator<SelectEffect | CallEffect, void, string> {
     const signingKeyData = yield select(getRegisterSigningKey);
-    const signingKey = PrivateKey.fromBytes(fromHex(signingKeyData));
+    const signingKey = SecretKey.fromBytes(fromHex(signingKeyData));
 
     const name = yield select(getName);
     const keyPath = yield select(getRegisterSigningKeyPath);
@@ -34,7 +35,7 @@ function* afterCreatePasswordProcess({
 function* afterConfirmPasswordProcess({
     payload,
 }: ReturnType<typeof afterConfirmPassword>): Generator<SelectEffect | CallEffect, void, string> {
-    const publicKey = yield select(getRegisterSigningKey);
+    const publicKey = yield select(getRegisterPublicKey);
     const fromPath = yield select(getKeystorePath);
     const password = yield select(getPassword);
 
@@ -45,7 +46,7 @@ function* afterConfirmPasswordProcess({
 }
 
 function* saveAccount(
-    signingKey: PrivateKey | string,
+    signingKey: SecretKey | string,
     directory: string,
 ): Generator<CallEffect | Promise<void> | SelectEffect | PutEffect, void, string> {
     // Save account to db
@@ -60,7 +61,7 @@ function* saveAccount(
     // Save network
     const networkName = yield select(getRegisterNetwork);
     const network = new ValidatorNetwork(networkName);
-    const validatorPubKey = typeof signingKey === "string" ? signingKey : signingKey.toPublicKey().toHexString();
+    const validatorPubKey = typeof signingKey === "string" ? signingKey : signingKey.toPublicKey().toHex();
     yield database.validator.network.set(validatorPubKey, network);
 
     const name = yield select(getName);

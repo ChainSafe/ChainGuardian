@@ -1,17 +1,17 @@
 import {Repository} from "../repository";
 import {Bucket} from "../../schema";
-import {IDatabaseController} from "../../../../../main/db/controller";
 import {JSONSerializer} from "../../serializers/json";
 import {DEFAULT_ACCOUNT} from "../../../../constants/account";
 import {ValidatorBeaconNodesType} from "../../../../models/types/validatorBeaconNodes";
 import {ValidatorBeaconNodes} from "../../../../models/validatorBeaconNodes";
+import {IDatabaseController} from "@chainsafe/lodestar-db";
 
 /**
  * Repository for validators beacon node list
  * stores beacon nodes url based on validator public key
  * */
 export class ValidatorBeaconNodesRepository extends Repository<ValidatorBeaconNodes> {
-    public constructor(db: IDatabaseController) {
+    public constructor(db: IDatabaseController<Buffer, Buffer>) {
         super(db, JSONSerializer, Bucket.validatorBeaconNodes, ValidatorBeaconNodesType);
     }
 

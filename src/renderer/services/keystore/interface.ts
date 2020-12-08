@@ -1,10 +1,10 @@
-import {Keypair} from "@chainsafe/bls";
+import {BlsKeypair} from "../../types";
 
 export interface ICGKeystore {
     getName(): string;
     getPath(): string;
     verifyPassword(password: string): Promise<boolean>;
-    decrypt(password: string): Promise<Keypair>;
+    decrypt(password: string): Promise<BlsKeypair>;
     changePassword(oldPassword: string, newPassword: string): Promise<void>;
     destroy(): void;
     getPublicKey(): string;

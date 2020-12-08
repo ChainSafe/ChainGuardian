@@ -6,8 +6,7 @@ import {getNetworkConfig} from "../../services/eth2/networks";
 import {EthersNotifier} from "../../services/deposit/ethers";
 import {getValidatorStatus, ValidatorStatus} from "../../services/validator/status";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
-import {ValidatorDB} from "../../services/db/api/validator";
-import database from "../../services/db/api/database";
+import database, {cgDbController} from "../../services/db/api/database";
 import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
 import {IByPublicKey, IValidator} from "./slice";
 import {
@@ -31,7 +30,7 @@ import {
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {loadValidatorBeaconNodes, unsubscribeToBlockListening} from "../network/actions";
-import {Validator} from "@chainsafe/lodestar-validator";
+import {SlashingProtection, Validator} from "@chainsafe/lodestar-validator";
 import {IValidatorBeaconNodes} from "../../models/beaconNode";
 import {loadValidatorBeaconNodesSaga} from "../network/sagas";
 import {AllEffect} from "@redux-saga/core/effects";
@@ -125,9 +124,8 @@ function* loadValidatorsFromChain(
     if (beaconNodes && beaconNodes.length > 0) {
         // TODO: Use any working beacon node instead of first one
         const client = beaconNodes[0].client;
-        const pubKeys = action.payload.map((address) => fromHex(address));
         try {
-            const response = yield client.beacon.getValidators(pubKeys);
+            const response = yield client.beacon.state.getValidators("head", action.payload);
             yield put(loadedValidatorsBalance(response));
         } catch (e) {
             logger.warn("Error while fetching validator balance...", e.message);
@@ -158,17 +156,21 @@ function* startService(
 ): Generator<SelectEffect | PutEffect | Promise<void>, void, IValidatorBeaconNodes> {
     const logger = new ValidatorLogger();
     const validatorBeaconNodes = yield select(getBeaconNodes);
-    const publicKey = action.payload.publicKey.toHexString();
+    const publicKey = action.payload.publicKey.toHex();
     // TODO: Use beacon chain proxy instead of first node
     const eth2API = validatorBeaconNodes[publicKey][0].client;
 
     if (!validatorServices[publicKey]) {
         validatorServices[publicKey] = new Validator({
-            db: new ValidatorDB(database),
+            slashingProtection: new SlashingProtection({
+                config,
+                controller: cgDbController,
+            }),
             api: eth2API,
             config,
-            keypairs: [action.payload],
+            secretKeys: [action.payload.privateKey],
             logger,
+            graffiti: "ChainGuardian",
         });
     }
     yield validatorServices[publicKey].start();
@@ -177,7 +179,7 @@ function* startService(
 }
 
 function* stopService(action: ReturnType<typeof stopActiveValidatorService>): Generator<PutEffect | Promise<void>> {
-    const publicKey = action.payload.publicKey.toHexString();
+    const publicKey = action.payload.publicKey.toHex();
     yield validatorServices[publicKey].stop();
 
     yield put(stopValidatorService(publicKey));
