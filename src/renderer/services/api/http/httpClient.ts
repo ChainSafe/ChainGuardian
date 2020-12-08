@@ -3,14 +3,12 @@ import database from "../../db/api/database";
 
 export class HttpClient {
     private client: AxiosInstance;
-    private readonly metricKey?: string;
 
-    public constructor(baseURL: string, options: {axios?: AxiosRequestConfig; metricKey?: string} = {}) {
+    public constructor(baseURL: string, options: {axios?: AxiosRequestConfig} = {}) {
         if (!options) {
             // eslint-disable-next-line no-param-reassign
             options = {axios: {}};
         }
-        this.metricKey = options.metricKey;
         this.client = axios.create({
             baseURL,
             ...options.axios,
@@ -60,23 +58,21 @@ export class HttpClient {
     } => {
         const start = Date.now();
         return {
-            onComplete: ({request, status}: AxiosResponse): void => {
-                if (this.metricKey)
-                    database.networkMetrics.addRecord(this.metricKey, {
-                        url: request.responseURL,
-                        code: status,
-                        latency: Date.now() - start,
-                        time: Date.now(),
-                    });
+            onComplete: ({request, status, config}: AxiosResponse): void => {
+                database.networkMetrics.addRecord(config.baseURL, {
+                    url: request.responseURL,
+                    code: status,
+                    latency: Date.now() - start,
+                    time: Date.now(),
+                });
             },
-            onError: (error: AxiosError): void => {
-                if (this.metricKey)
-                    database.networkMetrics.addRecord(this.metricKey, {
-                        url: error.config.url,
-                        code: error.response?.status || 0,
-                        latency: Date.now() - start,
-                        time: Date.now(),
-                    });
+            onError: ({response, config}: AxiosError): void => {
+                database.networkMetrics.addRecord(config.baseURL, {
+                    url: config.url,
+                    code: response?.status || 0,
+                    latency: Date.now() - start,
+                    time: Date.now(),
+                });
             },
         };
     };
