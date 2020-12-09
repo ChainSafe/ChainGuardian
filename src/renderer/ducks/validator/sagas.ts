@@ -41,7 +41,6 @@ import {getBeaconNodes} from "../network/selectors";
 import {getValidators} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {Eth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
-import { HttpClient } from "../../services/api";
 import {WinstonLogger} from "@chainsafe/lodestar-utils";
 
 interface IValidatorServices {
@@ -165,10 +164,9 @@ function* startService(
         controller: cgDbController,
     });
 
-    // @ts-ignore
     console.log(eth2API, slashingProtection);
 
-    const logger = new WinstonLogger();
+    const logger = new WinstonLogger() as ValidatorLogger;
 
     if (!validatorServices[publicKey]) {
         validatorServices[publicKey] = new Validator({

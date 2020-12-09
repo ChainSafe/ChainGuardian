@@ -32,12 +32,11 @@ export class Eth2ApiClient extends AbstractApiClient implements IValidatorBeacon
     }
 
     public getVersion = async (): Promise<string> => {
-        console.log("getVersion");
-        return undefined as string;
+        throw new Error("Method 'getVersion' not implemented.");
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public onNewChainHead = (callback: (head: IEth2ChainHead) => void): NodeJS.Timeout => {
-        console.log("onNewChainHead", callback);
-        return undefined as NodeJS.Timeout;
+        throw new Error("Method 'onNewChainHead' not implemented.");
     };
 }
