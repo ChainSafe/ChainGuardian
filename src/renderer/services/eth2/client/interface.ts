@@ -7,12 +7,14 @@ import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/val
 import {IEth2ChainHead} from "../../../models/types/head";
 import {BLSPubkey, SignedBeaconHeaderResponse, ValidatorIndex, ValidatorResponse} from "@chainsafe/lodestar-types";
 
+export interface ICGEth2BeaconApiState extends IBeaconStateApi {
+    getBlockHeader(stateId: "head", blockId: "head" | number | string): Promise<SignedBeaconHeaderResponse>;
+    getValidator(stateId: "head", validatorId: string | BLSPubkey | ValidatorIndex): Promise<ValidatorResponse>;
+    getValidators(stateId?: "head", validatorIds?: (string | ValidatorIndex)[]): Promise<ValidatorResponse[]>;
+}
+
 export interface ICGEth2BeaconApi extends IBeaconApi {
-    state: IBeaconStateApi & {
-        getBlockHeader(stateId: "head", blockId: "head" | number | string): Promise<SignedBeaconHeaderResponse>;
-        getValidator(stateId: "head", validatorId: string | BLSPubkey | ValidatorIndex): Promise<ValidatorResponse>;
-        getValidators(stateId?: "head", validatorIds?: (string | ValidatorIndex)[]): Promise<ValidatorResponse[]>;
-    };
+    state: ICGEth2BeaconApiState;
 }
 export type ICGEth2NodeApi = INodeApi;
 export type ICGEth2ValidatorApi = IValidatorApi;
