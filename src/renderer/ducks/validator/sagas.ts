@@ -40,6 +40,9 @@ import {getAuthAccount} from "../auth/selectors";
 import {getBeaconNodes} from "../network/selectors";
 import {getValidators} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
+import {Eth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
+import { HttpClient } from "../../services/api";
+import {WinstonLogger} from "@chainsafe/lodestar-utils";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -153,19 +156,23 @@ function* loadValidatorStatusSaga(
 
 function* startService(
     action: ReturnType<typeof startNewValidatorService>,
-): Generator<SelectEffect | PutEffect | Promise<void>, void, IValidatorBeaconNodes> {
-    const logger = new ValidatorLogger();
-    const validatorBeaconNodes = yield select(getBeaconNodes);
+): Generator<SelectEffect | PutEffect | Promise<void>, void> {
     const publicKey = action.payload.publicKey.toHex();
     // TODO: Use beacon chain proxy instead of first node
-    const eth2API = validatorBeaconNodes[publicKey][0].client;
+    const eth2API = new Eth2ApiClient(config, "http://localhost:5052");
+    const slashingProtection = new SlashingProtection({
+        config,
+        controller: cgDbController,
+    });
+
+    // @ts-ignore
+    console.log(eth2API, slashingProtection);
+
+    const logger = new WinstonLogger();
 
     if (!validatorServices[publicKey]) {
         validatorServices[publicKey] = new Validator({
-            slashingProtection: new SlashingProtection({
-                config,
-                controller: cgDbController,
-            }),
+            slashingProtection,
             api: eth2API,
             config,
             secretKeys: [action.payload.privateKey],
