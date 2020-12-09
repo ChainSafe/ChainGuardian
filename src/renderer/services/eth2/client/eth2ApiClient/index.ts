@@ -27,7 +27,7 @@ export class Eth2ApiClient extends AbstractApiClient implements IValidatorBeacon
 
         this.validator = new Validator(config, this.httpClient);
         this.beacon = new Beacon(config, this.httpClient);
-        this.events = new Events(config, this.httpClient);
+        this.events = new Events(config, url);
         this.node = new NodeApi(config, this.httpClient);
     }
 
