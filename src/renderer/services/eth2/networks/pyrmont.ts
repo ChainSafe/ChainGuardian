@@ -22,8 +22,8 @@ export const PyrmontConfig: INetworkConfig = Object.freeze({
     },
     eth1Provider: new ethers.providers.JsonRpcProvider("https://goerli.infura.io/v3/9d117da5b35f4503b142619ad690fc6a"),
     dockerConfig: {
-        name: "lighthouse_validators",
-        image: "sigp/lighthouse",
+        name: "lighthouse_beacon",
+        image: process.env.DOCKER_LIGHTHOUSE_IMAGE,
         ports: [
             {
                 local: "9000",
