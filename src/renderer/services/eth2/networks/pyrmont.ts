@@ -2,11 +2,11 @@ import {config as minimalBeaconConfig} from "@chainsafe/lodestar-config/lib/pres
 import {INetworkConfig} from "../../interfaces";
 import {ethers} from "ethers";
 
-export const LocalhostConfig: INetworkConfig = Object.freeze({
-    networkName: "localhost",
-    networkId: 999,
+export const PyrmontConfig: INetworkConfig = Object.freeze({
+    networkName: "pyrmont",
+    networkId: 5,
     contract: {
-        address: "0x2F1598e74b146F5687174C13f8EDCF490B2492e3",
+        address: "0x8c5fecdC472E27Bc447696F431E425D02dd46a8c",
         depositAmount: 32,
         bytecode:
             // eslint-disable-next-line max-len
@@ -17,10 +17,10 @@ export const LocalhostConfig: INetworkConfig = Object.freeze({
         ...minimalBeaconConfig,
         params: {
             ...minimalBeaconConfig.params,
-            GENESIS_FORK_VERSION: Buffer.from("0x00000001"),
+            GENESIS_FORK_VERSION: Buffer.from("0x00002009"),
         },
     },
-    eth1Provider: new ethers.providers.JsonRpcProvider("http://localhost:8545"),
+    eth1Provider: new ethers.providers.JsonRpcProvider("https://goerli.infura.io/v3/9d117da5b35f4503b142619ad690fc6a"),
     dockerConfig: {
         name: "lighthouse_beacon",
         image: process.env.DOCKER_LIGHTHOUSE_IMAGE,

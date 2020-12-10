@@ -1,7 +1,7 @@
 export type DockerConfig = {
     id: string;
     network: string;
-    folderPath: string;
+    chainDataDir: string;
     eth1Url: string;
     discoveryPort: string;
     libp2pPort: string;
@@ -47,7 +47,7 @@ export class Beacons implements IBeacons {
      * @returns [boolean, boolean] first param represents if is beacon removed second represents if is local
      * */
     public removeNode(url: string): [boolean, boolean] {
-        const index = this.beacons.findIndex(({url: beaconUrl}) => beaconUrl !== url);
+        const index = this.beacons.findIndex(({url: beaconUrl}) => beaconUrl === url);
         if (index !== -1) {
             const spliced = this.beacons.splice(index, 1)[0];
             return [true, !!spliced.docker];

@@ -6,7 +6,7 @@ export const DockerConfigType = new ContainerType<DockerConfig>({
     fields: {
         id: new StringType(),
         network: new StringType(),
-        folderPath: new StringType(),
+        chainDataDir: new StringType(),
         eth1Url: new StringType(),
         discoveryPort: new StringType(),
         libp2pPort: new StringType(),

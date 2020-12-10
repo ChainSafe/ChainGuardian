@@ -5,12 +5,12 @@ import {getNetworkConfig} from "../eth2/networks";
 import {SupportedNetworks} from "../eth2/supportedNetworks";
 import {Container, IDocker} from "./container";
 import {DockerRegistry} from "./docker-registry";
-import {DockerPort} from "./type";
+import {IDockerRunParams} from "./type";
 
 export class BeaconChain extends Container {
     public static async startBeaconChain(
         network: SupportedNetworks,
-        ports?: DockerPort[],
+        params: Partial<Exclude<IDockerRunParams, "name">> = {},
         waitUntilReady = false,
     ): Promise<BeaconChain> {
         const imageName = BeaconChain.getContainerName(network);
@@ -22,8 +22,8 @@ export class BeaconChain extends Container {
 
         const bc = new BeaconChain({
             ...getNetworkConfig(network).dockerConfig,
+            ...params,
             name: imageName,
-            ports,
         });
         DockerRegistry.addContainer(imageName, bc);
 
