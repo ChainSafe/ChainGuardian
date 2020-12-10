@@ -1,6 +1,8 @@
-import {ContainerType, NumberUintType, CompositeArrayType} from "@chainsafe/ssz";
+import {ContainerType, NumberUintType, ListType} from "@chainsafe/ssz";
 import {StringType} from "./basic";
 import {NetworkMetric, NetworkMetrics} from "../networkMetrics";
+
+const MILLION = 1000000;
 
 export const NetworkMetricType = new ContainerType<NetworkMetric>({
     fields: {
@@ -13,6 +15,6 @@ export const NetworkMetricType = new ContainerType<NetworkMetric>({
 
 export const NetworkMetricsType = new ContainerType<NetworkMetrics>({
     fields: {
-        records: new CompositeArrayType({elementType: NetworkMetricType}),
+        records: new ListType({elementType: NetworkMetricType, limit: MILLION}),
     },
 });
