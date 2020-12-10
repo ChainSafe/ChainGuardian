@@ -1,4 +1,5 @@
 import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
+import database from "../../db/api/database";
 
 export class HttpClient {
     private client: AxiosInstance;
@@ -20,10 +21,13 @@ export class HttpClient {
      * @param config
      */
     public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+        const {onComplete, onError} = this.networkMetrics();
         try {
             const result: AxiosResponse<T> = await this.client.get<T>(url, config);
+            onComplete(result);
             return result.data;
         } catch (reason) {
+            onError(reason);
             throw handleError(reason);
         }
     }
@@ -34,13 +38,44 @@ export class HttpClient {
      * @param data request body
      */
     public async post<T, T2>(url: string, data: T): Promise<T2> {
+        const {onComplete, onError} = this.networkMetrics();
         try {
             const result: AxiosResponse<T2> = await this.client.post(url, data);
+            onComplete(result);
             return result.data;
         } catch (reason) {
+            onError(reason);
             throw handleError(reason);
         }
     }
+
+    /**
+     * Method that store and handles metrics data
+     */
+    private networkMetrics = (): {
+        onComplete: (status: AxiosResponse) => void;
+        onError: (error: AxiosError) => void;
+    } => {
+        const start = Date.now();
+        return {
+            onComplete: ({request, status, config}: AxiosResponse): void => {
+                database.networkMetrics.addRecord(config.baseURL, {
+                    url: request.responseURL,
+                    code: status,
+                    latency: Date.now() - start,
+                    time: Date.now(),
+                });
+            },
+            onError: ({response, config}: AxiosError): void => {
+                database.networkMetrics.addRecord(config.baseURL, {
+                    url: config.url,
+                    code: response?.status || 0,
+                    latency: Date.now() - start,
+                    time: Date.now(),
+                });
+            },
+        };
+    };
 }
 
 const handleError = (error: AxiosError): Error => {
