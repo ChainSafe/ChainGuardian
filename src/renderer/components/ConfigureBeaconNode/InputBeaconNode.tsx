@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {isSupportedBeaconChain, readBeaconChainNetwork} from "../../services/eth2/client";
+import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {Joi} from "../../services/validation";
 import {ButtonPrimary, ButtonSecondary} from "../Button/ButtonStandard";
 import {InputForm} from "../Input/InputForm";
@@ -33,11 +33,6 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
         const network = await readBeaconChainNetwork(beaconNodeInput);
         if (!network) {
             setErrorMessage("Beacon chain network not supported");
-            return false;
-        }
-
-        if (!(await isSupportedBeaconChain(beaconNodeInput, network.networkName))) {
-            setErrorMessage("Unsupported beacon chain or not working");
             return false;
         }
 
