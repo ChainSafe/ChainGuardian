@@ -10,6 +10,7 @@ import database from "../../services/db/api/database";
 import {Beacons} from "../../models/beacons";
 import {postInit} from "../store";
 import {BeaconStatus} from "./slice";
+import {HttpClient} from "../../services/api";
 
 export function* pullDockerImage(
     network: string,
@@ -64,6 +65,9 @@ function* startLocalBeaconSaga({
 }
 
 function* storeBeacon({payload: {url, docker}}: ReturnType<typeof addBeacon>): Generator<Promise<void>> {
+    if (!docker)
+        // eslint-disable-next-line no-param-reassign
+        docker = {id: "", network: "", chainDataDir: "", eth1Url: "", discoveryPort: "", libp2pPort: "", rpcPort: ""};
     yield database.beacons.upsert({url, docker});
 }
 
@@ -74,8 +78,7 @@ function* removeBeaconSaga({payload}: ReturnType<typeof removeBeacon>): Generato
 function* initializeBeaconsFromStore(): Generator<
     Promise<Beacons> | PutEffect | Promise<void> | Promise<Response[]>,
     void,
-    // eslint-disable-next-line camelcase
-    Beacons & ({is_syncing: boolean} | null)[]
+    Beacons & (boolean | null)[]
 > {
     const store = yield database.beacons.get();
     if (store !== null) {
@@ -83,11 +86,12 @@ function* initializeBeaconsFromStore(): Generator<
 
         yield BeaconChain.startAllLocalBeaconNodes();
 
-        // TODO: remove this temp solution!
         const stats = yield Promise.all(
             beacons.map(({url}) =>
-                fetch(url + "/eth/v1/node/syncing")
-                    .then((response) => response.json())
+                new HttpClient(url)
+                    // eslint-disable-next-line camelcase
+                    .get<{data: {is_syncing: boolean}}>("/eth/v1/node/syncing")
+                    .then((response) => response.data.is_syncing)
                     .catch(() => null),
             ),
         );
@@ -96,7 +100,7 @@ function* initializeBeaconsFromStore(): Generator<
             addBeacons(
                 beacons.map(({url, docker}, index) => ({
                     url,
-                    docker,
+                    docker: docker.id !== "" ? docker : undefined,
                     status:
                         stats[index] !== null
                             ? stats[index]
