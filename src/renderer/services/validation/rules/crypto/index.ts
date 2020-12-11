@@ -1,4 +1,4 @@
-import {CoerceResult, CustomHelpers, default as Joi, Extension} from "@hapi/joi";
+import {CoerceResult, CustomHelpers, default as Joi, Extension} from "joi";
 import {mnemonicRule} from "./mnemonic";
 import {keyRule} from "./key";
 

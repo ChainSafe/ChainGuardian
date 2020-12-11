@@ -1,7 +1,7 @@
 import React, {useState, ReactElement, useEffect} from "react";
 import {InputForm} from "../Input/InputForm";
 import {ButtonPrimary} from "../Button/ButtonStandard";
-import {ValidationResult} from "@hapi/joi";
+import {ValidationResult} from "joi";
 import {Joi} from "../../services/validation";
 import {SecretKey} from "@chainsafe/bls";
 import {deriveEth2ValidatorKeys, deriveKeyFromMnemonic} from "@chainsafe/bls-keygen";

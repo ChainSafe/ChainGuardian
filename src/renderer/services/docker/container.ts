@@ -100,6 +100,10 @@ export abstract class Container {
         return this.docker;
     }
 
+    public getParams(): IDockerRunParams {
+        return this.params;
+    }
+
     public getName(): string | undefined {
         if (this.docker) {
             return this.docker.name;

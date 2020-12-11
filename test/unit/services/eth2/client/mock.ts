@@ -1,8 +1,8 @@
 import {
-    IEth2BeaconApi,
-    IEth2NodeApi,
-    IEth2ValidatorApi,
-    IGenericEth2Client,
+    ICGEth2BeaconApi,
+    ICGEth2NodeApi,
+    ICGEth2ValidatorApi,
+    ICgEth2ApiClient,
 } from "../../../../../src/renderer/services/eth2/client/interface";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import sinon, {SinonStubbedInstance} from "sinon";
@@ -11,12 +11,12 @@ import {IEventsApi} from "@chainsafe/lodestar-validator/lib/api/interface/events
 import {IBeaconClock} from "@chainsafe/lodestar-validator";
 import {Root} from "@chainsafe/lodestar-types";
 
-export class MockEth2ApiClient extends EventEmitter implements IGenericEth2Client {
+export class MockEth2ApiClient extends EventEmitter implements ICgEth2ApiClient {
     public config: IBeaconConfig;
     public url: string;
-    public beacon: SinonStubbedInstance<IEth2BeaconApi>;
-    public node: SinonStubbedInstance<IEth2NodeApi>;
-    public validator: SinonStubbedInstance<IEth2ValidatorApi>;
+    public beacon: SinonStubbedInstance<ICGEth2BeaconApi>;
+    public node: SinonStubbedInstance<ICGEth2NodeApi>;
+    public validator: SinonStubbedInstance<ICGEth2ValidatorApi>;
     public events: SinonStubbedInstance<IEventsApi>;
     public clock: SinonStubbedInstance<IBeaconClock>;
     public genesisValidatorsRoot: Root = Buffer.alloc(32, 0);

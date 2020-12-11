@@ -2,10 +2,9 @@ import {upperRule} from "./upper";
 import {lowerRule} from "./lower";
 import {numberRule} from "./numbers";
 import {signsRule} from "./signs";
-import * as Joi from "@hapi/joi";
-import {Extension} from "@hapi/joi";
+import * as Joi from "joi";
 
-export const passwordExtension = (joi: Joi.Root): Extension => ({
+export const passwordExtension = (joi: Joi.Root): Joi.Extension => ({
     base: joi.string(),
     type: "password",
     rules: {

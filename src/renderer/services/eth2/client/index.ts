@@ -1,9 +1,9 @@
 import {INetworkConfig} from "../../interfaces";
 import {getNetworkConfig, getNetworkConfigByGenesisVersion} from "../networks";
-import {IGenericEth2Client} from "./interface";
+import {ICgEth2ApiClient} from "./interface";
 import {ILogger, WinstonLogger} from "@chainsafe/lodestar-utils";
 
-export function getEth2ApiClient(url: string, network: string, logger?: ILogger): IGenericEth2Client | undefined {
+export function getEth2ApiClient(url: string, network: string, logger?: ILogger): ICgEth2ApiClient | undefined {
     const networkConfig = getNetworkConfig(network);
     if (!networkConfig) {
         return undefined;
