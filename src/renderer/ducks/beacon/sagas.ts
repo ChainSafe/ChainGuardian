@@ -26,18 +26,32 @@ export function* pullDockerImage(
 }
 
 function* startLocalBeaconSaga({
-    payload: {network, ports, folderPath, eth1Url, discoveryPort, libp2pPort, rpcPort},
+    payload: {network, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort},
     meta: {onComplete},
 }: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
     const pullSuccess = yield call(pullDockerImage, network);
+
+    const ports = [
+        {local: String(libp2pPort), host: String(libp2pPort)},
+        {local: String(rpcPort), host: String(rpcPort)},
+    ];
+    if (libp2pPort !== discoveryPort) {
+        ports.push({local: String(discoveryPort), host: String(discoveryPort)});
+    }
+
     if (pullSuccess) {
         switch (network) {
             default:
                 yield put(
-                    addBeacon(`http://localhost:${ports[1].local}`, {
-                        id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, ports)).getName(),
+                    addBeacon(`http://localhost:${rpcPort}`, {
+                        id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, {
+                            ports,
+                            // eslint-disable-next-line max-len
+                            cmd: `lighthouse beacon_node --network ${network} --port ${libp2pPort} --discovery-port ${discoveryPort} --http --http-address 0.0.0.0 --http-port ${rpcPort} --eth1-endpoints ${eth1Url}`,
+                            volume: `${chainDataDir}:/root/.lighthouse`,
+                        })).getParams().name,
                         network,
-                        folderPath,
+                        chainDataDir,
                         eth1Url,
                         discoveryPort,
                         libp2pPort,

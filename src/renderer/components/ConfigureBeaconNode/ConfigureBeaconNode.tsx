@@ -1,7 +1,6 @@
 import React, {useRef, useState} from "react";
 import path from "path";
-import {DockerPort} from "../../services/docker/type";
-import {getNetworkConfig, networksList} from "../../services/eth2/networks";
+import {networksList} from "../../services/eth2/networks";
 import {ButtonPrimary} from "../Button/ButtonStandard";
 import {InputForm} from "../Input/InputForm";
 import {Dropdown} from "../Dropdown/Dropdown";
@@ -11,9 +10,8 @@ import {getDefaultsForClient} from "../../services/eth2/client/defaults";
 import {Accordion} from "../Accordion/Accordion";
 
 export interface IConfigureBNSubmitOptions {
-    ports: DockerPort[];
     network: string;
-    folderPath: string;
+    chainDataDir: string;
     eth1Url: string;
     discoveryPort: string;
     libp2pPort: string;
@@ -28,11 +26,10 @@ interface IConfigureBNProps {
 export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (props: IConfigureBNProps) => {
     // TODO: refactor to use list from src/renderer/services/eth2/networks/index.ts
     const [networkIndex, setNetworkIndex] = useState(0);
-    const ports = getNetworkConfig(networksList[networkIndex]).dockerConfig.ports;
     const defaults = getDefaultsForClient(props.clientName);
 
-    const defaultPath = path.join(getConfig(remote.app).storage.dataDir);
-    const [folderPath, setPath] = useState(defaultPath);
+    const defaultChainDataDir = path.join(getConfig(remote.app).storage.dataDir);
+    const [chainDataDir, setChainDataDir] = useState(defaultChainDataDir);
 
     const defaultEth1URL = "https://goerli.infura.io/v3/73d4045fe98a406faa2334ad7306b313";
     const [eth1Url, setEth1URL] = useState(defaultEth1URL);
@@ -48,8 +45,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
 
     const onSubmit = (): void => {
         props.onSubmit({
-            ports,
-            folderPath,
+            chainDataDir,
             eth1Url,
             discoveryPort,
             libp2pPort,
@@ -62,9 +58,12 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
     const onFocus = async (): Promise<void> => {
         if (!focused.current) {
             focused.current = true;
-            const result = await remote.dialog.showOpenDialog({defaultPath: folderPath, properties: ["openDirectory"]});
+            const result = await remote.dialog.showOpenDialog({
+                defaultPath: chainDataDir,
+                properties: ["openDirectory"],
+            });
             if (result.canceled) return;
-            setPath(result.filePaths[0]);
+            setChainDataDir(result.filePaths[0]);
         }
         focused.current = false;
     };
@@ -104,8 +103,8 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                         <h3>Chain data location</h3>
                     </div>
                     <InputForm
-                        onChange={(e): void => setPath(e.currentTarget.value)}
-                        inputValue={folderPath}
+                        onChange={(e): void => setChainDataDir(e.currentTarget.value)}
+                        inputValue={chainDataDir}
                         onFocus={onFocus}
                         onSubmit={(e): void => {
                             e.preventDefault();
