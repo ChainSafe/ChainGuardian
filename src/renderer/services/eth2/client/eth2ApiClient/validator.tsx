@@ -52,26 +52,17 @@ export class Validator implements ICGEth2ValidatorApi {
     };
 
     public prepareBeaconCommitteeSubnet = async (
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         validatorIndex: ValidatorIndex,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         committeeIndex: CommitteeIndex,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         committeesAtSlot: number,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         slot: Slot,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         isAggregator: boolean,
-    ): Promise<void> => {
-        await this.httpClient.post<Json[], void>("/beacon_committee_subscriptions", [
-            {
-                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                validator_index: validatorIndex,
-                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                committee_index: committeeIndex,
-                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                committees_at_slot: committeesAtSlot,
-                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                is_aggregator: isAggregator,
-                slot,
-            },
-        ]);
-    };
+    ): Promise<void> => {};
 
     public produceAttestationData = async (index: CommitteeIndex, slot: Slot): Promise<AttestationData> => {
         const query = querystring.stringify({
