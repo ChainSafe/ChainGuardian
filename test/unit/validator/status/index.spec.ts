@@ -10,7 +10,7 @@ describe("validator status", function () {
 // import {initBLS} from "@chainsafe/bls";
 // import {generateValidator} from "./util";
 // import {IBeaconConfig} from "@chainsafe/lodestar-config";
-// import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
+// import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 // import {IEth2BeaconApi, IGenericEth2Client} from "../../../../src/renderer/services/eth2/client/interface";
 // import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
 // import {StandardValidatorBeaconClient} from "../../../../src/renderer/services/eth2/client/standard";

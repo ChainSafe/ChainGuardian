@@ -7,7 +7,7 @@ import {EthersNotifier} from "../../services/deposit/ethers";
 import {getValidatorStatus, ValidatorStatus} from "../../services/validator/status";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
 import database, {cgDbController} from "../../services/db/api/database";
-import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
+import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {IByPublicKey, IValidator} from "./slice";
 import {
     loadValidators,

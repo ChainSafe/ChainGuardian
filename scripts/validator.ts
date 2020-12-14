@@ -5,7 +5,7 @@ import {CGDatabase} from "../src/renderer/services/db/api";
 import {LevelDbController} from "../src/main/db/controller";
 import rimraf from "rimraf";
 import {LighthouseEth2ApiClient} from "../src/renderer/services/eth2/client/lighthouse/lighthouse";
-import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
+import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {LogLevel, WinstonLogger} from "@chainsafe/lodestar-utils";
 import {getInteropKey} from "../src/renderer/services/validator/interop_keys";
 
