@@ -40,7 +40,7 @@ import {getAuthAccount} from "../auth/selectors";
 import {getBeaconNodes} from "../network/selectors";
 import {getValidators} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
-import {Eth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
+import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
 import {WinstonLogger} from "@chainsafe/lodestar-utils";
 
 interface IValidatorServices {
@@ -158,7 +158,8 @@ function* startService(
 ): Generator<SelectEffect | PutEffect | Promise<void>, void> {
     const publicKey = action.payload.publicKey.toHex();
     // TODO: Use beacon chain proxy instead of first node
-    const eth2API = new Eth2ApiClient(config, "http://localhost:5052");
+    const eth2API = new CgEth2ApiClient(config, "http://localhost:5052");
+
     const slashingProtection = new SlashingProtection({
         config,
         controller: cgDbController,

@@ -3,7 +3,7 @@ import {IStoppableEventIterable, LodestarEventIterator} from "@chainsafe/lodesta
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {ContainerType} from "@chainsafe/ssz";
 
-export class Events implements IEventsApi {
+export class CgEth2EventsApi implements IEventsApi {
     private readonly baseUrl: string;
     private readonly config: IBeaconConfig;
     public constructor(config: IBeaconConfig, baseUrl: string) {

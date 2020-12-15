@@ -10,7 +10,7 @@ import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Json} from "@chainsafe/ssz";
 
-export class BeaconState implements ICGEth2BeaconApiState {
+export class CgEth2BeaconStateApi implements ICGEth2BeaconApiState {
     private readonly httpClient: HttpClient;
     private readonly config: IBeaconConfig;
     // TODO: implement logger;

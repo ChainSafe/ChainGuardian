@@ -4,11 +4,11 @@ import {BeaconBlock, BeaconState, Genesis} from "@chainsafe/lodestar-types";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Json} from "@chainsafe/ssz";
-import {BeaconBlocks} from "./beaconBlocks";
-import {BeaconState as BeaconStateApi} from "./beaconState";
-import {BeaconPool} from "./beaconPool";
+import {CgEth2BeaconBlocksApi} from "./cgEth2BeaconBlocksApi";
+import {CgEth2BeaconStateApi} from "./cgEth2BeaconStateApi";
+import {CgEth2BeaconPoolApi} from "./cgEth2BeaconPoolApi";
 
-export class Beacon implements ICGEth2BeaconApi {
+export class CgEth2BeaconApi implements ICGEth2BeaconApi {
     public blocks: IBeaconBlocksApi;
     public state: ICGEth2BeaconApiState;
     public pool: IBeaconPoolApi;
@@ -20,9 +20,9 @@ export class Beacon implements ICGEth2BeaconApi {
         this.config = config;
         this.httpClient = httpClient;
 
-        this.blocks = new BeaconBlocks(config, httpClient);
-        this.state = new BeaconStateApi(config, httpClient);
-        this.pool = new BeaconPool(config, httpClient);
+        this.blocks = new CgEth2BeaconBlocksApi(config, httpClient);
+        this.state = new CgEth2BeaconStateApi(config, httpClient);
+        this.pool = new CgEth2BeaconPoolApi(config, httpClient);
     }
 
     public getGenesis = async (): Promise<Genesis | null> => {

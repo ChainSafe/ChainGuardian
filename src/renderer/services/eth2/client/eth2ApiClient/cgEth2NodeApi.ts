@@ -4,7 +4,7 @@ import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {SyncingStatus} from "@chainsafe/lodestar-types";
 import {Json} from "@chainsafe/ssz";
 
-export class NodeApi implements ICGEth2NodeApi {
+export class CgEth2NodeApi implements ICGEth2NodeApi {
     private readonly httpClient: HttpClient;
     private readonly config: IBeaconConfig;
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {

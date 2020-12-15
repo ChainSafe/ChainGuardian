@@ -2,15 +2,15 @@ import {ICGEth2ValidatorApi, IValidatorBeaconClient, ICGEth2BeaconApi, ICGEth2No
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {IEventsApi} from "@chainsafe/lodestar-validator/lib/api/interface/events";
 import {IEth2ChainHead} from "../../../../models/types/head";
-import {Beacon} from "./beacon";
+import {CgEth2BeaconApi} from "./cgEth2BeaconApi";
 import {HttpClient} from "../../../api";
 import {AbstractApiClient} from "@chainsafe/lodestar-validator/lib/api/abstract";
 import {WinstonLogger} from "@chainsafe/lodestar-utils";
-import {Validator} from "./validator";
-import {NodeApi} from "./nodeApi";
-import {Events} from "./events";
+import {CgEth2ValidatorApi} from "./cgEth2ValidatorApi";
+import {CgEth2NodeApi} from "./cgEth2NodeApi";
+import {CgEth2EventsApi} from "./cgEth2EventsApi";
 
-export class Eth2ApiClient extends AbstractApiClient implements IValidatorBeaconClient {
+export class CgEth2ApiClient extends AbstractApiClient implements IValidatorBeaconClient {
     public validator: ICGEth2ValidatorApi;
     public beacon: ICGEth2BeaconApi; //
     public node: ICGEth2NodeApi;
@@ -25,10 +25,10 @@ export class Eth2ApiClient extends AbstractApiClient implements IValidatorBeacon
         this.url = url;
         this.httpClient = new HttpClient(url);
 
-        this.validator = new Validator(config, this.httpClient);
-        this.beacon = new Beacon(config, this.httpClient);
-        this.events = new Events(config, url);
-        this.node = new NodeApi(config, this.httpClient);
+        this.validator = new CgEth2ValidatorApi(config, this.httpClient);
+        this.beacon = new CgEth2BeaconApi(config, this.httpClient);
+        this.events = new CgEth2EventsApi(config, url);
+        this.node = new CgEth2NodeApi(config, this.httpClient);
     }
 
     public getVersion = async (): Promise<string> => {

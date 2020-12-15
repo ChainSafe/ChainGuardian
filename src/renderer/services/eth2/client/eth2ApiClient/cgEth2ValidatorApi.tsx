@@ -17,7 +17,7 @@ import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Json, toHexString} from "@chainsafe/ssz";
 import querystring from "querystring";
 
-export class Validator implements ICGEth2ValidatorApi {
+export class CgEth2ValidatorApi implements ICGEth2ValidatorApi {
     private readonly httpClient: HttpClient;
     private readonly config: IBeaconConfig;
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {

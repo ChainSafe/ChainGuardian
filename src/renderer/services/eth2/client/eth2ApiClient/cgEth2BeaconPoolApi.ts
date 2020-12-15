@@ -3,7 +3,7 @@ import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Attestation} from "@chainsafe/lodestar-types";
 
-export class BeaconPool implements IBeaconPoolApi {
+export class CgEth2BeaconPoolApi implements IBeaconPoolApi {
     private readonly httpClient: HttpClient;
     private readonly config: IBeaconConfig;
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
