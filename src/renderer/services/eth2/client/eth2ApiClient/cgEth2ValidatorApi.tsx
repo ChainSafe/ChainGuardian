@@ -52,17 +52,26 @@ export class CgEth2ValidatorApi implements ICGEth2ValidatorApi {
     };
 
     public prepareBeaconCommitteeSubnet = async (
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         validatorIndex: ValidatorIndex,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         committeeIndex: CommitteeIndex,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         committeesAtSlot: number,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         slot: Slot,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         isAggregator: boolean,
-    ): Promise<void> => {};
+    ): Promise<void> => {
+        await this.httpClient.post<Json[], void>("/eth/v1/validator/beacon_committee_subscriptions", [
+            {
+                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+                validator_index: validatorIndex,
+                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+                committee_index: committeeIndex,
+                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+                committees_at_slot: committeesAtSlot,
+                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+                is_aggregator: isAggregator,
+                slot,
+            },
+        ]);
+    };
 
     public produceAttestationData = async (index: CommitteeIndex, slot: Slot): Promise<AttestationData> => {
         const query = querystring.stringify({
@@ -86,7 +95,7 @@ export class CgEth2ValidatorApi implements ICGEth2ValidatorApi {
 
     public publishAggregateAndProofs = async (signedAggregateAndProofs: SignedAggregateAndProof[]): Promise<void> => {
         await this.httpClient.post<Json[], void>(
-            "/aggregate_and_proofs",
+            "/eth/v1/validator/aggregate_and_proofs",
             signedAggregateAndProofs.map((a) => this.config.types.SignedAggregateAndProof.toJson(a, {case: "snake"})),
         );
     };
