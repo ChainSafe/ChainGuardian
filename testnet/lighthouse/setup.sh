@@ -5,9 +5,9 @@
 #
 
 source ./vars.env
-source ../.env
+source ../../.env
 
-docker run -v $TESTNET_DIR:/root/testnet $DOCKER_LIGHTHOUSE_IMAGE lcli \
+docker run -v $TESTNET_DIR:/root/testnet $DOCKER_LCLI_IMAGE lcli \
 	--spec mainnet \
 	new-testnet \
 	--deposit-contract-address 1234567890123456789012345678901234567890 \
@@ -19,7 +19,7 @@ docker run -v $TESTNET_DIR:/root/testnet $DOCKER_LIGHTHOUSE_IMAGE lcli \
 echo Specification generated at $TESTNET_DIR.
 echo "Generating $VALIDATOR_COUNT validators concurrently... (this may take a while)"
 
-docker run -v $VALIDATORS_DIR:/root/validator -v $SECRETS_DIR:/root/secrets $DOCKER_LIGHTHOUSE_IMAGE lcli \
+docker run -v $VALIDATORS_DIR:/root/validator -v $SECRETS_DIR:/root/secrets $DOCKER_LCLI_IMAGE lcli \
 	insecure-validators \
 	--count $VALIDATOR_COUNT \
 	--validators-dir /root/validator \
@@ -28,7 +28,7 @@ docker run -v $VALIDATORS_DIR:/root/validator -v $SECRETS_DIR:/root/secrets $DOC
 echo Validators generated at $VALIDATORS_DIR with keystore passwords at $SECRETS_DIR.
 echo "Building genesis state... (this might take a while)"
 
-docker run -v $TESTNET_DIR:/root/testnet $DOCKER_LIGHTHOUSE_IMAGE lcli \
+docker run -v $TESTNET_DIR:/root/testnet $DOCKER_LCLI_IMAGE lcli \
 	--spec mainnet \
 	interop-genesis \
 	--testnet-dir /root/testnet \

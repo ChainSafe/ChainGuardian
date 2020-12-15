@@ -1,0 +1,32 @@
+version: "3.0"
+
+####
+# https://github.com/sigp/lighthouse/tree/master/scripts/local_testnet
+
+services:
+  beacon_node:
+    image: "${DOCKER_LIGHTHOUSE_IMAGE}"
+    container_name: "eth2_testnet_beacon_lighthouse"
+    volumes:
+      - ./testnet/lighthouse/data:/root/testnet
+      - ./testnet/lighthouse/data/beacon:/root/beacon
+      - ./testnet/lighthouse:/root/scripts
+    ports:
+      - 5052:5052/tcp
+    env_file: ./testnet/lighthouse/vars.env
+    command: sh /root/scripts/start-beacon-node.sh
+    restart: on-failure
+
+  validator_client:
+    image: "${DOCKER_LIGHTHOUSE_IMAGE}"
+    container_name: "eth2_testnet_validator_lighthouse"
+    volumes:
+      - ./testnet/lighthouse/data:/root/testnet
+      - ./testnet/lighthouse/data/validators:/root/validators
+      - ./testnet/lighthouse/data/secrets:/root/secrets
+      - ./testnet/lighthouse:/root/scripts
+    depends_on:
+      - beacon_node
+    env_file: ./testnet/lighthouse/vars.env
+    command: sh /root/scripts/start-validator-client.sh
+    restart: on-failure
