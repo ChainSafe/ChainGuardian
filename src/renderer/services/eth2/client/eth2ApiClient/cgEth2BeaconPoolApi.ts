@@ -12,9 +12,8 @@ export class CgEth2BeaconPoolApi implements IBeaconPoolApi {
     }
 
     public submitAttestation = async (attestation: Attestation): Promise<void> => {
-        await this.httpClient.post(
-            "/eth/v1/beacon/pool/attestations",
+        await this.httpClient.post("/eth/v1/beacon/pool/attestations", [
             this.config.types.Attestation.toJson(attestation, {case: "snake"}),
-        );
+        ]);
     };
 }
