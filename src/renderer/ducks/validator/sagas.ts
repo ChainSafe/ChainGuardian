@@ -38,10 +38,11 @@ import {ValidatorResponse} from "@chainsafe/lodestar-types";
 import * as logger from "electron-log";
 import {getAuthAccount} from "../auth/selectors";
 import {getBeaconNodes} from "../network/selectors";
-import {getValidators} from "./selectors";
+import {getValidatorBeaconNodes, getValidators} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
 import {WinstonLogger} from "@chainsafe/lodestar-utils";
+import {Beacon} from "../beacon/slice";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -155,33 +156,40 @@ function* loadValidatorStatusSaga(
 
 function* startService(
     action: ReturnType<typeof startNewValidatorService>,
-): Generator<SelectEffect | PutEffect | Promise<void>, void> {
-    const publicKey = action.payload.publicKey.toHex();
-    // TODO: Use beacon chain proxy instead of first node
-    const eth2API = new CgEth2ApiClient(config, "http://localhost:5052");
+): Generator<SelectEffect | PutEffect | Promise<void>, void, Beacon[]> {
+    try {
+        const publicKey = action.payload.publicKey.toHex();
+        const beaconNodes = yield select(getValidatorBeaconNodes, {publicKey});
+        if (!beaconNodes.length) {
+            throw new Error("missing beacon node");
+        }
 
-    const slashingProtection = new SlashingProtection({
-        config,
-        controller: cgDbController,
-    });
+        // TODO: Use beacon chain proxy instead of first node
+        const eth2API = new CgEth2ApiClient(config, beaconNodes[0].url);
 
-    console.log(eth2API, slashingProtection);
-
-    const logger = new WinstonLogger() as ValidatorLogger;
-
-    if (!validatorServices[publicKey]) {
-        validatorServices[publicKey] = new Validator({
-            slashingProtection,
-            api: eth2API,
+        const slashingProtection = new SlashingProtection({
             config,
-            secretKeys: [action.payload.privateKey],
-            logger,
-            graffiti: "ChainGuardian",
+            controller: cgDbController,
         });
-    }
-    yield validatorServices[publicKey].start();
 
-    yield put(startValidatorService(logger, publicKey));
+        const logger = new WinstonLogger() as ValidatorLogger;
+
+        if (!validatorServices[publicKey]) {
+            validatorServices[publicKey] = new Validator({
+                slashingProtection,
+                api: eth2API,
+                config,
+                secretKeys: [action.payload.privateKey],
+                logger,
+                graffiti: "ChainGuardian",
+            });
+        }
+        yield validatorServices[publicKey].start();
+
+        yield put(startValidatorService(logger, publicKey));
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 function* stopService(action: ReturnType<typeof stopActiveValidatorService>): Generator<PutEffect | Promise<void>> {
