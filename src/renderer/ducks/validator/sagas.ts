@@ -7,7 +7,7 @@ import {EthersNotifier} from "../../services/deposit/ethers";
 import {getValidatorStatus, ValidatorStatus} from "../../services/validator/status";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
 import database, {cgDbController} from "../../services/db/api/database";
-import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
+import {config as mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {IByPublicKey, IValidator} from "./slice";
 import {
     loadValidators,
@@ -43,6 +43,8 @@ import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
 import {WinstonLogger} from "@chainsafe/lodestar-utils";
 import {Beacon} from "../beacon/slice";
+import {readBeaconChainNetwork} from "../../services/eth2/client";
+import {INetworkConfig} from "../../services/interfaces";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -156,13 +158,19 @@ function* loadValidatorStatusSaga(
 
 function* startService(
     action: ReturnType<typeof startNewValidatorService>,
-): Generator<SelectEffect | PutEffect | Promise<void>, void, Beacon[]> {
+): Generator<
+    SelectEffect | PutEffect | Promise<void> | Promise<INetworkConfig | null>,
+    void,
+    Beacon[] & (INetworkConfig | null)
+> {
     try {
         const publicKey = action.payload.publicKey.toHex();
         const beaconNodes = yield select(getValidatorBeaconNodes, {publicKey});
         if (!beaconNodes.length) {
             throw new Error("missing beacon node");
         }
+
+        const config = (yield readBeaconChainNetwork(beaconNodes[0].url))?.eth2Config || mainnetConfig;
 
         // TODO: Use beacon chain proxy instead of first node
         const eth2API = new CgEth2ApiClient(config, beaconNodes[0].url);
@@ -188,7 +196,7 @@ function* startService(
 
         yield put(startValidatorService(logger, publicKey));
     } catch (e) {
-        console.error(e);
+        logger.error("Failed to start validator", e.message);
     }
 }
 
