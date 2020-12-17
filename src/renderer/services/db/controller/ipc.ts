@@ -19,7 +19,7 @@ export class IpcDatabaseController implements IDatabaseController<Buffer, Buffer
     }
 
     public async search(opts: IFilterOptions<Buffer>): Promise<Buffer[]> {
-        return await ipcRenderer.invoke(IpcDatabaseEvents.DATABASE_SEARCH, opts.gt, opts.lt);
+        return await ipcRenderer.invoke(IpcDatabaseEvents.DATABASE_SEARCH, opts);
     }
 
     public async put(key: Buffer, value: Buffer): Promise<void> {
