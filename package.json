@@ -75,7 +75,8 @@
     ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
-      "\\.(s?css|sass)$": "<rootDir>/mocks/styleMock.js"
+      "\\.(s?css|sass)$": "<rootDir>/mocks/styleMock.js",
+      "^electron$": "<rootDir>/mocks/electronMock.ts"
     }
   },
   "devDependencies": {
@@ -183,6 +184,7 @@
     "bigint-buffer": "1.1.5",
     "bip39": "3.0.2",
     "electron-log": "^3.0.9",
+    "electron-mock-ipc": "^0.3.9",
     "ethereumjs-abi": "^0.6.8",
     "ethers": "^5.0.19",
     "event-iterator": "^2.0.0",
