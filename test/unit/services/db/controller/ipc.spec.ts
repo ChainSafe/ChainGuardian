@@ -3,7 +3,7 @@ import {intToBytes} from "@chainsafe/lodestar-utils";
 import {IpcMainEvent, IpcMainInvokeEvent} from "electron";
 // @ts-ignore
 import {IpcDatabaseController} from "./../../../../../src/renderer/services/db/controller/ipc";
-import {ipcMain, ipcRenderer} from "../../../../../mocks/electronMock";
+import {ipcMain} from "../../../../../mocks/electronMock";
 import {IpcDatabaseEvents} from "../../../../../src/main/db/events";
 
 describe("Ipc communication pipe", () => {
