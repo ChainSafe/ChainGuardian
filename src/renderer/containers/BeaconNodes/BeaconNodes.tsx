@@ -1,6 +1,5 @@
 import React from "react";
 import {useSelector} from "react-redux";
-import {useHistory} from "react-router";
 import {Background} from "../../components/Background/Background";
 import {BackButton} from "../../components/Button/ButtonAction";
 import {NodeCard} from "../../components/Cards/NodeCard";
@@ -14,7 +13,6 @@ import {getValidatorsByBeaconNode} from "../../ducks/validator/selectors";
 import {truncatePublicKey} from "../../services/utils/formatting";
 
 export const BeaconNodesContainer: React.FunctionComponent = () => {
-    const history = useHistory();
     const beacons = useSelector(getBeacons);
     const beaconValidators = useSelector(getValidatorsByBeaconNode);
 
@@ -23,7 +21,9 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
             <Background scrollable={true}>
                 <div className='flex-column validator-container beacon-nodes-container'>
                     <div className='row'>
-                        <BackButton onClick={(): void => history.goBack()} />
+                        <Link to={Routes.DASHBOARD_ROUTE}>
+                            <BackButton />
+                        </Link>
                         <h2>Beacon nodes management</h2>
                         <Link to={Routes.ADD_BEACON_NODE} className='add-beacon-node'>
                             <ButtonSecondary>ADD BEACON NODE</ButtonSecondary>
