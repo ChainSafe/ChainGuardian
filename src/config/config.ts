@@ -7,7 +7,6 @@ const env = process.env;
 export interface IConfig {
     storage: {
         dataDir: string;
-        home: string;
         accountsDir: string;
     };
     db: {
@@ -23,7 +22,6 @@ export function getConfig(app?: App): IConfig {
     }
     const storageConfig = {
         dataDir: app.getPath("userData"),
-        home: app.getPath("home"),
         accountsDir: path.join(app.getPath("userData"), "accounts"),
     };
 
