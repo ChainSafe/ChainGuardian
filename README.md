@@ -53,8 +53,13 @@ you will get:
 - 2 working lighthouse beacon nodes (port: 5052 and 6052)
 - lighthouse validator with 15 dummy account
 
-To start using local network just add beacon node with address `http://localhost:5052` and implement any keystore.  
+To start using local network just add beacon node with address `http://localhost:5052`.  
+You can use this account to validate using ChainGuardian (or create new via launchpad):
+- private key: `0x03cffafa1cbaa7e585eaee07a9d35ae57f6dfe19a9ea53af9c37e9f3dfac617c`
+- public key: `0x872c61b4a7f8510ec809e5b023f5fdda2105d024c470ddbbeca4bc74e8280af0d178d749853e8f6a841083ac1b4db98f`  
+
 In case of longer break it is recommended to update genesis time before starting local tesnet with `reset_genesis_time.sh` script
+
 
 ## Packaging
 We use [Electron builder](https://www.electron.build/) to build and package the application. By default you can run the following to package for your current platform:

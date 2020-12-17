@@ -11,14 +11,9 @@ services:
       - ./testnet/lighthouse/data:/root/testnet
       - ./testnet/lighthouse/data/beacon:/root/beacon
       - ./testnet/lighthouse:/root/scripts
-    ports:
-      - 5052:5052/tcp
-      - 9000:9000/udp
-      - 9000:9000/tcp
     network_mode: "host"
     env_file: ./testnet/lighthouse/vars.env
     command: sh /root/scripts/start-beacon-node.sh
-    restart: on-failure
 
   second_beacon_node:
     image: "${DOCKER_LIGHTHOUSE_IMAGE}"
@@ -28,16 +23,11 @@ services:
       - ./testnet/lighthouse/data/beacon:/root/beacon
       - ./testnet/lighthouse/data/beacon2:/root/beacon2
       - ./testnet/lighthouse:/root/scripts
-    ports:
-      - 6052:6052/tcp
-      - 9902:9902/udp
-      - 9902:9902/tcp
     network_mode: "host"
     depends_on:
       - beacon_node
     env_file: ./testnet/lighthouse/vars.env
     command: sh /root/scripts/start-second-beacon-node.sh
-    restart: on-failure
 
   validator_client:
     image: "${DOCKER_LIGHTHOUSE_IMAGE}"
@@ -52,4 +42,3 @@ services:
       - second_beacon_node
     env_file: ./testnet/lighthouse/vars.env
     command: sh /root/scripts/start-validator-client.sh
-    restart: on-failure
