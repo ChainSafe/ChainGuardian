@@ -16,7 +16,6 @@ import {
     startValidatorService,
     stopValidatorService,
     loadValidatorStatus,
-    loadedValidatorsBalance,
     stopActiveValidatorService,
     startNewValidatorService,
     updateValidatorsFromChain,
@@ -127,14 +126,7 @@ function* loadValidatorsFromChain(
     const validatorBeaconNodes: IValidatorBeaconNodes = yield select(getBeaconNodes);
     const beaconNodes = validatorBeaconNodes[action.payload[0]];
     if (beaconNodes && beaconNodes.length > 0) {
-        // TODO: Use any working beacon node instead of first one
-        const client = beaconNodes[0].client;
-        try {
-            const response = yield client.beacon.state.getValidators("head", action.payload);
-            yield put(loadedValidatorsBalance(response));
-        } catch (e) {
-            logger.warn("Error while fetching validator balance...", e.message);
-        }
+        logger.warn("Error while fetching validator balance...");
     }
 }
 

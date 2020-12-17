@@ -2,7 +2,7 @@ import {ICGEth2BeaconApi} from "../interface";
 import {
     IBeaconBlocksApi,
     IBeaconPoolApi,
-    IBeaconStateApi
+    IBeaconStateApi,
 } from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {BeaconBlock, Genesis} from "@chainsafe/lodestar-types";
 import {HttpClient} from "../../../api";
