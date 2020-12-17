@@ -1,6 +1,10 @@
-import {ICGEth2BeaconApi, ICGEth2BeaconApiState} from "../interface";
-import {IBeaconBlocksApi, IBeaconPoolApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
-import {BeaconBlock, BeaconState, Genesis} from "@chainsafe/lodestar-types";
+import {ICGEth2BeaconApi} from "../interface";
+import {
+    IBeaconBlocksApi,
+    IBeaconPoolApi,
+    IBeaconStateApi
+} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
+import {BeaconBlock, Genesis} from "@chainsafe/lodestar-types";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Json} from "@chainsafe/ssz";
@@ -10,7 +14,7 @@ import {CgEth2BeaconPoolApi} from "./cgEth2BeaconPoolApi";
 
 export class CgEth2BeaconApi implements ICGEth2BeaconApi {
     public blocks: IBeaconBlocksApi;
-    public state: ICGEth2BeaconApiState;
+    public state: IBeaconStateApi;
     public pool: IBeaconPoolApi;
 
     private readonly httpClient: HttpClient;
@@ -38,9 +42,5 @@ export class CgEth2BeaconApi implements ICGEth2BeaconApi {
 
     public getChainHead = async (): Promise<BeaconBlock> => {
         throw new Error("Method 'getChainHead' not implemented.");
-    };
-
-    public getBeaconState = async (): Promise<BeaconState> => {
-        throw new Error("Method 'getBeaconState' not implemented.");
     };
 }

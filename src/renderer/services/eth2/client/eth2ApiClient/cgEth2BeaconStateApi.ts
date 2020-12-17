@@ -1,16 +1,10 @@
-import {
-    BLSPubkey,
-    Fork,
-    SignedBeaconHeaderResponse,
-    ValidatorIndex,
-    ValidatorResponse,
-} from "@chainsafe/lodestar-types";
-import {ICGEth2BeaconApiState} from "../interface";
+import {BLSPubkey, Fork, ValidatorIndex, ValidatorResponse} from "@chainsafe/lodestar-types";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Json} from "@chainsafe/ssz";
+import {IBeaconStateApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 
-export class CgEth2BeaconStateApi implements ICGEth2BeaconApiState {
+export class CgEth2BeaconStateApi implements IBeaconStateApi {
     private readonly httpClient: HttpClient;
     private readonly config: IBeaconConfig;
     // TODO: implement logger;
@@ -50,32 +44,5 @@ export class CgEth2BeaconStateApi implements ICGEth2BeaconApiState {
             console.error("Failed to fetch validator", {validatorId: id, error: e.message});
             return null;
         }
-    };
-
-    public getBlockHeader = async (
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        stateId: "head",
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        blockId: "head" | number | string,
-    ): Promise<SignedBeaconHeaderResponse> => {
-        throw new Error("Method 'getBlockHeader' not implemented.");
-    };
-
-    public getValidator = async (
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        stateId: "head",
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        validatorId: string | BLSPubkey | ValidatorIndex,
-    ): Promise<ValidatorResponse> => {
-        throw new Error("Method 'getValidator' not implemented.");
-    };
-
-    public getValidators = async (
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        stateId?: "head",
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        validatorIds?: (string | ValidatorIndex)[],
-    ): Promise<ValidatorResponse[]> => {
-        throw new Error("Method 'getValidators' not implemented.");
     };
 }

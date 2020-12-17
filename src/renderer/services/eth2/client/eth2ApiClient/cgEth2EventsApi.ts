@@ -13,8 +13,8 @@ export class CgEth2EventsApi implements IEventsApi {
 
     public getEventStream = (topics: BeaconEventType[]): IStoppableEventIterable<BeaconEvent> => {
         const topicsQuery = topics.filter((topic) => topic !== "chain_reorg").join(",");
-        const url = `${this.baseUrl.replace(/\/+$/, "")}/eth/v1/events?topics=${topicsQuery}`;
-        const eventSource = new EventSource(url);
+        const url = new URL(`/eth/v1/events?topics=${topicsQuery}`, this.baseUrl);
+        const eventSource = new EventSource(url.href);
         return new LodestarEventIterator(({push}): (() => void) => {
             eventSource.onmessage = (event): void => {
                 if (topics.includes(event.type as BeaconEventType)) {

@@ -1,7 +1,6 @@
 import {ICGEth2ValidatorApi, IValidatorBeaconClient, ICGEth2BeaconApi, ICGEth2NodeApi} from "../interface";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {IEventsApi} from "@chainsafe/lodestar-validator/lib/api/interface/events";
-import {IEth2ChainHead} from "../../../../models/types/head";
 import {CgEth2BeaconApi} from "./cgEth2BeaconApi";
 import {HttpClient} from "../../../api";
 import {AbstractApiClient} from "@chainsafe/lodestar-validator/lib/api/abstract";
@@ -30,13 +29,4 @@ export class CgEth2ApiClient extends AbstractApiClient implements IValidatorBeac
         this.events = new CgEth2EventsApi(config, url);
         this.node = new CgEth2NodeApi(config, this.httpClient);
     }
-
-    public getVersion = async (): Promise<string> => {
-        throw new Error("Method 'getVersion' not implemented.");
-    };
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public onNewChainHead = (callback: (head: IEth2ChainHead) => void): NodeJS.Timeout => {
-        throw new Error("Method 'onNewChainHead' not implemented.");
-    };
 }
