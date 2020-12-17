@@ -181,7 +181,7 @@ function* startService(
                 config,
                 secretKeys: [action.payload.privateKey],
                 logger,
-                graffiti: "ChainGuardian",
+                // TODO: graffiti: "ChainGuardian",
             });
         }
         yield validatorServices[publicKey].start();

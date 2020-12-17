@@ -84,11 +84,13 @@ export class CgEth2ValidatorApi implements ICGEth2ValidatorApi {
     };
 
     public produceBlock = async (slot: Slot, randaoReveal: Uint8Array, graffiti: string): Promise<BeaconBlock> => {
-        const query = querystring.stringify({
+        const values = {
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
             randao_reveal: toHexString(randaoReveal),
             graffiti: graffiti,
-        });
+        };
+        if (!graffiti) delete values.graffiti;
+        const query = querystring.stringify(values);
         const responseData = await this.httpClient.get<{data: Json}>(`/eth/v1/validator/blocks/${slot}?${query}`);
         return this.config.types.BeaconBlock.fromJson(responseData.data, {case: "snake"});
     };

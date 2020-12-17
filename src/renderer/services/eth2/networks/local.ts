@@ -17,7 +17,7 @@ export const LocalhostConfig: INetworkConfig = Object.freeze({
         ...mainnetBeaconConfig,
         params: {
             ...mainnetBeaconConfig.params,
-            GENESIS_FORK_VERSION: Buffer.from("0x00000001"),
+            GENESIS_FORK_VERSION: Buffer.from("0x00000000"),
         },
     },
     eth1Provider: new ethers.providers.JsonRpcProvider("http://localhost:8545"),
