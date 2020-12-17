@@ -55,7 +55,8 @@
     "storybook": "start-storybook -p 6006",
     "codecov": "codecov",
     "script": "node -r ts-node/register",
-    "generate:validators": "yarn run script scripts/generate_interop_validators.ts"
+    "generate:validators": "yarn run script scripts/generate_interop_validators.ts",
+    "testnet:dev": "./testnet/lighthouse/reset_genesis_time.sh && docker-compose -f lighthouse-testnet.yml up"
   },
   "jest": {
     "transform": {

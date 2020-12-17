@@ -55,8 +55,8 @@ you will get:
 
 To start using local network just add beacon node with address `http://localhost:5052`.  
 You can use this account to validate using ChainGuardian (or create new via launchpad):
-- private key: `0x03cffafa1cbaa7e585eaee07a9d35ae57f6dfe19a9ea53af9c37e9f3dfac617c`
-- public key: `0x872c61b4a7f8510ec809e5b023f5fdda2105d024c470ddbbeca4bc74e8280af0d178d749853e8f6a841083ac1b4db98f`  
+- private key: `0x51d0b65185db6989ab0b560d6deed19c7ead0e24b9b6372cbecb1f26bdfad000`
+- public key: `0xb89bebc699769726a318c8e9971bd3171297c61aea4a6578a7a4f94b547dcba5bac16a89108b6b6a1fe3695d1a874a0b`  
 
 In case of longer break it is recommended to update genesis time before starting local tesnet with `reset_genesis_time.sh` script
 
