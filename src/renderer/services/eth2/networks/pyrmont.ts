@@ -1,4 +1,4 @@
-import {config as minimalBeaconConfig} from "@chainsafe/lodestar-config/lib/presets/minimal";
+import {config as mainnetBeaconConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {INetworkConfig} from "../../interfaces";
 import {ethers} from "ethers";
 
@@ -14,9 +14,9 @@ export const PyrmontConfig: INetworkConfig = Object.freeze({
         deployedAtBlock: 0,
     },
     eth2Config: {
-        ...minimalBeaconConfig,
+        ...mainnetBeaconConfig,
         params: {
-            ...minimalBeaconConfig.params,
+            ...mainnetBeaconConfig.params,
             GENESIS_FORK_VERSION: Buffer.from("0x00002009"),
         },
     },

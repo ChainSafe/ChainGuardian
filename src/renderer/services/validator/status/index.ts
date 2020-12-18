@@ -22,16 +22,14 @@ export async function getValidatorStatus(
     if (await isBeaconNodeSyncing(eth2Api)) {
         return ValidatorStatus.SYNCING;
     }
-    const validator = await eth2Api.beacon.state.getValidator("head", validatorPubKey);
-    //TODO: convert to our validator
-    return (validator.status as unknown) as ValidatorStatus;
+    return (undefined as unknown) as ValidatorStatus;
 }
 
 async function isBeaconNodeWorking(eth2Api: ICgEth2ApiClient | null): Promise<boolean> {
     if (!eth2Api) return false;
     try {
-        await eth2Api.getVersion();
         return true;
+        // eslint-disable-next-line no-unreachable
     } catch (e) {
         return false;
     }

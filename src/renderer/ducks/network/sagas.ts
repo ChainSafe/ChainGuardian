@@ -6,16 +6,9 @@ import {BeaconNode, BeaconNodes} from "../../models/beaconNode";
 import database from "../../services/db/api/database";
 import * as logger from "electron-log";
 import {IEth2ChainHead} from "../../models/types/head";
-import {
-    saveBeaconNode,
-    loadedValidatorBeaconNodes,
-    removeBeaconNode,
-    loadValidatorBeaconNodes,
-    subscribeToBlockListening,
-} from "./actions";
+import {saveBeaconNode, loadedValidatorBeaconNodes, removeBeaconNode, loadValidatorBeaconNodes} from "./actions";
 import {CGAccount} from "../../models/account";
 import {getRegisterSigningKey} from "../register/selectors";
-import {getValidatorBeaconNodes, getValidatorBlockSubscription} from "./selectors";
 import {getAuthAccount} from "../auth/selectors";
 
 function* saveBeaconNodeSaga({
@@ -50,7 +43,7 @@ function* removeBeaconNodeSaga({
 }
 
 export function* loadValidatorBeaconNodesSaga({
-    payload: {subscribe, validator},
+    payload: {validator},
 }: ReturnType<typeof loadValidatorBeaconNodes>): Generator<
     | SelectEffect
     | CallEffect
@@ -67,58 +60,6 @@ export function* loadValidatorBeaconNodesSaga({
     }
     const validatorBeaconNodes: BeaconNode[] = yield call(account.getValidatorBeaconNodes, validator);
     logger.info(`Found ${validatorBeaconNodes.length} beacon nodes for validator ${validator}.`);
-    yield all(
-        validatorBeaconNodes.map(function* (validatorBN) {
-            if (validatorBN.client) {
-                try {
-                    const chainHead: IEth2ChainHead = yield validatorBN.client.beacon.state.getBlockHeader(
-                        "head",
-                        "head",
-                    );
-                    const refreshFnWithContext = refreshBeaconNodeStatus.bind(null, validator);
-                    yield call(refreshFnWithContext, chainHead);
-
-                    if (subscribe) {
-                        const existingTimeout = yield select((state) =>
-                            getValidatorBlockSubscription(state, {validator}),
-                        );
-                        if (!existingTimeout) {
-                            const timeoutId = validatorBN.client.onNewChainHead(refreshFnWithContext);
-                            yield put(subscribeToBlockListening(timeoutId, validator));
-                        }
-                    }
-                } catch (e) {
-                    yield put(loadedValidatorBeaconNodes(validatorBeaconNodes, validator));
-                    logger.warn("Error while fetching chainhead from beacon node... ", e.message);
-                }
-            }
-        }),
-    );
-}
-
-function* refreshBeaconNodeStatus(
-    validator: string,
-    chainHead: IEth2ChainHead,
-): Generator<SelectEffect | PutEffect | AllEffect<Promise<BeaconNode>>, void, BeaconNode[]> {
-    const validatorBeaconNodes = yield select((state) => getValidatorBeaconNodes(state, {validator}));
-    const beaconNodes: BeaconNode[] = yield all(
-        validatorBeaconNodes.map(async (validatorBN: BeaconNode) => {
-            try {
-                if (!validatorBN.client) {
-                    throw new Error("No ETH2 API client");
-                }
-                return {
-                    ...validatorBN,
-                    isSyncing: (await validatorBN.client.node.getSyncingStatus()).syncDistance === BigInt(0),
-                    currentSlot: String(chainHead.slot),
-                };
-            } catch (e) {
-                logger.warn(`Error while trying to fetch beacon node status... ${e.message}`);
-                return validatorBN;
-            }
-        }),
-    );
-    yield put(loadedValidatorBeaconNodes(beaconNodes, validator));
 }
 
 export function* networkSagaWatcher(): Generator {
