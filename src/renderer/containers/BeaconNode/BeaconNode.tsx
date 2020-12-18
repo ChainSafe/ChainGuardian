@@ -4,11 +4,7 @@ import {BeaconChain} from "../../services/docker/chain";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 import {Beacon} from "../../ducks/beacon/slice";
 import {BeaconNodeResponseTimeChart} from "./BeaconNodeResponseTimeChart";
-import {
-    BeaconNodeResponseErrorPieChart,
-    emptyResponseErrorPieData,
-    ResponseErrorPieData
-} from "./BeaconNodeResponseErrorPieChart";
+import {BeaconNodeResponseErrorPieChart, ResponseErrorPieData} from "./BeaconNodeResponseErrorPieChart";
 import database from "../../services/db/api/database";
 import {addMinutes, format, roundToNearestMinutes, subDays, subMinutes} from "date-fns";
 import {SimpleLineChartRecord} from "../../components/SimpleLineChart/SimpleLineChart";
@@ -23,7 +19,11 @@ export const BeaconNode: React.FC<IBeaconNodeProps> = ({beacon: {url, docker}, s
 
     const [avgLatency, setAvgLatency] = useState<SimpleLineChartRecord[]>([]);
     const [avgLatencyTicks, setAvgLatencyTicks] = useState<string[]>([]);
-    const [pieData, setPieData] = useState([...emptyResponseErrorPieData] as ResponseErrorPieData);
+    const [pieData, setPieData] = useState<ResponseErrorPieData>([
+        {name: "Success", value: null, color: "#09BC8A"},
+        {name: "Warning", value: null, color: "#EDFF86"},
+        {name: "Error", value: null, color: "#EA526F"},
+    ]);
 
     useEffect(() => {
         const intervalFn = async (): Promise<void> => {

@@ -1,4 +1,4 @@
-import {ResponseErrorPieData, emptyResponseErrorPieData} from "../containers/BeaconNode/BeaconNodeResponseErrorPieChart";
+import {ResponseErrorPieData} from "../containers/BeaconNode/BeaconNodeResponseErrorPieChart";
 
 export type NetworkMetric = {
     url: string;
@@ -33,7 +33,11 @@ export class NetworkMetrics implements INetworkMetrics {
     }
 
     public getNetworkErrorPieData(): ResponseErrorPieData {
-        const pieData: ResponseErrorPieData = [...emptyResponseErrorPieData] as ResponseErrorPieData;
+        const pieData: ResponseErrorPieData = [
+            {name: "Success", value: null, color: "#09BC8A"},
+            {name: "Warning", value: null, color: "#EDFF86"},
+            {name: "Error", value: null, color: "#EA526F"},
+        ];
         this.records.forEach(({code}) => {
             if (code < 400) {
                 if (pieData[0].value === null) pieData[0].value = 0;

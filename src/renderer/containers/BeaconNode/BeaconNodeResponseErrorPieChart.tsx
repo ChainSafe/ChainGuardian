@@ -17,12 +17,6 @@ interface IProps {
     data: ResponseErrorPieData;
 }
 
-export const emptyResponseErrorPieData: ResponseErrorPieData = [
-    {name: "Success", value: null, color: "#09BC8A"},
-    {name: "Warning", value: null, color: "#EDFF86"},
-    {name: "Error", value: null, color: "#EA526F"},
-];
-
 export const BeaconNodeResponseErrorPieChart: React.FC<IProps> = ({data}) => {
     const chartData = data.filter(({value}) => value !== null);
     return (
