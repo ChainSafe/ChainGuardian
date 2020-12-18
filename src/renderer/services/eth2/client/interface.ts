@@ -1,19 +1,26 @@
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {ILogger} from "@chainsafe/lodestar-utils";
 import {IApiClient} from "@chainsafe/lodestar-validator/lib";
-import {IBeaconApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
+import {IBeaconApi, IBeaconBlocksApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {INodeApi} from "@chainsafe/lodestar-validator/lib/api/interface/node";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
+import {SignedBeaconBlock} from "@chainsafe/lodestar-types";
 
-export type ICGEth2BeaconApi = IBeaconApi;
+export interface ICGETH2BeaconBlocksApi extends IBeaconBlocksApi {
+    getBlock(blockId: "head" | "genesis" | "finalized" | number): Promise<SignedBeaconBlock>;
+}
+
+export interface ICGEth2BeaconApi extends Omit<IBeaconApi, "blocks"> {
+    blocks: ICGETH2BeaconBlocksApi;
+}
+
 export type ICGEth2NodeApi = INodeApi;
 export type ICGEth2ValidatorApi = IValidatorApi;
 
 /**
  * Extends minimal interface(IApiClient) required by lodestar validator
  */
-export interface ICgEth2ApiClient extends IApiClient {
-    config: IBeaconConfig;
+export interface ICgEth2ApiClient extends Omit<IApiClient, "beacon" | "validator" | "node"> {
     beacon: ICGEth2BeaconApi;
     validator: ICGEth2ValidatorApi;
     node: ICGEth2NodeApi;

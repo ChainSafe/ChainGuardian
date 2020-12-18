@@ -1,4 +1,4 @@
-import {ICGEth2ValidatorApi, IValidatorBeaconClient, ICGEth2BeaconApi, ICGEth2NodeApi} from "../interface";
+import {ICGEth2ValidatorApi, ICGEth2BeaconApi, ICGEth2NodeApi, ICgEth2ApiClient} from "../interface";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {IEventsApi} from "@chainsafe/lodestar-validator/lib/api/interface/events";
 import {CgEth2BeaconApi} from "./cgEth2BeaconApi";
@@ -9,7 +9,7 @@ import {CgEth2ValidatorApi} from "./cgEth2ValidatorApi";
 import {CgEth2NodeApi} from "./cgEth2NodeApi";
 import {CgEth2EventsApi} from "./cgEth2EventsApi";
 
-export class CgEth2ApiClient extends AbstractApiClient implements IValidatorBeaconClient {
+export class CgEth2ApiClient extends AbstractApiClient implements ICgEth2ApiClient {
     public validator: ICGEth2ValidatorApi;
     public beacon: ICGEth2BeaconApi; //
     public node: ICGEth2NodeApi;

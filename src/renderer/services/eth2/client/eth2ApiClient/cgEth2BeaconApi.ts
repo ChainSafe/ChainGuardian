@@ -1,10 +1,6 @@
-import {ICGEth2BeaconApi} from "../interface";
-import {
-    IBeaconBlocksApi,
-    IBeaconPoolApi,
-    IBeaconStateApi,
-} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
-import {BeaconBlock, Genesis} from "@chainsafe/lodestar-types";
+import {ICGEth2BeaconApi, ICGETH2BeaconBlocksApi} from "../interface";
+import {IBeaconPoolApi, IBeaconStateApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
+import {Genesis} from "@chainsafe/lodestar-types";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Json} from "@chainsafe/ssz";
@@ -13,7 +9,7 @@ import {CgEth2BeaconStateApi} from "./cgEth2BeaconStateApi";
 import {CgEth2BeaconPoolApi} from "./cgEth2BeaconPoolApi";
 
 export class CgEth2BeaconApi implements ICGEth2BeaconApi {
-    public blocks: IBeaconBlocksApi;
+    public blocks: ICGETH2BeaconBlocksApi;
     public state: IBeaconStateApi;
     public pool: IBeaconPoolApi;
 
@@ -38,9 +34,5 @@ export class CgEth2BeaconApi implements ICGEth2BeaconApi {
             console.error("Failed to obtain genesis time", {error: e.message});
             return null;
         }
-    };
-
-    public getChainHead = async (): Promise<BeaconBlock> => {
-        throw new Error("Method 'getChainHead' not implemented.");
     };
 }
