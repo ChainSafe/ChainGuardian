@@ -87,7 +87,9 @@ export class CgEth2ValidatorApi implements ICGEth2ValidatorApi {
         const values = {
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
             randao_reveal: toHexString(randaoReveal),
-            graffiti: graffiti,
+            graffiti: graffiti.startsWith("0x")
+                ? graffiti
+                : "0x" + Buffer.from(graffiti, "utf-8").toString("hex").padEnd(64, "0"),
         };
         if (!graffiti) delete values.graffiti;
         const query = querystring.stringify(values);
