@@ -1,10 +1,11 @@
 import {expect} from "chai";
-import {intToBytes} from "@chainsafe/lodestar-utils";
+import {intToBytes, sleep} from "@chainsafe/lodestar-utils";
 import {IpcMainEvent, IpcMainInvokeEvent} from "electron";
 // @ts-ignore
 import {IpcDatabaseController} from "./../../../../../src/renderer/services/db/controller/ipc";
 import {ipcMain} from "../../../../../mocks/electronMock";
 import {IpcDatabaseEvents} from "../../../../../src/main/db/events";
+import {EventEmitter} from "events";
 
 describe("Ipc communication pipe", () => {
     const db = new IpcDatabaseController();
@@ -124,6 +125,21 @@ describe("Ipc communication pipe", () => {
             });
             done();
         });
+    });
+
+    it("test values stream", async () => {
+        const values = ["first", "second", "third"];
+        const eventEmitter = new EventEmitter();
+        const eventSpy = jest.fn();
+
+        ipcMain.handle(IpcDatabaseEvents.DATABASE_VALUES_STREAM, eventSpy);
+
+        values.forEach((el) => {
+            eventEmitter.emit(IpcDatabaseEvents.DATABASE_VALUES_STREAM, el);
+        });
+
+        await sleep(1000);
+        expect(eventSpy.mock.calls.length).to.be.deep.equal(3);
     });
 
     it("test values", async (done) => {
