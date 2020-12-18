@@ -1,3 +1,5 @@
+import {ResponseErrorPieData, emptyResponseErrorPieData} from "../containers/ValidatorDetails/BeaconNode/BeaconNodeResponseErrorPieChart";
+
 export type NetworkMetric = {
     url: string;
     code: number;
@@ -28,6 +30,20 @@ export class NetworkMetrics implements INetworkMetrics {
         const records = this.getRecordsFromRange(from, to);
         if (!records.length) return null;
         return records.reduce((prev, curr) => prev + curr.latency, 0) / records.length;
+    }
+
+    public getNetworkErrorPieData(): ResponseErrorPieData {
+        const pieData: ResponseErrorPieData = [...emptyResponseErrorPieData] as ResponseErrorPieData;
+        this.records.forEach(({code}) => {
+            if (code < 400) {
+                if (pieData[0].value === null) pieData[0].value = 0;
+                pieData[0].value++;
+            } else {
+                if (pieData[2].value === null) pieData[2].value = 0;
+                pieData[2].value++;
+            }
+        });
+        return pieData;
     }
 
     public addRecord(record: NetworkMetric): void {
