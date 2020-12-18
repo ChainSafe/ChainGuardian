@@ -34,15 +34,18 @@ export class NetworkMetrics implements INetworkMetrics {
 
     public getNetworkErrorPieData(): ResponseErrorPieData {
         const pieData: ResponseErrorPieData = [
-            {name: "Success", value: null, color: "#09BC8A"},
-            {name: "Warning", value: null, color: "#EDFF86"},
-            {name: "Error", value: null, color: "#EA526F"},
+            {name: "2xx", value: null, color: "#09BC8A"},
+            {name: "4xx", value: null, color: "#EDFF86"},
+            {name: "5xx", value: null, color: "#EA526F"},
         ];
         this.records.forEach(({code}) => {
-            if (code < 400) {
+            if (code >= 200 && code < 300) {
                 if (pieData[0].value === null) pieData[0].value = 0;
                 pieData[0].value++;
-            } else {
+            } else if (code >= 400 && code < 500) {
+                if (pieData[1].value === null) pieData[1].value = 0;
+                pieData[1].value++;
+            } else if (code >= 500) {
                 if (pieData[2].value === null) pieData[2].value = 0;
                 pieData[2].value++;
             }

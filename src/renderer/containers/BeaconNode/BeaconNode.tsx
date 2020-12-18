@@ -20,9 +20,9 @@ export const BeaconNode: React.FC<IBeaconNodeProps> = ({beacon: {url, docker}, s
     const [avgLatency, setAvgLatency] = useState<SimpleLineChartRecord[]>([]);
     const [avgLatencyTicks, setAvgLatencyTicks] = useState<string[]>([]);
     const [pieData, setPieData] = useState<ResponseErrorPieData>([
-        {name: "Success", value: null, color: "#09BC8A"},
-        {name: "Warning", value: null, color: "#EDFF86"},
-        {name: "Error", value: null, color: "#EA526F"},
+        {name: "2xx", value: null, color: "#09BC8A"},
+        {name: "4xx", value: null, color: "#EDFF86"},
+        {name: "5xx", value: null, color: "#EA526F"},
     ]);
 
     useEffect(() => {

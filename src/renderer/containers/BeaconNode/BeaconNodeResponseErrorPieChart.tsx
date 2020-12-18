@@ -1,5 +1,5 @@
 import React from "react";
-import {Cell, Pie, PieChart, Tooltip} from "recharts";
+import {Cell, Pie, PieChart} from "recharts";
 
 interface IResponseErrorPieRecord<Label extends string> {
     name: Label;
@@ -8,14 +8,20 @@ interface IResponseErrorPieRecord<Label extends string> {
 }
 
 export type ResponseErrorPieData = [
-    IResponseErrorPieRecord<"Success">,
-    IResponseErrorPieRecord<"Warning">,
-    IResponseErrorPieRecord<"Error">,
+    IResponseErrorPieRecord<"2xx">,
+    IResponseErrorPieRecord<"4xx">,
+    IResponseErrorPieRecord<"5xx">,
 ];
 
 interface IProps {
     data: ResponseErrorPieData;
 }
+
+export const emptyResponseErrorPieData: ResponseErrorPieData = [
+    {name: "2xx", value: null, color: "#09BC8A"},
+    {name: "4xx", value: null, color: "#EDFF86"},
+    {name: "5xx", value: null, color: "#EA526F"},
+];
 
 export const BeaconNodeResponseErrorPieChart: React.FC<IProps> = ({data}) => {
     const chartData = data.filter(({value}) => value !== null);
@@ -26,12 +32,11 @@ export const BeaconNodeResponseErrorPieChart: React.FC<IProps> = ({data}) => {
             </div>
             <div className='graph-content'>
                 <div className='graph-legend'>
-                    <div className='legend-item success'>SUCCESS</div>
-                    <div className='legend-item warning'>WARNING</div>
-                    <div className='legend-item error'>ERROR</div>
+                    <div className='legend-item success'>2xx</div>
+                    <div className='legend-item warning'>4xx</div>
+                    <div className='legend-item error'>5xx</div>
                 </div>
                 <PieChart width={180} height={180}>
-                    <Tooltip isAnimationActive={false} />
                     <Pie
                         animationBegin={100}
                         animationDuration={1000}
