@@ -24,8 +24,9 @@ export class NetworkMetrics implements INetworkMetrics {
         return this.records.filter(({time}) => time > from && time < to);
     }
 
-    public getNetworkAverageLatency(from: Date | number, to?: Date | number): number {
+    public getNetworkAverageLatency(from: Date | number, to?: Date | number): number | null {
         const records = this.getRecordsFromRange(from, to);
+        if (!records.length) return null;
         return records.reduce((prev, curr) => prev + curr.latency, 0) / records.length;
     }
 
