@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from "react";
-import {LogStream} from "../../../components/LogStream/LogStream";
-import {BeaconChain} from "../../../services/docker/chain";
-import {DockerRegistry} from "../../../services/docker/docker-registry";
-import {Beacon} from "../../../ducks/beacon/slice";
+import {LogStream} from "../../components/LogStream/LogStream";
+import {BeaconChain} from "../../services/docker/chain";
+import {DockerRegistry} from "../../services/docker/docker-registry";
+import {Beacon} from "../../ducks/beacon/slice";
 import {BeaconNodeResponseTimeChart} from "./BeaconNodeResponseTimeChart";
 import {
     BeaconNodeResponseErrorPieChart,
     emptyResponseErrorPieData,
     ResponseErrorPieData
 } from "./BeaconNodeResponseErrorPieChart";
-import database from "../../../services/db/api/database";
+import database from "../../services/db/api/database";
 import {addMinutes, format, roundToNearestMinutes, subDays, subMinutes} from "date-fns";
-import {SimpleLineChartRecord} from "../../../components/SimpleLineChart/SimpleLineChart";
+import {SimpleLineChartRecord} from "../../components/SimpleLineChart/SimpleLineChart";
 
 interface IBeaconNodeProps {
     beacon: Beacon;

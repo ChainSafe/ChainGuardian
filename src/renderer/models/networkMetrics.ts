@@ -1,4 +1,4 @@
-import {ResponseErrorPieData, emptyResponseErrorPieData} from "../containers/ValidatorDetails/BeaconNode/BeaconNodeResponseErrorPieChart";
+import {ResponseErrorPieData, emptyResponseErrorPieData} from "../containers/BeaconNode/BeaconNodeResponseErrorPieChart";
 
 export type NetworkMetric = {
     url: string;
