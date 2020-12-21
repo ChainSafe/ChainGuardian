@@ -8,10 +8,7 @@ interface IProps {
 }
 
 export const BeaconNodeResponseTimeChart: React.FC<IProps> = ({data, ticks}) => {
-    const formatter = (value: string | number | Array<string | number>): [string, string] => [
-        `${value} ms`,
-        "average",
-    ];
+    const formatter = (value: string | number | Array<string | number>): [string, string] => [`${value} ms`, "average"];
     const labelFormatter = (label: string | number): string => `@ ${label}`;
 
     return (
