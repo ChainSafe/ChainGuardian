@@ -1,6 +1,6 @@
 import {networkSlice} from "./slice";
 import {createAction} from "@reduxjs/toolkit";
-import {RemoveBeaconNode, SaveBeaconNode, LoadValidatorBeaconNodes} from "./types";
+import {RemoveBeaconNode, SaveBeaconNode} from "./types";
 
 export const {
     startDockerImagePull,
@@ -21,9 +21,4 @@ export const saveBeaconNode = createAction<SaveBeaconNode>(
 export const removeBeaconNode = createAction<RemoveBeaconNode>(
     "network/removeBeaconNode",
     (image: string, validator: string) => ({payload: {image, validator}}),
-);
-
-export const loadValidatorBeaconNodes = createAction<LoadValidatorBeaconNodes>(
-    "network/loadValidatorBeaconNodes",
-    (validator: string, subscribe = false) => ({payload: {validator, subscribe}}),
 );

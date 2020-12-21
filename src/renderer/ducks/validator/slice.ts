@@ -1,5 +1,3 @@
-import {ValidatorResponse} from "@chainsafe/lodestar-types";
-import {toHexString} from "@chainsafe/ssz";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
 import {ICGKeystore} from "../../services/keystore";
@@ -58,13 +56,6 @@ export const validatorSlice = createSlice({
             if (index !== -1) {
                 state.allPublicKeys.splice(index, 1);
             }
-        },
-        loadedValidatorsBalance: (state, action: PayloadAction<ValidatorResponse[]>): void => {
-            action.payload.forEach((response) => {
-                const publicKey = toHexString(response.pubkey);
-                //TODO: not ok, we need to fetch balance from different endpoint
-                state.byPublicKey[publicKey].balance = response.validator.effectiveBalance;
-            });
         },
         startValidatorService: {
             reducer: (state, action: PayloadAction<ValidatorLogger, string, string>): void => {
