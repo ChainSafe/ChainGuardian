@@ -1,7 +1,7 @@
 import React from "react";
 import {Background} from "../../components/Background/Background";
 import {BackButton} from "../../components/Button/ButtonAction";
-import {BeaconNode} from "../ValidatorDetails/BeaconNode/BeaconNode";
+import {BeaconNode} from "../BeaconNode/BeaconNode";
 import {useHistory, useParams} from "react-router";
 import {useSelector} from "react-redux";
 import {getBeaconByKey} from "../../ducks/beacon/selectors";
