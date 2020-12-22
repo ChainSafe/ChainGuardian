@@ -31,6 +31,7 @@ import {WinstonLogger} from "@chainsafe/lodestar-utils";
 import {Beacon} from "../beacon/slice";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
+import {getValidatorBalance} from "../../services/utils/validator";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -49,13 +50,16 @@ function* loadValidatorsSaga(): Generator<
         const validatorArray: IValidator[] = yield Promise.all(
             validators.map(async (keyStore, index) => {
                 const beaconNodes = await database.validatorBeaconNodes.get(keyStore.getPublicKey());
+                const network = auth.getValidatorNetwork(keyStore.getPublicKey());
+                const balance = await getValidatorBalance(keyStore.getPublicKey(), network, beaconNodes?.nodes[0]);
                 return {
                     name: keyStore.getName() ?? `Validator - ${index}`,
                     status: undefined,
                     publicKey: keyStore.getPublicKey(),
-                    network: auth.getValidatorNetwork(keyStore.getPublicKey()),
+                    network,
+                    balance,
                     keystore: keyStore,
-                    isRunning: undefined,
+                    isRunning: false,
                     beaconNodes: beaconNodes?.nodes || [],
                 };
             }),
