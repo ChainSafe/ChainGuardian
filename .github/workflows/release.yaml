@@ -103,7 +103,7 @@ jobs:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          release: false
+          release: true
       
       #in case of failure
       - name: Rollback on failure
