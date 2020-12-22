@@ -18,10 +18,9 @@ files:
       - node_modules/
       - package.json
 
-build:
-  publish:
-    provider: github
-    releaseType: prerelease
+publish:
+  provider: github
+  releaseType: prerelease
 
 mac:
   icon: ./assets/logo.icns
