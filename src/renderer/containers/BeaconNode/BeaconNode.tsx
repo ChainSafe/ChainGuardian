@@ -6,8 +6,8 @@ import {Beacon} from "../../ducks/beacon/slice";
 import {BeaconNodeResponseTimeChart} from "./BeaconNodeResponseTimeChart";
 import {BeaconNodeResponseErrorPieChart, ResponseErrorPieData} from "./BeaconNodeResponseErrorPieChart";
 import database from "../../services/db/api/database";
-import {addMinutes, format, roundToNearestMinutes, subDays, subMinutes} from "date-fns";
 import {SimpleLineChartRecord} from "../../components/SimpleLineChart/SimpleLineChart";
+import {getLatencyChartData, getNetworkErrorPieData} from "../../services/utils/charts";
 
 interface IBeaconNodeProps {
     beacon: Beacon;
@@ -30,21 +30,12 @@ export const BeaconNode: React.FC<IBeaconNodeProps> = ({beacon: {url, docker}, s
             const metrics = await database.networkMetrics.get(url);
 
             // for latency chart
-            const baseTime = roundToNearestMinutes(subDays(new Date(), 1), {nearestTo: 15});
-            const newLatencyTicks: string[] = [];
-            const newLatencyData = new Array(96).fill(null).map((_, index) => {
-                const time = addMinutes(new Date(baseTime), index * 15);
-                const value =
-                    Math.round(metrics.getNetworkAverageLatency(subMinutes(time, 15), addMinutes(time, 15))) || null;
-                const label = format(time, "k:mm");
-                if (label.includes("00")) newLatencyTicks.push(label);
-                return {value, label};
-            });
-            setAvgLatency(newLatencyData);
-            setAvgLatencyTicks(newLatencyTicks);
+            const newLatencyData = getLatencyChartData(metrics);
+            setAvgLatency(newLatencyData.data);
+            setAvgLatencyTicks(newLatencyData.ticks);
 
             // for error pie chart
-            setPieData(metrics.getNetworkErrorPieData());
+            setPieData(getNetworkErrorPieData(metrics));
         };
         intervalFn();
         const interval = setInterval(intervalFn, 60 * 1000);
