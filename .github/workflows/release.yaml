@@ -19,8 +19,50 @@ jobs:
         with:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           tag_prefix: "v"
+
+            # - name: Generate changelog
+      #   id: changelog
+      #   uses: heinrichreimer/github-changelog-generator-action@v2.2
+      #   with:
+      #     token: ${{ secrets.GH_PAGES_TOKEN }}
+      #     issues: "false"
+      #     issuesWoLabels: "false"
+      #     pullRequests: "true"
+      #     prWoLabels: "true"
+      #     author: "true"
+      #     usernamesAsGithubLogins: "true"
+      #     compareLink: "true"
+      #     filterByMilestone: "false"
+      #     unreleased: "false"
+      #     sinceTag: "${{ needs.tag.outputs.previous_tag }}"
+      #     maxIssues: "0"
+      #     stripGeneratorNotice: "true"
+
+      - name: Create Release
+        id: create_release
+        if: steps.tag.outputs.tagname != ''
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.tagname }}
+          body: "${{ steps.tag.outputs.tagname }}"
+          release_name: Release ${{ steps.tag.outputs.tagname }}
+          prerelease: true # we can promote to release trough github
+
+            #in case of failure
+      - name: Rollback on failure
+        if: failure()
+        uses: author/action-rollback@9ec72a6af74774e00343c6de3e946b0901c23013
+        with:
+          id: ${{ steps.create_release.outputs.id }}
+          tag: ${{ steps.tag.outputs.tagname }}
+          delete_orphan_tag: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}# workflow name
     outputs:
       tag: ${{ steps.tag.outputs.tagname }}
+      release: ${{ steps.create_release.outputs.id }}
       version: ${{ steps.tag.outputs.version }}
 
   release:
@@ -53,34 +95,7 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile --ignore-optional#--network-timeout 1000000 
 
-      # - name: Generate changelog
-      #   id: changelog
-      #   uses: heinrichreimer/github-changelog-generator-action@v2.2
-      #   with:
-      #     token: ${{ secrets.GH_PAGES_TOKEN }}
-      #     issues: "false"
-      #     issuesWoLabels: "false"
-      #     pullRequests: "true"
-      #     prWoLabels: "true"
-      #     author: "true"
-      #     usernamesAsGithubLogins: "true"
-      #     compareLink: "true"
-      #     filterByMilestone: "false"
-      #     unreleased: "false"
-      #     sinceTag: "${{ needs.tag.outputs.previous_tag }}"
-      #     maxIssues: "0"
-      #     stripGeneratorNotice: "true"
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ needs.tag.outputs.tag }}
-          body: "${{ needs.tag.outputs.tag }}"
-          release_name: Release ${{ needs.tag.outputs.tag }}
-          prerelease: true # we can promote to release trough github
       
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1.6.0
@@ -88,14 +103,14 @@ jobs:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          release: ${{ steps.create_release.outputs.id }}
+          release: ${{ needs.tag.outputs.release }}
       
       #in case of failure
       - name: Rollback on failure
         if: failure()
         uses: author/action-rollback@9ec72a6af74774e00343c6de3e946b0901c23013
         with:
-          id: ${{ steps.create_release.outputs.id }}
+          id: ${{ needs.tag.outputs.release }}
           tag: ${{ needs.tag.outputs.tag }}
           delete_orphan_tag: true
         env:
