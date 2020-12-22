@@ -21,6 +21,7 @@ mac:
   icon: ./assets/logo.icns
   category: public.app-category.finance
   target: dmg
+  publish: github
 
 dmg:
   background: ./assets/background-mac.tiff
@@ -29,6 +30,7 @@ dmg:
 linux:
   synopsis: Eth2.0 desktop validator client
   category: System
+  publish: github
   mimeTypes:
     - json
   target:
@@ -37,6 +39,7 @@ linux:
 win:
   icon: ./assets/logo.png
   target: nsis
+  publish: github
 
 nsis:
   oneClick: false
