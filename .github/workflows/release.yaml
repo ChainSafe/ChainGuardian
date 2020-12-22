@@ -103,7 +103,7 @@ jobs:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          release: true
+          release: false
       
       #in case of failure
       - name: Rollback on failure
@@ -114,4 +114,4 @@ jobs:
           tag: ${{ needs.tag.outputs.tag }}
           delete_orphan_tag: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}# workflow name
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
