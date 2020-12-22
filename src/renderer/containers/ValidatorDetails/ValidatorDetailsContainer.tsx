@@ -6,7 +6,7 @@ import {RouteComponentProps} from "react-router-dom";
 import {Background} from "../../components/Background/Background";
 import {BackButton} from "../../components/Button/ButtonAction";
 import {TabNavigation} from "../../components/TabNavigation/TabNavigation";
-import {BeaconNode} from "./BeaconNode/BeaconNode";
+import {BeaconNode} from "../BeaconNode/BeaconNode";
 import {ValidatorLogs} from "./ValidatorLogs";
 import {ValidatorStats} from "./ValidatorStats/ValidatorStats";
 import {IRootState} from "../../ducks/reducers";
