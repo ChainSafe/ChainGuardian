@@ -104,6 +104,10 @@ jobs:
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release: true
+          windows_certs: ${{ secrets.WIN_CERT }}
+          windows_certs_password: ${{ secrets.WIN_PASSWORD }}
+          mac_certs: ${{ secrets.MAC_CERT }}
+          mac_certs_password: ${{ secrets.MAC_PASSWORD }}
         env:
           EP_PRE_RELEASE: true
       
