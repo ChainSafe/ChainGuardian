@@ -18,10 +18,6 @@ files:
       - node_modules/
       - package.json
 
-publish:
-  provider: github
-  releaseType: prerelease
-
 mac:
   icon: ./assets/logo.icns
   category: public.app-category.finance
