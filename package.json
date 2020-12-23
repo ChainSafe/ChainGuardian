@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:nodefactory/ChainGuardian.git"
+    "url": "git+ssh://git@github.com:nodefactoryio/ChainGuardian.git"
   },
   "engines": {
     "node": "^12.4.0"
