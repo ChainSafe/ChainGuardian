@@ -2,7 +2,8 @@ import {
     ICGEth2BeaconApi,
     ICGEth2NodeApi,
     ICGEth2ValidatorApi,
-    ICgEth2ApiClient, ICGEth2Config,
+    ICgEth2ApiClient,
+    ICGEth2Config,
 } from "../../../../../src/renderer/services/eth2/client/interface";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import sinon, {SinonStubbedInstance} from "sinon";
