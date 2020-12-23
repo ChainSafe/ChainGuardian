@@ -17,6 +17,17 @@ export interface ICGEth2BeaconApi extends Omit<IBeaconApi, "blocks"> {
 export type ICGEth2NodeApi = INodeApi;
 export type ICGEth2ValidatorApi = IValidatorApi;
 
+export interface IDepositContract {
+    data: {
+        // eslint-disable-next-line camelcase
+        chain_id: string;
+        address: string;
+    };
+}
+export interface ICGEth2Config {
+    getDepositContract(): Promise<IDepositContract["data"]>;
+}
+
 /**
  * Extends minimal interface(IApiClient) required by lodestar validator
  */
@@ -24,6 +35,7 @@ export interface ICgEth2ApiClient extends Omit<IApiClient, "beacon" | "validator
     beacon: ICGEth2BeaconApi;
     validator: ICGEth2ValidatorApi;
     node: ICGEth2NodeApi;
+    beaconConfig: ICGEth2Config;
 }
 
 export type IValidatorBeaconClient = IApiClient;

@@ -1248,7 +1248,7 @@
     ethereum-cryptography "^0.1.3"
     uuid "^3.3.3"
 
-"@chainsafe/bls@5.1.0", "@chainsafe/bls@5.1.1", "@chainsafe/bls@5.5.1":
+"@chainsafe/bls@5.1.0", "@chainsafe/bls@5.1.1":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@chainsafe/bls/-/bls-5.1.1.tgz#c4efab9d139c69a64b91dda51b9f2d997a8081dc"
   integrity sha512-l8ep0BsX+8h3oRVtTUMcCPC1gaYn4AzsLfx5pjSkuFe0QwAuxSJsN/d+M6o0Knc9LnXATW276ACSEhJMB1x96A==
