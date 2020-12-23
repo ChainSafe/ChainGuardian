@@ -82,8 +82,10 @@ export const getValidatorState = async (publicKey: string, beaconNodeUrl: string
                 return ValidatorStatus.VOLUNTARILY_EXITED;
             case "exited_slashed":
                 return ValidatorStatus.SLASHED;
+            // @ts-ignore
             case "withdrawable":
                 return ValidatorStatus.WITHDRAWABLE;
+            // @ts-ignore
             case "withdrawn":
                 return ValidatorStatus.WITHDRAWNED;
             default:
