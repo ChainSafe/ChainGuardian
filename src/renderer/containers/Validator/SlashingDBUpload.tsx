@@ -50,7 +50,7 @@ export const SlashingDBUpload: React.FC<IProps> = ({visible}) => {
     };
 
     const onSubmit = (): void => {
-        dispatch(slashingProtectionUpload());
+        dispatch(slashingProtectionUpload(path));
     };
 
     const onCancel = (): void => {

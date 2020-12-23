@@ -1,4 +1,17 @@
-import {select, put, SelectEffect, PutEffect, call, CallEffect, all, takeEvery} from "redux-saga/effects";
+import {
+    select,
+    put,
+    SelectEffect,
+    PutEffect,
+    call,
+    CallEffect,
+    all,
+    takeEvery,
+    race,
+    take,
+    RaceEffect,
+    TakeEffect,
+} from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
 import {deleteKeystore} from "../../services/utils/account";
 import {fromHex} from "../../services/utils/bytes";
@@ -26,6 +39,9 @@ import {
     loadValidatorsAction,
     setValidatorBeaconNode,
     storeValidatorBeaconNodes,
+    slashingProtectionUpload,
+    slashingProtectionSkip,
+    slashingProtectionCancel,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {loadValidatorBeaconNodes, unsubscribeToBlockListening} from "../network/actions";
@@ -33,7 +49,7 @@ import {Validator} from "@chainsafe/lodestar-validator";
 import {IValidatorBeaconNodes} from "../../models/beaconNode";
 import {loadValidatorBeaconNodesSaga} from "../network/sagas";
 import {AllEffect} from "@redux-saga/core/effects";
-import {ValidatorResponse} from "@chainsafe/lodestar-types";
+import {Genesis, ValidatorResponse} from "@chainsafe/lodestar-types";
 import * as logger from "electron-log";
 import {getAuthAccount} from "../auth/selectors";
 import {getBeaconNodes} from "../network/selectors";
@@ -45,6 +61,7 @@ import {Beacon} from "../beacon/slice";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
 import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
+import {readFileSync} from "fs";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -152,9 +169,15 @@ function* loadValidatorStatusSaga(
 function* startService(
     action: ReturnType<typeof startNewValidatorService>,
 ): Generator<
-    SelectEffect | PutEffect | Promise<void> | Promise<boolean> | Promise<INetworkConfig | null>,
+    | SelectEffect
+    | PutEffect
+    | Promise<void>
+    | Promise<boolean>
+    | Promise<INetworkConfig | null>
+    | Promise<Genesis | null>
+    | RaceEffect<TakeEffect>,
     void,
-    Beacon[] & (INetworkConfig | null) & boolean
+    Beacon[] & (INetworkConfig | null) & (Genesis | null) & boolean
 > {
     try {
         const publicKey = action.payload.publicKey.toHex();
@@ -173,9 +196,42 @@ function* startService(
             controller: cgDbController,
         });
 
+        // TODO: check if state is not before "active" to ignore this step in that case
         if (yield slashingProtection.missingImportedSlashingProtection(publicKey)) {
-            console.log("missing slashing protection");
+            action.meta.openModal();
+            const [upload, cancel] = yield race([
+                take(slashingProtectionUpload),
+                take(slashingProtectionCancel),
+                take(slashingProtectionSkip),
+            ]);
+            action.meta.closeModal();
+
+            if (cancel) {
+                throw new Error("canceled by user");
+            }
+            if (upload) {
+                const {genesisValidatorsRoot} = yield eth2API.beacon.getGenesis();
+                const interchange = JSON.parse(
+                    readFileSync(
+                        ((upload as unknown) as ReturnType<typeof slashingProtectionUpload>).payload,
+                    ).toString(),
+                );
+                yield slashingProtection.importInterchange(interchange, genesisValidatorsRoot);
+            }
         }
+
+        /* // export slashing db for testing purpose
+        const path = "/home/bernard/Desktop/et2/active/slashing.json";
+        const {genesisValidatorsRoot} = yield eth2API.beacon.getGenesis();
+        const interchange: InterchangeFormatVersion = {
+            format: "complete",
+            version: "4",
+        };
+        const validatorId = new Uint8Array(Buffer.from(publicKey.substr(2), "hex"));
+        slashingProtection.exportInterchange(genesisValidatorsRoot, [validatorId], interchange).then((data) => {
+            writeFileSync(path, JSON.stringify(data));
+        });
+        throw new Error("Sucker!");*/
 
         const logger = new WinstonLogger() as ValidatorLogger;
 
