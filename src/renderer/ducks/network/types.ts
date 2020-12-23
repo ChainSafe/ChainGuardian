@@ -44,13 +44,3 @@ export type RemoveBeaconNode = (
         validator: string;
     };
 };
-
-export type LoadValidatorBeaconNodes = (
-    validator: string,
-    subscribe?: boolean,
-) => {
-    payload: {
-        validator: string;
-        subscribe: boolean;
-    };
-};

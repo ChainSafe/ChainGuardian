@@ -34,10 +34,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
     const network = useSelector(getSelectedNetwork);
     const nodes = useSelector((state: IRootState) => getValidatorBeaconNodes(state, props));
     const validator = useSelector((state: IRootState) => getValidator(state, props));
-
-    const isLoaded = !!validator;
-    const balance = isLoaded ? validator.balance ?? BigInt(0) : BigInt(0);
-    const ROI = calculateROI(balance, network);
+    const roi = calculateROI(validator.balance, network);
 
     useEffect(() => {
         dispatch(updateValidatorChainData(props.publicKey));
@@ -108,9 +105,9 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
                     <br />
 
                     <div className='row validator-stat-container '>
-                        <ValidatorStat title='Balance' type='ETH' value={balance} />
-                        <ValidatorStat title='Return (ETH)' type='ROI' value={ROI} />
-                        <ValidatorStat title='Validator' type='Status' value={validator.status} />
+                        <ValidatorStat title='Balance' type='ETH' value={validator.balance} />
+                        <ValidatorStat title='Return (ETH)' type='ROI' value={roi} />
+                        <ValidatorStat title='Validator' type='Status' value={validator.isRunning} />
                     </div>
 
                     <br />
