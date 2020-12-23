@@ -39,7 +39,7 @@ export const SlashingDBUpload: React.FC<IProps> = ({visible, url}) => {
 
     const dispatch = useDispatch();
 
-    const onChange = async (event: ChangeEvent<HTMLInputElement>): void => {
+    const onChange = async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
         setError("");
         const filePath = event.target.files[0]?.path;
         setFileName(event.target.files[0].name);
@@ -96,22 +96,27 @@ export const SlashingDBUpload: React.FC<IProps> = ({visible, url}) => {
                             id='file'
                             name='filename'
                         />
-                        <CheckBox
-                            checked={isSkippable}
-                            label="I'm aware that skipping can cause slashing."
-                            id='slashing'
-                            onClick={onCheckboxClick}
-                        />
                         <span className='slashing-action-buttons'>
-                            <ButtonSecondary buttonId='skip' disabled={!isSkippable} onClick={onSkip}>
-                                Skip
-                            </ButtonSecondary>
                             <ButtonPrimary buttonId='submit' disabled={!valid} onClick={onSubmit}>
                                 Submit
                             </ButtonPrimary>
                             <ButtonDestructive buttonId='cancel' onClick={onCancel}>
                                 Cancel
                             </ButtonDestructive>
+                        </span>
+
+                        <h4 className='slashing-or'>OR</h4>
+
+                        <span className='slashing-skip-button'>
+                            <ButtonSecondary buttonId='skip' disabled={!isSkippable} onClick={onSkip}>
+                                Skip
+                            </ButtonSecondary>
+                            <CheckBox
+                                checked={isSkippable}
+                                label="I'm aware that skipping can cause slashing."
+                                id='slashing'
+                                onClick={onCheckboxClick}
+                            />
                         </span>
                     </div>
                 </Modal>

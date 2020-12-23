@@ -61,7 +61,7 @@ export const validatorSlice = createSlice({
         },
         loadedValidatorsBalance: (state, action: PayloadAction<ValidatorResponse[]>): void => {
             action.payload.forEach((response) => {
-                const publicKey = toHexString(response.pubkey);
+                const publicKey = toHexString(response.validator.pubkey);
                 //TODO: not ok, we need to fetch balance from different endpoint
                 state.byPublicKey[publicKey].balance = response.validator.effectiveBalance;
             });
