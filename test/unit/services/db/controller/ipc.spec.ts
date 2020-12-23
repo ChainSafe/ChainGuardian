@@ -1,149 +1,49 @@
-import {expect} from "chai";
-import {intToBytes, sleep} from "@chainsafe/lodestar-utils";
-import {IpcMainEvent, IpcMainInvokeEvent} from "electron";
-// @ts-ignore
+import {IFilterOptions} from "@chainsafe/lodestar-db";
+import sinon from "sinon";
+import {LevelDbController} from "../../../../../src/main/db/controller/impl/level";
+import {DatabaseIpcHandler} from "../../../../../src/main/db/ipc";
+import {collect} from "../../../utils/iterable";
 import {IpcDatabaseController} from "./../../../../../src/renderer/services/db/controller/ipc";
-import {ipcMain} from "../../../../../mocks/electronMock";
-import {IpcDatabaseEvents} from "../../../../../src/main/db/events";
-import {EventEmitter} from "events";
 
 describe("Ipc communication pipe", () => {
-    const db = new IpcDatabaseController();
+    jest.setTimeout(300);
 
-    it("test put", async (done) => {
-        db.put(Buffer.from("key0"), Buffer.from("value"));
+    const levelDbMock = sinon.createStubInstance(LevelDbController);
+    let rendererDbService: IpcDatabaseController;
+    let mainDbIpcHandler: DatabaseIpcHandler;
 
-        ipcMain.once(IpcDatabaseEvents.DATABASE_PUT, (_: IpcMainEvent, data: Buffer[]) => {
-            expect(data).to.be.deep.equal(Buffer.from("key0"));
-            done();
-        });
+    beforeEach(async function () {
+        rendererDbService = new IpcDatabaseController();
+        mainDbIpcHandler = new DatabaseIpcHandler();
+        await mainDbIpcHandler.start((levelDbMock as unknown) as LevelDbController);
     });
 
-    it("test batch put", async () => {
-        db.batchPut([
-            {
-                key: Buffer.from("key1"),
-                value: Buffer.from("value"),
-            },
-            {
-                key: Buffer.from("key2"),
-                value: Buffer.from("value"),
-            },
-        ]);
-
-        ipcMain.once(IpcDatabaseEvents.DATABASE_BATCH_PUT, (_: IpcMainEvent, data: Buffer[]) => {
-            expect(data).to.be.deep.equal([
-                {
-                    key: Buffer.from("key1"),
-                    value: Buffer.from("value"),
-                },
-                {
-                    key: Buffer.from("key2"),
-                    value: Buffer.from("value"),
-                },
-            ]);
-        });
+    afterEach(async function () {
+        await mainDbIpcHandler.stop();
     });
 
-    it("test get", async (done) => {
-        db.put(Buffer.from("key1"), Buffer.from("value"));
-        db.get(Buffer.from("key1"));
-
-        ipcMain.once(IpcDatabaseEvents.DATABASE_GET, (_: IpcMainEvent, data: Buffer[]) => {
-            expect(data).to.be.deep.equal(Buffer.from("key1"));
-            done();
-        });
-    });
-
-    it("test search", async (done) => {
-        db.batchPut([
-            {
-                key: intToBytes(1, 4),
-                value: Buffer.from("value"),
-            },
-            {
-                key: intToBytes(2, 4),
-                value: Buffer.from("value"),
-            },
-        ]);
-
-        db.search({
-            gt: intToBytes(0, 4),
-            lt: intToBytes(99, 4),
-        });
-
-        ipcMain.handle(IpcDatabaseEvents.DATABASE_SEARCH, (_: IpcMainInvokeEvent, data: Buffer[]) => {
-            expect(data).to.be.deep.equal({
-                gt: intToBytes(0, 4),
-                lt: intToBytes(99, 4),
+    it("put", async () => {
+        const key = Buffer.from("key0");
+        const value = Buffer.from("value");
+        const promise = new Promise((resolve) => {
+            levelDbMock.put.callsFake(() => {
+                resolve();
+                return null;
             });
-            done();
         });
+        await rendererDbService.put(key, value);
+        await promise;
+        expect(levelDbMock.put.calledOnceWith(key, value)).toBeTruthy();
     });
 
-    it("test delete", async (done) => {
-        db.batchPut([
-            {
-                key: Buffer.from("key1"),
-                value: Buffer.from("value"),
-            },
-            {
-                key: Buffer.from("key2"),
-                value: Buffer.from("value"),
-            },
-        ]);
-
-        db.delete(Buffer.from("key1"));
-
-        ipcMain.once(IpcDatabaseEvents.DATABASE_DELETE, (_: IpcMainEvent, data: Buffer[]) => {
-            expect(data).to.be.deep.equal(Buffer.from("key1"));
-            done();
-        });
-    });
-
-    it("test keys", async (done) => {
-        db.batchPut([
-            {
-                key: Buffer.from("key1"),
-                value: Buffer.from("value"),
-            },
-            {
-                key: Buffer.from("key2"),
-                value: Buffer.from("value"),
-            },
-        ]);
-
-        db.keys({
-            gt: Buffer.from("key0"),
-            lt: Buffer.from("key99"),
-        });
-
-        ipcMain.once(IpcDatabaseEvents.DATABASE_KEYS, (_: IpcMainEvent, data: Buffer[]) => {
-            expect(data).to.be.deep.equal({
-                gt: Buffer.from("key0"),
-                lt: Buffer.from("key99"),
+    it("batch put", async () => {
+        const promise = new Promise((resolve) => {
+            levelDbMock.batchPut.callsFake(() => {
+                resolve();
+                return null;
             });
-            done();
         });
-    });
-
-    it("test values stream", async () => {
-        const values = ["first", "second", "third"];
-        const eventEmitter = new EventEmitter();
-        const eventSpy = jest.fn();
-
-        ipcMain.handle(IpcDatabaseEvents.DATABASE_VALUES_STREAM, eventSpy);
-
-        values.forEach((el) => {
-            eventEmitter.emit(IpcDatabaseEvents.DATABASE_VALUES_STREAM, el);
-        });
-
-        await sleep(1000);
-        expect(eventSpy.mock.calls.length).to.be.deep.equal(3);
-    });
-
-    it("test values", async (done) => {
-        db.batchPut([
+        const data = [
             {
                 key: Buffer.from("key1"),
                 value: Buffer.from("value"),
@@ -152,19 +52,90 @@ describe("Ipc communication pipe", () => {
                 key: Buffer.from("key2"),
                 value: Buffer.from("value"),
             },
-        ]);
+        ];
+        rendererDbService.batchPut(data);
+        await promise;
+        expect(levelDbMock.batchPut.calledOnceWith(data)).toBeTruthy();
+    });
 
-        db.values({
-            gt: Buffer.from("key0"),
-            lt: Buffer.from("key99"),
+    it("get", async () => {
+        const value = Buffer.from("test");
+        levelDbMock.get.callsFake(async () => {
+            return value;
         });
+        const key = Buffer.from("key0");
+        const result = await rendererDbService.get(key);
+        expect(result).toEqual(value);
+    });
 
-        ipcMain.once(IpcDatabaseEvents.DATABASE_VALUES, async (_: IpcMainEvent, data: Buffer[]) => {
-            expect(data).to.be.deep.equal({
-                gt: Buffer.from("key0"),
-                lt: Buffer.from("key99"),
+    it("search", async () => {
+        const searchParams: IFilterOptions<Buffer> = {
+            gt: Buffer.from("key1"),
+            lt: Buffer.from("value"),
+        };
+        const value = Buffer.from("test");
+        const data = [value, value];
+        levelDbMock.search.callsFake(async () => {
+            return data;
+        });
+        const result = await rendererDbService.search(searchParams);
+        expect(result).toEqual(data);
+        expect(levelDbMock.search.calledOnceWithExactly(searchParams));
+    });
+
+    it("delete", async () => {
+        const key = Buffer.from("key0");
+        const promise = new Promise((resolve) => {
+            levelDbMock.delete.callsFake(async () => {
+                resolve();
             });
-            done();
         });
+        await rendererDbService.delete(key);
+        await promise;
+        expect(levelDbMock.delete.calledOnceWith(key)).toBeTruthy();
+    });
+
+    it("keys", async () => {
+        const searchParams: IFilterOptions<Buffer> = {
+            gt: Buffer.from("key1"),
+            lt: Buffer.from("value"),
+        };
+        const key = Buffer.from("test");
+        const data = [key, key];
+        levelDbMock.keys.callsFake(async () => {
+            return data;
+        });
+        const result = await rendererDbService.keys(searchParams);
+        expect(result).toEqual(data);
+        expect(levelDbMock.keys.calledOnceWithExactly(searchParams));
+    });
+
+    it("values", async () => {
+        const searchParams: IFilterOptions<Buffer> = {
+            gt: Buffer.from("key1"),
+            lt: Buffer.from("value"),
+        };
+        const value = Buffer.from("test");
+        const data = [value, value];
+        levelDbMock.values.callsFake(async () => {
+            return data;
+        });
+        const result = await rendererDbService.values(searchParams);
+        expect(result).toEqual(data);
+        expect(levelDbMock.values.calledOnceWithExactly(searchParams));
+    });
+
+    it("value stream", async () => {
+        const value = Buffer.from("test");
+        const data = [value, value];
+        levelDbMock.valuesStream.callsFake(() => {
+            return (async function* (): AsyncIterable<Buffer> {
+                for (const value of data) {
+                    yield value;
+                }
+            })();
+        });
+        const result = await collect(rendererDbService.valuesStream());
+        expect(result).toEqual(data);
     });
 });
