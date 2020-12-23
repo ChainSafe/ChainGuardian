@@ -92,6 +92,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
     };
 
     const renderValidatorButtons = (): React.ReactElement => {
+        if (!nodes.length) return null;
         return (
             <div className='flex validator-service-button'>
                 {validator.isRunning ? (
@@ -149,7 +150,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
                 onCancel={(): void => setAskPassword(null)}
             />
 
-            <SlashingDBUpload visible={showModal} />
+            <SlashingDBUpload visible={showModal} url={nodes.length ? nodes[0].url : ""} />
         </>
     );
 };
