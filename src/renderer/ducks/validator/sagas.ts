@@ -29,7 +29,7 @@ import {
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {loadValidatorBeaconNodes, unsubscribeToBlockListening} from "../network/actions";
-import {SlashingProtection, Validator} from "@chainsafe/lodestar-validator";
+import {Validator} from "@chainsafe/lodestar-validator";
 import {IValidatorBeaconNodes} from "../../models/beaconNode";
 import {loadValidatorBeaconNodesSaga} from "../network/sagas";
 import {AllEffect} from "@redux-saga/core/effects";
@@ -44,6 +44,7 @@ import {WinstonLogger} from "@chainsafe/lodestar-utils";
 import {Beacon} from "../beacon/slice";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
+import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -151,9 +152,9 @@ function* loadValidatorStatusSaga(
 function* startService(
     action: ReturnType<typeof startNewValidatorService>,
 ): Generator<
-    SelectEffect | PutEffect | Promise<void> | Promise<INetworkConfig | null>,
+    SelectEffect | PutEffect | Promise<void> | Promise<boolean> | Promise<INetworkConfig | null>,
     void,
-    Beacon[] & (INetworkConfig | null)
+    Beacon[] & (INetworkConfig | null) & boolean
 > {
     try {
         const publicKey = action.payload.publicKey.toHex();
@@ -167,10 +168,14 @@ function* startService(
         // TODO: Use beacon chain proxy instead of first node
         const eth2API = new CgEth2ApiClient(config, beaconNodes[0].url);
 
-        const slashingProtection = new SlashingProtection({
+        const slashingProtection = new CGSlashingProtection({
             config,
             controller: cgDbController,
         });
+
+        if (yield slashingProtection.missingImportedSlashingProtection(publicKey)) {
+            console.log("missing slashing protection");
+        }
 
         const logger = new WinstonLogger() as ValidatorLogger;
 
