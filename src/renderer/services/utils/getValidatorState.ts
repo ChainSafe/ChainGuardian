@@ -15,7 +15,7 @@ export const getValidatorState = async (publicKey: string, beaconNodeUrl: string
 
     // @ts-ignore
     if (stateValidator === null || stateValidator.status === "unknown") {
-        const depositInfo = await client.beaconConfig.getDepositContract();
+        const depositInfo = await client.networkConfig.getDepositContract();
 
         const genesis = await client.beacon.getGenesis();
         const genesisForkVersion = "0x" + Buffer.from(genesis.genesisForkVersion as Uint8Array).toString("hex");

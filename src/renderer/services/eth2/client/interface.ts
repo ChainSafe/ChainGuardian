@@ -35,7 +35,7 @@ export interface ICgEth2ApiClient extends Omit<IApiClient, "beacon" | "validator
     beacon: ICGEth2BeaconApi;
     validator: ICGEth2ValidatorApi;
     node: ICGEth2NodeApi;
-    beaconConfig: ICGEth2Config;
+    networkConfig: ICGEth2Config;
 }
 
 export type IValidatorBeaconClient = IApiClient;

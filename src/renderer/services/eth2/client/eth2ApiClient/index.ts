@@ -15,7 +15,7 @@ export class CgEth2ApiClient extends AbstractApiClient implements ICgEth2ApiClie
     public beacon: ICGEth2BeaconApi; //
     public node: ICGEth2NodeApi;
     public events: IEventsApi;
-    public beaconConfig: ICGEth2Config;
+    public networkConfig: ICGEth2Config;
 
     public url: string;
 
@@ -30,6 +30,6 @@ export class CgEth2ApiClient extends AbstractApiClient implements ICgEth2ApiClie
         this.beacon = new CgEth2BeaconApi(config, this.httpClient);
         this.events = new CgEth2EventsApi(config, url);
         this.node = new CgEth2NodeApi(config, this.httpClient);
-        this.beaconConfig = new CgEth2Config(config, this.httpClient);
+        this.networkConfig = new CgEth2Config(config, this.httpClient);
     }
 }
