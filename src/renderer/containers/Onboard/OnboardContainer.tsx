@@ -8,7 +8,6 @@ import {SigningKeyImportContainer} from "./SigningKey/Import/SigningKeyImport";
 import {CreatePasswordContainer} from "./CreatePassword/CreatePasswordContainer";
 import {ChoseImport} from "./SigningKey/ChoseImport";
 import {FileUploadImport} from "./SigningKey/Import/FileUploadImport";
-import {SlashingUploadImport} from "./SigningKey/Import/SlashingUploadImport";
 import {ConfigureValidatorContainer} from "./ConfigureValidator/ConfigureValidatorContainer";
 import {useSelector} from "react-redux";
 import {getAuthAccount} from "../../ducks/auth/selectors";
@@ -36,7 +35,6 @@ export const OnboardContainer: React.FC<IProps> = ({history, match}) => {
     const steper = {
         [OnBoardingRoutes.SIGNING]: <ChoseImport />,
         [OnBoardingRoutes.SIGNING_IMPORT_FILE]: <FileUploadImport />,
-        [OnBoardingRoutes.SIGNING_IMPORT_SLASHING_FILE]: <SlashingUploadImport />,
         [OnBoardingRoutes.SIGNING_IMPORT_MNEMONIC]: <SigningKeyImportContainer history={history} />,
         [OnBoardingRoutes.CONFIGURE]: <ConfigureValidatorContainer />,
         [OnBoardingRoutes.PASSWORD]: <CreatePasswordContainer history={history} />,

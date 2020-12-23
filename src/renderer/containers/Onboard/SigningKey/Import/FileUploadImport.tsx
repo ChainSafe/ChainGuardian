@@ -6,7 +6,6 @@ import {ButtonPrimary} from "../../../../components/Button/ButtonStandard";
 import {OnBoardingRoutes, Routes} from "../../../../constants/routes";
 import {useHistory} from "react-router-dom";
 import {FileImport} from "../../../../components/FileImport/FileImport";
-import {CheckBox} from "../../../../components/CheckBox/CheckBox";
 import {InputPrompt, ISubmitStatus} from "../../../../components/Prompt/InputPrompt";
 import {V4Keystore} from "../../../../services/keystore";
 
@@ -15,7 +14,6 @@ export const FileUploadImport: React.FC = () => {
     const [path, setPath] = useState<null | string>(null);
     const [fileName, setFileName] = useState<null | string>(null);
     const [publicKey, setPublicKey] = useState("");
-    const [isSwitching, setIsSwitching] = useState(false);
     const [displayPasswordConfirmation, setDisplayPasswordConfirmation] = useState(false);
 
     const dispatch = useDispatch();
@@ -49,20 +47,12 @@ export const FileUploadImport: React.FC = () => {
         }
 
         dispatch(storeKeystoreValues(path, publicKey, password));
-        if (isSwitching) {
-            history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.SIGNING_IMPORT_SLASHING_FILE));
-        } else {
-            history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
-        }
+        history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONFIGURE));
         return {valid: true};
     };
 
     const onCancel = (): void => {
         setDisplayPasswordConfirmation(false);
-    };
-
-    const onCheckboxClick = (): void => {
-        setIsSwitching(!isSwitching);
     };
 
     const valid = !error && !!path;
@@ -77,12 +67,6 @@ export const FileUploadImport: React.FC = () => {
                     accept='application/json'
                     id='file'
                     name='filename'
-                />
-                <CheckBox
-                    checked={isSwitching}
-                    label="I'm switching validator software"
-                    id='slashing'
-                    onClick={onCheckboxClick}
                 />
                 <span className='submit-button-container'>
                     <ButtonPrimary buttonId='submit' disabled={!valid} onClick={onSubmit}>
