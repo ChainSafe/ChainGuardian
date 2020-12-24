@@ -7165,6 +7165,11 @@ electron-log@^3.0.9:
   resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-3.0.9.tgz#53ff1fcdb2f3e4a73ea7096d2f7204121109ec6f"
   integrity sha512-kfV4riUqW8uooYLAfrlB3EJW66W29ePipJU4/Fm8UxQekVNcR2qHI/0tiJX3oWM79VdAUiiYqL9V49lhnSIO8g==
 
+electron-mock-ipc@^0.3.9:
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/electron-mock-ipc/-/electron-mock-ipc-0.3.9.tgz#aae1adbc94f7d95a4c6534f7a0497904a338dd5d"
+  integrity sha512-KLcIfdDfA+DnK29/269zfBF4UxpIpkwj2ZVXdOtMvkPRutlpQZqa+hs24wXc/0DHiTKSKlapGHfPTlcZKGSh6A==
+
 electron-publish@22.9.1:
   version "22.9.1"
   resolved "https://registry.yarnpkg.com/electron-publish/-/electron-publish-22.9.1.tgz#7cc76ac4cc53efd29ee31c1e5facb9724329068e"

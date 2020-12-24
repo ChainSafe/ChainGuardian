@@ -57,6 +57,7 @@ jest.mock("fs", () => {
 
 import {CGAccount} from "../../../src/renderer/models/account";
 import {V4KeystoreFactory} from "../../../src/renderer/services/keystore";
+import {ValidatorNetworkRepository} from "../../../src/renderer/services/db/api/repositories/validator/network";
 
 // Passwords for keystores 1 & 2
 const PRIMARY_KEYSTORE_PASSWORD = "chainGuardianPass";
@@ -71,6 +72,7 @@ function createTestAccount(): CGAccount {
 
 describe("CGAccount tests", () => {
     let sandbox: sinon.SinonSandbox;
+
     beforeEach(() => {
         sandbox = sinon.createSandbox();
         sandbox.stub(V4KeystoreFactory.prototype, "getPublicKey").returns("0x001");
@@ -89,6 +91,7 @@ describe("CGAccount tests", () => {
 
     beforeAll(async () => {
         await initBLS("herumi");
+        sinon.stub(ValidatorNetworkRepository.prototype, "get").resolves(null);
     });
 
     afterEach(() => {
