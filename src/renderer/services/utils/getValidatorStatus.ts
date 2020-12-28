@@ -1,38 +1,29 @@
 import {ValidatorStatus} from "../../constants/validatorStatus";
 import {CgEth2ApiClient} from "../eth2/client/eth2ApiClient";
 import {config as mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
-import {getNetworkConfigByGenesisVersion} from "../eth2/networks";
-import {ethers} from "ethers";
 import {fromHexString} from "@chainsafe/ssz";
-import {toHex} from "@chainsafe/lodestar-utils";
+import {readBeaconChainNetwork} from "../eth2/client";
 
-export const getValidatorState = async (publicKey: string, beaconNodeUrl?: string): Promise<ValidatorStatus> => {
+export const getValidatorStatus = async (publicKey: string, beaconNodeUrl?: string): Promise<ValidatorStatus> => {
     if (!beaconNodeUrl) return ValidatorStatus.NO_BEACON_NODE;
 
-    // TODO: get config from based on network
-    const client = new CgEth2ApiClient(mainnetConfig, beaconNodeUrl);
+    const config = await readBeaconChainNetwork(beaconNodeUrl);
+    const client = new CgEth2ApiClient(config?.eth2Config || mainnetConfig, beaconNodeUrl);
 
     const validatorId = fromHexString(publicKey);
     const stateValidator = await client.beacon.state.getStateValidator("head", validatorId);
 
     if (!stateValidator || stateValidator.status === "unknown") {
-        const [depositInfo, genesis] = await Promise.all([
-            client.networkConfig.getDepositContract(),
-            client.beacon.getGenesis(),
-        ]);
-        const genesisForkVersion = toHex(genesis.genesisForkVersion);
-        const config = getNetworkConfigByGenesisVersion(genesisForkVersion);
+        // // TODO: experiment to see best
+        // const currentBlock = await config.eth1Provider.getBlockNumber();
+        // const logs = await config.eth1Provider.getLogs({
+        //     address: config.contract.address,
+        //     fromBlock: currentBlock - 6144, // approx 24h before current block
+        //     topics: [ethers.utils.id("DepositEvent(bytes,bytes,bytes,bytes,bytes)")],
+        // });
+        // const containsThisValidator = logs.some(({data}) => data.includes(publicKey.substr(2)));
 
-        // TODO: experiment to see best
-        const currentBlock = await config.eth1Provider.getBlockNumber();
-        const logs = await config.eth1Provider.getLogs({
-            address: depositInfo.address,
-            fromBlock: currentBlock - 6144, // approx 24h before current block
-            topics: [ethers.utils.id("DepositEvent(bytes,bytes,bytes,bytes,bytes)")],
-        });
-        const containsThisValidator = logs.some(({data}) => data.includes(publicKey.substr(2)));
-
-        return containsThisValidator ? ValidatorStatus.WAITING_DEPOSIT : ValidatorStatus.PROCESSING_DEPOSIT;
+        return ValidatorStatus.WAITING_DEPOSIT;
     } else {
         return getValidatorStatusFromString(stateValidator.status);
     }

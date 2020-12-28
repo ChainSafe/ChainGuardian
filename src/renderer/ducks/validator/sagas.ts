@@ -32,7 +32,7 @@ import {Beacon} from "../beacon/slice";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
 import {getValidatorBalance} from "../../services/utils/validator";
-import {getValidatorState} from "../../services/utils/getValidatorState";
+import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -55,7 +55,7 @@ function* loadValidatorsSaga(): Generator<
                 const balance = await getValidatorBalance(keyStore.getPublicKey(), network, beaconNodes?.nodes[0]);
                 return {
                     name: keyStore.getName() ?? `Validator - ${index}`,
-                    status: await getValidatorState(keyStore.getPublicKey(), beaconNodes?.nodes[0]),
+                    status: await getValidatorStatus(keyStore.getPublicKey(), beaconNodes?.nodes[0]),
                     publicKey: keyStore.getPublicKey(),
                     network,
                     balance,
