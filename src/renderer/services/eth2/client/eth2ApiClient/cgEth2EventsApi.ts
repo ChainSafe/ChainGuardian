@@ -16,15 +16,17 @@ export class CgEth2EventsApi implements IEventsApi {
         const url = new URL(`/eth/v1/events?topics=${topicsQuery}`, this.baseUrl);
         const eventSource = new EventSource(url.href);
         return new LodestarEventIterator(({push}): (() => void) => {
-            eventSource.onmessage = (event): void => {
-                if (topics.includes(event.type as BeaconEventType)) {
-                    push(this.deserializeBeaconEventMessage(event));
-                }
-            };
+            topics.forEach((topic) => {
+                eventSource.addEventListener(topic, this.eventListener(push));
+            });
             return (): void => {
                 eventSource.close();
             };
         });
+    };
+
+    private eventListener = (push: (value: BeaconEvent) => void) => (event: Event): void => {
+        push(this.deserializeBeaconEventMessage(event as MessageEvent));
     };
 
     private deserializeBeaconEventMessage = (msg: MessageEvent): BeaconEvent => {
@@ -39,12 +41,17 @@ export class CgEth2EventsApi implements IEventsApi {
                     type: BeaconEventType.CHAIN_REORG,
                     message: this.deserializeEventData(this.config.types.ChainReorg, msg.data),
                 };
+            case BeaconEventType.HEAD:
+                return {
+                    type: BeaconEventType.HEAD,
+                    message: this.deserializeEventData(this.config.types.ChainHead, msg.data),
+                };
             default:
                 throw new Error("Unsupported beacon event type " + msg.type);
         }
     };
 
     private deserializeEventData = <T extends BeaconEvent["message"]>(type: ContainerType<T>, data: string): T => {
-        return type.fromJson(JSON.parse(data));
+        return type.fromJson(JSON.parse(data), {case: "snake"});
     };
 }
