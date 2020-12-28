@@ -1,6 +1,6 @@
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
-import {IDepositContract, ICGEth2Config} from "../interface";
+import {DepositContract, ICGEth2Config} from "../interface";
 
 export class CgEth2Config implements ICGEth2Config {
     private readonly httpClient: HttpClient;
@@ -11,9 +11,9 @@ export class CgEth2Config implements ICGEth2Config {
     }
 
     // TODO: implement ssz
-    public getDepositContract = async (): Promise<IDepositContract["data"]> => {
+    public getDepositContract = async (): Promise<DepositContract["data"]> => {
         try {
-            const response = await this.httpClient.get<IDepositContract>("/eth/v1/config/deposit_contract");
+            const response = await this.httpClient.get<DepositContract>("/eth/v1/config/deposit_contract");
             return response.data;
         } catch (e) {
             // TODO: implement logger;
