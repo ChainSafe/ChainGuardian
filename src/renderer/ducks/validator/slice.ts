@@ -1,5 +1,3 @@
-import {ValidatorResponse} from "@chainsafe/lodestar-types";
-import {toHexString} from "@chainsafe/ssz";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
 import {ICGKeystore} from "../../services/keystore";

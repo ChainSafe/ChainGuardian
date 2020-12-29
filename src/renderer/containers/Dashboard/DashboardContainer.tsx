@@ -13,8 +13,7 @@ import {Routes} from "../../constants/routes";
 import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {IRootState} from "../../ducks/reducers";
 import {createNotification} from "../../ducks/notification/actions";
-import {requireAuthorization} from "../../ducks/auth/actions";
-import {loadValidatorsAction, removeActiveValidator} from "../../ducks/validator/actions";
+import {removeActiveValidator} from "../../ducks/validator/actions";
 import {getAuthAccount} from "../../ducks/auth/selectors";
 import {getNetworkValidators} from "../../ducks/validator/selectors";
 import {getHasBeacons} from "../../ducks/beacon/selectors";
@@ -30,8 +29,6 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = ({
     removeValidator,
     notification,
     history,
-    loadValidators,
-    loadAccount,
     account,
     hasBeacons,
 }) => {
@@ -59,13 +56,8 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = ({
     };
 
     useEffect(() => {
-        loadValidators();
         setLoading(false);
     }, [account !== null]);
-
-    useEffect(() => {
-        loadAccount();
-    }, []);
 
     return (
         <Background topBar={<Topbar canAddValidator={hasBeacons} />} scrollable={true}>
@@ -115,8 +107,6 @@ interface IStateProps {
 
 interface IInjectedProps {
     notification: typeof createNotification;
-    loadValidators: typeof loadValidatorsAction;
-    loadAccount: typeof requireAuthorization;
     removeValidator: typeof removeActiveValidator;
 }
 
@@ -130,8 +120,6 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     bindActionCreators(
         {
             notification: createNotification,
-            loadValidators: loadValidatorsAction,
-            loadAccount: requireAuthorization,
             removeValidator: removeActiveValidator,
         },
         dispatch,

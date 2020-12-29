@@ -1248,73 +1248,73 @@
     ethereum-cryptography "^0.1.3"
     uuid "^3.3.3"
 
-"@chainsafe/bls@5.0.1":
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/@chainsafe/bls/-/bls-5.0.1.tgz#cb9b6a297b76815f4ccdde595f57775305bfcf00"
-  integrity sha512-MYImjOqlXb7LzR3I7xzBejQDSyQ1gqjWEReSVY6BgnrzRkYe+MNpku9CSi2khrfGn+Tftxl4olPb4GC4kHyBrw==
+"@chainsafe/bls@5.1.0", "@chainsafe/bls@5.1.1", "@chainsafe/bls@5.5.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@chainsafe/bls/-/bls-5.1.1.tgz#c4efab9d139c69a64b91dda51b9f2d997a8081dc"
+  integrity sha512-l8ep0BsX+8h3oRVtTUMcCPC1gaYn4AzsLfx5pjSkuFe0QwAuxSJsN/d+M6o0Knc9LnXATW276ACSEhJMB1x96A==
   dependencies:
     "@chainsafe/bls-keygen" "^0.3.0"
     bls-eth-wasm "^0.4.4"
     randombytes "^2.1.0"
 
-"@chainsafe/lodestar-beacon-state-transition@0.12.0", "@chainsafe/lodestar-beacon-state-transition@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-beacon-state-transition/-/lodestar-beacon-state-transition-0.12.0.tgz#eb78dff24e729475df37a89f84adab9ad3e0c57e"
-  integrity sha512-fH1fpSEv8cw6yVIQ49WFfH5j5VQhG3ABgRwYaSLLLiGFmH/P128s2VocTIxo1nKRXOes3QG8CT79kjIPDyIB4g==
+"@chainsafe/lodestar-beacon-state-transition@0.13.0", "@chainsafe/lodestar-beacon-state-transition@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-beacon-state-transition/-/lodestar-beacon-state-transition-0.13.0.tgz#bbd1ac0bfcd110eb27e25d65b633305de9145a8b"
+  integrity sha512-7hyAZjV21SzsoKe20a/IDUK1uvlTBMfGAJSvzz13/4atvCCHp1QyllqHvIWtzadpuAoP9sun2Ee4bOjjaWBKNg==
   dependencies:
-    "@chainsafe/bls" "5.0.1"
-    "@chainsafe/lodestar-config" "^0.12.0"
-    "@chainsafe/lodestar-utils" "^0.12.0"
+    "@chainsafe/bls" "5.1.0"
+    "@chainsafe/lodestar-config" "^0.13.0"
+    "@chainsafe/lodestar-utils" "^0.13.0"
     "@chainsafe/ssz" "^0.6.13"
     bigint-buffer "^1.1.5"
     buffer-xor "^2.0.2"
 
-"@chainsafe/lodestar-config@0.12.0", "@chainsafe/lodestar-config@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-config/-/lodestar-config-0.12.0.tgz#a607543c97fd276a8e332b193463e2e7133222d6"
-  integrity sha512-fuhQ8b/X7AfBzbjA3CRnesTgZ7fH/Z/DGtwb7mbaEmGA6oRTEc9xtJ0/8mUmnJb1q9e52J7yTXKanxC0rDwRog==
+"@chainsafe/lodestar-config@0.13.0", "@chainsafe/lodestar-config@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-config/-/lodestar-config-0.13.0.tgz#508efd9d9ca3d4253035c4239af91c36ef532006"
+  integrity sha512-bHj9kxHO0Czy61Hcj1o64B04BnjRoBLUevU9LWjakp4kRlv7p8hMxkYtNuuC1UTS22Ef8IPVwz4iVOsakUdX/Q==
   dependencies:
-    "@chainsafe/lodestar-params" "^0.12.0"
-    "@chainsafe/lodestar-types" "^0.12.0"
+    "@chainsafe/lodestar-params" "^0.13.0"
+    "@chainsafe/lodestar-types" "^0.13.0"
 
-"@chainsafe/lodestar-db@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-db/-/lodestar-db-0.12.0.tgz#68d86f810ebd2dfe41b2aadfab4abf8e748233ec"
-  integrity sha512-6PgtCW6aofAZxF5l75KIihW9GzZvaetQhwk8EXyEWTJAdWbU7aYfVEUT+FnpM/y716oseUqllfP3f/vqXv3syw==
+"@chainsafe/lodestar-db@0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-db/-/lodestar-db-0.13.0.tgz#955c07b9066184a9bf26f9a000c87e7062d0c2c9"
+  integrity sha512-5cE3gwEo2nS6c9TwY+4Mxy22bNzVRv6HHAm/EPOjDMjDN47kC4TlG5mf+nL7iJxJjn9nHGAGL+afTd5MTAbcCg==
   dependencies:
-    "@chainsafe/lodestar-config" "^0.12.0"
-    "@chainsafe/lodestar-types" "^0.12.0"
-    "@chainsafe/lodestar-utils" "^0.12.0"
+    "@chainsafe/lodestar-config" "^0.13.0"
+    "@chainsafe/lodestar-types" "^0.13.0"
+    "@chainsafe/lodestar-utils" "^0.13.0"
     "@chainsafe/ssz" "^0.6.13"
     it-all "^1.0.2"
     it-pushable "^1.4.0"
     level "^6.0.1"
     levelup "^4.4.0"
 
-"@chainsafe/lodestar-params@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-params/-/lodestar-params-0.12.0.tgz#65242a148e1a1ca1c76b18009214a263d59fed6a"
-  integrity sha512-gPrc1fUOjUPbhZOBi1HRPEU3Om/6/gSMpdHivcWIdEstBW1vRemUEJpif158TFJ5nuL/hsYvOSVNG9f1mpCiLA==
+"@chainsafe/lodestar-params@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-params/-/lodestar-params-0.13.0.tgz#f2720e3d9898150b95fc5367ccf52b65df2225de"
+  integrity sha512-rd88F8fy3CE4UGUhf33xLZXdfwFiSdKX7omSISiI9YFluCU7yh0BZEtST4EmGd+v8wMm44i/R6CBOXVxf7eDoA==
   dependencies:
     "@chainsafe/ssz" "^0.6.13"
     "@types/js-yaml" "^3.12.2"
     axios "^0.21.0"
     js-yaml "^3.13.1"
 
-"@chainsafe/lodestar-types@0.12.0", "@chainsafe/lodestar-types@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-types/-/lodestar-types-0.12.0.tgz#2f4adeeaad96f6056a7467e37888faa0217b883f"
-  integrity sha512-TWkybZ9iuPrxe19TxAvskHvcnBmEd1Af7CfxIVa2+7ALg0hQ+6HG9GxIhn7Atd1bVmhx3Sx8JljnT434L1XWMA==
+"@chainsafe/lodestar-types@0.13.0", "@chainsafe/lodestar-types@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-types/-/lodestar-types-0.13.0.tgz#4eff6fca2566f9e2b99636e5c2143d9c25278ff2"
+  integrity sha512-+CJiK0ArS2XRoQQ9tvIup6L4cjfadfX4MInWvEkl9SENCDtNjI0LYspIJNDfNZcz+2lMZ/ZpxNw92YrG8mbMpw==
   dependencies:
-    "@chainsafe/lodestar-params" "^0.12.0"
+    "@chainsafe/lodestar-params" "^0.13.0"
     "@chainsafe/ssz" "^0.6.13"
 
-"@chainsafe/lodestar-utils@0.12.0", "@chainsafe/lodestar-utils@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-utils/-/lodestar-utils-0.12.0.tgz#8db356edcaeed3c8b0a555a18e6e57ee49dcde70"
-  integrity sha512-LCRXFxp73xQZPH99OVeLUaX4NKpEuUFqAJ7rmnYmrHIum678LDylPGrzw72HB69SMBiTtmbFFuypLwf81gitTQ==
+"@chainsafe/lodestar-utils@0.13.0", "@chainsafe/lodestar-utils@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-utils/-/lodestar-utils-0.13.0.tgz#d98b73a74704505497ac55ee6b055c03d1e02b53"
+  integrity sha512-NKdNPfwK8i7D4KvFqs0cQdXKUvOgIw7UNZKHbRBk/K6DSpiPNNvIl6J8euoMlRkxs9IRUXgZMic5pAaWEdm2AA==
   dependencies:
-    "@chainsafe/bls" "5.0.1"
+    "@chainsafe/bls" "5.1.0"
     "@chainsafe/ssz" "^0.6.13"
     abort-controller "^3.0.0"
     bigint-buffer "^1.1.5"
@@ -1324,16 +1324,16 @@
     winston "^3.3.3"
     winston-transport "^4.3.0"
 
-"@chainsafe/lodestar-validator@0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-validator/-/lodestar-validator-0.12.0.tgz#bceb48ebab436a3860622a716f64c91989310930"
-  integrity sha512-WMjw7V04WM5BURktkoMep7588BtDUw6lKpx+lfWmlKFoFylOQ2rMOwWe7xSCnTxybLcq1kfIwjIq0/TOkZGBIA==
+"@chainsafe/lodestar-validator@0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-validator/-/lodestar-validator-0.13.0.tgz#d3403ff32395a3f95d6a966b93eca7fcaafa7b73"
+  integrity sha512-texiOWlbuQ49fNTY61LCPg+BD6MUDQkWbohdvSWiHWBCK0aO+xQCGNOBNlFj5UfFg3JTbXUQupldi1AGhdBCbw==
   dependencies:
-    "@chainsafe/bls" "5.0.1"
-    "@chainsafe/lodestar-beacon-state-transition" "^0.12.0"
-    "@chainsafe/lodestar-config" "^0.12.0"
-    "@chainsafe/lodestar-types" "^0.12.0"
-    "@chainsafe/lodestar-utils" "^0.12.0"
+    "@chainsafe/bls" "5.1.0"
+    "@chainsafe/lodestar-beacon-state-transition" "^0.13.0"
+    "@chainsafe/lodestar-config" "^0.13.0"
+    "@chainsafe/lodestar-types" "^0.13.0"
+    "@chainsafe/lodestar-utils" "^0.13.0"
     "@chainsafe/ssz" "^0.6.13"
     abort-controller "^3.0.0"
     abortable-iterator "^3.0.0"
@@ -7164,6 +7164,11 @@ electron-log@^3.0.9:
   version "3.0.9"
   resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-3.0.9.tgz#53ff1fcdb2f3e4a73ea7096d2f7204121109ec6f"
   integrity sha512-kfV4riUqW8uooYLAfrlB3EJW66W29ePipJU4/Fm8UxQekVNcR2qHI/0tiJX3oWM79VdAUiiYqL9V49lhnSIO8g==
+
+electron-mock-ipc@^0.3.9:
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/electron-mock-ipc/-/electron-mock-ipc-0.3.9.tgz#aae1adbc94f7d95a4c6534f7a0497904a338dd5d"
+  integrity sha512-KLcIfdDfA+DnK29/269zfBF4UxpIpkwj2ZVXdOtMvkPRutlpQZqa+hs24wXc/0DHiTKSKlapGHfPTlcZKGSh6A==
 
 electron-publish@22.9.1:
   version "22.9.1"
@@ -14742,10 +14747,10 @@ serialize-error@^7.0.0, serialize-error@^7.0.1:
   dependencies:
     type-fest "^0.13.1"
 
-serialize-javascript@3.1.0, serialize-javascript@^3.1.0, serialize-javascript@^4.0.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-3.1.0.tgz#8bf3a9170712664ef2561b44b691eafe399214ea"
-  integrity sha512-JIJT1DGiWmIKhzRsG91aS6Ze4sFUrYbltlkg2onR5OrnNM02Kl/hnY/T4FN2omvyeBbQmMJv+K4cPOpGzOTFBg==
+serialize-javascript@4.0.0, serialize-javascript@^3.1.0, serialize-javascript@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-4.0.0.tgz#b525e1238489a5ecfc42afacc3fe99e666f4b1aa"
+  integrity sha512-GaNA54380uFefWghODBWEGisLZFj00nS5ACs6yHa9nLqlLpVLO8ChDGeKRjZnV4Nh4n0Qi7nhYZD/9fCPzEqkw==
   dependencies:
     randombytes "^2.1.0"
 

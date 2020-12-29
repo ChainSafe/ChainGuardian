@@ -3,8 +3,6 @@ import {
     put,
     SelectEffect,
     PutEffect,
-    call,
-    CallEffect,
     all,
     takeEvery,
     race,
@@ -14,28 +12,20 @@ import {
 } from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
 import {deleteKeystore} from "../../services/utils/account";
-import {fromHex} from "../../services/utils/bytes";
-import {getNetworkConfig} from "../../services/eth2/networks";
-import {EthersNotifier} from "../../services/deposit/ethers";
-import {getValidatorStatus, ValidatorStatus} from "../../services/validator/status";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
 import database, {cgDbController} from "../../services/db/api/database";
 import {config as mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
-import {IByPublicKey, IValidator} from "./slice";
+import {IValidator} from "./slice";
 import {
     loadValidators,
     addValidator,
     removeValidator,
     startValidatorService,
     stopValidatorService,
-    loadValidatorStatus,
     stopActiveValidatorService,
     startNewValidatorService,
-    updateValidatorsFromChain,
-    updateValidatorChainData,
     removeActiveValidator,
     addNewValidator,
-    updateValidatorStatus,
     loadValidatorsAction,
     setValidatorBeaconNode,
     storeValidatorBeaconNodes,
@@ -44,6 +34,8 @@ import {
     slashingProtectionCancel,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
+import {unsubscribeToBlockListening} from "../network/actions";
+import {SlashingProtection, Validator} from "@chainsafe/lodestar-validator";
 import {loadValidatorBeaconNodes, unsubscribeToBlockListening} from "../network/actions";
 import {Validator} from "@chainsafe/lodestar-validator";
 import {IValidatorBeaconNodes} from "../../models/beaconNode";
@@ -52,14 +44,14 @@ import {AllEffect} from "@redux-saga/core/effects";
 import {Genesis, ValidatorResponse} from "@chainsafe/lodestar-types";
 import * as logger from "electron-log";
 import {getAuthAccount} from "../auth/selectors";
-import {getBeaconNodes} from "../network/selectors";
-import {getValidatorBeaconNodes, getValidators} from "./selectors";
+import {getValidatorBeaconNodes} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
 import {WinstonLogger} from "@chainsafe/lodestar-utils";
 import {Beacon} from "../beacon/slice";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
+import {getValidatorBalance} from "../../services/utils/validator";
 import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
 import {readFileSync} from "fs";
 
@@ -80,13 +72,16 @@ function* loadValidatorsSaga(): Generator<
         const validatorArray: IValidator[] = yield Promise.all(
             validators.map(async (keyStore, index) => {
                 const beaconNodes = await database.validatorBeaconNodes.get(keyStore.getPublicKey());
+                const network = auth.getValidatorNetwork(keyStore.getPublicKey());
+                const balance = await getValidatorBalance(keyStore.getPublicKey(), network, beaconNodes?.nodes[0]);
                 return {
                     name: keyStore.getName() ?? `Validator - ${index}`,
                     status: undefined,
                     publicKey: keyStore.getPublicKey(),
-                    network: auth.getValidatorNetwork(keyStore.getPublicKey()),
+                    network,
+                    balance,
                     keystore: keyStore,
-                    isRunning: undefined,
+                    isRunning: false,
                     beaconNodes: beaconNodes?.nodes || [],
                 };
             }),
@@ -119,51 +114,6 @@ function* removeValidatorSaga(
 
     yield put(unsubscribeToBlockListening(action.payload));
     yield put(removeValidator(action.payload));
-}
-
-function* loadValidatorChainData(
-    action: ReturnType<typeof updateValidatorChainData>,
-): Generator<CallEffect | AllEffect<CallEffect>> {
-    // Initialize validator object with API client
-    yield call(loadValidatorBeaconNodesSaga, loadValidatorBeaconNodes(action.payload, true));
-    // Load validator state from chain for i.e. balance
-    // TODO: load all validators in one request per network
-    yield all([
-        call(loadValidatorsFromChain, updateValidatorsFromChain([action.payload])),
-        call(loadValidatorStatusSaga, updateValidatorStatus(action.payload)),
-    ]);
-}
-
-function* loadValidatorsFromChain(
-    action: ReturnType<typeof updateValidatorsFromChain>,
-): Generator<
-    SelectEffect | Promise<ValidatorResponse[]> | PutEffect,
-    void,
-    IValidatorBeaconNodes & ValidatorResponse[]
-> {
-    const validatorBeaconNodes: IValidatorBeaconNodes = yield select(getBeaconNodes);
-    const beaconNodes = validatorBeaconNodes[action.payload[0]];
-    if (beaconNodes && beaconNodes.length > 0) {
-        logger.warn("Error while fetching validator balance...");
-    }
-}
-
-function* loadValidatorStatusSaga(
-    action: ReturnType<typeof updateValidatorStatus>,
-): Generator<SelectEffect | CallEffect | PutEffect, void, ValidatorStatus & IValidatorBeaconNodes & IByPublicKey> {
-    const validatorBeaconNodes: IValidatorBeaconNodes = yield select(getBeaconNodes);
-    const beaconNodes = validatorBeaconNodes[action.payload];
-    if (beaconNodes && beaconNodes.length > 0) {
-        // TODO: Use any working beacon node instead of first one
-        const eth2 = beaconNodes[0].client;
-        const byPublicKey: IByPublicKey = yield select(getValidators);
-        const network = byPublicKey[action.payload].network;
-        const networkConfig = getNetworkConfig(network);
-        const eth1 = new EthersNotifier(networkConfig, networkConfig.eth1Provider);
-        const status: ValidatorStatus = yield call(getValidatorStatus, fromHex(action.payload), eth2, eth1);
-
-        yield put(loadValidatorStatus(status, action.payload));
-    }
 }
 
 function* startService(
@@ -277,9 +227,6 @@ export function* validatorSagaWatcher(): Generator {
         takeEvery(loadValidatorsAction, loadValidatorsSaga),
         takeEvery(addNewValidator, addNewValidatorSaga),
         takeEvery(removeActiveValidator, removeValidatorSaga),
-        takeEvery(updateValidatorChainData, loadValidatorChainData),
-        takeEvery(updateValidatorsFromChain, loadValidatorsFromChain),
-        takeEvery(updateValidatorStatus, loadValidatorStatusSaga),
         takeEvery(startNewValidatorService, startService),
         takeEvery(stopActiveValidatorService, stopService),
         takeEvery(setValidatorBeaconNode, setValidatorBeacon),

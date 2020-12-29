@@ -7,7 +7,6 @@ export const {
     addValidator,
     startValidatorService,
     loadValidators,
-    loadedValidatorsBalance,
     loadValidatorStatus,
     removeValidator,
     stopValidatorService,
@@ -39,8 +38,6 @@ export const setValidatorBeaconNode = createAction<SetValidatorBeaconNode>(
 );
 
 export const updateValidatorChainData = createAction<string>("validator/updateValidatorChainData");
-
-export const updateValidatorsFromChain = createAction<string[]>("validator/updateValidatorsFromChain");
 
 export const updateValidatorStatus = createAction<string>("validator/updateValidatorStatus");
 

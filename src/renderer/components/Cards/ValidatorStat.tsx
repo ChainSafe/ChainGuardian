@@ -4,17 +4,21 @@ import {utils} from "ethers";
 export interface IValidatorStatProps {
     title: string;
     type: string;
-    value: bigint | number | string;
+    value?: bigint | number | boolean;
 }
 const renderROI = (props: IValidatorStatProps): React.ReactElement => {
     return (
         <div className='validator-card-container'>
             <h5>{props.title}</h5>
-            <h1 className={props.value >= 0 ? "plus" : "minus"}>
-                {props.value >= 0 ? "+" : ""}
-                {props.value}%
-            </h1>
-            <h5 className={props.value >= 0 ? "plus" : "minus"}>{props.type}</h5>
+            {props.value === undefined ? (
+                <h1>N/A</h1>
+            ) : (
+                <h1 className={props.value >= 0 ? "plus" : "minus"}>
+                    {props.value >= 0 ? "+" : ""}
+                    {props.value}%
+                </h1>
+            )}
+            <h5 className={props.value === undefined ? "" : props.value >= 0 ? "plus" : "minus"}>{props.type}</h5>
         </div>
     );
 };
@@ -22,11 +26,15 @@ const renderBalance = (props: IValidatorStatProps): React.ReactElement => {
     return (
         <div className='validator-card-container'>
             <h5>{props.title}</h5>
-            <h1>
-                {props.value < 1
-                    ? props.value.toString().slice(1) || 0
-                    : Number(utils.formatEther(utils.parseUnits(props.value.toString(), "gwei"))).toFixed(3)}
-            </h1>
+            {props.value === undefined ? (
+                <h1>N/A</h1>
+            ) : (
+                <h1>
+                    {props.value < 1
+                        ? props.value.toString().slice(1) || 0
+                        : Number(utils.formatEther(utils.parseUnits(props.value.toString(), "gwei"))).toFixed(3)}
+                </h1>
+            )}
             <h5>{props.type}</h5>
         </div>
     );

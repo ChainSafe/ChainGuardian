@@ -19,7 +19,7 @@ export class IpcDatabaseController implements IDatabaseController<Buffer, Buffer
     }
 
     public async search(opts: IFilterOptions<Buffer>): Promise<Buffer[]> {
-        return await ipcRenderer.invoke(IpcDatabaseEvents.DATABASE_SEARCH, opts.gt, opts.lt);
+        return await ipcRenderer.invoke(IpcDatabaseEvents.DATABASE_SEARCH, opts);
     }
 
     public async put(key: Buffer, value: Buffer): Promise<void> {
@@ -48,9 +48,8 @@ export class IpcDatabaseController implements IDatabaseController<Buffer, Buffer
 
     public valuesStream(): AsyncIterable<Buffer> {
         const id = randomBytes(12).toString("hex");
-        ipcRenderer.sendSync(IpcDatabaseEvents.DATABASE_VALUES_STREAM, id);
-        return new EventIterator(({push, stop}) => {
-            const listener = (event: IpcRendererEvent, args: [string, Buffer]): void => {
+        const eventIterator = new EventIterator<Buffer>(({push, stop}) => {
+            const listener = (event: IpcRendererEvent, ...args: [string, Buffer]): void => {
                 if (args[0] === id) {
                     //if there is event occurence without value, we reached end
                     if (!args[1]) {
@@ -65,6 +64,8 @@ export class IpcDatabaseController implements IDatabaseController<Buffer, Buffer
                 ipcRenderer.removeListener(IpcDatabaseEvents.DATABASE_VALUES_EVENT, listener);
             };
         });
+        ipcRenderer.send(IpcDatabaseEvents.DATABASE_VALUES_STREAM, id);
+        return eventIterator;
     }
 
     public async values(opts?: IFilterOptions<Buffer>): Promise<Buffer[]> {

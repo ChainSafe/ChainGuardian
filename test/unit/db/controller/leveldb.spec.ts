@@ -72,6 +72,31 @@ describe("LevelDB controller", () => {
         expect(result.length).to.be.equal(2);
     });
 
+    it("test delete", async () => {
+        await db.batchPut([
+            {
+                key: "key1",
+                value: "value",
+            },
+            {
+                key: "key2",
+                value: "value",
+            },
+        ]);
+        const result = await db.search({
+            gt: Buffer.from("key0"),
+            lt: Buffer.from("key99"),
+        });
+        expect(result.length).to.be.equal(2);
+
+        await db.delete("key1");
+        const resultAfterDelete = await db.search({
+            gt: Buffer.from("key0"),
+            lt: Buffer.from("key99"),
+        });
+        expect(resultAfterDelete.length).to.be.deep.equal(1);
+    });
+
     it("test batch delete", async () => {
         await db.batchPut([
             {
@@ -88,6 +113,94 @@ describe("LevelDB controller", () => {
             lt: Buffer.from("key99"),
         });
         expect(result.length).to.be.equal(2);
+
         await db.batchDelete(["key1", "key2"]);
+        const resultAfterDelete = await db.search({
+            gt: Buffer.from("key0"),
+            lt: Buffer.from("key99"),
+        });
+        expect(resultAfterDelete).to.be.deep.equal([]);
+    });
+
+    it("test keys stream", async () => {
+        await db.batchPut([
+            {
+                key: "key1",
+                value: "value",
+            },
+            {
+                key: "key2",
+                value: "value",
+            },
+        ]);
+        const result = await db.keysStream({
+            gt: Buffer.from("key0"),
+            lt: Buffer.from("key99"),
+        });
+
+        for await (const buffer of result) {
+            expect(buffer).to.be.instanceOf(Buffer);
+            expect(buffer.length).not.to.be.deep.equal(0);
+        }
+    });
+
+    it("test keys", async () => {
+        await db.batchPut([
+            {
+                key: "key1",
+                value: "value",
+            },
+            {
+                key: "key2",
+                value: "value",
+            },
+        ]);
+
+        const result = await db.keys({
+            gt: Buffer.from("key0"),
+            lt: Buffer.from("key99"),
+        });
+        expect(result).to.be.deep.equal([Buffer.from("key1"), Buffer.from("key2")]);
+    });
+
+    it("test values stream", async () => {
+        await db.batchPut([
+            {
+                key: "key1",
+                value: "value",
+            },
+            {
+                key: "key2",
+                value: "value",
+            },
+        ]);
+        const result = await db.valuesStream({
+            gt: Buffer.from("key0"),
+            lt: Buffer.from("key99"),
+        });
+
+        for await (const buffer of result) {
+            expect(buffer).to.be.instanceOf(Buffer);
+            expect(buffer.length).not.to.be.deep.equal(0);
+        }
+    });
+
+    it("test values", async () => {
+        await db.batchPut([
+            {
+                key: "key1",
+                value: "value",
+            },
+            {
+                key: "key2",
+                value: "value",
+            },
+        ]);
+
+        const result = await db.values({
+            gt: Buffer.from("key0"),
+            lt: Buffer.from("key99"),
+        });
+        expect(result).to.be.deep.equal([Buffer.from("value"), Buffer.from("value")]);
     });
 });

@@ -35,9 +35,6 @@ export class CgEth2BeaconStateApi implements IBeaconStateApi {
         try {
             const url = `/eth/v1/beacon/states/${stateId}/validators/${id}`;
             const stateValidatorResponse = await this.httpClient.get<{data: Json}>(url);
-            // TODO: remove hack after ssz is updated
-            // @ts-ignore
-            stateValidatorResponse.data.pubkey = stateValidatorResponse.data.validator.pubkey;
             return this.config.types.ValidatorResponse.fromJson(stateValidatorResponse.data, {case: "snake"});
         } catch (e) {
             // TODO: implement logger;
