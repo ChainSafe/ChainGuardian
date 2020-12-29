@@ -16,6 +16,7 @@ import {
     ValidatorIndex,
     ValidatorResponse,
     ValidatorStatus,
+    SignedBeaconBlock,
 } from "@chainsafe/lodestar-types";
 
 export interface ICGETH2BeaconBlocksApi extends IBeaconBlocksApi {
