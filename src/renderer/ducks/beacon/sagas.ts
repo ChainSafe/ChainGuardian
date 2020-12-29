@@ -156,7 +156,10 @@ export function* watchOnHead(
 > {
     const config = yield readBeaconChainNetwork(url);
     const client = new CgEth2ApiClient(config?.eth2Config || mainnetConfig, url);
-    const emitter = client.events.getEventStream([BeaconEventType.HEAD]);
+    const emitter = client.events.getEventStream([
+        BeaconEventType.HEAD,
+        (CGBeaconEventType.FINALIZED_CHECKPOINT as unknown) as BeaconEventType,
+    ]);
     const event = yield eventChannel<HeadEvent | FinalizedCheckpointEvent>((emit) => {
         (async (): Promise<void> => {
             for await (const event of emitter) {
