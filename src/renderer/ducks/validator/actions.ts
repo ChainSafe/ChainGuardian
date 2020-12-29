@@ -11,6 +11,7 @@ export const {
     removeValidator,
     stopValidatorService,
     storeValidatorBeaconNodes,
+    updateValidatorBalance,
 } = validatorSlice.actions;
 
 export const loadValidatorsAction = createAction("validator/loadValidatorsAction");

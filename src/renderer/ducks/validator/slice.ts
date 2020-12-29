@@ -88,5 +88,14 @@ export const validatorSlice = createSlice({
                 meta: validator,
             }),
         },
+        updateValidatorBalance: {
+            reducer: (state, action: PayloadAction<bigint, string, string>): void => {
+                state.byPublicKey[action.meta].balance = action.payload;
+            },
+            prepare: (publicKey: string, balance: bigint): {payload: bigint; meta: string} => ({
+                payload: balance,
+                meta: publicKey,
+            }),
+        },
     },
 });
