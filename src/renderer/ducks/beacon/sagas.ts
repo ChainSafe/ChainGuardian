@@ -10,7 +10,6 @@ import {
     TakeEffect,
     race,
     take,
-    ChannelTakeEffect,
     cancel,
 } from "redux-saga/effects";
 import {getNetworkConfig} from "../../services/eth2/networks";
@@ -23,8 +22,6 @@ import database from "../../services/db/api/database";
 import {Beacons} from "../../models/beacons";
 import {postInit} from "../store";
 import {BeaconStatus} from "./slice";
-import {HttpClient} from "../../services/api";
-import {EventChannel, eventChannel} from "redux-saga";
 import {Action} from "redux";
 import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
 import {mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
@@ -32,7 +29,8 @@ import {BeaconEventType, HeadEvent} from "@chainsafe/lodestar-validator/lib/api/
 import {AllEffect, CancelEffect, ForkEffect} from "@redux-saga/core/effects";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
-import {CGBeaconEventType, FinalizedCheckpointEvent} from "../../services/eth2/client/interface";
+import {CGBeaconEvent, CGBeaconEventType, FinalizedCheckpointEvent} from "../../services/eth2/client/interface";
+import logger from "electron-log";
 
 export function* pullDockerImage(
     network: string,
@@ -99,7 +97,11 @@ function* removeBeaconSaga({payload}: ReturnType<typeof removeBeacon>): Generato
 }
 
 function* initializeBeaconsFromStore(): Generator<
-    Promise<Beacons> | PutEffect | Promise<void> | Promise<Response[]> | AllEffect<ForkEffect>,
+    | Promise<Beacons>
+    | PutEffect
+    | Promise<void>
+    | Promise<({syncing: boolean; slot: number} | null)[]>
+    | AllEffect<ForkEffect>,
     void,
     Beacons & ({syncing: boolean; slot: number} | null)[]
 > {
@@ -110,13 +112,11 @@ function* initializeBeaconsFromStore(): Generator<
         yield BeaconChain.startAllLocalBeaconNodes();
 
         const stats = yield Promise.all(
-            beacons.map(({url}) =>
-                new HttpClient(url)
-                    // eslint-disable-next-line camelcase
-                    .get<{data: {is_syncing: boolean; head_slot: number}}>("/eth/v1/node/syncing")
-                    .then((response) => ({syncing: response.data.is_syncing, slot: response.data.head_slot}))
-                    .catch(() => null),
-            ),
+            beacons.map(async ({url}) => {
+                const client = new CgEth2ApiClient(mainnetConfig, url);
+                const result = await client.node.getSyncingStatus();
+                return {slot: Number(result.headSlot), syncing: result.syncDistance > 10};
+            }),
         );
 
         yield all(beacons.map(({url}) => fork(watchOnHead, url)));
@@ -142,49 +142,38 @@ function* initializeBeaconsFromStore(): Generator<
 export function* watchOnHead(
     url: string,
 ): Generator<
-    | EventChannel<HeadEvent | FinalizedCheckpointEvent>
-    | ChannelTakeEffect<HeadEvent | FinalizedCheckpointEvent>
     | PutEffect
     | CancelEffect
-    | RaceEffect<ChannelTakeEffect<HeadEvent | FinalizedCheckpointEvent> | TakeEffect>
+    | RaceEffect<Promise<IteratorResult<CGBeaconEvent>> | TakeEffect>
     | Promise<INetworkConfig | null>,
     void,
-    EventChannel<HeadEvent | FinalizedCheckpointEvent> &
-        (HeadEvent | FinalizedCheckpointEvent) &
-        [HeadEvent | FinalizedCheckpointEvent, ReturnType<typeof removeBeacon>] &
-        (INetworkConfig | null)
+    [IteratorResult<HeadEvent | FinalizedCheckpointEvent>, ReturnType<typeof removeBeacon>] & (INetworkConfig | null)
 > {
     const config = yield readBeaconChainNetwork(url);
     const client = new CgEth2ApiClient(config?.eth2Config || mainnetConfig, url);
-    const emitter = client.events.getEventStream([
+    const eventStream = client.events.getEventStream([
         BeaconEventType.HEAD,
+        // TODO: refactor when they update Types "BeaconEventType"
         (CGBeaconEventType.FINALIZED_CHECKPOINT as unknown) as BeaconEventType,
     ]);
-    const event = yield eventChannel<HeadEvent | FinalizedCheckpointEvent>((emit) => {
-        (async (): Promise<void> => {
-            for await (const event of emitter) {
-                emit(event as HeadEvent | FinalizedCheckpointEvent);
-            }
-        })();
-        return (): void => {
-            emitter.stop();
-        };
-    });
 
     while (true) {
         try {
-            const [payload, cancelAction] = yield race([take(event), take(removeBeacon)]);
-            if (cancelAction) {
+            const [payload, cancelAction] = yield race([
+                eventStream[Symbol.asyncIterator]().next(),
+                take(removeBeacon),
+            ]);
+            if (cancelAction || payload.done) {
                 if (cancelAction.payload === url) {
                     yield cancel();
                 }
                 continue;
             }
-            if (payload.type === BeaconEventType.HEAD) yield put(updateSlot(payload.message.slot, url));
-            if (payload.type === CGBeaconEventType.FINALIZED_CHECKPOINT)
-                yield put(finalizedEpoch(url, payload.message.epoch));
+            if (payload.value.type === BeaconEventType.HEAD) yield put(updateSlot(payload.value.message.slot, url));
+            if (payload.value.type === CGBeaconEventType.FINALIZED_CHECKPOINT)
+                yield put(finalizedEpoch(url, payload.value.message.epoch));
         } catch (err) {
-            console.error("Event error:", err.message);
+            logger.error("Event error:", err.message);
         }
     }
 }
