@@ -35,13 +35,8 @@ import {
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
-import {SlashingProtection, Validator} from "@chainsafe/lodestar-validator";
-import {loadValidatorBeaconNodes, unsubscribeToBlockListening} from "../network/actions";
 import {Validator} from "@chainsafe/lodestar-validator";
-import {IValidatorBeaconNodes} from "../../models/beaconNode";
-import {loadValidatorBeaconNodesSaga} from "../network/sagas";
-import {AllEffect} from "@redux-saga/core/effects";
-import {Genesis, ValidatorResponse} from "@chainsafe/lodestar-types";
+import {Genesis} from "@chainsafe/lodestar-types";
 import * as logger from "electron-log";
 import {getAuthAccount} from "../auth/selectors";
 import {getValidatorBeaconNodes} from "./selectors";

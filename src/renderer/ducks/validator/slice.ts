@@ -2,6 +2,8 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
 import {ICGKeystore} from "../../services/keystore";
 import {ValidatorStatus} from "../../services/validator/status";
+import {toHexString} from "@chainsafe/ssz";
+import {ValidatorResponse} from "@chainsafe/lodestar-types";
 
 export interface IValidator {
     name: string;
