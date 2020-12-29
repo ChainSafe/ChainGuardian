@@ -1,4 +1,4 @@
-import {select, put, SelectEffect, PutEffect, all, takeEvery} from "redux-saga/effects";
+import {all, put, PutEffect, select, SelectEffect, takeEvery} from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
 import {deleteKeystore} from "../../services/utils/account";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
@@ -6,17 +6,17 @@ import database, {cgDbController} from "../../services/db/api/database";
 import {config as mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {IValidator} from "./slice";
 import {
-    loadValidators,
-    addValidator,
-    removeValidator,
-    startValidatorService,
-    stopValidatorService,
-    stopActiveValidatorService,
-    startNewValidatorService,
-    removeActiveValidator,
     addNewValidator,
+    addValidator,
+    loadValidators,
     loadValidatorsAction,
+    removeActiveValidator,
+    removeValidator,
     setValidatorBeaconNode,
+    startNewValidatorService,
+    startValidatorService,
+    stopActiveValidatorService,
+    stopValidatorService,
     storeValidatorBeaconNodes,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
@@ -32,6 +32,7 @@ import {Beacon} from "../beacon/slice";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
 import {getValidatorBalance} from "../../services/utils/validator";
+import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -54,7 +55,7 @@ function* loadValidatorsSaga(): Generator<
                 const balance = await getValidatorBalance(keyStore.getPublicKey(), network, beaconNodes?.nodes[0]);
                 return {
                     name: keyStore.getName() ?? `Validator - ${index}`,
-                    status: undefined,
+                    status: await getValidatorStatus(keyStore.getPublicKey(), beaconNodes?.nodes[0]),
                     publicKey: keyStore.getPublicKey(),
                     network,
                     balance,

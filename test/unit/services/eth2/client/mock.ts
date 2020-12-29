@@ -3,6 +3,7 @@ import {
     ICGEth2NodeApi,
     ICGEth2ValidatorApi,
     ICgEth2ApiClient,
+    ICGEth2Config,
 } from "../../../../../src/renderer/services/eth2/client/interface";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import sinon, {SinonStubbedInstance} from "sinon";
@@ -19,6 +20,7 @@ export class MockEth2ApiClient extends EventEmitter implements ICgEth2ApiClient 
     public validator: SinonStubbedInstance<ICGEth2ValidatorApi>;
     public events: SinonStubbedInstance<IEventsApi>;
     public clock: SinonStubbedInstance<IBeaconClock>;
+    public networkConfig: SinonStubbedInstance<ICGEth2Config>;
     public genesisValidatorsRoot: Root = Buffer.alloc(32, 0);
     public connect = sinon.stub();
     public disconnect = sinon.stub();

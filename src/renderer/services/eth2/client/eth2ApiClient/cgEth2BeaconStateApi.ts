@@ -1,10 +1,10 @@
-import {BLSPubkey, Fork, ValidatorIndex, ValidatorResponse} from "@chainsafe/lodestar-types";
+import {BLSPubkey, Fork, ValidatorIndex} from "@chainsafe/lodestar-types";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Json} from "@chainsafe/ssz";
-import {IBeaconStateApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
+import {ICGBeaconStateApi, ICGValidatorResponse} from "../interface";
 
-export class CgEth2BeaconStateApi implements IBeaconStateApi {
+export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
     private readonly httpClient: HttpClient;
     private readonly config: IBeaconConfig;
     // TODO: implement logger;
@@ -27,7 +27,7 @@ export class CgEth2BeaconStateApi implements IBeaconStateApi {
     public getStateValidator = async (
         stateId: "head",
         validatorId: ValidatorIndex | BLSPubkey,
-    ): Promise<ValidatorResponse | null> => {
+    ): Promise<ICGValidatorResponse | null> => {
         const id =
             typeof validatorId === "number"
                 ? validatorId.toString()
@@ -35,7 +35,9 @@ export class CgEth2BeaconStateApi implements IBeaconStateApi {
         try {
             const url = `/eth/v1/beacon/states/${stateId}/validators/${id}`;
             const stateValidatorResponse = await this.httpClient.get<{data: Json}>(url);
-            return this.config.types.ValidatorResponse.fromJson(stateValidatorResponse.data, {case: "snake"});
+            return this.config.types.ValidatorResponse.fromJson(stateValidatorResponse.data, {
+                case: "snake",
+            }) as ICGValidatorResponse;
         } catch (e) {
             // TODO: implement logger;
             console.error("Failed to fetch validator", {validatorId: id, error: e.message});
