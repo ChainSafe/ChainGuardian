@@ -1,5 +1,5 @@
-import {ICGEth2BeaconApi, ICGETH2BeaconBlocksApi} from "../interface";
-import {IBeaconPoolApi, IBeaconStateApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
+import {ICGEth2BeaconApi, ICGETH2BeaconBlocksApi, ICGBeaconStateApi} from "../interface";
+import {IBeaconPoolApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {Genesis} from "@chainsafe/lodestar-types";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
@@ -10,7 +10,7 @@ import {CgEth2BeaconPoolApi} from "./cgEth2BeaconPoolApi";
 
 export class CgEth2BeaconApi implements ICGEth2BeaconApi {
     public blocks: ICGETH2BeaconBlocksApi;
-    public state: IBeaconStateApi;
+    public state: ICGBeaconStateApi;
     public pool: IBeaconPoolApi;
 
     private readonly httpClient: HttpClient;
