@@ -16,7 +16,7 @@ import {
 import {getNetworkConfig} from "../../services/eth2/networks";
 import {liveProcesses} from "../../services/utils/cmd";
 import {cancelDockerPull, endDockerImagePull, startDockerImagePull} from "../network/actions";
-import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot} from "./actions";
+import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, finalizedEpoch} from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import database from "../../services/db/api/database";
@@ -32,6 +32,7 @@ import {BeaconEventType, HeadEvent} from "@chainsafe/lodestar-validator/lib/api/
 import {AllEffect, CancelEffect, ForkEffect} from "@redux-saga/core/effects";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
+import {CGBeaconEventType, FinalizedCheckpointEvent} from "../../services/eth2/client/interface";
 
 export function* pullDockerImage(
     network: string,
@@ -141,22 +142,25 @@ function* initializeBeaconsFromStore(): Generator<
 export function* watchOnHead(
     url: string,
 ): Generator<
-    | EventChannel<HeadEvent>
-    | ChannelTakeEffect<HeadEvent>
+    | EventChannel<HeadEvent | FinalizedCheckpointEvent>
+    | ChannelTakeEffect<HeadEvent | FinalizedCheckpointEvent>
     | PutEffect
     | CancelEffect
-    | RaceEffect<ChannelTakeEffect<HeadEvent> | TakeEffect>
+    | RaceEffect<ChannelTakeEffect<HeadEvent | FinalizedCheckpointEvent> | TakeEffect>
     | Promise<INetworkConfig | null>,
     void,
-    EventChannel<HeadEvent> & HeadEvent & [HeadEvent, ReturnType<typeof removeBeacon>] & (INetworkConfig | null)
+    EventChannel<HeadEvent | FinalizedCheckpointEvent> &
+        (HeadEvent | FinalizedCheckpointEvent) &
+        [HeadEvent | FinalizedCheckpointEvent, ReturnType<typeof removeBeacon>] &
+        (INetworkConfig | null)
 > {
     const config = yield readBeaconChainNetwork(url);
     const client = new CgEth2ApiClient(config?.eth2Config || mainnetConfig, url);
     const emitter = client.events.getEventStream([BeaconEventType.HEAD]);
-    const event = yield eventChannel<HeadEvent>((emit) => {
+    const event = yield eventChannel<HeadEvent | FinalizedCheckpointEvent>((emit) => {
         (async (): Promise<void> => {
             for await (const event of emitter) {
-                emit(event as HeadEvent);
+                emit(event as HeadEvent | FinalizedCheckpointEvent);
             }
         })();
         return (): void => {
@@ -173,9 +177,11 @@ export function* watchOnHead(
                 }
                 continue;
             }
-            yield put(updateSlot(payload.message.slot, url));
+            if (payload.type === BeaconEventType.HEAD) yield put(updateSlot(payload.message.slot, url));
+            if (payload.type === CGBeaconEventType.FINALIZED_CHECKPOINT)
+                yield put(finalizedEpoch(url, payload.message.epoch));
         } catch (err) {
-            console.error("Head event error:", err.message);
+            console.error("Event error:", err.message);
         }
     }
 }

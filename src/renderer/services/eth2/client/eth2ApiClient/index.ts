@@ -26,7 +26,7 @@ export class CgEth2ApiClient extends AbstractApiClient implements ICgEth2ApiClie
 
         this.validator = new CgEth2ValidatorApi(config, this.httpClient);
         this.beacon = new CgEth2BeaconApi(config, this.httpClient);
-        this.events = new CgEth2EventsApi(config, url);
+        this.events = (new CgEth2EventsApi(config, url) as unknown) as IEventsApi;
         this.node = new CgEth2NodeApi(config, this.httpClient);
     }
 }
