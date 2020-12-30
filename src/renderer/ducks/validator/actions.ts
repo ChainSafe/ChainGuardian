@@ -1,7 +1,7 @@
 import {validatorSlice} from "./slice";
 import {createAction} from "@reduxjs/toolkit";
 import {CGAccount} from "../../models/account";
-import {BlsKeypair} from "../../types/keys";
+import {BlsKeypair} from "../../types";
 
 export const {
     addValidator,
@@ -42,6 +42,23 @@ export const updateValidatorChainData = createAction<string>("validator/updateVa
 
 export const updateValidatorStatus = createAction<string>("validator/updateValidatorStatus");
 
-export const startNewValidatorService = createAction<BlsKeypair>("validator/startNewValidatorService");
+type StartNewValidatorService = (
+    keypair: BlsKeypair,
+    openModal: () => void,
+    closeModal: () => void,
+) => {payload: BlsKeypair; meta: {openModal: () => void; closeModal: () => void}};
+export const startNewValidatorService = createAction<StartNewValidatorService>(
+    "validator/startNewValidatorService",
+    (keypair: BlsKeypair, openModal: () => void, closeModal: () => void) => ({
+        payload: keypair,
+        meta: {openModal, closeModal},
+    }),
+);
 
 export const stopActiveValidatorService = createAction<BlsKeypair>("validator/stopActiveValidatorService");
+
+export const slashingProtectionUpload = createAction<string>("validator/slashingProtectionUpload");
+
+export const slashingProtectionSkip = createAction("validator/slashingProtectionSkip");
+
+export const slashingProtectionCancel = createAction("validator/slashingProtectionCancel");

@@ -1,16 +1,36 @@
-import {Action} from "redux";
-import {all, call, put, takeEvery, PutEffect, CallEffect, RaceEffect, TakeEffect, race, take} from "redux-saga/effects";
+import {
+    all,
+    call,
+    put,
+    fork,
+    takeEvery,
+    PutEffect,
+    CallEffect,
+    RaceEffect,
+    TakeEffect,
+    race,
+    take,
+    cancel,
+} from "redux-saga/effects";
 import {getNetworkConfig} from "../../services/eth2/networks";
 import {liveProcesses} from "../../services/utils/cmd";
 import {cancelDockerPull, endDockerImagePull, startDockerImagePull} from "../network/actions";
-import {startLocalBeacon, removeBeacon, addBeacon, addBeacons} from "./actions";
+import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, finalizedEpoch} from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import database from "../../services/db/api/database";
 import {Beacons} from "../../models/beacons";
 import {postInit} from "../store";
 import {BeaconStatus} from "./slice";
-import {HttpClient} from "../../services/api";
+import {Action} from "redux";
+import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
+import {mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
+import {BeaconEventType, HeadEvent} from "@chainsafe/lodestar-validator/lib/api/interface/events";
+import {AllEffect, CancelEffect, ForkEffect} from "@redux-saga/core/effects";
+import {readBeaconChainNetwork} from "../../services/eth2/client";
+import {INetworkConfig} from "../../services/interfaces";
+import {CGBeaconEvent, CGBeaconEventType, FinalizedCheckpointEvent} from "../../services/eth2/client/interface";
+import logger from "electron-log";
 
 export function* pullDockerImage(
     network: string,
@@ -64,11 +84,12 @@ function* startLocalBeaconSaga({
     }
 }
 
-function* storeBeacon({payload: {url, docker}}: ReturnType<typeof addBeacon>): Generator<Promise<void>> {
+function* storeBeacon({payload: {url, docker}}: ReturnType<typeof addBeacon>): Generator<Promise<void> | ForkEffect> {
     if (!docker)
         // eslint-disable-next-line no-param-reassign
         docker = {id: "", network: "", chainDataDir: "", eth1Url: "", discoveryPort: "", libp2pPort: "", rpcPort: ""};
     yield database.beacons.upsert({url, docker});
+    yield fork(watchOnHead, url);
 }
 
 function* removeBeaconSaga({payload}: ReturnType<typeof removeBeacon>): Generator<Promise<[boolean, boolean]>> {
@@ -76,9 +97,13 @@ function* removeBeaconSaga({payload}: ReturnType<typeof removeBeacon>): Generato
 }
 
 function* initializeBeaconsFromStore(): Generator<
-    Promise<Beacons> | PutEffect | Promise<void> | Promise<Response[]>,
+    | Promise<Beacons>
+    | PutEffect
+    | Promise<void>
+    | Promise<({syncing: boolean; slot: number} | null)[]>
+    | AllEffect<ForkEffect>,
     void,
-    Beacons & (boolean | null)[]
+    Beacons & ({syncing: boolean; slot: number} | null)[]
 > {
     const store = yield database.beacons.get();
     if (store !== null) {
@@ -87,29 +112,69 @@ function* initializeBeaconsFromStore(): Generator<
         yield BeaconChain.startAllLocalBeaconNodes();
 
         const stats = yield Promise.all(
-            beacons.map(({url}) =>
-                new HttpClient(url)
-                    // eslint-disable-next-line camelcase
-                    .get<{data: {is_syncing: boolean}}>("/eth/v1/node/syncing")
-                    .then((response) => response.data.is_syncing)
-                    .catch(() => null),
-            ),
+            beacons.map(async ({url}) => {
+                const client = new CgEth2ApiClient(mainnetConfig, url);
+                const result = await client.node.getSyncingStatus();
+                return {slot: Number(result.headSlot), syncing: result.syncDistance > 10};
+            }),
         );
+
+        yield all(beacons.map(({url}) => fork(watchOnHead, url)));
 
         yield put(
             addBeacons(
                 beacons.map(({url, docker}, index) => ({
                     url,
                     docker: docker.id !== "" ? docker : undefined,
+                    slot: stats[index]?.slot || 0,
                     status:
-                        stats[index] !== null
-                            ? stats[index]
+                        stats[index].syncing !== null
+                            ? stats[index].syncing
                                 ? BeaconStatus.syncing
                                 : BeaconStatus.active
                             : BeaconStatus.offline,
                 })),
             ),
         );
+    }
+}
+
+export function* watchOnHead(
+    url: string,
+): Generator<
+    | PutEffect
+    | CancelEffect
+    | RaceEffect<Promise<IteratorResult<CGBeaconEvent>> | TakeEffect>
+    | Promise<INetworkConfig | null>,
+    void,
+    [IteratorResult<HeadEvent | FinalizedCheckpointEvent>, ReturnType<typeof removeBeacon>] & (INetworkConfig | null)
+> {
+    const config = yield readBeaconChainNetwork(url);
+    const client = new CgEth2ApiClient(config?.eth2Config || mainnetConfig, url);
+    const eventStream = client.events.getEventStream([
+        BeaconEventType.HEAD,
+        // TODO: refactor when they update Types "BeaconEventType"
+        (CGBeaconEventType.FINALIZED_CHECKPOINT as unknown) as BeaconEventType,
+    ]);
+
+    while (true) {
+        try {
+            const [payload, cancelAction] = yield race([
+                eventStream[Symbol.asyncIterator]().next(),
+                take(removeBeacon),
+            ]);
+            if (cancelAction || payload.done) {
+                if (cancelAction.payload === url) {
+                    yield cancel();
+                }
+                continue;
+            }
+            if (payload.value.type === BeaconEventType.HEAD) yield put(updateSlot(payload.value.message.slot, url));
+            if (payload.value.type === CGBeaconEventType.FINALIZED_CHECKPOINT)
+                yield put(finalizedEpoch(url, payload.value.message.epoch));
+        } catch (err) {
+            logger.error("Event error:", err.message);
+        }
     }
 }
 

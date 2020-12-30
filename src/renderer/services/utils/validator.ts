@@ -1,5 +1,6 @@
 import {getNetworkConfig} from "../eth2/networks";
 import {CgEth2ApiClient} from "../eth2/client/eth2ApiClient";
+import {fromHexString} from "@chainsafe/ssz";
 
 export const getValidatorBalance = async (
     publicKey: string,
@@ -9,7 +10,7 @@ export const getValidatorBalance = async (
     if (!network || !beaconNode) return undefined;
     const config = getNetworkConfig(network);
     const eth2Client = new CgEth2ApiClient(config.eth2Config, beaconNode);
-    const validatorId = new Uint8Array(Buffer.from(publicKey.substr(2), "hex"));
+    const validatorId = fromHexString(publicKey);
     const validatorState = await eth2Client.beacon.state.getStateValidator("head", validatorId);
     return validatorState?.balance || undefined;
 };

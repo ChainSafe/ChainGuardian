@@ -19,7 +19,8 @@ import {getSelectedNetwork} from "../../ducks/network/selectors";
 import {getValidator, getValidatorBeaconNodes} from "../../ducks/validator/selectors";
 import {Link} from "react-router-dom";
 import {BeaconStatus} from "../../ducks/beacon/slice";
-import {BlsKeypair} from "../../types/keys";
+import {BlsKeypair} from "../../types";
+import {SlashingDBUpload} from "./SlashingDBUpload";
 
 export interface IValidatorSimpleProps {
     publicKey: string;
@@ -30,6 +31,7 @@ export interface IValidatorSimpleProps {
 
 export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props: IValidatorSimpleProps) => {
     const [askPassword, setAskPassword] = useState<string>(null);
+    const [showModal, setShowModal] = useState(false);
     const dispatch = useDispatch();
     const network = useSelector(getSelectedNetwork);
     const nodes = useSelector((state: IRootState) => getValidatorBeaconNodes(state, props));
@@ -55,7 +57,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
                                     title={node.docker ? "Local Docker container" : "Remote Beacon node"}
                                     url={node.url}
                                     isSyncing={node.status === BeaconStatus.syncing}
-                                    value={"N/A"}
+                                    value={node.status !== BeaconStatus.offline ? node.slot : "N/A"}
                                 />
                             </div>
                         ))}
@@ -73,7 +75,13 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
         if (askPassword === "stop") {
             dispatch(stopActiveValidatorService(keypair));
         } else if (askPassword === "start") {
-            dispatch(startNewValidatorService(keypair));
+            const showModal = (): void => {
+                setShowModal(true);
+            };
+            const hideModal = (): void => {
+                setShowModal(false);
+            };
+            dispatch(startNewValidatorService(keypair, showModal, hideModal));
         } else if (askPassword === "remove") {
             props.onRemoveClick();
         }
@@ -81,6 +89,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
     };
 
     const renderValidatorButtons = (): React.ReactElement => {
+        if (!nodes.length) return null;
         return (
             <div className='flex validator-service-button'>
                 {validator.isRunning ? (
@@ -137,6 +146,8 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
                 onSubmit={controlValidator}
                 onCancel={(): void => setAskPassword(null)}
             />
+
+            <SlashingDBUpload visible={showModal} url={nodes.length ? nodes[0].url : ""} />
         </>
     );
 };

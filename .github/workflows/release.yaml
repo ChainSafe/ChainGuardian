@@ -1,43 +1,123 @@
-# workflow name
-name: cd
+name: Release
 
-# on events
 on:
-  create:
-    tags:
-      - v*
+  push:
+    branches:
+      - 'master'
 
-
-# jobs to run
 jobs:
-  release:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-18.04,windows-2019,macos-latest]
-
+  tag:
+    name: Check and Tag
+    runs-on: ubuntu-latest
     steps:
-      - name: Check out Git repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Create tag
+        id: tag
+        uses: butlerlogic/action-autotag@1.1.1
+        with:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          tag_prefix: "v"
+
+            # - name: Generate changelog
+      #   id: changelog
+      #   uses: heinrichreimer/github-changelog-generator-action@v2.2
+      #   with:
+      #     token: ${{ secrets.GH_PAGES_TOKEN }}
+      #     issues: "false"
+      #     issuesWoLabels: "false"
+      #     pullRequests: "true"
+      #     prWoLabels: "true"
+      #     author: "true"
+      #     usernamesAsGithubLogins: "true"
+      #     compareLink: "true"
+      #     filterByMilestone: "false"
+      #     unreleased: "false"
+      #     sinceTag: "${{ needs.tag.outputs.previous_tag }}"
+      #     maxIssues: "0"
+      #     stripGeneratorNotice: "true"
+
+      - name: Create Release
+        id: create_release
+        if: steps.tag.outputs.tagname != ''
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.tagname }}
+          body: "${{ steps.tag.outputs.tagname }}"
+          release_name: Release ${{ steps.tag.outputs.tagname }}
+          prerelease: true # we can promote to release trough github
+
+            #in case of failure
+      - name: Rollback on failure
+        if: failure()
+        uses: author/action-rollback@9ec72a6af74774e00343c6de3e946b0901c23013
+        with:
+          id: ${{ steps.create_release.outputs.id }}
+          tag: ${{ steps.tag.outputs.tagname }}
+          delete_orphan_tag: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}# workflow name
+    outputs:
+      tag: ${{ steps.tag.outputs.tagname }}
+      release: ${{ steps.create_release.outputs.id }}
+      version: ${{ steps.tag.outputs.version }}
+
+  release:
+    name: Publish
+    runs-on: ${{ matrix.os }}
+    needs: tag
+    strategy:
+      matrix:
+        os: [ubuntu-latest,windows-latest,macos-latest]
+    if: needs.tag.outputs.tag != ''
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
           node-version: 12.13
 
-      - name: Install dependencies
-        run: |
-          yarn policies set-version
-          yarn install --frozen-lockfile --network-timeout 1000000
+      - name: Restore dependencies
+        uses: actions/cache@master
+        id: cache-deps
+        with:
+          path: |
+            node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-ignore-optional
+      
+      - name: Install & build
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile --ignore-optional#--network-timeout 1000000 
 
+
+      
       - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1.5.0
+        uses: samuelmeuli/action-electron-builder@v1.6.0
         with:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-          # If the commit is tagged with a version (e.g. "v1.0.0"),
-          # release the app after building
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+          release: true
+          windows_certs: ${{ secrets.WIN_CERT }}
+          windows_certs_password: ${{ secrets.WIN_PASSWORD }}
+          mac_certs: ${{ secrets.MAC_CERT }}
+          mac_certs_password: ${{ secrets.MAC_PASSWORD }}
+        env:
+          EP_PRE_RELEASE: true
+      
+      #in case of failure
+      - name: Rollback on failure
+        if: failure()
+        uses: author/action-rollback@9ec72a6af74774e00343c6de3e946b0901c23013
+        with:
+          id: ${{ needs.tag.outputs.release }}
+          tag: ${{ needs.tag.outputs.tag }}
+          delete_orphan_tag: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

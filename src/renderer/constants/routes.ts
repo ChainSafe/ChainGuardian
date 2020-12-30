@@ -13,7 +13,6 @@ export class Routes {
 export enum OnBoardingRoutes {
     SIGNING = "1_0",
     SIGNING_IMPORT_FILE = "1_1",
-    SIGNING_IMPORT_SLASHING_FILE = "1_1_0",
     SIGNING_IMPORT_MNEMONIC = "1_2",
     CONFIGURE = "2_0",
     PASSWORD = "3_0",

@@ -20,7 +20,10 @@ export const PyrmontConfig: INetworkConfig = Object.freeze({
             GENESIS_FORK_VERSION: Buffer.from("0x00002009"),
         },
     },
-    eth1Provider: new ethers.providers.JsonRpcProvider("https://goerli.infura.io/v3/9d117da5b35f4503b142619ad690fc6a"),
+    eth1Provider: new ethers.providers.JsonRpcProvider(
+        "https://goerli.infura.io/v3/9d117da5b35f4503b142619ad690fc6a",
+        5,
+    ),
     dockerConfig: {
         name: "lighthouse_beacon",
         image: process.env.DOCKER_LIGHTHOUSE_IMAGE,

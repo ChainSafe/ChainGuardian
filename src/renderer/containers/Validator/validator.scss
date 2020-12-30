@@ -110,3 +110,36 @@
         margin-right: 27px;
     }
 }
+
+.slashing-action-buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 12px;
+
+    button:not(:first-child) {
+        margin-left: 20px;
+    }
+
+    button {
+        width: 100%;
+    }
+}
+
+.slashing-or {
+    width: 100%;
+    margin-top: 12px;
+    text-align: center;
+}
+
+.slashing-skip-button{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 12px;
+
+    button {
+        width: 100%;
+    }
+}
