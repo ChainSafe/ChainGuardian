@@ -17,10 +17,13 @@ files:
       - LICENSE
       - node_modules/
       - package.json
+
 mac:
   icon: ./assets/logo.icns
   category: public.app-category.finance
   target: dmg
+  publish:
+    - github
 
 dmg:
   background: ./assets/background-mac.tiff
@@ -34,9 +37,14 @@ linux:
   target:
     - target: deb
     - target: snap
+  publish:
+    - github
+
 win:
   icon: ./assets/logo.png
   target: nsis
+  publish:
+    - github
 
 nsis:
   oneClick: false
