@@ -1,4 +1,15 @@
-import {all, put, PutEffect, select, SelectEffect, takeEvery} from "redux-saga/effects";
+import {
+    select,
+    put,
+    SelectEffect,
+    PutEffect,
+    all,
+    takeEvery,
+    race,
+    take,
+    RaceEffect,
+    TakeEffect,
+} from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
 import {deleteKeystore} from "../../services/utils/account";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
@@ -18,10 +29,14 @@ import {
     stopActiveValidatorService,
     stopValidatorService,
     storeValidatorBeaconNodes,
+    slashingProtectionUpload,
+    slashingProtectionSkip,
+    slashingProtectionCancel,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
-import {SlashingProtection, Validator} from "@chainsafe/lodestar-validator";
+import {Validator} from "@chainsafe/lodestar-validator";
+import {Genesis} from "@chainsafe/lodestar-types";
 import * as logger from "electron-log";
 import {getAuthAccount} from "../auth/selectors";
 import {getValidatorBeaconNodes} from "./selectors";
@@ -33,6 +48,8 @@ import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
 import {getValidatorBalance} from "../../services/utils/validator";
 import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
+import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
+import {readFileSync} from "fs";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -98,9 +115,15 @@ function* removeValidatorSaga(
 function* startService(
     action: ReturnType<typeof startNewValidatorService>,
 ): Generator<
-    SelectEffect | PutEffect | Promise<void> | Promise<INetworkConfig | null>,
+    | SelectEffect
+    | PutEffect
+    | Promise<void>
+    | Promise<boolean>
+    | Promise<INetworkConfig | null>
+    | Promise<Genesis | null>
+    | RaceEffect<TakeEffect>,
     void,
-    Beacon[] & (INetworkConfig | null)
+    Beacon[] & (INetworkConfig | null) & (Genesis | null) & boolean
 > {
     try {
         const publicKey = action.payload.publicKey.toHex();
@@ -114,10 +137,34 @@ function* startService(
         // TODO: Use beacon chain proxy instead of first node
         const eth2API = new CgEth2ApiClient(config, beaconNodes[0].url);
 
-        const slashingProtection = new SlashingProtection({
+        const slashingProtection = new CGSlashingProtection({
             config,
             controller: cgDbController,
         });
+
+        // TODO: check if state is not before "active" to ignore this step in that case
+        if (yield slashingProtection.missingImportedSlashingProtection(publicKey)) {
+            action.meta.openModal();
+            const [upload, cancel] = yield race([
+                take(slashingProtectionUpload),
+                take(slashingProtectionCancel),
+                take(slashingProtectionSkip),
+            ]);
+            action.meta.closeModal();
+
+            if (cancel) {
+                throw new Error("canceled by user");
+            }
+            if (upload) {
+                const {genesisValidatorsRoot} = yield eth2API.beacon.getGenesis();
+                const interchange = JSON.parse(
+                    readFileSync(
+                        ((upload as unknown) as ReturnType<typeof slashingProtectionUpload>).payload,
+                    ).toString(),
+                );
+                yield slashingProtection.importInterchange(interchange, genesisValidatorsRoot);
+            }
+        }
 
         const logger = new WinstonLogger() as ValidatorLogger;
 
