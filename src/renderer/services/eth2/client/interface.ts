@@ -1,15 +1,22 @@
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
-import {ILogger} from "@chainsafe/lodestar-utils";
+import {ILogger, IStoppableEventIterable} from "@chainsafe/lodestar-utils";
 import {IApiClient} from "@chainsafe/lodestar-validator/lib";
 import {IBeaconApi, IBeaconBlocksApi, IBeaconStateApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {INodeApi} from "@chainsafe/lodestar-validator/lib/api/interface/node";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
 import {
+    BeaconBlockEvent,
+    BeaconChainReorgEvent,
+    HeadEvent,
+    IEventsApi,
+} from "@chainsafe/lodestar-validator/lib/api/interface/events";
+import {
     BLSPubkey,
-    SignedBeaconBlock,
+    FinalizedCheckpoint,
     ValidatorIndex,
     ValidatorResponse,
     ValidatorStatus,
+    SignedBeaconBlock,
 } from "@chainsafe/lodestar-types";
 
 export interface ICGETH2BeaconBlocksApi extends IBeaconBlocksApi {
@@ -38,6 +45,24 @@ export interface ICGEth2BeaconApi extends Omit<IBeaconApi, "blocks" | "state"> {
 
 export type ICGEth2NodeApi = INodeApi;
 export type ICGEth2ValidatorApi = IValidatorApi;
+
+export enum CGBeaconEventType {
+    BLOCK = "block",
+    CHAIN_REORG = "chain_reorg",
+    HEAD = "head",
+    FINALIZED_CHECKPOINT = "finalized_checkpoint",
+}
+
+export declare type FinalizedCheckpointEvent = {
+    type: typeof CGBeaconEventType.FINALIZED_CHECKPOINT;
+    message: FinalizedCheckpoint;
+};
+
+export type CGBeaconEvent = BeaconBlockEvent | BeaconChainReorgEvent | HeadEvent | FinalizedCheckpointEvent;
+
+export interface ICGEventsApi extends Omit<IEventsApi, "getEventStream"> {
+    getEventStream(topics: CGBeaconEventType[]): IStoppableEventIterable<CGBeaconEvent>;
+}
 
 export type DepositContract = {
     data: {

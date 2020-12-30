@@ -55,7 +55,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
                                     title={node.docker ? "Local Docker container" : "Remote Beacon node"}
                                     url={node.url}
                                     isSyncing={node.status === BeaconStatus.syncing}
-                                    value={"N/A"}
+                                    value={node.status !== BeaconStatus.offline ? node.slot : "N/A"}
                                 />
                             </div>
                         ))}

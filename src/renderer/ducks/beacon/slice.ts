@@ -10,6 +10,7 @@ export enum BeaconStatus {
 export type Beacon = {
     url: string;
     status: BeaconStatus;
+    slot: number;
     docker?: DockerConfig;
 };
 
@@ -47,7 +48,16 @@ export const beaconSlice = createSlice({
                 }
             },
             prepare: (url: string, docker?: DockerConfig): {payload: Beacon} => ({
-                payload: {url, docker, status: BeaconStatus.syncing},
+                payload: {url, docker, status: BeaconStatus.syncing, slot: 0},
+            }),
+        },
+        updateSlot: {
+            reducer: (state, action: PayloadAction<number, string, string>): void => {
+                state.beacons[action.meta].slot = action.payload;
+            },
+            prepare: (slotHeight: number, url: string): {payload: number; meta: string} => ({
+                payload: slotHeight,
+                meta: url,
             }),
         },
         removeBeacon: (state, action: PayloadAction<string>): void => {
