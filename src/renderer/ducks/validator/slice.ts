@@ -1,13 +1,13 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
 import {ICGKeystore} from "../../services/keystore";
-import {ValidatorStatus} from "../../services/validator/status";
+import {ValidatorStatus} from "../../constants/validatorStatus";
 import {toHexString} from "@chainsafe/ssz";
 import {ValidatorResponse} from "@chainsafe/lodestar-types";
 
 export interface IValidator {
     name: string;
-    status: string;
+    status: ValidatorStatus;
     publicKey: string;
     network: string;
     balance?: bigint;
