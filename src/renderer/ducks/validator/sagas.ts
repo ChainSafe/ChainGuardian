@@ -165,19 +165,6 @@ function* startService(
             }
         }
 
-        /* // export slashing db for testing purpose
-        const path = "/home/bernard/Desktop/et2/active/slashing.json";
-        const {genesisValidatorsRoot} = yield eth2API.beacon.getGenesis();
-        const interchange: InterchangeFormatVersion = {
-            format: "complete",
-            version: "4",
-        };
-        const validatorId = new Uint8Array(Buffer.from(publicKey.substr(2), "hex"));
-        slashingProtection.exportInterchange(genesisValidatorsRoot, [validatorId], interchange).then((data) => {
-            writeFileSync(path, JSON.stringify(data));
-        });
-        throw new Error("Sucker!");*/
-
         const logger = new WinstonLogger() as ValidatorLogger;
 
         if (!validatorServices[publicKey]) {
