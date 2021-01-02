@@ -5,7 +5,6 @@ import {
     PutEffect,
     all,
     takeEvery,
-    delay,
     race,
     take,
     cancel,
@@ -57,6 +56,7 @@ import {getValidatorBalance} from "../../services/utils/validator";
 import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
 import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
 import {readFileSync} from "fs";
+import {finalizedEpoch} from "../beacon/actions";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -223,30 +223,24 @@ function* validatorInfoUpdater(
     publicKey: string,
     network: string,
 ): Generator<
-    SelectEffect | PutEffect | CancelEffect | RaceEffect<TakeEffect | CallEffect> | Promise<undefined | bigint>,
+    SelectEffect | PutEffect | CancelEffect | RaceEffect<TakeEffect> | Promise<undefined | bigint>,
     void,
-    IValidator & [ReturnType<typeof removeActiveValidator>] & (undefined | bigint)
+    IValidator & [ReturnType<typeof removeActiveValidator>, ReturnType<typeof finalizedEpoch>] & (undefined | bigint)
 > {
-    mainLoop: while (true) {
+    while (true) {
         try {
-            const [cancelAction] = yield race([take(removeActiveValidator), delay(MINUTE)]);
+            const [cancelAction, {payload}] = yield race([take(removeActiveValidator), take(finalizedEpoch)]);
             if (cancelAction && cancelAction.payload === publicKey) {
                 yield cancel();
             }
 
             const validator = yield select(getValidator, {publicKey});
-            // fetch balance from first working beacon node
-            for (const beacon of validator.beaconNodes) {
-                try {
-                    const balance = yield getValidatorBalance(publicKey, network, beacon);
-                    if (balance) yield put(updateValidatorBalance(publicKey, balance));
-                    continue mainLoop;
-                } catch (e) {
-                    console.error(`error fetching balance from ${beacon}:`, e.message);
-                }
+            if (validator.beaconNodes.includes(payload.beacon)) {
+                const balance = yield getValidatorBalance(publicKey, network, payload.beacon);
+                if (balance) yield put(updateValidatorBalance(publicKey, balance));
             }
         } catch (err) {
-            console.error("update validator error:", err.message);
+            logger.error("update validator error:", err.message);
         }
     }
 }
