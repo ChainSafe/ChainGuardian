@@ -166,7 +166,7 @@ function* startService(
             }
         }
 
-        const logger = new WinstonLogger() as ValidatorLogger;
+        const logger = new ValidatorLogger();
 
         if (!validatorServices[publicKey]) {
             validatorServices[publicKey] = new Validator({
