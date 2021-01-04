@@ -45,6 +45,16 @@ export class ValidatorBeaconNodesRepository extends Repository<ValidatorBeaconNo
         return newList;
     }
 
+    public async remove(id: string, value: string): Promise<ValidatorBeaconNodes> {
+        const validatorBeaconNodes = await this.get(id);
+        const newList = validatorBeaconNodes
+            ? ValidatorBeaconNodes.createNodes(validatorBeaconNodes.nodes)
+            : new ValidatorBeaconNodes();
+        newList.removeNode(value);
+        await this.set(id, newList);
+        return newList;
+    }
+
     private getKeyName(validatorAddress: string): string {
         return `${DEFAULT_ACCOUNT}-${validatorAddress}`;
     }

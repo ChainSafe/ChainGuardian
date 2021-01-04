@@ -44,6 +44,9 @@ import {CGBeaconEvent, CGBeaconEventType, FinalizedCheckpointEvent} from "../../
 import logger from "electron-log";
 import {getBeaconByKey} from "./selectors";
 import {SyncingStatus} from "@chainsafe/lodestar-types";
+import {BeaconValidators, getValidatorsByBeaconNode} from "../validator/selectors";
+import {storeValidatorBeaconNodes} from "../validator/actions";
+import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 
 export function* pullDockerImage(
     network: string,
@@ -105,8 +108,22 @@ function* storeBeacon({payload: {url, docker}}: ReturnType<typeof addBeacon>): G
     yield fork(watchOnHead, url);
 }
 
-function* removeBeaconSaga({payload}: ReturnType<typeof removeBeacon>): Generator<Promise<[boolean, boolean]>> {
-    yield database.beacons.remove(payload);
+function* removeBeaconSaga({
+    payload,
+}: ReturnType<typeof removeBeacon>): Generator<
+    SelectEffect | PutEffect | Promise<[boolean, boolean]> | Promise<ValidatorBeaconNodes>,
+    void,
+    [boolean, boolean] & BeaconValidators & ValidatorBeaconNodes
+> {
+    const [removed] = yield database.beacons.remove(payload);
+    if (removed) {
+        const beaconValidators = yield select(getValidatorsByBeaconNode);
+        for (const {publicKey} of beaconValidators[payload]) {
+            const {nodes} = yield database.validatorBeaconNodes.remove(publicKey, payload);
+            console.log(nodes, payload);
+            yield put(storeValidatorBeaconNodes(nodes, publicKey));
+        }
+    }
 }
 
 function* initializeBeaconsFromStore(): Generator<

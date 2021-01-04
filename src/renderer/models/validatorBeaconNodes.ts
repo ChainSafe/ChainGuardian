@@ -20,7 +20,7 @@ export class ValidatorBeaconNodes implements IValidatorBeaconNodes {
     }
 
     public removeNode(url: string): boolean {
-        const index = this.nodes.findIndex((beaconUrl) => beaconUrl !== url);
+        const index = this.nodes.findIndex((beaconUrl) => beaconUrl === url);
         if (index !== -1) {
             this.nodes.splice(index, 1);
             return true;
