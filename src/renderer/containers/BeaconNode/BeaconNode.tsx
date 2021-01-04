@@ -15,7 +15,7 @@ interface IBeaconNodeProps {
 }
 
 export const BeaconNode: React.FC<IBeaconNodeProps> = ({beacon: {url, docker}, showTitle = true}) => {
-    const container = DockerRegistry.getContainer(docker.id) as BeaconChain;
+    const container = docker && (DockerRegistry.getContainer(docker.id) as BeaconChain);
 
     const [avgLatency, setAvgLatency] = useState<SimpleLineChartRecord[]>([]);
     const [avgLatencyTicks, setAvgLatencyTicks] = useState<string[]>([]);
