@@ -167,7 +167,7 @@ export function* watchOnHead(
         Beacon &
         SyncingStatus
 > {
-    const config = yield retry(10, 1000, readBeaconChainNetwork, url);
+    const config = yield retry(30, 1000, readBeaconChainNetwork, url);
     const client = new CgEth2ApiClient(config?.eth2Config || mainnetConfig, url);
     const eventStream = client.events.getEventStream([
         BeaconEventType.HEAD,
@@ -186,6 +186,7 @@ export function* watchOnHead(
             ]);
             if (cancelAction || payload.done) {
                 if (cancelAction.payload === url) {
+                    eventStream.stop();
                     yield cancel();
                 }
                 continue;
