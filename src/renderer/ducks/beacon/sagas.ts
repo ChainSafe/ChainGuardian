@@ -120,7 +120,6 @@ function* removeBeaconSaga({
         const beaconValidators = yield select(getValidatorsByBeaconNode);
         for (const {publicKey} of beaconValidators[payload]) {
             const {nodes} = yield database.validatorBeaconNodes.remove(publicKey, payload);
-            console.log(nodes, payload);
             yield put(storeValidatorBeaconNodes(nodes, publicKey));
         }
     }
