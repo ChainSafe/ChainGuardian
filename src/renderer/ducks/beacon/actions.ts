@@ -5,7 +5,7 @@ import {FinalizedEpoch, StartBeaconChain} from "../network/types";
 import {DockerPort} from "../../services/docker/type";
 import {IConfigureBNSubmitOptions} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 
-export const {addBeacons, addBeacon, removeBeacon, updateSlot} = beaconSlice.actions;
+export const {addBeacons, addBeacon, removeBeacon, updateSlot, updateStatus} = beaconSlice.actions;
 
 export const startLocalBeacon = createAction<ActionWithCallback<IConfigureBNSubmitOptions>>(
     "beacon/startLocalBeacon",

@@ -60,6 +60,15 @@ export const beaconSlice = createSlice({
                 meta: url,
             }),
         },
+        updateStatus: {
+            reducer: (state, action: PayloadAction<BeaconStatus, string, string>): void => {
+                state.beacons[action.meta].status = action.payload;
+            },
+            prepare: (status: BeaconStatus, url: string): {payload: number; meta: string} => ({
+                payload: status,
+                meta: url,
+            }),
+        },
         removeBeacon: (state, action: PayloadAction<string>): void => {
             delete state.beacons[action.payload];
             const index = state.keys.findIndex((key) => key === action.payload);

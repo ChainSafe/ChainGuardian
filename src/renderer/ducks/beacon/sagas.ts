@@ -11,17 +11,28 @@ import {
     race,
     take,
     cancel,
+    retry,
+    select,
+    SelectEffect,
 } from "redux-saga/effects";
 import {getNetworkConfig} from "../../services/eth2/networks";
 import {liveProcesses} from "../../services/utils/cmd";
 import {cancelDockerPull, endDockerImagePull, startDockerImagePull} from "../network/actions";
-import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, finalizedEpoch} from "./actions";
+import {
+    startLocalBeacon,
+    removeBeacon,
+    addBeacon,
+    addBeacons,
+    updateSlot,
+    finalizedEpoch,
+    updateStatus,
+} from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import database from "../../services/db/api/database";
 import {Beacons} from "../../models/beacons";
 import {postInit} from "../store";
-import {BeaconStatus} from "./slice";
+import {Beacon, BeaconStatus} from "./slice";
 import {Action} from "redux";
 import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
 import {mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
@@ -31,6 +42,8 @@ import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
 import {CGBeaconEvent, CGBeaconEventType, FinalizedCheckpointEvent} from "../../services/eth2/client/interface";
 import logger from "electron-log";
+import {getBeaconByKey} from "./selectors";
+import {SyncingStatus} from "@chainsafe/lodestar-types";
 
 export function* pullDockerImage(
     network: string,
@@ -145,17 +158,25 @@ export function* watchOnHead(
     | PutEffect
     | CancelEffect
     | RaceEffect<Promise<IteratorResult<CGBeaconEvent>> | TakeEffect>
-    | Promise<INetworkConfig | null>,
+    | CallEffect
+    | SelectEffect
+    | Promise<SyncingStatus>,
     void,
-    [IteratorResult<HeadEvent | FinalizedCheckpointEvent>, ReturnType<typeof removeBeacon>] & (INetworkConfig | null)
+    [IteratorResult<HeadEvent | FinalizedCheckpointEvent>, ReturnType<typeof removeBeacon>] &
+        (INetworkConfig | null) &
+        Beacon &
+        SyncingStatus
 > {
-    const config = yield readBeaconChainNetwork(url);
+    const config = yield retry(10, 1000, readBeaconChainNetwork, url);
     const client = new CgEth2ApiClient(config?.eth2Config || mainnetConfig, url);
     const eventStream = client.events.getEventStream([
         BeaconEventType.HEAD,
         // TODO: refactor when they update Types "BeaconEventType"
         (CGBeaconEventType.FINALIZED_CHECKPOINT as unknown) as BeaconEventType,
     ]);
+
+    const beacon = yield select(getBeaconByKey, {key: url});
+    let isSyncing = beacon.status === BeaconStatus.syncing;
 
     while (true) {
         try {
@@ -169,7 +190,14 @@ export function* watchOnHead(
                 }
                 continue;
             }
-            if (payload.value.type === BeaconEventType.HEAD) yield put(updateSlot(payload.value.message.slot, url));
+            if (payload.value.type === BeaconEventType.HEAD) {
+                yield put(updateSlot(payload.value.message.slot, url));
+                if (isSyncing) {
+                    const result = yield client.node.getSyncingStatus();
+                    isSyncing = result.syncDistance > 10;
+                    yield put(updateStatus(BeaconStatus.active, url));
+                }
+            }
             if (payload.value.type === CGBeaconEventType.FINALIZED_CHECKPOINT)
                 yield put(finalizedEpoch(url, payload.value.message.epoch));
         } catch (err) {
