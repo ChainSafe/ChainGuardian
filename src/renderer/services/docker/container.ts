@@ -7,6 +7,7 @@ import {Readable} from "stream";
 import {extractDockerVersion} from "./utils";
 import {ICGLogger, ILogRecord} from "../utils/logging/interface";
 import {BufferedLogger} from "../utils/logging/buffered";
+import {DockerRegistry} from "./docker-registry";
 
 /**
  * Interface defining started docker instance.
@@ -241,6 +242,7 @@ export abstract class Container {
             try {
                 runCmd(await Command.removeContainer(this.docker.name));
                 logger.info(`Docker container ${this.docker.name} removed.`);
+                DockerRegistry.removeContainer(this.docker.name);
                 return true;
             } catch (e) {
                 logger.error(`Failed to remove docker container ${this.docker.name} because ${e.message}.`);
