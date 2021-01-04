@@ -68,9 +68,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                                                 ))}
                                         </div>
 
-                                        {beacons.beacons[url].docker && (
-                                            <BeaconNodeButtons image={beacons.beacons[url].docker.id} url={url} />
-                                        )}
+                                        <BeaconNodeButtons image={beacons.beacons[url].docker?.id} url={url} />
                                     </div>
                                 </div>
                             ))}

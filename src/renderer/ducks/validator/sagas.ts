@@ -7,8 +7,13 @@ import {
     takeEvery,
     race,
     take,
+    cancel,
+    fork,
     RaceEffect,
+    CancelEffect,
     TakeEffect,
+    AllEffect,
+    ForkEffect,
 } from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
 import {deleteKeystore} from "../../services/utils/account";
@@ -32,6 +37,7 @@ import {
     slashingProtectionUpload,
     slashingProtectionSkip,
     slashingProtectionCancel,
+    updateValidatorBalance,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
@@ -39,10 +45,9 @@ import {Validator} from "@chainsafe/lodestar-validator";
 import {Genesis} from "@chainsafe/lodestar-types";
 import * as logger from "electron-log";
 import {getAuthAccount} from "../auth/selectors";
-import {getValidatorBeaconNodes} from "./selectors";
+import {getValidator, getValidatorBeaconNodes} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
-import {WinstonLogger} from "@chainsafe/lodestar-utils";
 import {Beacon} from "../beacon/slice";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
@@ -50,6 +55,7 @@ import {getValidatorBalance} from "../../services/utils/validator";
 import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
 import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
 import {readFileSync} from "fs";
+import {finalizedEpoch} from "../beacon/actions";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -58,7 +64,12 @@ interface IValidatorServices {
 const validatorServices: IValidatorServices = {};
 
 function* loadValidatorsSaga(): Generator<
-    SelectEffect | PutEffect | Promise<ICGKeystore[]> | Promise<ValidatorBeaconNodes[]> | Promise<IValidator[]>,
+    | SelectEffect
+    | PutEffect
+    | Promise<ICGKeystore[]>
+    | Promise<ValidatorBeaconNodes[]>
+    | Promise<IValidator[]>
+    | AllEffect<ForkEffect>,
     void,
     ICGKeystore[] & (CGAccount | null) & ValidatorBeaconNodes[] & IValidator[]
 > {
@@ -83,10 +94,11 @@ function* loadValidatorsSaga(): Generator<
             }),
         );
         yield put(loadValidators(validatorArray));
+        yield all(validatorArray.map(({publicKey, network}) => fork(validatorInfoUpdater, publicKey, network)));
     }
 }
 
-export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>): Generator<PutEffect> {
+export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>): Generator<PutEffect | ForkEffect> {
     const keystore = action.meta.loadKeystore(action.payload.publicKey);
     const validator: IValidator = {
         name: action.payload.name || `Validator ${action.meta.getValidators().length + 2}`,
@@ -99,6 +111,7 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
     };
 
     yield put(addValidator(validator));
+    yield fork(validatorInfoUpdater, validator.publicKey, validator.network);
 }
 
 function* removeValidatorSaga(
@@ -166,7 +179,7 @@ function* startService(
             }
         }
 
-        const logger = new WinstonLogger() as ValidatorLogger;
+        const logger = new ValidatorLogger();
 
         if (!validatorServices[publicKey]) {
             validatorServices[publicKey] = new Validator({
@@ -203,6 +216,32 @@ function* setValidatorBeacon({
 > {
     const beaconNodes = yield database.validatorBeaconNodes.upsert(meta, [payload]);
     yield put(storeValidatorBeaconNodes(beaconNodes.nodes, meta));
+}
+
+function* validatorInfoUpdater(
+    publicKey: string,
+    network: string,
+): Generator<
+    SelectEffect | PutEffect | CancelEffect | RaceEffect<TakeEffect> | Promise<undefined | bigint>,
+    void,
+    IValidator & [ReturnType<typeof removeActiveValidator>, ReturnType<typeof finalizedEpoch>] & (undefined | bigint)
+> {
+    while (true) {
+        try {
+            const [cancelAction, {payload}] = yield race([take(removeActiveValidator), take(finalizedEpoch)]);
+            if (cancelAction && cancelAction.payload === publicKey) {
+                yield cancel();
+            }
+
+            const validator = yield select(getValidator, {publicKey});
+            if (validator.beaconNodes.includes(payload.beacon)) {
+                const balance = yield getValidatorBalance(publicKey, network, payload.beacon);
+                if (balance) yield put(updateValidatorBalance(publicKey, balance));
+            }
+        } catch (err) {
+            logger.error("update validator error:", err.message);
+        }
+    }
 }
 
 export function* validatorSagaWatcher(): Generator {
