@@ -42,7 +42,6 @@ import {getAuthAccount} from "../auth/selectors";
 import {getValidatorBeaconNodes} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
-import {WinstonLogger} from "@chainsafe/lodestar-utils";
 import {Beacon} from "../beacon/slice";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
@@ -166,7 +165,7 @@ function* startService(
             }
         }
 
-        const logger = new WinstonLogger() as ValidatorLogger;
+        const logger = new ValidatorLogger();
 
         if (!validatorServices[publicKey]) {
             validatorServices[publicKey] = new Validator({
