@@ -76,7 +76,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
@@ -90,13 +90,13 @@ jobs:
             node_modules
             packages/*/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-ignore-optional
-      
+
       - name: Install & build
         if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile --ignore-optional#--network-timeout 1000000 
+        run: yarn install --frozen-lockfile --ignore-optional#--network-timeout 1000000
 
 
-      
+
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1.6.0
         with:
@@ -110,7 +110,10 @@ jobs:
           mac_certs_password: ${{ secrets.MAC_PASSWORD }}
         env:
           EP_PRE_RELEASE: true
-      
+          SENTRY_ORG: nodefactory
+          SENTRY_PROJECT: chainguardian
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+
       #in case of failure
       - name: Rollback on failure
         if: failure()
