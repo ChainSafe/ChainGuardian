@@ -125,12 +125,18 @@ function* removeBeaconSaga({
     }
 }
 
+const getBeaconStatus = async (url: string): Promise<{syncing: boolean; slot: number} | null> => {
+    try {
+        const client = new CgEth2ApiClient(mainnetConfig, url);
+        const result = await client.node.getSyncingStatus();
+        return {slot: Number(result.headSlot), syncing: result.syncDistance > 10};
+    } catch {
+        return null;
+    }
+};
+
 function* initializeBeaconsFromStore(): Generator<
-    | Promise<Beacons>
-    | PutEffect
-    | Promise<void>
-    | Promise<({syncing: boolean; slot: number} | null)[]>
-    | AllEffect<ForkEffect>,
+    Promise<Beacons> | PutEffect | Promise<void> | AllEffect<CallEffect> | AllEffect<ForkEffect>,
     void,
     Beacons & ({syncing: boolean; slot: number} | null)[]
 > {
@@ -140,13 +146,7 @@ function* initializeBeaconsFromStore(): Generator<
 
         yield BeaconChain.startAllLocalBeaconNodes();
 
-        const stats = yield Promise.all(
-            beacons.map(async ({url}) => {
-                const client = new CgEth2ApiClient(mainnetConfig, url);
-                const result = await client.node.getSyncingStatus();
-                return {slot: Number(result.headSlot), syncing: result.syncDistance > 10};
-            }),
-        );
+        const stats = yield all(beacons.map(({url}) => call(getBeaconStatus, url)));
 
         yield all(beacons.map(({url}) => fork(watchOnHead, url)));
 
@@ -157,7 +157,7 @@ function* initializeBeaconsFromStore(): Generator<
                     docker: docker.id !== "" ? docker : undefined,
                     slot: stats[index]?.slot || 0,
                     status:
-                        stats[index].syncing !== null
+                        stats[index] !== null
                             ? stats[index].syncing
                                 ? BeaconStatus.syncing
                                 : BeaconStatus.active
