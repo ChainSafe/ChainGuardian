@@ -58,7 +58,7 @@ import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
 import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
 import {readFileSync} from "fs";
 import {finalizedEpoch} from "../beacon/actions";
-import { ValidatorStatus } from "../../constants/validatorStatus";
+import {ValidatorStatus} from "../../constants/validatorStatus";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
