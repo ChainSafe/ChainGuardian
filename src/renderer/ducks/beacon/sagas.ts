@@ -40,7 +40,12 @@ import {BeaconEventType, HeadEvent} from "@chainsafe/lodestar-validator/lib/api/
 import {AllEffect, CancelEffect, ForkEffect} from "@redux-saga/core/effects";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
-import {CGBeaconEvent, CGBeaconEventType, FinalizedCheckpointEvent} from "../../services/eth2/client/interface";
+import {
+    CGBeaconEvent,
+    CGBeaconEventType,
+    ErrorEvent,
+    FinalizedCheckpointEvent,
+} from "../../services/eth2/client/interface";
 import logger from "electron-log";
 import {getBeaconByKey} from "./selectors";
 import {SyncingStatus} from "@chainsafe/lodestar-types";
@@ -175,7 +180,7 @@ export function* watchOnHead(
 ): Generator<
     | PutEffect
     | CancelEffect
-    | RaceEffect<Promise<IteratorResult<CGBeaconEvent>> | TakeEffect>
+    | RaceEffect<Promise<IteratorResult<CGBeaconEvent | ErrorEvent>> | TakeEffect>
     | CallEffect
     | SelectEffect
     | Promise<SyncingStatus>,
@@ -194,7 +199,8 @@ export function* watchOnHead(
     ]);
 
     const beacon = yield select(getBeaconByKey, {key: url});
-    let isSyncing = beacon.status === BeaconStatus.syncing;
+    let isSyncing = beacon.status === BeaconStatus.syncing || beacon.status === BeaconStatus.offline;
+    let isOnline = beacon.status !== BeaconStatus.offline;
 
     while (true) {
         try {
@@ -209,12 +215,20 @@ export function* watchOnHead(
                 }
                 continue;
             }
+            if (payload.value.type === CGBeaconEventType.ERROR) {
+                if (isOnline) {
+                    yield put(updateStatus(BeaconStatus.offline, url));
+                    isOnline = false;
+                }
+                continue;
+            }
             if (payload.value.type === BeaconEventType.HEAD) {
                 yield put(updateSlot(payload.value.message.slot, url));
-                if (isSyncing) {
+                if (isSyncing || !isOnline) {
                     const result = yield client.node.getSyncingStatus();
                     isSyncing = result.syncDistance > 10;
-                    yield put(updateStatus(BeaconStatus.active, url));
+                    isOnline = true;
+                    yield put(updateStatus(isSyncing ? BeaconStatus.syncing : BeaconStatus.active, url));
                 }
             }
             if (payload.value.type === CGBeaconEventType.FINALIZED_CHECKPOINT)
