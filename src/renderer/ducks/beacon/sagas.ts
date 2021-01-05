@@ -118,9 +118,11 @@ function* removeBeaconSaga({
     const [removed] = yield database.beacons.remove(payload);
     if (removed) {
         const beaconValidators = yield select(getValidatorsByBeaconNode);
-        for (const {publicKey} of beaconValidators[payload]) {
-            const {nodes} = yield database.validatorBeaconNodes.remove(publicKey, payload);
-            yield put(storeValidatorBeaconNodes(nodes, publicKey));
+        if (beaconValidators[payload]?.length) {
+            for (const {publicKey} of beaconValidators[payload]) {
+                const {nodes} = yield database.validatorBeaconNodes.remove(publicKey, payload);
+                yield put(storeValidatorBeaconNodes(nodes, publicKey));
+            }
         }
     }
 }
