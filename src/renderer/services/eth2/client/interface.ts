@@ -35,7 +35,11 @@ export interface ICGValidatorResponse extends Omit<ValidatorResponse, "status"> 
 }
 
 export interface ICGBeaconStateApi extends Omit<IBeaconStateApi, "getStateValidator"> {
-    getStateValidator(stateId: "head", validatorId: ValidatorIndex | BLSPubkey): Promise<ICGValidatorResponse | null>;
+    getStateValidator(
+        stateId: "head" | bigint,
+        validatorId: ValidatorIndex | BLSPubkey,
+    ): Promise<ICGValidatorResponse | null>;
+    getLastEpoch(): Promise<bigint | null>;
 }
 
 export interface ICGEth2BeaconApi extends Omit<IBeaconApi, "blocks" | "state"> {
