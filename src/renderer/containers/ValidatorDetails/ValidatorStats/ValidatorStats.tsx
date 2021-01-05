@@ -6,7 +6,7 @@ import {exportKeystore} from "../../../services/utils/account";
 import {IValidator} from "../../../ducks/validator/slice";
 import {createNotification} from "../../../ducks/notification/actions";
 import {SimpleLineChart, SimpleLineChartRecord} from "../../../components/SimpleLineChart/SimpleLineChart";
-import {ResponsiveContainer, XAxis, YAxis} from "recharts";
+import {ResponsiveContainer} from "recharts";
 import database from "../../../services/db/api/database";
 import {utils} from "ethers";
 
