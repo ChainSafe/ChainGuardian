@@ -21,15 +21,17 @@ export class ValidatorBalances implements IValidatorBalance {
     }
 
     public getMissingEpochs(from: bigint, to: bigint): bigint[] {
-        return this.getEpochRange(from, to).filter((epoch) => this.isExistingRecord(epoch));
+        return this.getEpochRange(from, to).filter((epoch) => !this.isExistingRecord(epoch));
     }
 
-    public getFirstEpoch(): bigint {
-        return BigInt(0);
+    public getFirstEpoch(): bigint | null {
+        if (!this.records.length) return null;
+        return this.records[0].epoch;
     }
 
-    public getLastEpoch(): bigint {
-        return BigInt(0);
+    public getLastEpoch(): bigint | null {
+        if (!this.records.length) return null;
+        return this.records[this.records.length - 1].epoch;
     }
 
     private getEpochRange(from: bigint, to: bigint): bigint[] {
