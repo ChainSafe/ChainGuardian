@@ -11,6 +11,7 @@ export interface IValidator {
     publicKey: string;
     network: string;
     balance?: bigint;
+    syncingBalance?: boolean;
     keystore: ICGKeystore;
     isRunning: boolean;
     beaconNodes: string[];
@@ -103,6 +104,15 @@ export const validatorSlice = createSlice({
             },
             prepare: (publicKey: string, balance: bigint): {payload: bigint; meta: string} => ({
                 payload: balance,
+                meta: publicKey,
+            }),
+        },
+        setSyncingBalance: {
+            reducer: (state, action: PayloadAction<boolean, string, string>): void => {
+                state.byPublicKey[action.meta].syncingBalance = action.payload;
+            },
+            prepare: (publicKey: string, isSyncing: boolean): {payload: boolean, meta: string} => ({
+                payload: isSyncing,
                 meta: publicKey,
             }),
         },

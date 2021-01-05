@@ -14,6 +14,9 @@ import {
     TakeEffect,
     AllEffect,
     ForkEffect,
+    call,
+    CallEffect,
+    delay,
 } from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
 import {deleteKeystore} from "../../services/utils/account";
@@ -38,6 +41,7 @@ import {
     slashingProtectionSkip,
     slashingProtectionCancel,
     updateValidatorBalance,
+    setSyncingBalance,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
@@ -56,6 +60,8 @@ import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
 import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
 import {readFileSync} from "fs";
 import {finalizedEpoch} from "../beacon/actions";
+import {fromHexString} from "@chainsafe/ssz";
+import {getNetworkConfig} from "../../services/eth2/networks";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -69,7 +75,8 @@ function* loadValidatorsSaga(): Generator<
     | Promise<ICGKeystore[]>
     | Promise<ValidatorBeaconNodes[]>
     | Promise<IValidator[]>
-    | AllEffect<ForkEffect>,
+    | AllEffect<ForkEffect>
+    | AllEffect<CallEffect>,
     void,
     ICGKeystore[] & (CGAccount | null) & ValidatorBeaconNodes[] & IValidator[]
 > {
@@ -95,6 +102,7 @@ function* loadValidatorsSaga(): Generator<
         );
         yield put(loadValidators(validatorArray));
         yield all(validatorArray.map(({publicKey, network}) => fork(validatorInfoUpdater, publicKey, network)));
+        yield all(validatorArray.map(({publicKey, network}) => call(syncValidatorBalances, publicKey, network)));
     }
 }
 
@@ -245,6 +253,53 @@ function* validatorInfoUpdater(
             logger.error("update validator error:", err.message);
         }
     }
+}
+
+function* syncValidatorBalances(publicKey: string, network: string): Generator<any, void, any> {
+    yield delay(1000); // delay to all data can be loaded in time
+    const beaconNodes = yield select(getValidatorBeaconNodes, {publicKey});
+    if (!beaconNodes.length) {
+        return;
+    }
+    yield put(setSyncingBalance(publicKey, true));
+
+    const config = getNetworkConfig(network);
+    const eth2Client = new CgEth2ApiClient(config.eth2Config, beaconNodes[0].url);
+    const validatorId = fromHexString(publicKey);
+
+    const headValidatorState = yield eth2Client.beacon.state.getStateValidator("head", validatorId);
+    const {activationEpoch, exitEpoch} = headValidatorState.validator;
+
+    const lastEpoch = yield eth2Client.beacon.state.getLastEpoch();
+    const balances = yield database.validator.balance.get(publicKey);
+    const firstRecord = yield balances.getFirstEpoch();
+    const lastRecord = yield balances.getLastEpoch();
+
+    if (lastEpoch >= exitEpoch) {
+        return;
+    }
+
+    const from = activationEpoch !== firstRecord ? BigInt(activationEpoch) : lastRecord;
+    const to = isFinite(exitEpoch) ? BigInt(exitEpoch) : lastEpoch;
+    const missing = yield balances.getMissingEpochs(from, to);
+    missing.reverse();
+
+    const chunkSize = 10; // its take around 1min to get chunk of 10 records
+    const chunks: bigint[][] = [];
+    for (let i = 0, j = missing.length; i < j; i += chunkSize) {
+        chunks.push(missing.slice(i, i + chunkSize));
+    }
+
+    for (const chunk of chunks) {
+        const records: any[] = yield all(
+            chunk.map((epoch: bigint) =>
+                call(eth2Client.beacon.state.getStateValidator, BigInt(Number(epoch) * 32), validatorId),
+            ),
+        );
+        const balances = records.map(({balance}, index) => ({balance, epoch: chunk[index]}));
+        yield database.validator.balance.addRecords(publicKey, balances);
+    }
+    yield put(setSyncingBalance(publicKey, false));
 }
 
 export function* validatorSagaWatcher(): Generator {
