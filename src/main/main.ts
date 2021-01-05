@@ -4,6 +4,7 @@ import {init as initBLS} from "@chainsafe/bls";
 import {createWindow} from "./gui/window";
 import {DatabaseIpcHandler} from "./db/ipc";
 import {initSentry} from "./sentry";
+import logger from "electron-log";
 
 initSentry();
 
@@ -11,7 +12,7 @@ let db: DatabaseIpcHandler;
 try {
     db = new DatabaseIpcHandler();
 } catch (e) {
-    console.error(e);
+    logger.error(e);
     process.exit(1);
 }
 
@@ -22,7 +23,7 @@ app.whenReady().then(async function () {
         await initBLS("herumi");
         await Promise.all([db.start(), createWindow()]);
     } catch (e) {
-        console.error(e);
+        logger.error(e);
     }
 });
 

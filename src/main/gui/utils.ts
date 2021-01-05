@@ -1,10 +1,12 @@
+import logger from "electron-log";
+
 export async function installExtensions(): Promise<void | string[]> {
     // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
     const installer = require("electron-devtools-installer");
     const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
     const extensions = ["REACT_DEVELOPER_TOOLS", "REDUX_DEVTOOLS"];
 
-    return Promise.all(extensions.map((name) => installer.default(installer[name], forceDownload))).catch(console.log);
+    return Promise.all(extensions.map((name) => installer.default(installer[name], forceDownload))).catch(logger.log);
 }
 
 export const iconExtensions = {

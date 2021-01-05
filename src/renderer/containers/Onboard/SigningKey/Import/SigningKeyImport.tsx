@@ -9,6 +9,7 @@ import {ValidationResult} from "joi";
 import {SecretKey} from "@chainsafe/bls";
 import {deriveEth2ValidatorKeys, deriveKeyFromMnemonic} from "@chainsafe/bls-keygen";
 import {storeSigningKey, storeValidatorKeys} from "../../../../ducks/register/actions";
+import logger from "electron-log";
 
 type IOwnProps = Pick<RouteComponentProps, "history">;
 
@@ -23,7 +24,7 @@ export const SigningKeyImportContainer: React.FC<IOwnProps> = ({history}) => {
                 SecretKey.fromHex(input);
             } catch (e) {
                 //TODO: display error message
-                console.error("Invalid private key");
+                logger.error("Invalid private key");
                 return;
             }
             dispatch(storeSigningKey(input));

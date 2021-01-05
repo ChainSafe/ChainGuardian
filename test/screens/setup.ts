@@ -2,6 +2,7 @@ import {Application} from "spectron";
 import path from "path";
 import {Routes} from "../../src/renderer/constants/routes";
 import {existsSync, lstatSync, readdirSync, rmdirSync, unlinkSync} from "fs";
+import logger from "electron-log";
 
 export const TIMEOUT = 120000;
 
@@ -17,7 +18,7 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
     try {
         deleteFolderRecursive(dbLocation);
     } catch (e) {
-        console.warn(e);
+        logger.warn(e);
     }
     const app = new Application({
         path: electronPath,
@@ -32,7 +33,7 @@ export async function setApp(url: Routes = Routes.LOGIN_ROUTE): Promise<Applicat
         // await initBLS();
         await app.start();
     } catch (e) {
-        console.warn(e);
+        logger.warn(e);
         await app.start();
     }
     return app;
@@ -50,7 +51,7 @@ export async function stopApp(app: Application): Promise<void> {
     try {
         deleteFolderRecursive(dbLocation);
     } catch (e) {
-        console.warn(e);
+        logger.warn(e);
     }
 }
 
