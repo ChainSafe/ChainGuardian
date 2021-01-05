@@ -44,9 +44,7 @@ export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {ta
                     <TabNavigation onTab={setCurrentTab} tabs={tabs} current={currentTab} />
                 </div>
 
-                {currentTab === tabs[0].tabId ? (
-                    <ValidatorStats validator={validator} validatorId={validatorId} />
-                ) : null}
+                {currentTab === tabs[0].tabId ? <ValidatorStats validator={validator} /> : null}
 
                 {currentTab === tabs[1].tabId ? <ValidatorLogs logger={validator.logger} /> : null}
 

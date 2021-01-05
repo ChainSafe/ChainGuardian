@@ -11,11 +11,10 @@ import database from "../../../services/db/api/database";
 import {utils} from "ethers";
 
 interface IValidatorStatsProps {
-    validatorId: number;
     validator: IValidator;
 }
 
-export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps): ReactElement => {
+export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement => {
     const history = useHistory();
     const dispatch = useDispatch();
     const [data, setData] = useState<SimpleLineChartRecord[]>([]);
@@ -56,7 +55,7 @@ export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps): 
     return (
         <div className='validator-details-stats'>
             <div className='row space-between'>
-                <h2>Validator {validatorId}</h2>
+                <h2>{validator.name}</h2>
                 <ButtonSecondary onClick={onExportValidator}>EXPORT</ButtonSecondary>
             </div>
 
@@ -70,7 +69,7 @@ export const ValidatorStats = ({validatorId, validator}: IValidatorStatsProps): 
                     </ResponsiveContainer>
                 </div>
             </div>
-
+            <br />
             <p>Performance statistics are coming soon!</p>
         </div>
     );

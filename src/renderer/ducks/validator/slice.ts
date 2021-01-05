@@ -107,14 +107,5 @@ export const validatorSlice = createSlice({
                 meta: publicKey,
             }),
         },
-        setSyncingBalance: {
-            reducer: (state, action: PayloadAction<boolean, string, string>): void => {
-                state.byPublicKey[action.meta].syncingBalance = action.payload;
-            },
-            prepare: (publicKey: string, isSyncing: boolean): {payload: boolean, meta: string} => ({
-                payload: isSyncing,
-                meta: publicKey,
-            }),
-        },
     },
 });
