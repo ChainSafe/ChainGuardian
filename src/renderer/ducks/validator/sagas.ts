@@ -14,6 +14,7 @@ import {
     TakeEffect,
     AllEffect,
     ForkEffect,
+    CallEffect,
 } from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
 import {deleteKeystore} from "../../services/utils/account";
@@ -69,7 +70,8 @@ function* loadValidatorsSaga(): Generator<
     | Promise<ICGKeystore[]>
     | Promise<ValidatorBeaconNodes[]>
     | Promise<IValidator[]>
-    | AllEffect<ForkEffect>,
+    | AllEffect<ForkEffect>
+    | AllEffect<CallEffect>,
     void,
     ICGKeystore[] & (CGAccount | null) & ValidatorBeaconNodes[] & IValidator[]
 > {
@@ -222,7 +224,7 @@ function* validatorInfoUpdater(
     publicKey: string,
     network: string,
 ): Generator<
-    SelectEffect | PutEffect | CancelEffect | RaceEffect<TakeEffect> | Promise<undefined | bigint>,
+    SelectEffect | PutEffect | CancelEffect | RaceEffect<TakeEffect> | Promise<undefined | bigint> | Promise<void>,
     void,
     IValidator & [ReturnType<typeof removeActiveValidator>, ReturnType<typeof finalizedEpoch>] & (undefined | bigint)
 > {
@@ -236,7 +238,10 @@ function* validatorInfoUpdater(
             const validator = yield select(getValidator, {publicKey});
             if (validator.beaconNodes.includes(payload.beacon)) {
                 const balance = yield getValidatorBalance(publicKey, network, payload.beacon);
-                if (balance) yield put(updateValidatorBalance(publicKey, balance));
+                if (balance) {
+                    yield database.validator.balance.addRecords(publicKey, [{balance, epoch: BigInt(payload.epoch)}]);
+                    yield put(updateValidatorBalance(publicKey, balance));
+                }
             }
         } catch (err) {
             logger.error("update validator error:", err.message);

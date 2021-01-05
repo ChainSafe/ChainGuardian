@@ -11,6 +11,7 @@ export interface IValidator {
     publicKey: string;
     network: string;
     balance?: bigint;
+    syncingBalance?: boolean;
     keystore: ICGKeystore;
     isRunning: boolean;
     beaconNodes: string[];

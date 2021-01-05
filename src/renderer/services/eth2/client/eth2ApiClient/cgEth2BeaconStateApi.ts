@@ -24,8 +24,23 @@ export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
         }
     };
 
+    public getLastEpoch = async (): Promise<bigint | null> => {
+        try {
+            const url = `/eth/v1/beacon/states/head/finality_checkpoints`;
+            const finalityCheckpointsResponse = await this.httpClient.get<{
+                // eslint-disable-next-line camelcase
+                data: {previous_justified: {epoch: number}};
+            }>(url);
+            return BigInt(finalityCheckpointsResponse.data.previous_justified.epoch);
+        } catch (e) {
+            // TODO: implement logger;
+            console.error("Failed to fetch finality checkpoints", {error: e.message});
+            return null;
+        }
+    };
+
     public getStateValidator = async (
-        stateId: "head",
+        stateId: "head" | bigint,
         validatorId: ValidatorIndex | BLSPubkey,
     ): Promise<ICGValidatorResponse | null> => {
         const id =
