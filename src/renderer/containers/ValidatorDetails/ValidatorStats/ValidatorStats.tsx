@@ -6,7 +6,7 @@ import {exportKeystore} from "../../../services/utils/account";
 import {IValidator} from "../../../ducks/validator/slice";
 import {createNotification} from "../../../ducks/notification/actions";
 import {SimpleLineChart, SimpleLineChartRecord} from "../../../components/SimpleLineChart/SimpleLineChart";
-import {ResponsiveContainer} from "recharts";
+import {ResponsiveContainer, XAxis, YAxis} from "recharts";
 import database from "../../../services/db/api/database";
 import {utils} from "ethers";
 
@@ -65,7 +65,21 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
                 </div>
                 <div className='graph-content'>
                     <ResponsiveContainer width='100%' height={200}>
-                        <SimpleLineChart data={data} tooltip={{formatter, labelFormatter, separator: " "}} />
+                        <SimpleLineChart
+                            data={data}
+                            tooltip={{formatter, labelFormatter, separator: " "}}
+                            xAxis={{
+                                height: 40,
+                                label: {value: "epoch", position: "insideBottom"},
+                            }}
+                            yAxis={{
+                                hide: false,
+                                tick: false,
+                                axisLine: false,
+                                width: 3,
+                                label: {value: "ETH", angle: -90, position: "insideLeft", offset: -8},
+                            }}
+                        />
                     </ResponsiveContainer>
                 </div>
             </div>
