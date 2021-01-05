@@ -89,7 +89,7 @@ export const validatorSlice = createSlice({
         stopValidatorService: (state, action: PayloadAction<string>): void => {
             state.byPublicKey[action.payload].isRunning = false;
         },
-        loadValidatorStatus: {
+        setValidatorStatus: {
             reducer: (state, action: PayloadAction<ValidatorStatus, string, string>): void => {
                 state.byPublicKey[action.meta].status = action.payload;
             },
