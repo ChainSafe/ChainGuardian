@@ -1,5 +1,5 @@
 import React from "react";
-import {Line, LineChart, Tooltip, TooltipProps, XAxis, XAxisProps} from "recharts";
+import {Line, LineChart, Tooltip, TooltipProps, XAxis, XAxisProps, YAxis} from "recharts";
 
 export type SimpleLineChartRecord = {label: string; value?: number};
 
@@ -14,6 +14,7 @@ interface IProps {
 export const SimpleLineChart: React.FC<IProps> = ({data, xAxis = {}, height, width, tooltip}) => (
     <LineChart width={width} height={height} data={data} margin={{top: 5, bottom: 0, left: 20, right: 20}}>
         <XAxis dataKey='label' stroke='#9ba7af' tickLine={false} {...xAxis} />
+        <YAxis hide domain={["dataMin", "dataMax"]} padding={{top: 5, bottom: 10}} />
         <Tooltip {...tooltip} />
         <defs>
             <linearGradient id='splitColor' x1='0' y1='0' x2='0' y2='1'>
