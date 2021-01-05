@@ -3,6 +3,7 @@ import {CgEth2ApiClient} from "../eth2/client/eth2ApiClient";
 import {config as mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {fromHexString} from "@chainsafe/ssz";
 import {readBeaconChainNetwork} from "../eth2/client";
+import logger from "electron-log";
 
 export const getValidatorStatus = async (publicKey: string, beaconNodeUrl?: string): Promise<ValidatorStatus> => {
     if (!beaconNodeUrl) return ValidatorStatus.NO_BEACON_NODE;
@@ -85,7 +86,7 @@ const getValidatorStatusFromString = (status: string): ValidatorStatus => {
         case "withdrawn":
             return ValidatorStatus.WITHDRAWNED;
         default:
-            console.error(`Status: "${status}" not found`);
+            logger.error(`Status: "${status}" not found`);
             return ValidatorStatus.ERROR;
     }
 };

@@ -3,11 +3,11 @@ import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Json} from "@chainsafe/ssz";
 import {ICGBeaconStateApi, ICGValidatorResponse} from "../interface";
+import logger from "electron-log";
 
 export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
     private readonly httpClient: HttpClient;
     private readonly config: IBeaconConfig;
-    // TODO: implement logger;
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
         this.config = config;
         this.httpClient = httpClient;
@@ -18,8 +18,7 @@ export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
             const forkResponse = await this.httpClient.get<{data: Json}>(`/eth/v1/beacon/states/${stateId}/fork`);
             return this.config.types.Fork.fromJson(forkResponse.data, {case: "snake"});
         } catch (e) {
-            // TODO: implement logger;
-            console.error("Failed to fetch head fork version", {error: e.message});
+            logger.error("Failed to fetch head fork version", {error: e.message});
             return null;
         }
     };
@@ -39,8 +38,7 @@ export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
                 case: "snake",
             }) as ICGValidatorResponse;
         } catch (e) {
-            // TODO: implement logger;
-            console.error("Failed to fetch validator", {validatorId: id, error: e.message});
+            logger.error("Failed to fetch validator", {validatorId: id, error: e.message});
             return null;
         }
     };

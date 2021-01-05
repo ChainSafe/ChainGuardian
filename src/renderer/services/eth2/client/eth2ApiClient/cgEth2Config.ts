@@ -1,6 +1,7 @@
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {DepositContract, ICGEth2Config} from "../interface";
+import logger from "electron-log";
 
 export class CgEth2Config implements ICGEth2Config {
     private readonly httpClient: HttpClient;
@@ -16,8 +17,7 @@ export class CgEth2Config implements ICGEth2Config {
             const response = await this.httpClient.get<DepositContract>("/eth/v1/config/deposit_contract");
             return response.data;
         } catch (e) {
-            // TODO: implement logger;
-            console.error("Failed to fetch deposit contract information", e.message);
+            logger.error("Failed to fetch deposit contract information", e.message);
             return null;
         }
     };
