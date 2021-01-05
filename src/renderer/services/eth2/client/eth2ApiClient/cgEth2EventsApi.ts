@@ -2,7 +2,7 @@ import {BeaconEventType} from "@chainsafe/lodestar-validator/lib/api/interface/e
 import {IStoppableEventIterable, LodestarEventIterator} from "@chainsafe/lodestar-utils";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {ContainerType} from "@chainsafe/ssz";
-import {CGBeaconEventType, CGBeaconEvent, ICGEventsApi} from "../interface";
+import {CGBeaconEventType, CGBeaconEvent, ICGEventsApi, ErrorEvent} from "../interface";
 
 export class CgEth2EventsApi implements ICGEventsApi {
     private readonly baseUrl: string;
@@ -12,13 +12,16 @@ export class CgEth2EventsApi implements ICGEventsApi {
         this.baseUrl = baseUrl;
     }
 
-    public getEventStream = (topics: CGBeaconEventType[]): IStoppableEventIterable<CGBeaconEvent> => {
+    public getEventStream = (topics: CGBeaconEventType[]): IStoppableEventIterable<CGBeaconEvent | ErrorEvent> => {
         const topicsQuery = topics.filter((topic) => topic !== "chain_reorg").join(",");
         const url = new URL(`/eth/v1/events?topics=${topicsQuery}`, this.baseUrl);
         const eventSource = new EventSource(url.href);
         return new LodestarEventIterator(({push}): (() => void) => {
             topics.forEach((topic) => {
                 eventSource.addEventListener(topic, this.eventListener(push));
+            });
+            eventSource.addEventListener("error", () => {
+                push({type: CGBeaconEventType.ERROR});
             });
             return (): void => {
                 eventSource.close();
