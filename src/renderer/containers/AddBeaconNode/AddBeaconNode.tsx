@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from "react";
+import React, {useState, useCallback, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router";
 import {Background} from "../../components/Background/Background";
@@ -12,19 +12,23 @@ import {getPullingDockerImage} from "../../ducks/network/selectors";
 import {Container} from "../../services/docker/container";
 import OnBoardModal from "../Onboard/OnBoardModal";
 import {addBeacon, startLocalBeacon} from "../../ducks/beacon/actions";
+import {ConfigureDockerPath} from "../../components/ConfigureBeaconNode/ConfigureDockerPath";
 
 export const AddBeaconNodeContainer: React.FunctionComponent = () => {
     const isPullingImage = useSelector(getPullingDockerImage);
     const dispatch = useDispatch();
     const history = useHistory();
     const [currentStep, setCurrentStep] = useState<number>(0);
+    const [hasDocker, setHasDocker] = useState<boolean | undefined>();
+
+    useEffect(() => {
+        onDockerPathNext();
+    }, []);
 
     const renderFirstStep = (): React.ReactElement => {
         const onRunNodeSubmit = async (): Promise<void> => {
             if (await Container.isDockerInstalled()) {
                 setCurrentStep(1);
-            } else {
-                // TODO: Configure Docker path?
             }
         };
 
@@ -58,7 +62,16 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
         history.push(Routes.DASHBOARD_ROUTE);
     };
 
+    const onDockerPathNext = (): void => {
+        checkDockerIsInstalled();
+    };
+
+    const checkDockerIsInstalled = (): void => {
+        Container.isDockerInstalled().then(setHasDocker);
+    };
+
     const renderSecondStep = (): React.ReactElement => {
+        if (!hasDocker) return <ConfigureDockerPath onNext={onDockerPathNext} />;
         return <ConfigureBeaconNode onSubmit={onDockerRunSubmit} />;
     };
 
