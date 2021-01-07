@@ -39,6 +39,7 @@ import {
     slashingProtectionSkip,
     slashingProtectionCancel,
     updateValidatorBalance,
+    setValidatorStatus,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
@@ -57,6 +58,7 @@ import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
 import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
 import {readFileSync} from "fs";
 import {finalizedEpoch} from "../beacon/actions";
+import {ValidatorStatus} from "../../constants/validatorStatus";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -212,12 +214,18 @@ function* setValidatorBeacon({
     payload,
     meta,
 }: ReturnType<typeof setValidatorBeaconNode>): Generator<
-    PutEffect | Promise<ValidatorBeaconNodes>,
+    PutEffect | SelectEffect | Promise<ValidatorBeaconNodes> | Promise<ValidatorStatus>,
     void,
-    ValidatorBeaconNodes
+    ValidatorBeaconNodes & IValidator & ValidatorStatus
 > {
     const beaconNodes = yield database.validatorBeaconNodes.upsert(meta, [payload]);
     yield put(storeValidatorBeaconNodes(beaconNodes.nodes, meta));
+    const validator = yield select(getValidator, {publicKey: meta});
+    if (validator.status === ValidatorStatus.NO_BEACON_NODE) {
+        const beacon = validator.beaconNodes.length ? validator.beaconNodes[0] : beaconNodes.nodes[0];
+        const status = yield getValidatorStatus(meta, beacon);
+        yield put(setValidatorStatus(status, meta));
+    }
 }
 
 function* validatorInfoUpdater(

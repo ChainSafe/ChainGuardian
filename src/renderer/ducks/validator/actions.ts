@@ -7,7 +7,7 @@ export const {
     addValidator,
     startValidatorService,
     loadValidators,
-    loadValidatorStatus,
+    setValidatorStatus,
     removeValidator,
     stopValidatorService,
     storeValidatorBeaconNodes,

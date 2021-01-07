@@ -55,6 +55,7 @@ export enum CGBeaconEventType {
     CHAIN_REORG = "chain_reorg",
     HEAD = "head",
     FINALIZED_CHECKPOINT = "finalized_checkpoint",
+    ERROR = "error",
 }
 
 export declare type FinalizedCheckpointEvent = {
@@ -62,10 +63,14 @@ export declare type FinalizedCheckpointEvent = {
     message: FinalizedCheckpoint;
 };
 
+export declare type ErrorEvent = {
+    type: typeof CGBeaconEventType.ERROR;
+};
+
 export type CGBeaconEvent = BeaconBlockEvent | BeaconChainReorgEvent | HeadEvent | FinalizedCheckpointEvent;
 
 export interface ICGEventsApi extends Omit<IEventsApi, "getEventStream"> {
-    getEventStream(topics: CGBeaconEventType[]): IStoppableEventIterable<CGBeaconEvent>;
+    getEventStream(topics: CGBeaconEventType[]): IStoppableEventIterable<CGBeaconEvent | ErrorEvent>;
 }
 
 export type DepositContract = {

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import logger from "electron-log";
 import {useHistory} from "react-router";
 import {ButtonDestructive, ButtonInverted, ButtonPrimary} from "../../components/Button/ButtonStandard";
@@ -9,6 +9,9 @@ import {DockerRegistry} from "../../services/docker/docker-registry";
 import {createNotification} from "../../ducks/notification/actions";
 import {removeBeacon} from "../../ducks/beacon/actions";
 import {Routes} from "../../constants/routes";
+import {IRootState} from "../../ducks/reducers";
+import {getBeaconByKey} from "../../ducks/beacon/selectors";
+import {BeaconStatus} from "../../ducks/beacon/slice";
 
 enum Modal {
     none,
@@ -29,6 +32,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
 }: IBeaconNodeButtonsProps) => {
     const dispatch = useDispatch();
     const history = useHistory();
+    const beacon = useSelector((state: IRootState) => getBeaconByKey(state, {key: url}));
 
     const [confirmModal, setConfirmModal] = useState(Modal.none);
     const [loading, setLoading] = useState(false);
@@ -36,9 +40,10 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
 
     useEffect(() => {
         if (image) {
-            DockerRegistry.getContainer(image).isRunning().then(setIsRunning);
+            if (isRunning && beacon.status === BeaconStatus.offline) setIsRunning(false);
+            else DockerRegistry.getContainer(image).isRunning().then(setIsRunning);
         }
-    }, []);
+    }, [beacon.status]);
 
     const stopContainer = async (): Promise<void> => {
         setLoading(true);
@@ -132,7 +137,9 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
                             </ButtonDestructive>
                         </>
                     ) : (
-                        <ButtonPrimary onClick={(): void => setConfirmModal(Modal.start)}>Start</ButtonPrimary>
+                        <ButtonPrimary onClick={(): void => setConfirmModal(Modal.start)} disabled={beacon.slot === 0}>
+                            Start
+                        </ButtonPrimary>
                     )
                 ) : null}
                 <ButtonDestructive onClick={(): void => setConfirmModal(Modal.remove)}>Remove</ButtonDestructive>

@@ -40,7 +40,12 @@ import {BeaconEventType, HeadEvent} from "@chainsafe/lodestar-validator/lib/api/
 import {AllEffect, CancelEffect, ForkEffect} from "@redux-saga/core/effects";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
-import {CGBeaconEvent, CGBeaconEventType, FinalizedCheckpointEvent} from "../../services/eth2/client/interface";
+import {
+    CGBeaconEvent,
+    CGBeaconEventType,
+    ErrorEvent,
+    FinalizedCheckpointEvent,
+} from "../../services/eth2/client/interface";
 import logger from "electron-log";
 import {getBeaconByKey} from "./selectors";
 import {SyncingStatus} from "@chainsafe/lodestar-types";
@@ -118,19 +123,27 @@ function* removeBeaconSaga({
     const [removed] = yield database.beacons.remove(payload);
     if (removed) {
         const beaconValidators = yield select(getValidatorsByBeaconNode);
-        for (const {publicKey} of beaconValidators[payload]) {
-            const {nodes} = yield database.validatorBeaconNodes.remove(publicKey, payload);
-            yield put(storeValidatorBeaconNodes(nodes, publicKey));
+        if (beaconValidators[payload]?.length) {
+            for (const {publicKey} of beaconValidators[payload]) {
+                const {nodes} = yield database.validatorBeaconNodes.remove(publicKey, payload);
+                yield put(storeValidatorBeaconNodes(nodes, publicKey));
+            }
         }
     }
 }
 
+const getBeaconStatus = async (url: string): Promise<{syncing: boolean; slot: number} | null> => {
+    try {
+        const client = new CgEth2ApiClient(mainnetConfig, url);
+        const result = await client.node.getSyncingStatus();
+        return {slot: Number(result.headSlot), syncing: result.syncDistance > 10};
+    } catch {
+        return null;
+    }
+};
+
 function* initializeBeaconsFromStore(): Generator<
-    | Promise<Beacons>
-    | PutEffect
-    | Promise<void>
-    | Promise<({syncing: boolean; slot: number} | null)[]>
-    | AllEffect<ForkEffect>,
+    Promise<Beacons> | PutEffect | Promise<void> | AllEffect<CallEffect> | AllEffect<ForkEffect>,
     void,
     Beacons & ({syncing: boolean; slot: number} | null)[]
 > {
@@ -140,13 +153,7 @@ function* initializeBeaconsFromStore(): Generator<
 
         yield BeaconChain.startAllLocalBeaconNodes();
 
-        const stats = yield Promise.all(
-            beacons.map(async ({url}) => {
-                const client = new CgEth2ApiClient(mainnetConfig, url);
-                const result = await client.node.getSyncingStatus();
-                return {slot: Number(result.headSlot), syncing: result.syncDistance > 10};
-            }),
-        );
+        const stats = yield all(beacons.map(({url}) => call(getBeaconStatus, url)));
 
         yield all(beacons.map(({url}) => fork(watchOnHead, url)));
 
@@ -157,7 +164,7 @@ function* initializeBeaconsFromStore(): Generator<
                     docker: docker.id !== "" ? docker : undefined,
                     slot: stats[index]?.slot || 0,
                     status:
-                        stats[index].syncing !== null
+                        stats[index] !== null
                             ? stats[index].syncing
                                 ? BeaconStatus.syncing
                                 : BeaconStatus.active
@@ -173,7 +180,7 @@ export function* watchOnHead(
 ): Generator<
     | PutEffect
     | CancelEffect
-    | RaceEffect<Promise<IteratorResult<CGBeaconEvent>> | TakeEffect>
+    | RaceEffect<Promise<IteratorResult<CGBeaconEvent | ErrorEvent>> | TakeEffect>
     | CallEffect
     | SelectEffect
     | Promise<SyncingStatus>,
@@ -192,7 +199,8 @@ export function* watchOnHead(
     ]);
 
     const beacon = yield select(getBeaconByKey, {key: url});
-    let isSyncing = beacon.status === BeaconStatus.syncing;
+    let isSyncing = beacon.status === BeaconStatus.syncing || beacon.status === BeaconStatus.offline;
+    let isOnline = beacon.status !== BeaconStatus.offline;
 
     while (true) {
         try {
@@ -207,12 +215,20 @@ export function* watchOnHead(
                 }
                 continue;
             }
+            if (payload.value.type === CGBeaconEventType.ERROR) {
+                if (isOnline) {
+                    yield put(updateStatus(BeaconStatus.offline, url));
+                    isOnline = false;
+                }
+                continue;
+            }
             if (payload.value.type === BeaconEventType.HEAD) {
                 yield put(updateSlot(payload.value.message.slot, url));
-                if (isSyncing) {
+                if (isSyncing || !isOnline) {
                     const result = yield client.node.getSyncingStatus();
                     isSyncing = result.syncDistance > 10;
-                    yield put(updateStatus(BeaconStatus.active, url));
+                    isOnline = true;
+                    yield put(updateStatus(isSyncing ? BeaconStatus.syncing : BeaconStatus.active, url));
                 }
             }
             if (payload.value.type === CGBeaconEventType.FINALIZED_CHECKPOINT)
