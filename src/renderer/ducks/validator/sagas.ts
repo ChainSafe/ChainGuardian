@@ -245,7 +245,12 @@ function* validatorInfoUpdater(
 
             const validator = yield select(getValidator, {publicKey});
             if (validator.beaconNodes.includes(payload.beacon)) {
-                const balance = yield getValidatorBalance(publicKey, network, payload.beacon, BigInt(payload.epoch));
+                const balance = yield getValidatorBalance(
+                    publicKey,
+                    network,
+                    payload.beacon,
+                    BigInt(payload.epoch * 32),
+                );
                 if (balance) {
                     yield database.validator.balance.addRecords(publicKey, [{balance, epoch: BigInt(payload.epoch)}]);
                     yield put(updateValidatorBalance(publicKey, balance));
