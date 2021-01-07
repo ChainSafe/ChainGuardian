@@ -30,9 +30,14 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
             return false;
         }
 
-        const network = await readBeaconChainNetwork(beaconNodeInput);
-        if (!network) {
-            setErrorMessage("Beacon chain network not supported");
+        try {
+            const network = await readBeaconChainNetwork(beaconNodeInput);
+            if (!network) {
+                setErrorMessage("Beacon chain network not supported");
+                return false;
+            }
+        } catch (e) {
+            setErrorMessage("Beacon chain not found");
             return false;
         }
 
