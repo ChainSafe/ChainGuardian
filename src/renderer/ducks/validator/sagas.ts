@@ -57,7 +57,7 @@ import {getValidatorBalance} from "../../services/utils/validator";
 import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
 import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
 import {readFileSync} from "fs";
-import {finalizedEpoch} from "../beacon/actions";
+import {newEpoch} from "../beacon/actions";
 import {ValidatorStatus} from "../../constants/validatorStatus";
 
 interface IValidatorServices {
@@ -234,11 +234,11 @@ function* validatorInfoUpdater(
 ): Generator<
     SelectEffect | PutEffect | CancelEffect | RaceEffect<TakeEffect> | Promise<undefined | bigint> | Promise<void>,
     void,
-    IValidator & [ReturnType<typeof removeActiveValidator>, ReturnType<typeof finalizedEpoch>] & (undefined | bigint)
+    IValidator & [ReturnType<typeof removeActiveValidator>, ReturnType<typeof newEpoch>] & (undefined | bigint)
 > {
     while (true) {
         try {
-            const [cancelAction, {payload}] = yield race([take(removeActiveValidator), take(finalizedEpoch)]);
+            const [cancelAction, {payload}] = yield race([take(removeActiveValidator), take(newEpoch)]);
             if (cancelAction && cancelAction.payload === publicKey) {
                 yield cancel();
             }

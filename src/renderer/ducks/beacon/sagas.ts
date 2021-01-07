@@ -18,15 +18,7 @@ import {
 import {getNetworkConfig} from "../../services/eth2/networks";
 import {liveProcesses} from "../../services/utils/cmd";
 import {cancelDockerPull, endDockerImagePull, startDockerImagePull} from "../network/actions";
-import {
-    startLocalBeacon,
-    removeBeacon,
-    addBeacon,
-    addBeacons,
-    updateSlot,
-    finalizedEpoch,
-    updateStatus,
-} from "./actions";
+import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, updateStatus, newEpoch} from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import database from "../../services/db/api/database";
@@ -40,12 +32,7 @@ import {BeaconEventType, HeadEvent} from "@chainsafe/lodestar-validator/lib/api/
 import {AllEffect, CancelEffect, ForkEffect} from "@redux-saga/core/effects";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
-import {
-    CGBeaconEvent,
-    CGBeaconEventType,
-    ErrorEvent,
-    FinalizedCheckpointEvent,
-} from "../../services/eth2/client/interface";
+import {CGBeaconEvent, CGBeaconEventType, ErrorEvent} from "../../services/eth2/client/interface";
 import logger from "electron-log";
 import {getBeaconByKey} from "./selectors";
 import {SyncingStatus} from "@chainsafe/lodestar-types";
@@ -185,22 +172,19 @@ export function* watchOnHead(
     | SelectEffect
     | Promise<SyncingStatus>,
     void,
-    [IteratorResult<HeadEvent | FinalizedCheckpointEvent>, ReturnType<typeof removeBeacon>] &
+    [IteratorResult<HeadEvent | ErrorEvent>, ReturnType<typeof removeBeacon>] &
         (INetworkConfig | null) &
         Beacon &
         SyncingStatus
 > {
     const config = yield retry(30, 1000, readBeaconChainNetwork, url);
     const client = new CgEth2ApiClient(config?.eth2Config || mainnetConfig, url);
-    const eventStream = client.events.getEventStream([
-        BeaconEventType.HEAD,
-        // TODO: refactor when they update Types "BeaconEventType"
-        (CGBeaconEventType.FINALIZED_CHECKPOINT as unknown) as BeaconEventType,
-    ]);
+    const eventStream = client.events.getEventStream([BeaconEventType.HEAD]);
 
     const beacon = yield select(getBeaconByKey, {key: url});
     let isSyncing = beacon.status === BeaconStatus.syncing || beacon.status === BeaconStatus.offline;
     let isOnline = beacon.status !== BeaconStatus.offline;
+    let epoch: number | undefined;
 
     while (true) {
         try {
@@ -222,17 +206,19 @@ export function* watchOnHead(
                 }
                 continue;
             }
-            if (payload.value.type === BeaconEventType.HEAD) {
-                yield put(updateSlot(payload.value.message.slot, url));
-                if (isSyncing || !isOnline) {
-                    const result = yield client.node.getSyncingStatus();
-                    isSyncing = result.syncDistance > 10;
-                    isOnline = true;
-                    yield put(updateStatus(isSyncing ? BeaconStatus.syncing : BeaconStatus.active, url));
-                }
+
+            yield put(updateSlot(payload.value.message.slot, url));
+            const headEpoch = payload.value.message.slot / 32;
+            if (!epoch || epoch !== headEpoch) {
+                yield put(newEpoch(url, headEpoch));
             }
-            if (payload.value.type === CGBeaconEventType.FINALIZED_CHECKPOINT)
-                yield put(finalizedEpoch(url, payload.value.message.epoch));
+
+            if (isSyncing || !isOnline) {
+                const result = yield client.node.getSyncingStatus();
+                isSyncing = result.syncDistance > 10;
+                isOnline = true;
+                yield put(updateStatus(isSyncing ? BeaconStatus.syncing : BeaconStatus.active, url));
+            }
         } catch (err) {
             logger.error("Event error:", err.message);
         }

@@ -17,7 +17,6 @@ export const linkBeaconToValidator = createAction<StartBeaconChain>(
     (network: string, ports?: DockerPort[]) => ({payload: {network, ports}}),
 );
 
-export const finalizedEpoch = createAction<FinalizedEpoch>(
-    "beacon/finalizedEpoch",
-    (beacon: string, epoch: number) => ({payload: {beacon, epoch}}),
-);
+export const newEpoch = createAction<FinalizedEpoch>("beacon/newEpoch", (beacon: string, epoch: number) => ({
+    payload: {beacon, epoch},
+}));
