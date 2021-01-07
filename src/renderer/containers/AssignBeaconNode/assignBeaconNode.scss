@@ -15,12 +15,12 @@
       cursor: pointer;
     }
 
-    tr:nth-child(odd) {
-      background-color: rgba($neutral-600, 0.3);
-    }
-
     td {
       padding: 10px 5px;
+    }
+
+    tr:hover {
+      background-color: rgba($neutral-600, 0.3);
     }
   }
 }
