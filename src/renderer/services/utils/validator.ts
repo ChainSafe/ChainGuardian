@@ -6,11 +6,12 @@ export const getValidatorBalance = async (
     publicKey: string,
     network?: string,
     beaconNode?: string,
+    stateId: "head" | bigint = "head",
 ): Promise<undefined | bigint> => {
     if (!network || !beaconNode) return undefined;
     const config = getNetworkConfig(network);
     const eth2Client = new CgEth2ApiClient(config.eth2Config, beaconNode);
     const validatorId = fromHexString(publicKey);
-    const validatorState = await eth2Client.beacon.state.getStateValidator("head", validatorId);
+    const validatorState = await eth2Client.beacon.state.getStateValidator(stateId, validatorId);
     return validatorState?.balance || undefined;
 };

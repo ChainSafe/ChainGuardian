@@ -39,6 +39,7 @@ import {SyncingStatus} from "@chainsafe/lodestar-types";
 import {BeaconValidators, getValidatorsByBeaconNode} from "../validator/selectors";
 import {storeValidatorBeaconNodes} from "../validator/actions";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
+import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
 
 export function* pullDockerImage(
     network: string,
@@ -208,7 +209,7 @@ export function* watchOnHead(
             }
 
             yield put(updateSlot(payload.value.message.slot, url));
-            const headEpoch = Math.floor(payload.value.message.slot / 32);
+            const headEpoch = computeEpochAtSlot(config?.eth2Config || mainnetConfig, payload.value.message.slot);
             if (epoch !== headEpoch) {
                 epoch = headEpoch;
                 yield put(newEpoch(url, headEpoch));
