@@ -208,8 +208,9 @@ export function* watchOnHead(
             }
 
             yield put(updateSlot(payload.value.message.slot, url));
-            const headEpoch = payload.value.message.slot / 32;
-            if (!epoch || epoch !== headEpoch) {
+            const headEpoch = Math.floor(payload.value.message.slot / 32);
+            if (epoch !== headEpoch) {
+                epoch = headEpoch;
                 yield put(newEpoch(url, headEpoch));
             }
 
