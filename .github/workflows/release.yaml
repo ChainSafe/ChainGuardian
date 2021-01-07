@@ -91,7 +91,7 @@ jobs:
             packages/*/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-ignore-optional
       
-      - name: Install & build
+      - name: Install
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile --ignore-optional#--network-timeout 1000000 
 
@@ -110,6 +110,11 @@ jobs:
           mac_certs_password: ${{ secrets.MAC_PASSWORD }}
         env:
           EP_PRE_RELEASE: true
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SENTRY_ORG: "nodefactory"
+          SENTRY_PROJECT: "chainguardian"
+          SENTRY_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          
       
       #in case of failure
       - name: Rollback on failure
