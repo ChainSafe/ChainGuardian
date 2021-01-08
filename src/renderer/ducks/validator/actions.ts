@@ -32,10 +32,10 @@ export const removeActiveValidator = createAction<RemoveActiveValidator>(
     (publicKey: string, validatorIndex: number) => ({payload: publicKey, meta: validatorIndex}),
 );
 
-type SetValidatorBeaconNode = (publicKey: string, beaconNode: string) => {payload: string; meta: string};
+type SetValidatorBeaconNode = (publicKey: string, beaconNodes: string[]) => {payload: string[]; meta: string};
 export const setValidatorBeaconNode = createAction<SetValidatorBeaconNode>(
     "validator/setValidatorBeaconNode",
-    (publicKey: string, beaconNode: string) => ({payload: beaconNode, meta: publicKey}),
+    (publicKey: string, beaconNodes: string[]) => ({payload: beaconNodes, meta: publicKey}),
 );
 
 export const updateValidatorChainData = createAction<string>("validator/updateValidatorChainData");

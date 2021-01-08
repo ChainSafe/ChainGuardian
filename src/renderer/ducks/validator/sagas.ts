@@ -218,7 +218,7 @@ function* setValidatorBeacon({
     void,
     ValidatorBeaconNodes & IValidator & ValidatorStatus
 > {
-    const beaconNodes = yield database.validatorBeaconNodes.upsert(meta, [payload]);
+    const beaconNodes = yield database.validatorBeaconNodes.update(meta, payload);
     yield put(storeValidatorBeaconNodes(beaconNodes.nodes, meta));
     const validator = yield select(getValidator, {publicKey: meta});
     if (validator.status === ValidatorStatus.NO_BEACON_NODE) {

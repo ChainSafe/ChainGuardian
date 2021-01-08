@@ -35,11 +35,8 @@ export class ValidatorBeaconNodesRepository extends Repository<ValidatorBeaconNo
         await super.delete(key);
     }
 
-    public async upsert(id: string, values: string[]): Promise<ValidatorBeaconNodes> {
-        const validatorBeaconNodes = await this.get(id);
-        const newList = validatorBeaconNodes
-            ? ValidatorBeaconNodes.createNodes(validatorBeaconNodes.nodes)
-            : new ValidatorBeaconNodes();
+    public async update(id: string, values: string[]): Promise<ValidatorBeaconNodes> {
+        const newList = new ValidatorBeaconNodes();
         values.forEach((value) => newList.addNode(value));
         await this.set(id, newList);
         return newList;
