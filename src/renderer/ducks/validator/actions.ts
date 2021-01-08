@@ -62,3 +62,16 @@ export const slashingProtectionUpload = createAction<string>("validator/slashing
 export const slashingProtectionSkip = createAction("validator/slashingProtectionSkip");
 
 export const slashingProtectionCancel = createAction("validator/slashingProtectionCancel");
+
+export type GetNewValidatorBalance = (
+    beacon: string,
+    slot: number,
+) => {
+    payload: {beacon: string; slot: number};
+};
+export const getNewValidatorBalance = createAction<GetNewValidatorBalance>(
+    "validator/getNewValidatorBalance",
+    (beacon: string, slot: number) => ({
+        payload: {beacon, slot},
+    }),
+);

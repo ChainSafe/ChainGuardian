@@ -18,7 +18,7 @@ import {
 import {getNetworkConfig} from "../../services/eth2/networks";
 import {liveProcesses} from "../../services/utils/cmd";
 import {cancelDockerPull, endDockerImagePull, startDockerImagePull} from "../network/actions";
-import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, updateStatus, newEpoch} from "./actions";
+import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, updateStatus} from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import database from "../../services/db/api/database";
@@ -37,7 +37,7 @@ import logger from "electron-log";
 import {getBeaconByKey} from "./selectors";
 import {SyncingStatus} from "@chainsafe/lodestar-types";
 import {BeaconValidators, getValidatorsByBeaconNode} from "../validator/selectors";
-import {storeValidatorBeaconNodes} from "../validator/actions";
+import {getNewValidatorBalance, storeValidatorBeaconNodes} from "../validator/actions";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
 
@@ -212,7 +212,7 @@ export function* watchOnHead(
             const headEpoch = computeEpochAtSlot(config?.eth2Config || mainnetConfig, payload.value.message.slot);
             if (epoch !== headEpoch) {
                 epoch = headEpoch;
-                yield put(newEpoch(url, headEpoch));
+                yield put(getNewValidatorBalance(url, payload.value.message.slot));
             }
 
             if (isSyncing || !isOnline) {

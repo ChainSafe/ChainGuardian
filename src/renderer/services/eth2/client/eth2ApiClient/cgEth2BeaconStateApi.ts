@@ -39,7 +39,7 @@ export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
     };
 
     public getStateValidator = async (
-        stateId: "head" | bigint,
+        stateId: "head" | number,
         validatorId: ValidatorIndex | BLSPubkey,
     ): Promise<ICGValidatorResponse | null> => {
         const id =

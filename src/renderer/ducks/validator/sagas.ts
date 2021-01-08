@@ -40,6 +40,7 @@ import {
     slashingProtectionCancel,
     updateValidatorBalance,
     setValidatorStatus,
+    getNewValidatorBalance,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
@@ -57,7 +58,6 @@ import {getValidatorBalance} from "../../services/utils/validator";
 import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
 import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
 import {readFileSync} from "fs";
-import {newEpoch} from "../beacon/actions";
 import {ValidatorStatus} from "../../constants/validatorStatus";
 
 interface IValidatorServices {
@@ -234,25 +234,22 @@ function* validatorInfoUpdater(
 ): Generator<
     SelectEffect | PutEffect | CancelEffect | RaceEffect<TakeEffect> | Promise<undefined | bigint> | Promise<void>,
     void,
-    IValidator & [ReturnType<typeof removeActiveValidator>, ReturnType<typeof newEpoch>] & (undefined | bigint)
+    IValidator &
+        [ReturnType<typeof removeActiveValidator>, ReturnType<typeof getNewValidatorBalance>] &
+        (undefined | bigint)
 > {
     while (true) {
         try {
-            const [cancelAction, {payload}] = yield race([take(removeActiveValidator), take(newEpoch)]);
+            const [cancelAction, {payload}] = yield race([take(removeActiveValidator), take(getNewValidatorBalance)]);
             if (cancelAction && cancelAction.payload === publicKey) {
                 yield cancel();
             }
 
             const validator = yield select(getValidator, {publicKey});
             if (validator.beaconNodes.includes(payload.beacon)) {
-                const balance = yield getValidatorBalance(
-                    publicKey,
-                    network,
-                    payload.beacon,
-                    BigInt(payload.epoch * 32),
-                );
+                const balance = yield getValidatorBalance(publicKey, network, payload.beacon, payload.slot);
                 if (balance) {
-                    yield database.validator.balance.addRecords(publicKey, [{balance, epoch: BigInt(payload.epoch)}]);
+                    yield database.validator.balance.addRecords(publicKey, [{balance, epoch: BigInt(payload.slot)}]);
                     yield put(updateValidatorBalance(publicKey, balance));
                 }
             }

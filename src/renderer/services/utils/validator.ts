@@ -6,7 +6,7 @@ export const getValidatorBalance = async (
     publicKey: string,
     network?: string,
     beaconNode?: string,
-    stateId: "head" | bigint = "head",
+    stateId: "head" | number = "head",
 ): Promise<undefined | bigint> => {
     if (!network || !beaconNode) return undefined;
     const config = getNetworkConfig(network);

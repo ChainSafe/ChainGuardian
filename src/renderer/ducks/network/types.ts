@@ -44,10 +44,3 @@ export type RemoveBeaconNode = (
         validator: string;
     };
 };
-
-export type FinalizedEpoch = (
-    beacon: string,
-    epoch: number,
-) => {
-    payload: {beacon: string; epoch: number};
-};
