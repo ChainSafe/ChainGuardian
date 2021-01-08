@@ -16,13 +16,13 @@ export class CgEth2BeaconApi implements ICGEth2BeaconApi {
 
     private readonly httpClient: HttpClient;
     private readonly config: IBeaconConfig;
-    public constructor(config: IBeaconConfig, httpClient: HttpClient) {
+    public constructor(config: IBeaconConfig, httpClient: HttpClient, publicKey?: string) {
         this.config = config;
         this.httpClient = httpClient;
 
         this.blocks = new CgEth2BeaconBlocksApi(config, httpClient);
         this.state = new CgEth2BeaconStateApi(config, httpClient);
-        this.pool = new CgEth2BeaconPoolApi(config, httpClient);
+        this.pool = new CgEth2BeaconPoolApi(config, httpClient, publicKey);
     }
 
     public getGenesis = async (): Promise<Genesis | null> => {

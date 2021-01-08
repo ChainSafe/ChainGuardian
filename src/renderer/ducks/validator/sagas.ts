@@ -152,7 +152,7 @@ function* startService(
         const config = (yield readBeaconChainNetwork(beaconNodes[0].url))?.eth2Config || mainnetConfig;
 
         // TODO: Use beacon chain proxy instead of first node
-        const eth2API = new CgEth2ApiClient(config, beaconNodes[0].url);
+        const eth2API = new CgEth2ApiClient(config, beaconNodes[0].url, publicKey);
 
         const slashingProtection = new CGSlashingProtection({
             config,
