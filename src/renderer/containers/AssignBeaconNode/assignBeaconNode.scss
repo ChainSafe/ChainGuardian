@@ -1,10 +1,26 @@
-.dropdown-input-container {
-  display: flex;
-  flex-direction: column;
-  align-self: flex-start;
+.beacon-table {
+  border-collapse: collapse;
   width: 100%;
+  text-align: left;
+  color: $neutral-300;
+  font-family: "Palanquin", sans-serif;
 
-  h3 {
-    margin-right: 0.2rem;
+  th {
+    font-size: 1.1rem;
+    padding-bottom: 10px;
+  }
+
+  tbody {
+    tr {
+      cursor: pointer;
+    }
+
+    td {
+      padding: 10px 5px;
+    }
+
+    tr:hover {
+      background-color: rgba($neutral-600, 0.3);
+    }
   }
 }
