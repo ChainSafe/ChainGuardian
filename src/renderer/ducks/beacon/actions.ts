@@ -1,7 +1,7 @@
 import {ActionWithCallback} from "../../../../types/helpers";
 import {beaconSlice} from "./slice";
 import {createAction} from "@reduxjs/toolkit";
-import {FinalizedEpoch, StartBeaconChain} from "../network/types";
+import {StartBeaconChain} from "../network/types";
 import {DockerPort} from "../../services/docker/type";
 import {IConfigureBNSubmitOptions} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 
@@ -15,9 +15,4 @@ export const startLocalBeacon = createAction<ActionWithCallback<IConfigureBNSubm
 export const linkBeaconToValidator = createAction<StartBeaconChain>(
     "beacon/linkBeaconToValidator",
     (network: string, ports?: DockerPort[]) => ({payload: {network, ports}}),
-);
-
-export const finalizedEpoch = createAction<FinalizedEpoch>(
-    "beacon/finalizedEpoch",
-    (beacon: string, epoch: number) => ({payload: {beacon, epoch}}),
 );
