@@ -15,6 +15,7 @@ import {
     AllEffect,
     ForkEffect,
     CallEffect,
+    call,
 } from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
 import {deleteKeystore} from "../../services/utils/account";
@@ -41,6 +42,7 @@ import {
     updateValidatorBalance,
     setValidatorStatus,
     getNewValidatorBalance,
+    signedNewAttestation,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
@@ -59,6 +61,9 @@ import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
 import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
 import {readFileSync} from "fs";
 import {ValidatorStatus} from "../../constants/validatorStatus";
+import {getNetworkConfig} from "../../services/eth2/networks";
+import {updateSlot} from "../beacon/actions";
+import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -259,6 +264,70 @@ function* validatorInfoUpdater(
     }
 }
 
+// TODO: add types
+function* getAttestationEffectiveness({payload, meta}: ReturnType<typeof signedNewAttestation>): any {
+    const validator = yield select(getValidator, {publicKey: meta});
+    const config = getNetworkConfig(validator.network)?.eth2Config || mainnetConfig;
+
+    const eth2API = new CgEth2ApiClient(config, validator.beaconNodes[0]);
+
+    let lastSlot = payload.slot,
+        previousSlot = 0,
+        empty = 0,
+        skipped = 0,
+        skippedQue = 0,
+        inclusion = 0;
+    const timeoutSlot = config.params.SLOTS_PER_EPOCH + payload.slot;
+    while (true) {
+        const newSlot = yield take(updateSlot);
+        if (newSlot.meta !== validator.beaconNodes[0]) continue;
+        if (lastSlot >= newSlot.payload) continue;
+        if (newSlot.payload > timeoutSlot) break;
+
+        const range = new Array(newSlot.payload - lastSlot).fill(null).map((_, index) => lastSlot + index + 1);
+        const results = yield all(range.map((slot) => call(eth2API.beacon.blocks.getBlockAttestations, slot)));
+        results.forEach((result, index) => {
+            if (result === null) {
+                skippedQue++;
+            } else {
+                const sanitizedAttestations = result.filter(
+                    ({data}) => payload.block === data.beaconBlockRoot && data.index === payload.index,
+                );
+                if (!sanitizedAttestations.length) empty++;
+                else empty = 0;
+                sanitizedAttestations.forEach(({data}) => {
+                    if (data.slot > inclusion && data.slot > payload.slot) {
+                        inclusion = data.slot;
+                        if (data.slot === payload.slot + 1 && skippedQue === 1) skippedQue--;
+                        skipped += skippedQue;
+                        skippedQue = 0;
+                    }
+                });
+                previousSlot = range[index];
+            }
+        });
+
+        if (previousSlot !== 0 && empty >= 3 + skippedQue) break;
+        lastSlot = newSlot.payload;
+    }
+    // Hack to handle some case when there is no record of attestation
+    // TODO: figure out why is this happening
+    if (!inclusion) {
+        inclusion = payload.slot + 1;
+        skipped = 0;
+    }
+
+    const epoch = computeEpochAtSlot(config, payload.slot);
+    const efficiency = (payload.slot + 1 + skipped - payload.slot) / (inclusion - payload.slot);
+    yield database.validator.attestationEffectiveness.addRecord(meta, {
+        epoch,
+        inclusion,
+        slot: payload.slot,
+        efficiency: efficiency > 1 ? 1 : efficiency,
+        time: Date.now(),
+    });
+}
+
 export function* validatorSagaWatcher(): Generator {
     yield all([
         takeEvery(loadValidatorsAction, loadValidatorsSaga),
@@ -267,5 +336,6 @@ export function* validatorSagaWatcher(): Generator {
         takeEvery(startNewValidatorService, startService),
         takeEvery(stopActiveValidatorService, stopService),
         takeEvery(setValidatorBeaconNode, setValidatorBeacon),
+        takeEvery(signedNewAttestation, getAttestationEffectiveness),
     ]);
 }
