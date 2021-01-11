@@ -19,8 +19,27 @@ import {
     SignedBeaconBlock,
 } from "@chainsafe/lodestar-types";
 
+export type BlockAttestations = {
+    aggregationBits: string;
+    signature: string;
+    data: {
+        slot: number;
+        index: number;
+        beaconBlockRoot: string;
+        source: {
+            epoch: number;
+            root: string;
+        };
+        target: {
+            epoch: number;
+            root: string;
+        };
+    };
+};
+
 export interface ICGETH2BeaconBlocksApi extends IBeaconBlocksApi {
     getBlock(blockId: "head" | "genesis" | "finalized" | number): Promise<SignedBeaconBlock>;
+    getBlockAttestations(blockId: "head" | "genesis" | "finalized" | number): Promise<BlockAttestations[] | null>;
 }
 
 // extend all known statuses can get from different beacon nodes vendors
