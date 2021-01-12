@@ -23,6 +23,7 @@ export class BeaconChain extends Container {
         const bc = new BeaconChain({
             ...getNetworkConfig(network).dockerConfig,
             ...params,
+            restart: "unless-stopped",
             name: imageName,
         });
         DockerRegistry.addContainer(imageName, bc);

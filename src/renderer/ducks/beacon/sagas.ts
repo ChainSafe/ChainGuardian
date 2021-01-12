@@ -69,6 +69,7 @@ function* startLocalBeaconSaga({
         ports.push({local: String(discoveryPort), host: String(discoveryPort)});
     }
 
+    const eth1QueryLimit = 200;
     if (pullSuccess) {
         switch (network) {
             default:
@@ -77,7 +78,7 @@ function* startLocalBeaconSaga({
                         id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, {
                             ports,
                             // eslint-disable-next-line max-len
-                            cmd: `lighthouse beacon_node --network ${network} --port ${libp2pPort} --discovery-port ${discoveryPort} --http --http-address 0.0.0.0 --http-port ${rpcPort} --eth1-endpoints ${eth1Url}`,
+                            cmd: `lighthouse beacon_node --network ${network} --port ${libp2pPort} --discovery-port ${discoveryPort} --http --http-address 0.0.0.0 --http-port ${rpcPort} --eth1-endpoints ${eth1Url} --eth1-blocks-per-log-query ${eth1QueryLimit}`,
                             volume: `${chainDataDir}:/root/.lighthouse`,
                         })).getParams().name,
                         network,
