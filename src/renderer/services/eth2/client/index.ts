@@ -25,7 +25,7 @@ export function getEth2ApiClient(url: string, network: string, logger?: ILogger)
 
 export async function readBeaconChainNetwork(url: string): Promise<INetworkConfig | null> {
     // eslint-disable-next-line camelcase
-    type GenesisRequestType = {data: {genesis_fork_version: string}};
-    const genesisResponse = await new HttpClient(url).get<GenesisRequestType>("/eth/v1/beacon/genesis");
+    type GenesisResponseType = {data: {genesis_fork_version: string}};
+    const genesisResponse = await new HttpClient(url).get<GenesisResponseType>("/eth/v1/beacon/genesis");
     return getNetworkConfigByGenesisVersion(genesisResponse.data.genesis_fork_version);
 }
