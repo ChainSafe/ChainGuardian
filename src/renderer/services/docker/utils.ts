@@ -11,7 +11,7 @@ export function generateRunCommand(params: IDockerRunParams): string {
         params.privileged ? ` --privileged=${params.privileged}` : ""
     }${params.ipc ? ` --ipc="${params.ipc}"` : ""}${params.restart ? ` --restart=${params.restart}` : ""}${ports}${
         params.volume ? ` -v ${params.volume}` : ""
-    } --restart unless-stopped`;
+    }`;
 
     return `${options} ${params.image} ${params.cmd ? params.cmd : ""}`.trim();
 }
