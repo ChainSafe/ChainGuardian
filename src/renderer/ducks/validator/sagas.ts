@@ -22,7 +22,7 @@ import {deleteKeystore} from "../../services/utils/account";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
 import database, {cgDbController} from "../../services/db/api/database";
 import {config as mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
-import {IValidator} from "./slice";
+import {IValidator, IValidatorComplete} from "./slice";
 import {
     addNewValidator,
     addValidator,
@@ -64,6 +64,7 @@ import {ValidatorStatus} from "../../constants/validatorStatus";
 import {getNetworkConfig} from "../../services/eth2/networks";
 import {updateSlot} from "../beacon/actions";
 import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
+import {BlockAttestations} from "../../services/eth2/client/interface";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -264,8 +265,14 @@ function* validatorInfoUpdater(
     }
 }
 
-// TODO: add types
-function* getAttestationEffectiveness({payload, meta}: ReturnType<typeof signedNewAttestation>): any {
+export function* getAttestationEffectiveness({
+    payload,
+    meta,
+}: ReturnType<typeof signedNewAttestation>): Generator<
+    SelectEffect | TakeEffect | AllEffect<CallEffect> | Promise<void>,
+    void,
+    IValidatorComplete & ReturnType<typeof updateSlot> & (BlockAttestations[] | null)[]
+> {
     const validator = yield select(getValidator, {publicKey: meta});
     const config = getNetworkConfig(validator.network)?.eth2Config || mainnetConfig;
 
