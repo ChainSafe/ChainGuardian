@@ -18,7 +18,7 @@ export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
             const forkResponse = await this.httpClient.get<{data: Json}>(`/eth/v1/beacon/states/${stateId}/fork`);
             return this.config.types.Fork.fromJson(forkResponse.data, {case: "snake"});
         } catch (e) {
-            logger.error("Failed to fetch head fork version", {error: e.message});
+            logger.error("Failed to fetch head fork version", JSON.stringify({error: e.message}));
             return null;
         }
     };
@@ -32,8 +32,7 @@ export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
             }>(url);
             return BigInt(finalityCheckpointsResponse.data.previous_justified.epoch);
         } catch (e) {
-            // TODO: implement logger;
-            console.error("Failed to fetch finality checkpoints", {error: e.message});
+            console.error("Failed to fetch finality checkpoints", JSON.stringify({error: e.message}));
             return null;
         }
     };
@@ -53,7 +52,7 @@ export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
                 case: "snake",
             }) as ICGValidatorResponse;
         } catch (e) {
-            logger.error("Failed to fetch validator", {validatorId: id, error: e.message});
+            logger.error("Failed to fetch validator", JSON.stringify({validatorId: id, error: e.message}));
             return null;
         }
     };
