@@ -32,8 +32,7 @@ export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
             }>(url);
             return BigInt(finalityCheckpointsResponse.data.previous_justified.epoch);
         } catch (e) {
-            // TODO: implement logger;
-            console.error("Failed to fetch finality checkpoints", {error: e.message});
+            logger.error("Failed to fetch finality checkpoints", {error: e.message});
             return null;
         }
     };
