@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {PasswordPrompt} from "../../components/Prompt/PasswordPrompt";
 import {Routes} from "../../constants/routes";
 import {calculateROI} from "../../services/utils/math";
@@ -11,9 +11,9 @@ import {InputForm} from "../../components/Input/InputForm";
 import {NodeCard} from "../../components/Cards/NodeCard";
 import {IRootState} from "../../ducks/reducers";
 import {
-    updateValidatorChainData,
-    stopActiveValidatorService,
     startNewValidatorService,
+    stopActiveValidatorService,
+    updateValidatorChainData,
 } from "../../ducks/validator/actions";
 import {getSelectedNetwork} from "../../ducks/network/selectors";
 import {getValidator, getValidatorBeaconNodes} from "../../ducks/validator/selectors";
@@ -21,6 +21,7 @@ import {Link} from "react-router-dom";
 import {BeaconStatus} from "../../ducks/beacon/slice";
 import {BlsKeypair} from "../../types";
 import {SlashingDBUpload} from "./SlashingDBUpload";
+import {ValidatorStatus} from "../../constants/validatorStatus";
 
 export interface IValidatorSimpleProps {
     publicKey: string;
@@ -89,13 +90,30 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
     };
 
     const renderValidatorButtons = (): React.ReactElement => {
-        if (!nodes.length) return null;
+        if (
+            !nodes.length ||
+            validator.status === ValidatorStatus.BEACON_NODE_OFFLINE ||
+            validator.status === ValidatorStatus.SYNCING_BEACON_NODE ||
+            validator.status === ValidatorStatus.WAITING_DEPOSIT ||
+            validator.status === ValidatorStatus.PROCESSING_DEPOSIT ||
+            validator.status === ValidatorStatus.PENDING_DEPOSIT_OR_ACTIVATION ||
+            validator.status === ValidatorStatus.ERROR
+        )
+            return null;
         return (
             <div className='flex validator-service-button'>
                 {validator.isRunning ? (
                     <ButtonDestructive onClick={(): void => setAskPassword("stop")}>Stop</ButtonDestructive>
                 ) : (
-                    <ButtonPrimary onClick={(): void => setAskPassword("start")}>Start</ButtonPrimary>
+                    <ButtonPrimary
+                        onClick={(): void => setAskPassword("start")}
+                        disabled={
+                            validator.status === ValidatorStatus.DEPOSITED ||
+                            validator.status === ValidatorStatus.QUEUE ||
+                            validator.status === ValidatorStatus.PENDING
+                        }>
+                        Start
+                    </ButtonPrimary>
                 )}
             </div>
         );
