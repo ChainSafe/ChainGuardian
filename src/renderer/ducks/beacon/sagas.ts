@@ -37,10 +37,11 @@ import logger from "electron-log";
 import {getBeaconByKey} from "./selectors";
 import {SyncingStatus} from "@chainsafe/lodestar-types";
 import {BeaconValidators, getValidatorsByBeaconNode} from "../validator/selectors";
-import {getNewValidatorBalance, storeValidatorBeaconNodes} from "../validator/actions";
+import {getNewValidatorBalance, setValidatorStatus, storeValidatorBeaconNodes} from "../validator/actions";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {createNotification} from "../notification/actions";
 import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
+import {ValidatorStatus} from "../../constants/validatorStatus";
 
 export function* pullDockerImage(
     network: string,
@@ -129,6 +130,9 @@ function* removeBeaconSaga({
             for (const {publicKey} of beaconValidators[payload]) {
                 const {nodes} = yield database.validatorBeaconNodes.remove(publicKey, payload);
                 yield put(storeValidatorBeaconNodes(nodes, publicKey));
+                if (!nodes.length) {
+                    yield put(setValidatorStatus(ValidatorStatus.NO_BEACON_NODE, publicKey));
+                }
             }
         }
     }
@@ -223,17 +227,16 @@ export function* watchOnHead(
             }
 
             yield put(updateSlot(payload.value.message.slot, url));
-            const headEpoch = computeEpochAtSlot(config?.eth2Config || mainnetConfig, payload.value.message.slot);
-            if (epoch !== headEpoch) {
-                epoch = headEpoch;
-                yield put(getNewValidatorBalance(url, payload.value.message.slot));
-            }
-
             if (isSyncing || !isOnline) {
                 const result = yield client.node.getSyncingStatus();
                 isSyncing = result.syncDistance > 10;
                 isOnline = true;
                 yield put(updateStatus(isSyncing ? BeaconStatus.syncing : BeaconStatus.active, url));
+            }
+            const headEpoch = computeEpochAtSlot(config?.eth2Config || mainnetConfig, payload.value.message.slot);
+            if (epoch !== headEpoch) {
+                epoch = headEpoch;
+                yield put(getNewValidatorBalance(url, payload.value.message.slot));
             }
         } catch (err) {
             logger.error("Event error:", err.message);
