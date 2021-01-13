@@ -39,20 +39,33 @@ import {SyncingStatus} from "@chainsafe/lodestar-types";
 import {BeaconValidators, getValidatorsByBeaconNode} from "../validator/selectors";
 import {getNewValidatorBalance, storeValidatorBeaconNodes} from "../validator/actions";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
+import {createNotification} from "../notification/actions";
 import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
 
 export function* pullDockerImage(
     network: string,
 ): Generator<PutEffect | RaceEffect<CallEffect | TakeEffect>, boolean, [boolean, Action]> {
     yield put(startDockerImagePull());
-    const image = getNetworkConfig(network).dockerConfig.image;
-    const [pullSuccess, effect] = yield race([call(BeaconChain.pullImage, image), take(cancelDockerPull)]);
-    if (effect) {
-        liveProcesses["pullImage"].kill();
-    }
-    yield put(endDockerImagePull());
+    try {
+        const image = getNetworkConfig(network).dockerConfig.image;
+        const [pullSuccess, effect] = yield race([call(BeaconChain.pullImage, image), take(cancelDockerPull)]);
+        if (effect) {
+            liveProcesses["pullImage"].kill();
+        }
+        yield put(endDockerImagePull());
 
-    return effect !== undefined ? false : pullSuccess;
+        return effect !== undefined ? false : pullSuccess;
+    } catch (e) {
+        logger.error(e.stderr);
+        yield put(
+            createNotification({
+                title: "Error while pulling docker image, try again later",
+                source: "saga/validator/pullDockerImage",
+            }),
+        );
+        yield put(endDockerImagePull());
+        return false;
+    }
 }
 
 function* startLocalBeaconSaga({
