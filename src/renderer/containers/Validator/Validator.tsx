@@ -108,9 +108,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
                     <ButtonPrimary
                         onClick={(): void => setAskPassword("start")}
                         disabled={
-                            validator.status === ValidatorStatus.DEPOSITED ||
-                            validator.status === ValidatorStatus.QUEUE ||
-                            validator.status === ValidatorStatus.PENDING
+                            validator.status === ValidatorStatus.DEPOSITED || validator.status === ValidatorStatus.QUEUE
                         }>
                         Start
                     </ButtonPrimary>
