@@ -7,6 +7,7 @@ import winston from "winston";
 
 // @ts-ignore
 export class CGWinstonLogger extends WinstonLogger {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private createLogEntry(level: LogLevel, message: string, context?: Context, error?: Error): void {
         //don't propagate if silenced or message level is more detailed than logger level
         // @ts-ignore
