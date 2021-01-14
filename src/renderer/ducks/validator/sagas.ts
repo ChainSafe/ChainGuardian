@@ -60,7 +60,7 @@ import {ValidatorStatus} from "../../constants/validatorStatus";
 import {getBeaconByKey} from "../beacon/selectors";
 import {Beacon, BeaconStatus} from "../beacon/slice";
 import {updateStatus} from "../beacon/actions";
-import {chainGuardianLogger, createLogger} from "../../../main/logger";
+import {chainGuardianLogger} from "../../../main/logger";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
