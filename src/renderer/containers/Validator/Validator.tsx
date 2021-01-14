@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {PasswordPrompt} from "../../components/Prompt/PasswordPrompt";
 import {Routes} from "../../constants/routes";
 import {calculateROI} from "../../services/utils/math";
@@ -11,9 +11,9 @@ import {InputForm} from "../../components/Input/InputForm";
 import {NodeCard} from "../../components/Cards/NodeCard";
 import {IRootState} from "../../ducks/reducers";
 import {
-    updateValidatorChainData,
-    stopActiveValidatorService,
     startNewValidatorService,
+    stopActiveValidatorService,
+    updateValidatorChainData,
 } from "../../ducks/validator/actions";
 import {getSelectedNetwork} from "../../ducks/network/selectors";
 import {getValidator, getValidatorBeaconNodes} from "../../ducks/validator/selectors";
@@ -21,6 +21,7 @@ import {Link} from "react-router-dom";
 import {BeaconStatus} from "../../ducks/beacon/slice";
 import {BlsKeypair} from "../../types";
 import {SlashingDBUpload} from "./SlashingDBUpload";
+import {ValidatorStatus} from "../../constants/validatorStatus";
 
 export interface IValidatorSimpleProps {
     publicKey: string;
@@ -28,6 +29,17 @@ export interface IValidatorSimpleProps {
     onDetailsClick: () => void;
     onBeaconNodeClick: (id: string) => () => void;
 }
+
+const hideValidatorButtons = (status: ValidatorStatus): boolean =>
+    [
+        ValidatorStatus.NO_BEACON_NODE,
+        ValidatorStatus.BEACON_NODE_OFFLINE,
+        ValidatorStatus.SYNCING_BEACON_NODE,
+        ValidatorStatus.WAITING_DEPOSIT,
+        ValidatorStatus.PROCESSING_DEPOSIT,
+        ValidatorStatus.PENDING_DEPOSIT_OR_ACTIVATION,
+        ValidatorStatus.ERROR,
+    ].includes(status);
 
 export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props: IValidatorSimpleProps) => {
     const [askPassword, setAskPassword] = useState<string>(null);
@@ -89,13 +101,19 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
     };
 
     const renderValidatorButtons = (): React.ReactElement => {
-        if (!nodes.length) return null;
+        if (hideValidatorButtons(validator.status)) return null;
         return (
             <div className='flex validator-service-button'>
                 {validator.isRunning ? (
                     <ButtonDestructive onClick={(): void => setAskPassword("stop")}>Stop</ButtonDestructive>
                 ) : (
-                    <ButtonPrimary onClick={(): void => setAskPassword("start")}>Start</ButtonPrimary>
+                    <ButtonPrimary
+                        onClick={(): void => setAskPassword("start")}
+                        disabled={
+                            validator.status === ValidatorStatus.DEPOSITED || validator.status === ValidatorStatus.QUEUE
+                        }>
+                        Start
+                    </ButtonPrimary>
                 )}
             </div>
         );

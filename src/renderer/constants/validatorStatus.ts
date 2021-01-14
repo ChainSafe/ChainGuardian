@@ -5,6 +5,7 @@ export enum ValidatorStatus {
     SYNCING_BEACON_NODE = "Syncing Beacon Node",
     WAITING_DEPOSIT = "Waiting for a deposit",
     PROCESSING_DEPOSIT = "Processing a deposit",
+    PENDING_DEPOSIT_OR_ACTIVATION = "Pending deposit or activation",
     // "official" statuses
     DEPOSITED = "Funds deposited",
     QUEUE = "Queue for activation",

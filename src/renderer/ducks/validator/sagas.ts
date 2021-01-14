@@ -21,7 +21,7 @@ import {deleteKeystore} from "../../services/utils/account";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
 import database, {cgDbController} from "../../services/db/api/database";
 import {config as mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
-import {IValidator} from "./slice";
+import {IValidator, IValidatorComplete} from "./slice";
 import {
     addNewValidator,
     addValidator,
@@ -48,10 +48,9 @@ import {Validator} from "@chainsafe/lodestar-validator";
 import {Genesis} from "@chainsafe/lodestar-types";
 import * as logger from "electron-log";
 import {getAuthAccount} from "../auth/selectors";
-import {getValidator, getValidatorBeaconNodes} from "./selectors";
+import {getValidator, getValidatorsByBeaconNode, BeaconValidators} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
-import {Beacon} from "../beacon/slice";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
 import {getValidatorBalance} from "../../services/utils/validator";
@@ -59,6 +58,9 @@ import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
 import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
 import {readFileSync} from "fs";
 import {ValidatorStatus} from "../../constants/validatorStatus";
+import {getBeaconByKey} from "../beacon/selectors";
+import {Beacon, BeaconStatus} from "../beacon/slice";
+import {updateStatus} from "../beacon/actions";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -140,27 +142,33 @@ function* startService(
     | Promise<Genesis | null>
     | RaceEffect<TakeEffect>,
     void,
-    Beacon[] & (INetworkConfig | null) & (Genesis | null) & boolean
+    IValidatorComplete &
+        [ReturnType<typeof slashingProtectionUpload> | undefined, ReturnType<typeof slashingProtectionCancel>] &
+        (INetworkConfig | null) &
+        (Genesis | null) &
+        boolean
 > {
     try {
         const publicKey = action.payload.publicKey.toHex();
-        const beaconNodes = yield select(getValidatorBeaconNodes, {publicKey});
-        if (!beaconNodes.length) {
+        const validator = yield select(getValidator, {publicKey});
+        if (!validator.beaconNodes.length) {
             throw new Error("missing beacon node");
         }
 
-        const config = (yield readBeaconChainNetwork(beaconNodes[0].url))?.eth2Config || mainnetConfig;
+        const config = (yield readBeaconChainNetwork(validator.beaconNodes[0]))?.eth2Config || mainnetConfig;
 
         // TODO: Use beacon chain proxy instead of first node
-        const eth2API = new CgEth2ApiClient(config, beaconNodes[0].url);
+        const eth2API = new CgEth2ApiClient(config, validator.beaconNodes[0]);
 
         const slashingProtection = new CGSlashingProtection({
             config,
             controller: cgDbController,
         });
 
-        // TODO: check if state is not before "active" to ignore this step in that case
-        if (yield slashingProtection.missingImportedSlashingProtection(publicKey)) {
+        if (
+            validator.status === ValidatorStatus.ACTIVE &&
+            (yield slashingProtection.missingImportedSlashingProtection(publicKey))
+        ) {
             action.meta.openModal();
             const [upload, cancel] = yield race([
                 take(slashingProtectionUpload),
@@ -232,11 +240,18 @@ function* validatorInfoUpdater(
     publicKey: string,
     network: string,
 ): Generator<
-    SelectEffect | PutEffect | CancelEffect | RaceEffect<TakeEffect> | Promise<undefined | bigint> | Promise<void>,
+    | SelectEffect
+    | PutEffect
+    | CancelEffect
+    | RaceEffect<TakeEffect>
+    | Promise<undefined | bigint>
+    | Promise<void>
+    | Promise<ValidatorStatus>,
     void,
     IValidator &
         [ReturnType<typeof removeActiveValidator>, ReturnType<typeof getNewValidatorBalance>] &
-        (undefined | bigint)
+        (undefined | bigint) &
+        Beacon
 > {
     while (true) {
         try {
@@ -247,14 +262,48 @@ function* validatorInfoUpdater(
 
             const validator = yield select(getValidator, {publicKey});
             if (validator.beaconNodes.includes(payload.beacon)) {
-                const balance = yield getValidatorBalance(publicKey, network, payload.beacon, payload.slot);
-                if (balance) {
-                    yield database.validator.balance.addRecords(publicKey, [{balance, epoch: BigInt(payload.slot)}]);
-                    yield put(updateValidatorBalance(publicKey, balance));
+                const beacon = yield select(getBeaconByKey, {key: payload.beacon});
+                if (beacon.status === BeaconStatus.active) {
+                    const balance = yield getValidatorBalance(publicKey, network, payload.beacon, payload.slot);
+                    if (balance) {
+                        yield database.validator.balance.addRecords(publicKey, [
+                            {balance, epoch: BigInt(payload.slot)},
+                        ]);
+                        yield put(updateValidatorBalance(publicKey, balance));
+                    }
+                    const state = ((yield getValidatorStatus(publicKey, payload.beacon)) as unknown) as ValidatorStatus;
+                    if (validator.status !== state) {
+                        yield put(setValidatorStatus(state, publicKey));
+                    }
                 }
             }
         } catch (err) {
             logger.error("update validator error:", err.message);
+        }
+    }
+}
+
+function* onBeaconNodeStatusChangeUpdateValidatorState(
+    action: ReturnType<typeof updateStatus>,
+): Generator<SelectEffect | PutEffect | Promise<ValidatorStatus>, void, BeaconValidators & ValidatorStatus> {
+    const beaconNodeValidator = yield select(getValidatorsByBeaconNode);
+    if (beaconNodeValidator[action.meta]) {
+        if (action.payload === BeaconStatus.active) {
+            for (const {publicKey} of beaconNodeValidator[action.meta]) {
+                const state = yield getValidatorStatus(publicKey, action.meta);
+                yield put(setValidatorStatus(state, publicKey));
+            }
+        } else {
+            for (const {publicKey} of beaconNodeValidator[action.meta]) {
+                yield put(
+                    setValidatorStatus(
+                        action.payload === BeaconStatus.syncing
+                            ? ValidatorStatus.SYNCING_BEACON_NODE
+                            : ValidatorStatus.BEACON_NODE_OFFLINE,
+                        publicKey,
+                    ),
+                );
+            }
         }
     }
 }
@@ -267,5 +316,6 @@ export function* validatorSagaWatcher(): Generator {
         takeEvery(startNewValidatorService, startService),
         takeEvery(stopActiveValidatorService, stopService),
         takeEvery(setValidatorBeaconNode, setValidatorBeacon),
+        takeEvery(updateStatus, onBeaconNodeStatusChangeUpdateValidatorState),
     ]);
 }
