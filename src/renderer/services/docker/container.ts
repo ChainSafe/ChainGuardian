@@ -7,7 +7,7 @@ import {extractDockerVersion} from "./utils";
 import {ICGLogger, ILogRecord} from "../utils/logging/interface";
 import {BufferedLogger} from "../utils/logging/buffered";
 import {DockerRegistry} from "./docker-registry";
-import {chainGuardianLogger} from "../../../main/logger";
+import {chainGuardianLogger, createLogger} from "../../../main/logger";
 
 /**
  * Interface defining started docker instance.
@@ -98,6 +98,7 @@ export abstract class Container {
         this.docker = {name: this.params.name, stdout: logs.stdout, stderr: logs.stderr};
         this.logger.addStreamSource(logs.stdout, "stdout");
         this.logger.addStreamSource(logs.stderr, "stderr");
+        this.storeLogs(this.params.name);
         return this.docker;
     }
 
@@ -136,6 +137,7 @@ export abstract class Container {
                 this.docker = {name: this.params.name, stdout: run.stdout, stderr: run.stderr};
                 this.logger.addStreamSource(run.stdout, "stdout");
                 this.logger.addStreamSource(run.stderr, "stderr");
+                this.storeLogs(this.params.name);
                 chainGuardianLogger.info(`Docker instance ${this.docker.name} started.`);
                 return this.docker;
             } catch (e) {
@@ -257,5 +259,22 @@ export abstract class Container {
             }
         }
         return false;
+    }
+
+    // TODO: find more elegant solution for writing logs to file
+    private async storeLogs(name: string): Promise<void> {
+        const containerLogger = createLogger(name || "error", `docker/${name || "error"}.log`);
+        if (name) {
+            containerLogger.transports.file.format = "{text}";
+            containerLogger.transports.console.level = false;
+        }
+
+        for await (const logRecords of this.logger.getLogIterator()) {
+            if (Array.isArray(logRecords)) {
+                logRecords.forEach((logRecord) => {
+                    containerLogger.log(logRecord.log);
+                });
+            } else containerLogger.log(logRecords);
+        }
     }
 }

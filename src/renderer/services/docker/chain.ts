@@ -48,7 +48,7 @@ export class BeaconChain extends Container {
                     if (image) {
                         await BeaconChain.restartBeaconChainContainer(beacon.docker.id, image);
                     } else {
-                        chainGuardianLogger.info(`Container ${beacon.docker.id} not found.`);
+                        chainGuardianLogger.warn(`Container ${beacon.docker.id} not found.`);
                     }
                 }
             }
