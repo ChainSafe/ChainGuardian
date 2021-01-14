@@ -32,6 +32,10 @@ const render = (Component: () => JSX.Element): void => {
 
 initBLS("herumi")
     .then(() => {
-        render(Application);
+        try {
+            render(Application);
+        } catch (e) {
+            mainLogger.error(e);
+        }
     })
     .catch((e) => mainLogger.error(e));
