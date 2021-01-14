@@ -30,6 +30,17 @@ export interface IValidatorSimpleProps {
     onBeaconNodeClick: (id: string) => () => void;
 }
 
+const hideValidatorButtons = (status: ValidatorStatus): boolean =>
+    [
+        ValidatorStatus.NO_BEACON_NODE,
+        ValidatorStatus.BEACON_NODE_OFFLINE,
+        ValidatorStatus.SYNCING_BEACON_NODE,
+        ValidatorStatus.WAITING_DEPOSIT,
+        ValidatorStatus.PROCESSING_DEPOSIT,
+        ValidatorStatus.PENDING_DEPOSIT_OR_ACTIVATION,
+        ValidatorStatus.ERROR,
+    ].includes(status);
+
 export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props: IValidatorSimpleProps) => {
     const [askPassword, setAskPassword] = useState<string>(null);
     const [showModal, setShowModal] = useState(false);
@@ -90,16 +101,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
     };
 
     const renderValidatorButtons = (): React.ReactElement => {
-        if (
-            !nodes.length ||
-            validator.status === ValidatorStatus.BEACON_NODE_OFFLINE ||
-            validator.status === ValidatorStatus.SYNCING_BEACON_NODE ||
-            validator.status === ValidatorStatus.WAITING_DEPOSIT ||
-            validator.status === ValidatorStatus.PROCESSING_DEPOSIT ||
-            validator.status === ValidatorStatus.PENDING_DEPOSIT_OR_ACTIVATION ||
-            validator.status === ValidatorStatus.ERROR
-        )
-            return null;
+        if (hideValidatorButtons(validator.status)) return null;
         return (
             <div className='flex validator-service-button'>
                 {validator.isRunning ? (
