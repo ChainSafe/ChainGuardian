@@ -9,7 +9,7 @@ import {NotificationRenderer} from "./NotificationRenderer";
 import Application from "./containers/Application";
 import "./style/index.scss";
 import store from "./ducks/store";
-import logger from "electron-log";
+import {mainLogger} from "../main/logger";
 
 initSentry();
 
@@ -34,4 +34,4 @@ initBLS("herumi")
     .then(() => {
         render(Application);
     })
-    .catch((e) => logger.error(e));
+    .catch((e) => mainLogger.error(e));

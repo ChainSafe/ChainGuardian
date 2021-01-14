@@ -1,9 +1,9 @@
-import logger from "electron-log";
 import database from "../db/api/database";
 
 import {runCmdAsync} from "../utils/cmd";
 import {Command} from "./command";
 import {extractDockerVersion} from "./utils";
+import {chainGuardianLogger} from "../../../main/logger";
 
 export class DockerPath {
     private defaultPaths = [
@@ -22,7 +22,7 @@ export class DockerPath {
             const result = await runCmdAsync(await Command.version(path));
             return !!extractDockerVersion(result.stdout);
         } catch (e) {
-            logger.warn(`Error while checking if Docker path is valid: ${e.message}`);
+            chainGuardianLogger.warn(`Error while checking if Docker path is valid: ${e.message}`);
             return false;
         }
     }
@@ -43,7 +43,7 @@ export class DockerPath {
     public async getDefaultBinary(): Promise<string | undefined> {
         for (let i = 0; i < this.defaultPaths.length; i++) {
             if (await DockerPath.isValidPath(this.defaultPaths[i])) {
-                logger.info(`Found Docker at default path: ${this.defaultPaths[i]}`);
+                chainGuardianLogger.info(`Found Docker at default path: ${this.defaultPaths[i]}`);
                 return this.defaultPaths[i];
             }
         }
@@ -53,7 +53,7 @@ export class DockerPath {
         const settings = await database.settings.get();
         // Check first if path is saved in db and valid
         if (settings && settings.dockerPath && DockerPath.isValidPath(settings.dockerPath)) {
-            logger.info(`Found valid Docker path: ${settings.dockerPath}`);
+            chainGuardianLogger.info(`Found valid Docker path: ${settings.dockerPath}`);
             this.path = settings.dockerPath;
             return this.path;
         }
@@ -64,7 +64,7 @@ export class DockerPath {
             await database.settings.set(undefined, {
                 dockerPath: foundDefaultPath,
             });
-            logger.info("Saved Docker path in settings db.");
+            chainGuardianLogger.info("Saved Docker path in settings db.");
             return this.path;
         }
 
