@@ -39,7 +39,6 @@ import {AllEffect, CancelEffect, ForkEffect} from "@redux-saga/core/effects";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
 import {CGBeaconEvent, CGBeaconEventType, ErrorEvent} from "../../services/eth2/client/interface";
-import logger from "electron-log";
 import {getBeaconByKey} from "./selectors";
 import {SyncingStatus} from "@chainsafe/lodestar-types";
 import {BeaconValidators, getValidatorsByBeaconNode} from "../validator/selectors";
@@ -48,13 +47,16 @@ import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {createNotification} from "../notification/actions";
 import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
 import {ValidatorStatus} from "../../constants/validatorStatus";
+import {chainGuardianLogger, createLogger, getBeaconLogfileFromURL} from "../../../main/logger";
 
 export function* pullDockerImage(
     network: string,
 ): Generator<PutEffect | RaceEffect<CallEffect | TakeEffect>, boolean, [boolean, Action]> {
     yield put(startDockerImagePull());
+    chainGuardianLogger.info("Start beacon node image pull");
     try {
         const image = getNetworkConfig(network).dockerConfig.image;
+        chainGuardianLogger.info("image:", image);
         const [pullSuccess, effect] = yield race([call(BeaconChain.pullImage, image), take(cancelDockerPull)]);
         if (effect) {
             liveProcesses["pullImage"].kill();
@@ -63,12 +65,12 @@ export function* pullDockerImage(
 
         return effect !== undefined ? false : pullSuccess;
     } catch (e) {
-        logger.error(e.stderr);
         const message = e.stderr.includes("daemon is not running")
             ? "Seems Docker is offline, start it and try again"
             : "Error while pulling Docker image, try again later";
         yield put(createNotification({title: message, source: "pullDockerImage"}));
         yield put(endDockerImagePull());
+        chainGuardianLogger.error(e.stderr);
         return false;
     }
 }
@@ -87,6 +89,7 @@ function* startLocalBeaconSaga({
         ports.push({local: String(discoveryPort), host: String(discoveryPort)});
     }
 
+    chainGuardianLogger.info("Starting local docker beacon node & http://localhost:", rpcPort);
     const eth1QueryLimit = 200;
     if (pullSuccess) {
         switch (network) {
@@ -166,6 +169,7 @@ function* initializeBeaconsFromStore(): Generator<
     const store = yield database.beacons.get();
     if (store !== null) {
         const {beacons}: Beacons = store;
+        chainGuardianLogger.info("Found", beacons.length, "beacon node/s");
 
         if (beacons.some(({docker}) => docker.id)) {
             if (!(yield BeaconChain.isDockerDemonRunning())) {
@@ -200,7 +204,7 @@ function* initializeBeaconsFromStore(): Generator<
                 })),
             ),
         );
-    }
+    } else chainGuardianLogger.info("No beacon node found");
 }
 
 export function* watchOnHead(
@@ -227,6 +231,8 @@ export function* watchOnHead(
     let isOnline = beacon.status !== BeaconStatus.offline;
     let epoch: number | undefined;
 
+    chainGuardianLogger.info("Watching beacon on URL", url);
+    const beaconLogger = createLogger(url, getBeaconLogfileFromURL(url));
     while (true) {
         try {
             const [payload, cancelAction] = yield race([
@@ -235,6 +241,7 @@ export function* watchOnHead(
             ]);
             if (cancelAction || payload.done) {
                 if (cancelAction.payload === url) {
+                    chainGuardianLogger.info("Stopping beacon watching on", url);
                     eventStream.stop();
                     yield cancel();
                 }
@@ -247,7 +254,6 @@ export function* watchOnHead(
                 }
                 continue;
             }
-
             yield put(updateSlot(payload.value.message.slot, url));
             if (isSyncing || !isOnline) {
                 const result = yield client.node.getSyncingStatus();
@@ -255,13 +261,15 @@ export function* watchOnHead(
                 isOnline = true;
                 yield put(updateStatus(isSyncing ? BeaconStatus.syncing : BeaconStatus.active, url));
             }
+            beaconLogger.info("Beacon on slot:", payload.value.message.slot);
             const headEpoch = computeEpochAtSlot(config?.eth2Config || mainnetConfig, payload.value.message.slot);
             if (epoch !== headEpoch) {
+                beaconLogger.info("Beacon on epoch:", headEpoch);
                 epoch = headEpoch;
                 yield put(getNewValidatorBalance(url, payload.value.message.slot));
             }
         } catch (err) {
-            logger.error("Event error:", err.message);
+            beaconLogger.error("Event error:", err.message);
         }
     }
 }
