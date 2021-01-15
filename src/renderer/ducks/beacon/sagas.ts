@@ -64,7 +64,7 @@ export function* pullDockerImage(
         return effect !== undefined ? false : pullSuccess;
     } catch (e) {
         logger.error(e.stderr);
-        const message = e.stderr.includes("deamon is not running")
+        const message = e.stderr.includes("daemon is not running")
             ? "Seems Docker is offline, start it and try again"
             : "Error while pulling Docker image, try again later";
         yield put(createNotification({title: message, source: "pullDockerImage"}));
