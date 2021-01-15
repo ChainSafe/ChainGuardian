@@ -11,6 +11,7 @@ export interface INetworkState {
     blockSubscriptions: BlockSubscriptions;
     pullingDockerImage: boolean;
     finishedPullingDockerImage: boolean;
+    dockerDemonOffline: boolean;
 }
 
 export type StartBeaconChain = (

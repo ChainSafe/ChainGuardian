@@ -9,6 +9,7 @@ export const {
     loadedValidatorBeaconNodes,
     subscribeToBlockListening,
     unsubscribeToBlockListening,
+    setDockerDemonIsOffline,
 } = networkSlice.actions;
 
 export const cancelDockerPull = createAction("network/cancelDockerPull");
@@ -22,3 +23,5 @@ export const removeBeaconNode = createAction<RemoveBeaconNode>(
     "network/removeBeaconNode",
     (image: string, validator: string) => ({payload: {image, validator}}),
 );
+
+export const checkDockerDemonIsOnline = createAction("network/recheckDockerDemonIsOnline");

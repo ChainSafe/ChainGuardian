@@ -17,7 +17,13 @@ import {
 } from "redux-saga/effects";
 import {getNetworkConfig} from "../../services/eth2/networks";
 import {liveProcesses} from "../../services/utils/cmd";
-import {cancelDockerPull, endDockerImagePull, startDockerImagePull} from "../network/actions";
+import {
+    cancelDockerPull,
+    endDockerImagePull,
+    startDockerImagePull,
+    checkDockerDemonIsOnline,
+    setDockerDemonIsOffline,
+} from "../network/actions";
 import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, updateStatus} from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
@@ -149,15 +155,28 @@ const getBeaconStatus = async (url: string): Promise<{syncing: boolean; slot: nu
 };
 
 function* initializeBeaconsFromStore(): Generator<
-    Promise<Beacons> | PutEffect | Promise<void> | AllEffect<CallEffect> | AllEffect<ForkEffect>,
+    | Promise<Beacons>
+    | PutEffect
+    | Promise<void>
+    | Promise<boolean>
+    | AllEffect<CallEffect>
+    | AllEffect<ForkEffect>
+    | TakeEffect,
     void,
-    Beacons & ({syncing: boolean; slot: number} | null)[]
+    Beacons & ({syncing: boolean; slot: number} | null)[] & boolean
 > {
     const store = yield database.beacons.get();
     if (store !== null) {
         const {beacons}: Beacons = store;
 
-        yield BeaconChain.startAllLocalBeaconNodes();
+        if (beacons.some(({docker}) => docker.id)) {
+            while (!(yield BeaconChain.isDockerDemonRunning())) {
+                yield put(setDockerDemonIsOffline(true));
+                yield take(checkDockerDemonIsOnline);
+                yield put(setDockerDemonIsOffline(yield BeaconChain.isDockerDemonRunning()));
+            }
+            yield BeaconChain.startAllLocalBeaconNodes();
+        }
 
         const stats = yield all(beacons.map(({url}) => call(getBeaconStatus, url)));
 

@@ -15,6 +15,8 @@ export const getPullingDockerImage = (state: IRootState): boolean => state.netwo
 
 export const getFinishedPullingDockerImage = (state: IRootState): boolean => state.network.finishedPullingDockerImage;
 
+export const isDockerDemonIsOffline = (state: IRootState): boolean => state.network.dockerDemonOffline;
+
 type BeaconNodesList = {length: number; keys: string[]} & {[url: string]: BeaconNode};
 export const getBeaconNodeList = createSelector(getBeaconNodes, (beacons) => {
     const nodes = {} as BeaconNodesList;

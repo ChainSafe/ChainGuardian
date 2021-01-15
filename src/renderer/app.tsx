@@ -10,6 +10,7 @@ import Application from "./containers/Application";
 import "./style/index.scss";
 import store from "./ducks/store";
 import logger from "electron-log";
+import {DockerDemonNotificator} from "./DockerDemonNotificator";
 
 initSentry();
 
@@ -24,6 +25,7 @@ const render = (Component: () => JSX.Element): void => {
             <Provider store={store}>
                 <Component />
                 <NotificationRenderer />
+                <DockerDemonNotificator />
             </Provider>
         </AppContainer>,
         mainElement,
