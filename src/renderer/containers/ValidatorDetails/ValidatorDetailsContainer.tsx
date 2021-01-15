@@ -43,16 +43,17 @@ export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {ta
                     <BackButton onClick={(): void => history.goBack()} />
                     <TabNavigation onTab={setCurrentTab} tabs={tabs} current={currentTab} />
                 </div>
+                <div className='container-scroll-y'>
+                    {currentTab === tabs[0].tabId ? <ValidatorStats validator={validator} /> : null}
 
-                {currentTab === tabs[0].tabId ? <ValidatorStats validator={validator} /> : null}
+                    {currentTab === tabs[1].tabId ? <ValidatorLogs logger={validator.logger} /> : null}
 
-                {currentTab === tabs[1].tabId ? <ValidatorLogs logger={validator.logger} /> : null}
-
-                {tabs.map((tab) =>
-                    tab.tabName === "Beacon node" && currentTab === tab.tabId ? (
-                        <BeaconNode key={tab.tabId} beacon={beacons[validator.beaconNodes[tab.index]]} />
-                    ) : null,
-                )}
+                    {tabs.map((tab) =>
+                        tab.tabName === "Beacon node" && currentTab === tab.tabId ? (
+                            <BeaconNode key={tab.tabId} beacon={beacons[validator.beaconNodes[tab.index]]} />
+                        ) : null,
+                    )}
+                </div>
             </div>
         </Background>
     );

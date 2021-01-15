@@ -21,10 +21,11 @@ export const BeaconNodeDetailsContainer: React.FC = () => {
                     <h2>Beacon node</h2>
                     <h5 className='beacon-url'>{beacon.url}</h5>
                 </div>
+                <div className='container-scroll-y'>
+                    <BeaconNode beacon={beacon} showTitle={false} />
 
-                <BeaconNode beacon={beacon} showTitle={false} />
-
-                {beacon.docker && <BeaconNodeButtons image={beacon.docker.id} url={beacon.url} />}
+                    {beacon.docker && <BeaconNodeButtons image={beacon.docker.id} url={beacon.url} />}
+                </div>
             </div>
         </Background>
     );

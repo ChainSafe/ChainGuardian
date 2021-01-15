@@ -148,7 +148,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
             <ConfirmModal
                 showModal={confirmModal === Modal.remove}
                 question={"Are you sure?"}
-                description={"This will remove all your beacon chain data."}
+                description={"This will remove your beacon node container."}
                 onOKClick={removeContainer}
                 onCancelClick={(): void => setConfirmModal(Modal.none)}
             />
