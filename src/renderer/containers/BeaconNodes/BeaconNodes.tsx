@@ -56,16 +56,20 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
 
                                     <div className='flex-column stretch space-between'>
                                         <div className='flex-column'>
-                                            <h5>Connected validators:</h5>
-
-                                            {beaconValidators[url] &&
-                                                beaconValidators[url].map(({name, publicKey}) => (
-                                                    <div className='flex-column' key={name}>
-                                                        <p>
-                                                            <b>{name} </b>- {truncatePublicKey(publicKey)}
-                                                        </p>
-                                                    </div>
-                                                ))}
+                                            {beaconValidators[url] ? (
+                                                <>
+                                                    <h5>Connected validators:</h5>
+                                                    {beaconValidators[url].map(({name, publicKey}) => (
+                                                        <div className='flex-column' key={name}>
+                                                            <p>
+                                                                <b>{name} </b>- {truncatePublicKey(publicKey)}
+                                                            </p>
+                                                        </div>
+                                                    ))}
+                                                </>
+                                            ) : (
+                                                <h5>No connected validators</h5>
+                                            )}
                                         </div>
 
                                         <BeaconNodeButtons image={beacons.beacons[url].docker?.id} url={url} />
