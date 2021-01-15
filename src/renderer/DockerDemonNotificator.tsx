@@ -22,7 +22,7 @@ export const DockerDemonNotificator: React.FC = () => {
                     please start Docker to continue
                 </p>
                 <ButtonSecondary onClick={onOKClick} large>
-                    Continue
+                    Retry
                 </ButtonSecondary>
             </div>
         </div>

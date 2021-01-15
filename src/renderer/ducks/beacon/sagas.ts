@@ -170,10 +170,15 @@ function* initializeBeaconsFromStore(): Generator<
         const {beacons}: Beacons = store;
 
         if (beacons.some(({docker}) => docker.id)) {
-            while (!(yield BeaconChain.isDockerDemonRunning())) {
+            if (!(yield BeaconChain.isDockerDemonRunning())) {
                 yield put(setDockerDemonIsOffline(true));
-                yield take(checkDockerDemonIsOnline);
-                yield put(setDockerDemonIsOffline(yield BeaconChain.isDockerDemonRunning()));
+                while (true) {
+                    yield take(checkDockerDemonIsOnline);
+                    if (yield BeaconChain.isDockerDemonRunning()) {
+                        yield put(setDockerDemonIsOffline(false));
+                        break;
+                    }
+                }
             }
             yield BeaconChain.startAllLocalBeaconNodes();
         }

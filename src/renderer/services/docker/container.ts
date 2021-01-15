@@ -61,7 +61,6 @@ export abstract class Container {
             const cmdResult = await runCmdAsync(await Command.info());
             return !/[\n\r].*Server:\s*([^\n\r]*)/.exec(cmdResult.stdout)[1].toLocaleLowerCase().includes("error");
         } catch (e) {
-            logger.error(e);
             return false;
         }
     }
