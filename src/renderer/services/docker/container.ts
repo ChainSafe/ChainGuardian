@@ -56,6 +56,15 @@ export abstract class Container {
         }
     }
 
+    public static async isDockerDemonRunning(): Promise<boolean> {
+        try {
+            const cmdResult = await runCmdAsync(await Command.info());
+            return !/[\n\r].*Server:\s*([^\n\r]*)/.exec(cmdResult.stdout)[1].toLocaleLowerCase().includes("error");
+        } catch (e) {
+            return false;
+        }
+    }
+
     public static async isContainerRunning(name: string): Promise<boolean> {
         const cmdResult = await runCmdAsync(await Command.ps(name, "running"));
         // first line of output is header line, second line is definition of found docker instance

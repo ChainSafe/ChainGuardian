@@ -17,7 +17,13 @@ import {
 } from "redux-saga/effects";
 import {getNetworkConfig} from "../../services/eth2/networks";
 import {liveProcesses} from "../../services/utils/cmd";
-import {cancelDockerPull, endDockerImagePull, startDockerImagePull} from "../network/actions";
+import {
+    cancelDockerPull,
+    endDockerImagePull,
+    startDockerImagePull,
+    checkDockerDemonIsOnline,
+    setDockerDemonIsOffline,
+} from "../network/actions";
 import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, updateStatus} from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
@@ -58,12 +64,10 @@ export function* pullDockerImage(
         return effect !== undefined ? false : pullSuccess;
     } catch (e) {
         logger.error(e.stderr);
-        yield put(
-            createNotification({
-                title: "Error while pulling docker image, try again later",
-                source: "saga/validator/pullDockerImage",
-            }),
-        );
+        const message = e.stderr.includes("daemon is not running")
+            ? "Seems Docker is offline, start it and try again"
+            : "Error while pulling Docker image, try again later";
+        yield put(createNotification({title: message, source: "pullDockerImage"}));
         yield put(endDockerImagePull());
         return false;
     }
@@ -149,15 +153,33 @@ const getBeaconStatus = async (url: string): Promise<{syncing: boolean; slot: nu
 };
 
 function* initializeBeaconsFromStore(): Generator<
-    Promise<Beacons> | PutEffect | Promise<void> | AllEffect<CallEffect> | AllEffect<ForkEffect>,
+    | Promise<Beacons>
+    | PutEffect
+    | Promise<void>
+    | Promise<boolean>
+    | AllEffect<CallEffect>
+    | AllEffect<ForkEffect>
+    | TakeEffect,
     void,
-    Beacons & ({syncing: boolean; slot: number} | null)[]
+    Beacons & ({syncing: boolean; slot: number} | null)[] & boolean
 > {
     const store = yield database.beacons.get();
     if (store !== null) {
         const {beacons}: Beacons = store;
 
-        yield BeaconChain.startAllLocalBeaconNodes();
+        if (beacons.some(({docker}) => docker.id)) {
+            if (!(yield BeaconChain.isDockerDemonRunning())) {
+                yield put(setDockerDemonIsOffline(true));
+                while (true) {
+                    yield take(checkDockerDemonIsOnline);
+                    if (yield BeaconChain.isDockerDemonRunning()) {
+                        yield put(setDockerDemonIsOffline(false));
+                        break;
+                    }
+                }
+            }
+            yield BeaconChain.startAllLocalBeaconNodes();
+        }
 
         const stats = yield all(beacons.map(({url}) => call(getBeaconStatus, url)));
 
