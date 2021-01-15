@@ -14,6 +14,13 @@
     overflow-y: scroll;
 }
 
+.container-scroll-y {
+    overflow-y: auto;
+    max-height: 650px;
+    margin-right: -32px;
+    padding-right: 32px;
+}
+
 .logo{
     padding: 48px;
 }
