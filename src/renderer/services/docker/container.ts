@@ -195,9 +195,7 @@ export abstract class Container {
                 }
                 return stopped;
             } catch (e) {
-                cgLogger.error(
-                    `Failed to execute stop docker container ${this.docker.name} because ${e.message}.`,
-                );
+                cgLogger.error(`Failed to execute stop docker container ${this.docker.name} because ${e.message}.`);
             }
             return false;
         }
@@ -215,9 +213,7 @@ export abstract class Container {
                 await runCmdAsync(await Command.kill(this.docker.name));
                 cgLogger.info(`Docker instance ${this.docker.name} killed.`);
             } catch (e) {
-                cgLogger.error(
-                    `Failed to execute kill docker container ${this.docker.name} because ${e.message}.`,
-                );
+                cgLogger.error(`Failed to execute kill docker container ${this.docker.name} because ${e.message}.`);
             }
         }
         return;
@@ -246,9 +242,7 @@ export abstract class Container {
                 cgLogger.info(`Docker instance ${this.docker.name} restared.`);
                 return true;
             } catch (e) {
-                cgLogger.error(
-                    `Failed to restart docker instance ${this.docker.name} because ${e.message}.`,
-                );
+                cgLogger.error(`Failed to restart docker instance ${this.docker.name} because ${e.message}.`);
             }
         }
         return false;
@@ -262,9 +256,7 @@ export abstract class Container {
                 DockerRegistry.removeContainer(this.docker.name);
                 return true;
             } catch (e) {
-                cgLogger.error(
-                    `Failed to remove docker container ${this.docker.name} because ${e.message}.`,
-                );
+                cgLogger.error(`Failed to remove docker container ${this.docker.name} because ${e.message}.`);
             }
         }
         return false;

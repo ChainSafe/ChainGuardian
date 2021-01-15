@@ -90,14 +90,7 @@ function* loadValidatorsSaga(): Generator<
                 try {
                     const balance = await getValidatorBalance(keyStore.getPublicKey(), network, beaconNodes?.nodes[0]);
                     const status = await getValidatorStatus(keyStore.getPublicKey(), beaconNodes?.nodes[0]);
-                    cgLogger.info(
-                        "Loading validator",
-                        name,
-                        "pubkey",
-                        keyStore.getPublicKey(),
-                        "network",
-                        network,
-                    );
+                    cgLogger.info("Loading validator", name, "pubkey", keyStore.getPublicKey(), "network", network);
                     return {
                         publicKey: keyStore.getPublicKey(),
                         name,
@@ -138,14 +131,7 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
         isRunning: false,
         beaconNodes: [],
     };
-    cgLogger.info(
-        "Adding validator",
-        validator.name,
-        "pubkey",
-        validator.publicKey,
-        "network",
-        validator.network,
-    );
+    cgLogger.info("Adding validator", validator.name, "pubkey", validator.publicKey, "network", validator.network);
 
     yield put(addValidator(validator));
     yield fork(validatorInfoUpdater, validator.publicKey, validator.network);
