@@ -17,7 +17,7 @@ export const DockerDemonNotificator: React.FC = () => {
             <div className='confirmModal'>
                 <h1>Warning</h1>
                 <p className='dn_content'>
-                    Seems Docker is offline,
+                    Seems like Docker is offline,
                     <br />
                     please start Docker to continue
                 </p>
