@@ -60,7 +60,7 @@ import {ValidatorStatus} from "../../constants/validatorStatus";
 import {getBeaconByKey} from "../beacon/selectors";
 import {Beacon, BeaconStatus} from "../beacon/slice";
 import {updateStatus} from "../beacon/actions";
-import {chainGuardianLogger} from "../../../main/logger";
+import {cgLogger} from "../../../main/logger";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -90,7 +90,7 @@ function* loadValidatorsSaga(): Generator<
                 try {
                     const balance = await getValidatorBalance(keyStore.getPublicKey(), network, beaconNodes?.nodes[0]);
                     const status = await getValidatorStatus(keyStore.getPublicKey(), beaconNodes?.nodes[0]);
-                    chainGuardianLogger.info(
+                    cgLogger.info(
                         "Loading validator",
                         name,
                         "pubkey",
@@ -109,7 +109,7 @@ function* loadValidatorsSaga(): Generator<
                         beaconNodes: beaconNodes?.nodes || [],
                     };
                 } catch (e) {
-                    chainGuardianLogger.error(
+                    cgLogger.error(
                         "Failed to load validator",
                         name,
                         "pubkey",
@@ -138,7 +138,7 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
         isRunning: false,
         beaconNodes: [],
     };
-    chainGuardianLogger.info(
+    cgLogger.info(
         "Adding validator",
         validator.name,
         "pubkey",
@@ -154,7 +154,7 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
 function* removeValidatorSaga(
     action: ReturnType<typeof removeActiveValidator>,
 ): Generator<SelectEffect | PutEffect, void, CGAccount | null> {
-    chainGuardianLogger.info("Removing validator", action.payload);
+    cgLogger.info("Removing validator", action.payload);
     const auth: CGAccount | null = yield select(getAuthAccount);
     deleteKeystore(auth.directory, action.payload);
     auth.removeValidator(action.meta);
@@ -235,12 +235,12 @@ function* startService(
                 graffiti: "ChainGuardian",
             });
         }
-        chainGuardianLogger.info("Starting validator", publicKey);
+        cgLogger.info("Starting validator", publicKey);
         yield validatorServices[publicKey].start();
 
         yield put(startValidatorService(logger, publicKey));
     } catch (e) {
-        chainGuardianLogger.error("Failed to start validator", e.message);
+        cgLogger.error("Failed to start validator", e.message);
     }
 }
 
@@ -248,7 +248,7 @@ function* stopService(action: ReturnType<typeof stopActiveValidatorService>): Ge
     const publicKey = action.payload.publicKey.toHex();
     yield validatorServices[publicKey].stop();
 
-    chainGuardianLogger.info("Stopping validator", action.payload.publicKey.toHex());
+    cgLogger.info("Stopping validator", action.payload.publicKey.toHex());
 
     yield put(stopValidatorService(publicKey));
 }
@@ -263,7 +263,7 @@ function* setValidatorBeacon({
 > {
     const beaconNodes = yield database.validatorBeaconNodes.update(meta, payload);
     yield put(storeValidatorBeaconNodes(beaconNodes.nodes, meta));
-    chainGuardianLogger.info("Set validator", meta, "beacon node/s", beaconNodes.nodes);
+    cgLogger.info("Set validator", meta, "beacon node/s", beaconNodes.nodes);
     const validator = yield select(getValidator, {publicKey: meta});
     if (validator.status === ValidatorStatus.NO_BEACON_NODE) {
         const beacon = validator.beaconNodes.length ? validator.beaconNodes[0] : beaconNodes.nodes[0];
@@ -314,7 +314,7 @@ function* validatorInfoUpdater(
                 }
             }
         } catch (err) {
-            chainGuardianLogger.error("update validator error:", err.message);
+            cgLogger.error("update validator error:", err.message);
         }
     }
 }

@@ -7,7 +7,7 @@ import {extractDockerVersion} from "./utils";
 import {ICGLogger, ILogRecord} from "../utils/logging/interface";
 import {BufferedLogger} from "../utils/logging/buffered";
 import {DockerRegistry} from "./docker-registry";
-import {chainGuardianLogger, createLogger} from "../../../main/logger";
+import {cgLogger, createLogger} from "../../../main/logger";
 
 /**
  * Interface defining started docker instance.
@@ -43,7 +43,7 @@ export abstract class Container {
     public static async isDockerInstalled(version?: string): Promise<boolean> {
         try {
             if (!(await dockerPath.getDockerBinary())) {
-                chainGuardianLogger.info("Docker binary loading failed, Docker not found.");
+                cgLogger.info("Docker binary loading failed, Docker not found.");
                 return false;
             }
 
@@ -51,7 +51,7 @@ export abstract class Container {
             const dockerVersion = extractDockerVersion(cmdResult.stdout);
             return version ? version === dockerVersion : !!dockerVersion;
         } catch (e) {
-            chainGuardianLogger.error(e);
+            cgLogger.error(e);
             return false;
         }
     }
@@ -147,15 +147,15 @@ export abstract class Container {
                 this.logger.addStreamSource(run.stdout, "stdout");
                 this.logger.addStreamSource(run.stderr, "stderr");
                 this.storeLogs(this.params.name);
-                chainGuardianLogger.info(`Docker instance ${this.docker.name} started.`);
+                cgLogger.info(`Docker instance ${this.docker.name} started.`);
                 return this.docker;
             } catch (e) {
-                chainGuardianLogger.error(e);
+                cgLogger.error(e);
                 throw new Error(`Unable to run instance because ${e.message}.`);
             }
         } else {
             // docker instance already running
-            chainGuardianLogger.error(`Docker instance ${this.docker.name} already running.`);
+            cgLogger.error(`Docker instance ${this.docker.name} already running.`);
             throw new Error(`Docker instance ${this.docker.name} already running.`);
         }
     }
@@ -172,7 +172,7 @@ export abstract class Container {
             try {
                 return Container.isContainerRunning(this.docker.name);
             } catch (e) {
-                chainGuardianLogger.error(`Failed to check if docker is running because ${e.message}.`);
+                cgLogger.error(`Failed to check if docker is running because ${e.message}.`);
             }
         }
         return false;
@@ -191,11 +191,11 @@ export abstract class Container {
                 await runCmdAsync(await Command.stop(this.docker.name));
                 const stopped = !(await this.isRunning());
                 if (stopped) {
-                    chainGuardianLogger.info(`Docker instance ${this.docker.name} stopped.`);
+                    cgLogger.info(`Docker instance ${this.docker.name} stopped.`);
                 }
                 return stopped;
             } catch (e) {
-                chainGuardianLogger.error(
+                cgLogger.error(
                     `Failed to execute stop docker container ${this.docker.name} because ${e.message}.`,
                 );
             }
@@ -213,9 +213,9 @@ export abstract class Container {
         if (this.docker && this.docker.name) {
             try {
                 await runCmdAsync(await Command.kill(this.docker.name));
-                chainGuardianLogger.info(`Docker instance ${this.docker.name} killed.`);
+                cgLogger.info(`Docker instance ${this.docker.name} killed.`);
             } catch (e) {
-                chainGuardianLogger.error(
+                cgLogger.error(
                     `Failed to execute kill docker container ${this.docker.name} because ${e.message}.`,
                 );
             }
@@ -243,10 +243,10 @@ export abstract class Container {
                     // docker instance stopped, call start command
                     runCmd(await Command.start(this.docker.name));
                 }
-                chainGuardianLogger.info(`Docker instance ${this.docker.name} restared.`);
+                cgLogger.info(`Docker instance ${this.docker.name} restared.`);
                 return true;
             } catch (e) {
-                chainGuardianLogger.error(
+                cgLogger.error(
                     `Failed to restart docker instance ${this.docker.name} because ${e.message}.`,
                 );
             }
@@ -258,11 +258,11 @@ export abstract class Container {
         if (this.docker && this.docker.name) {
             try {
                 runCmd(await Command.removeContainer(this.docker.name));
-                chainGuardianLogger.info(`Docker container ${this.docker.name} removed.`);
+                cgLogger.info(`Docker container ${this.docker.name} removed.`);
                 DockerRegistry.removeContainer(this.docker.name);
                 return true;
             } catch (e) {
-                chainGuardianLogger.error(
+                cgLogger.error(
                     `Failed to remove docker container ${this.docker.name} because ${e.message}.`,
                 );
             }

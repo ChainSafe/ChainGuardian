@@ -3,7 +3,7 @@ import database from "../db/api/database";
 import {runCmdAsync} from "../utils/cmd";
 import {Command} from "./command";
 import {extractDockerVersion} from "./utils";
-import {chainGuardianLogger} from "../../../main/logger";
+import {cgLogger} from "../../../main/logger";
 
 export class DockerPath {
     private defaultPaths = [
@@ -22,7 +22,7 @@ export class DockerPath {
             const result = await runCmdAsync(await Command.version(path));
             return !!extractDockerVersion(result.stdout);
         } catch (e) {
-            chainGuardianLogger.warn(`Error while checking if Docker path is valid: ${e.message}`);
+            cgLogger.warn(`Error while checking if Docker path is valid: ${e.message}`);
             return false;
         }
     }
@@ -43,7 +43,7 @@ export class DockerPath {
     public async getDefaultBinary(): Promise<string | undefined> {
         for (let i = 0; i < this.defaultPaths.length; i++) {
             if (await DockerPath.isValidPath(this.defaultPaths[i])) {
-                chainGuardianLogger.info(`Found Docker at default path: ${this.defaultPaths[i]}`);
+                cgLogger.info(`Found Docker at default path: ${this.defaultPaths[i]}`);
                 return this.defaultPaths[i];
             }
         }
@@ -53,7 +53,7 @@ export class DockerPath {
         const settings = await database.settings.get();
         // Check first if path is saved in db and valid
         if (settings && settings.dockerPath && DockerPath.isValidPath(settings.dockerPath)) {
-            chainGuardianLogger.info(`Found valid Docker path: ${settings.dockerPath}`);
+            cgLogger.info(`Found valid Docker path: ${settings.dockerPath}`);
             this.path = settings.dockerPath;
             return this.path;
         }
@@ -64,7 +64,7 @@ export class DockerPath {
             await database.settings.set(undefined, {
                 dockerPath: foundDefaultPath,
             });
-            chainGuardianLogger.info("Saved Docker path in settings db.");
+            cgLogger.info("Saved Docker path in settings db.");
             return this.path;
         }
 
