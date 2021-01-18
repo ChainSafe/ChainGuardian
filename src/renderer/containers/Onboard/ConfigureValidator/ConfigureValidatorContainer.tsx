@@ -7,7 +7,7 @@ import {wordlists} from "bip39";
 import {randBetween} from "@chainsafe/lodestar-utils";
 import {useDispatch} from "react-redux";
 import {setName as setNameAction} from "../../../ducks/register/actions";
-import { capitalize } from "../../../services/utils/formatting";
+import {capitalize} from "../../../services/utils/formatting";
 
 export const ConfigureValidatorContainer: React.FC = () => {
     const history = useHistory();
