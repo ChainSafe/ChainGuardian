@@ -42,12 +42,13 @@ jest.mock("fs", () => {
     mockedExistSync.withArgs("/test_keystores/keystore1.json").returns(true);
     mockedExistSync.withArgs("/test_keystores/keystore2.json").returns(true);
 
-    const mockedReadFileSync = sinon
-        .stub()
-        .withArgs("/test_keystores/keystore1.json")
-        .returns(JSON.stringify(mockKeystore))
-        .withArgs("/test_keystores/keystore2.json")
-        .returns(JSON.stringify(mockKeystore));
+    const mockedReadFileSync = sinon.stub();
+    mockedReadFileSync.withArgs("/test_keystores/keystore1.json").returns(JSON.stringify(mockKeystore));
+    mockedReadFileSync.withArgs("/test_keystores/keystore2.json").returns(JSON.stringify(mockKeystore));
+    mockedReadFileSync
+        .withArgs(process.cwd() + "/package.json")
+        .returns(JSON.stringify({name: "chainguardian", productName: "ChainGuardian", version: "0.2.0"}));
+
     return {
         readdirSync: mockedReadDirSync,
         existsSync: mockedExistSync,
