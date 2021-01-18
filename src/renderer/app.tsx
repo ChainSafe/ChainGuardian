@@ -9,8 +9,8 @@ import {NotificationRenderer} from "./NotificationRenderer";
 import Application from "./containers/Application";
 import "./style/index.scss";
 import store from "./ducks/store";
-import logger from "electron-log";
 import {DockerDemonNotificator} from "./DockerDemonNotificator";
+import {mainLogger} from "../main/logger";
 
 initSentry();
 
@@ -34,6 +34,10 @@ const render = (Component: () => JSX.Element): void => {
 
 initBLS("herumi")
     .then(() => {
-        render(Application);
+        try {
+            render(Application);
+        } catch (e) {
+            mainLogger.error(e);
+        }
     })
-    .catch((e) => logger.error(e));
+    .catch((e) => mainLogger.error(e));

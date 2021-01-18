@@ -1,6 +1,5 @@
 import {SecretKey} from "@chainsafe/bls";
 import electron, {remote} from "electron";
-import logger from "electron-log";
 import path from "path";
 import {getConfig} from "../../../config/config";
 import {Level} from "../../components/Notification/NotificationEnums";
@@ -10,6 +9,7 @@ import {DockerRegistry} from "../docker/docker-registry";
 import {networks} from "../eth2/networks";
 import {V4Keystore} from "../keystore";
 import {copyFile, removeDirRecursive} from "./file";
+import {cgLogger} from "../../../main/logger";
 
 export const cleanUpAccount = async (): Promise<void> => {
     const config = getConfig(electron.remote.app);
@@ -20,7 +20,7 @@ export const cleanUpAccount = async (): Promise<void> => {
             deleteBeaconNodeContainers(),
         ]);
     } catch (e) {
-        logger.error("Error occurred while cleaning up account: ", e.message);
+        cgLogger.error("Error occurred while cleaning up account: ", e.message);
     }
 };
 
@@ -71,7 +71,7 @@ export const deleteBeaconNodeContainers = async (): Promise<void> => {
                 try {
                     await DockerRegistry.removeContainerPermanently(network.dockerConfig.name);
                 } catch (e) {
-                    logger.error(`Failed to remove Docker container: ${e.message}`);
+                    cgLogger.error(`Failed to remove Docker container: ${e.message}`);
                 }
             }
         }),
