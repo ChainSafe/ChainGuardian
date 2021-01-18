@@ -61,6 +61,7 @@ export const BeaconNode: React.FC<IBeaconNodeProps> = ({
             <div className='row space-between'>
                 <h2>{capitalize(network)}</h2>
                 <div className='row slot-container'>
+                    <h3>slot</h3>
                     <h2>{status !== BeaconStatus.offline ? slot : "N/A"}</h2>
                     {status !== BeaconStatus.offline ? (
                         <>

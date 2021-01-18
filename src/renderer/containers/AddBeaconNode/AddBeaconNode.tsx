@@ -32,8 +32,8 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
             }
         };
 
-        const onGoSubmit = async (beaconNodeInput: string): Promise<void> => {
-            dispatch(addBeacon(beaconNodeInput));
+        const onGoSubmit = async (beaconNodeInput: string, network: string): Promise<void> => {
+            dispatch(addBeacon(beaconNodeInput, network));
             history.push(Routes.DASHBOARD_ROUTE);
         };
 

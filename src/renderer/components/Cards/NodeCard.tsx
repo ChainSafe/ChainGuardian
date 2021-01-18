@@ -28,6 +28,6 @@ export const NodeCard: React.FunctionComponent<INodeCardProps> = ({onClick, titl
                 </>
             ) : null}
         </div>
-        <span className='node-text time'>Slot height</span>
+        <span className='node-text time'>{isSyncing ? "Slot" : "Slot height"}</span>
     </div>
 );
