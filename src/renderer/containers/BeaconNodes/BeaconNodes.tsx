@@ -44,6 +44,7 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                                                     ? "Local Docker container"
                                                     : "Remote Beacon node"
                                             }
+                                            network={beacons.beacons[url].network}
                                             url={url}
                                             isSyncing={beacons.beacons[url].status === BeaconStatus.syncing}
                                             value={

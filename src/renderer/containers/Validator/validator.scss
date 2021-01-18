@@ -25,6 +25,7 @@
     position: relative;
 }
 .node-container{
+    width: 400px;
     padding: 24px;
     .add-button{
         position: absolute;
@@ -34,11 +35,12 @@
 }
 .node-grid-container{
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     grid-column-gap: 24px;
     grid-row-gap: 24px;
 }
 .node-card-container{
+    width: calc(400px - calc(2 * 24px));
     &.none{
         display: none;
     }
