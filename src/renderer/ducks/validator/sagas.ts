@@ -46,7 +46,6 @@ import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
 import {Validator} from "@chainsafe/lodestar-validator";
 import {Genesis} from "@chainsafe/lodestar-types";
-import * as logger from "electron-log";
 import {getAuthAccount} from "../auth/selectors";
 import {getValidator, getValidatorsByBeaconNode, BeaconValidators} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
@@ -61,6 +60,7 @@ import {ValidatorStatus} from "../../constants/validatorStatus";
 import {getBeaconByKey} from "../beacon/selectors";
 import {Beacon, BeaconStatus} from "../beacon/slice";
 import {updateStatus} from "../beacon/actions";
+import {cgLogger} from "../../../main/logger";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -86,17 +86,33 @@ function* loadValidatorsSaga(): Generator<
             validators.map(async (keyStore, index) => {
                 const beaconNodes = await database.validatorBeaconNodes.get(keyStore.getPublicKey());
                 const network = auth.getValidatorNetwork(keyStore.getPublicKey());
-                const balance = await getValidatorBalance(keyStore.getPublicKey(), network, beaconNodes?.nodes[0]);
-                return {
-                    name: keyStore.getName() ?? `Validator - ${index}`,
-                    status: await getValidatorStatus(keyStore.getPublicKey(), beaconNodes?.nodes[0]),
-                    publicKey: keyStore.getPublicKey(),
-                    network,
-                    balance,
-                    keystore: keyStore,
-                    isRunning: false,
-                    beaconNodes: beaconNodes?.nodes || [],
-                };
+                const name = keyStore.getName() ?? `Validator - ${index}`;
+                try {
+                    const balance = await getValidatorBalance(keyStore.getPublicKey(), network, beaconNodes?.nodes[0]);
+                    const status = await getValidatorStatus(keyStore.getPublicKey(), beaconNodes?.nodes[0]);
+                    cgLogger.info("Loading validator", name, "pubkey", keyStore.getPublicKey(), "network", network);
+                    return {
+                        publicKey: keyStore.getPublicKey(),
+                        name,
+                        status,
+                        network,
+                        balance,
+                        keystore: keyStore,
+                        isRunning: false,
+                        beaconNodes: beaconNodes?.nodes || [],
+                    };
+                } catch (e) {
+                    cgLogger.error(
+                        "Failed to load validator",
+                        name,
+                        "pubkey",
+                        keyStore.getPublicKey(),
+                        "network",
+                        network,
+                        "error",
+                        e.message,
+                    );
+                }
             }),
         );
         yield put(loadValidators(validatorArray));
@@ -115,6 +131,7 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
         isRunning: false,
         beaconNodes: [],
     };
+    cgLogger.info("Adding validator", validator.name, "pubkey", validator.publicKey, "network", validator.network);
 
     yield put(addValidator(validator));
     yield fork(validatorInfoUpdater, validator.publicKey, validator.network);
@@ -123,6 +140,7 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
 function* removeValidatorSaga(
     action: ReturnType<typeof removeActiveValidator>,
 ): Generator<SelectEffect | PutEffect, void, CGAccount | null> {
+    cgLogger.info("Removing validator", action.payload);
     const auth: CGAccount | null = yield select(getAuthAccount);
     deleteKeystore(auth.directory, action.payload);
     auth.removeValidator(action.meta);
@@ -191,7 +209,7 @@ function* startService(
             }
         }
 
-        const logger = new ValidatorLogger();
+        const logger = new ValidatorLogger(undefined, undefined, publicKey);
 
         if (!validatorServices[publicKey]) {
             validatorServices[publicKey] = new Validator({
@@ -203,17 +221,20 @@ function* startService(
                 graffiti: "ChainGuardian",
             });
         }
+        cgLogger.info("Starting validator", publicKey);
         yield validatorServices[publicKey].start();
 
         yield put(startValidatorService(logger, publicKey));
     } catch (e) {
-        logger.error("Failed to start validator", e.message);
+        cgLogger.error("Failed to start validator", e.message);
     }
 }
 
 function* stopService(action: ReturnType<typeof stopActiveValidatorService>): Generator<PutEffect | Promise<void>> {
     const publicKey = action.payload.publicKey.toHex();
     yield validatorServices[publicKey].stop();
+
+    cgLogger.info("Stopping validator", action.payload.publicKey.toHex());
 
     yield put(stopValidatorService(publicKey));
 }
@@ -228,6 +249,7 @@ function* setValidatorBeacon({
 > {
     const beaconNodes = yield database.validatorBeaconNodes.update(meta, payload);
     yield put(storeValidatorBeaconNodes(beaconNodes.nodes, meta));
+    cgLogger.info("Set validator", meta, "beacon node/s", beaconNodes.nodes);
     const validator = yield select(getValidator, {publicKey: meta});
     if (validator.status === ValidatorStatus.NO_BEACON_NODE) {
         const beacon = validator.beaconNodes.length ? validator.beaconNodes[0] : beaconNodes.nodes[0];
@@ -278,7 +300,7 @@ function* validatorInfoUpdater(
                 }
             }
         } catch (err) {
-            logger.error("update validator error:", err.message);
+            cgLogger.error("update validator error:", err.message);
         }
     }
 }

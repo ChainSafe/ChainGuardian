@@ -1,11 +1,10 @@
-import * as logger from "electron-log";
-
 import database from "../db/api/database";
 import {getNetworkConfig} from "../eth2/networks";
 import {SupportedNetworks} from "../eth2/supportedNetworks";
 import {Container, IDocker} from "./container";
 import {DockerRegistry} from "./docker-registry";
 import {IDockerRunParams} from "./type";
+import {cgLogger} from "../../../main/logger";
 
 export class BeaconChain extends Container {
     public static async startBeaconChain(
@@ -28,9 +27,9 @@ export class BeaconChain extends Container {
         });
         DockerRegistry.addContainer(imageName, bc);
 
-        logger.info(`Going to run docker beacon chain ${imageName}...`);
+        cgLogger.info(`Going to run docker beacon chain ${imageName}...`);
         bc.run();
-        logger.info(`${imageName} docker beacon chain should be up!`);
+        cgLogger.info(`${imageName} docker beacon chain should be up!`);
         if (waitUntilReady) {
             while (!(await bc.isRunning())) {
                 /* */
@@ -42,14 +41,14 @@ export class BeaconChain extends Container {
     public static async startAllLocalBeaconNodes(): Promise<void> {
         const savedNodes = await database.beacons.get();
         if (savedNodes) {
-            logger.info("Going to start all stopped local beacon nodes...");
+            cgLogger.info("Going to start all stopped local beacon nodes...");
             for (const beacon of savedNodes.beacons) {
                 if (beacon.docker) {
                     const image = await Container.getImageName(beacon.docker.id);
                     if (image) {
                         await BeaconChain.restartBeaconChainContainer(beacon.docker.id, image);
                     } else {
-                        logger.info(`Container ${beacon.docker.id} not found.`);
+                        cgLogger.warn(`Container ${beacon.docker.id} not found.`);
                     }
                 }
             }
@@ -67,11 +66,11 @@ export class BeaconChain extends Container {
         });
         await bc.startStoppedContainer();
         DockerRegistry.addContainer(name, bc);
-        logger.info(`Started ${name} local beacon node.`);
+        cgLogger.info(`Started ${name} local beacon node.`);
     }
     public async run(): Promise<IDocker> {
         if (await Container.exists(this.params.name)) {
-            logger.info(`Going to start existing container ${this.params.name}`);
+            cgLogger.info(`Going to start existing container ${this.params.name}`);
             return await super.startStoppedContainer();
         }
         return await super.run();
