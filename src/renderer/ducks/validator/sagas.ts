@@ -139,13 +139,15 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
 
 function* removeValidatorSaga(
     action: ReturnType<typeof removeActiveValidator>,
-): Generator<SelectEffect | PutEffect, void, CGAccount | null> {
+): Generator<SelectEffect | PutEffect | Promise<void>, void, CGAccount | null> {
     cgLogger.info("Removing validator", action.payload);
+    yield put(unsubscribeToBlockListening(action.payload));
+
     const auth: CGAccount | null = yield select(getAuthAccount);
     deleteKeystore(auth.directory, action.payload);
     auth.removeValidator(action.meta);
 
-    yield put(unsubscribeToBlockListening(action.payload));
+    yield database.validator.balance.delete(action.payload);
     yield put(removeValidator(action.payload));
 }
 
