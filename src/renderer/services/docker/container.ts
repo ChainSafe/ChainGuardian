@@ -1,7 +1,7 @@
 import {dockerPath} from "./path";
 import {IDockerRunParams} from "./type";
 import {Command} from "./command";
-import {runCmd, runCmdAsync, runDetached} from "../utils/cmd";
+import {ICmdRun, runCmd, runCmdAsync, runDetached} from "../utils/cmd";
 import {Readable} from "stream";
 import {extractDockerVersion} from "./utils";
 import {ICGLogger, ILogRecord} from "../utils/logging/interface";
@@ -257,11 +257,8 @@ export abstract class Container {
     private async runDockerLogger(): Promise<void> {
         const onExit = async (code: number | null, signal: string | null): Promise<void> => {
             if (signal === "SIGTERM") {
-                console.error("fail signal");
                 const newLogs = runCmd(await Command.logs(this.params.name, true, 0), {onExit});
-                this.docker = {name: this.params.name, stdout: newLogs.stdout, stderr: newLogs.stderr};
-                this.logger.addStreamSource(newLogs.stdout, "stdout");
-                this.logger.addStreamSource(newLogs.stderr, "stderr");
+                this.addCmdStreamSource(newLogs);
             } else {
                 // TODO: check codes and signals for other operative systems (win, apple)
                 mainLogger.warn("unhandled exit logger process", code, signal);
@@ -269,10 +266,14 @@ export abstract class Container {
         };
         // Use the same way as docker run
         const logs = runCmd(await Command.logs(this.params.name, true, 1000), {onExit});
-        this.docker = {name: this.params.name, stdout: logs.stdout, stderr: logs.stderr};
-        this.logger.addStreamSource(logs.stdout, "stdout");
-        this.logger.addStreamSource(logs.stderr, "stderr");
+        this.addCmdStreamSource(logs);
         this.storeLogs(this.params.name);
+    }
+
+    private addCmdStreamSource(run: ICmdRun): void {
+        this.docker = {name: this.params.name, stdout: run.stdout, stderr: run.stderr};
+        this.logger.addStreamSource(run.stdout, "stdout");
+        this.logger.addStreamSource(run.stderr, "stderr");
     }
 
     // TODO: find more elegant solution for writing logs to file
