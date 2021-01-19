@@ -84,7 +84,7 @@ function* loadValidatorsSaga(): Generator<
         const validators: ICGKeystore[] = yield auth.loadValidators();
         const validatorArray: IValidator[] = yield Promise.all(
             validators.map(async (keyStore, index) => {
-                const beaconNodes = await database.validatorBeaconNodes.get(keyStore.getPublicKey());
+                const beaconNodes = await database.validator.beaconNodes.get(keyStore.getPublicKey());
                 const network = auth.getValidatorNetwork(keyStore.getPublicKey());
                 const name = keyStore.getName() ?? `Validator - ${index}`;
                 try {
@@ -148,6 +148,7 @@ function* removeValidatorSaga(
     auth.removeValidator(action.meta);
 
     yield database.validator.balance.delete(action.payload);
+    yield database.validator.beaconNodes.delete(action.payload);
     yield put(removeValidator(action.payload));
 }
 
@@ -249,7 +250,7 @@ function* setValidatorBeacon({
     void,
     ValidatorBeaconNodes & IValidator & ValidatorStatus
 > {
-    const beaconNodes = yield database.validatorBeaconNodes.update(meta, payload);
+    const beaconNodes = yield database.validator.beaconNodes.update(meta, payload);
     yield put(storeValidatorBeaconNodes(beaconNodes.nodes, meta));
     cgLogger.info("Set validator", meta, "beacon node/s", beaconNodes.nodes);
     const validator = yield select(getValidator, {publicKey: meta});

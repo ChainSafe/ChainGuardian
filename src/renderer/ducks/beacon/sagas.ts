@@ -136,7 +136,7 @@ function* removeBeaconSaga({
         const beaconValidators = yield select(getValidatorsByBeaconNode);
         if (beaconValidators[payload]?.length) {
             for (const {publicKey} of beaconValidators[payload]) {
-                const {nodes} = yield database.validatorBeaconNodes.remove(publicKey, payload);
+                const {nodes} = yield database.validator.beaconNodes.remove(publicKey, payload);
                 yield put(storeValidatorBeaconNodes(nodes, publicKey));
                 if (!nodes.length) {
                     yield put(setValidatorStatus(ValidatorStatus.NO_BEACON_NODE, publicKey));
