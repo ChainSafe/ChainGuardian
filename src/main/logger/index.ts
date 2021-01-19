@@ -15,7 +15,7 @@ export const cgLogger = createLogger("chainGuardian", "chainGuardian.log");
 
 export const getBeaconLogfileFromURL = (host: string): string => {
     const url = new URL(host);
-    let sanitizedName = (url.host + url.pathname).replace(/[^a-zA-Z0-9:]/g, "_");
+    let sanitizedName = (url.host + url.pathname).replace(/[^a-zA-Z0-9]/g, "_");
     if (sanitizedName[sanitizedName.length - 1] === "_") sanitizedName = sanitizedName.slice(0, -1);
     return `beacon/${sanitizedName}.log`;
 };
