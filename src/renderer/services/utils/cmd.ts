@@ -52,11 +52,15 @@ export interface ICmdRun {
     abort: () => void;
 }
 
-export function runCmd(command: string, onClose?: (code: number) => void): ICmdRun {
+type RunCmdOptions = {onClose?: (code: number) => void; onExit?: (code: number | null, signal: string | null) => void};
+export function runCmd(command: string, {onClose, onExit}: RunCmdOptions = {}): ICmdRun {
     const process = child.exec(command);
     if (process.stdout && process.stderr) {
         if (onClose) {
-            process.on("close", (code) => onClose(code));
+            process.on("close", onClose);
+        }
+        if (onExit) {
+            process.on("exit", onExit);
         }
 
         return {
