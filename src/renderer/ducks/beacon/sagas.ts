@@ -126,11 +126,12 @@ function* storeBeacon({payload: {url, docker}}: ReturnType<typeof addBeacon>): G
 function* removeBeaconSaga({
     payload,
 }: ReturnType<typeof removeBeacon>): Generator<
-    SelectEffect | PutEffect | Promise<[boolean, boolean]> | Promise<ValidatorBeaconNodes>,
+    SelectEffect | PutEffect | Promise<[boolean, boolean]> | Promise<ValidatorBeaconNodes> | Promise<void>,
     void,
     [boolean, boolean] & BeaconValidators & ValidatorBeaconNodes
 > {
     const [removed] = yield database.beacons.remove(payload);
+    yield database.networkMetrics.delete(payload);
     if (removed) {
         const beaconValidators = yield select(getValidatorsByBeaconNode);
         if (beaconValidators[payload]?.length) {
