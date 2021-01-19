@@ -49,9 +49,9 @@ export class Command {
         return `"${path}" restart ${containerName}`;
     }
 
-    public static async logs(containerName: string, follow?: boolean): Promise<string> {
+    public static async logs(containerName: string, follow?: boolean, tail?: number): Promise<string> {
         const path = await dockerPath.getPath();
-        return `"${path}" logs${follow ? " --follow" : ""} ${containerName}`;
+        return `"${path}" logs${follow ? " --follow" : ""}${tail ? " --tail " + tail : ""} ${containerName}`;
     }
 
     public static async kill(containerName: string): Promise<string> {
