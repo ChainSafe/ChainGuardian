@@ -2,19 +2,24 @@ import React, {useEffect, useState} from "react";
 import {LogStream} from "../../components/LogStream/LogStream";
 import {BeaconChain} from "../../services/docker/chain";
 import {DockerRegistry} from "../../services/docker/docker-registry";
-import {Beacon} from "../../ducks/beacon/slice";
+import {Beacon, BeaconStatus} from "../../ducks/beacon/slice";
 import {BeaconNodeResponseTimeChart} from "./BeaconNodeResponseTimeChart";
 import {BeaconNodeResponseErrorPieChart, ResponseErrorPieData} from "./BeaconNodeResponseErrorPieChart";
 import database from "../../services/db/api/database";
 import {SimpleLineChartRecord} from "../../components/SimpleLineChart/SimpleLineChart";
 import {getLatencyChartData, getNetworkErrorPieData} from "../../services/utils/charts";
+import ReactTooltip from "react-tooltip";
+import {capitalize} from "../../services/utils/formatting";
 
 interface IBeaconNodeProps {
     beacon: Beacon;
     showTitle?: boolean;
 }
 
-export const BeaconNode: React.FC<IBeaconNodeProps> = ({beacon: {url, docker}, showTitle = true}) => {
+export const BeaconNode: React.FC<IBeaconNodeProps> = ({
+    beacon: {url, network, slot, status, docker},
+    showTitle = true,
+}) => {
     const container = docker && (DockerRegistry.getContainer(docker.id) as BeaconChain);
 
     const [avgLatency, setAvgLatency] = useState<SimpleLineChartRecord[]>([]);
@@ -52,6 +57,23 @@ export const BeaconNode: React.FC<IBeaconNodeProps> = ({beacon: {url, docker}, s
                     <h5>{url}</h5>
                 </div>
             )}
+
+            <div className='row space-between'>
+                <h2>{capitalize(network)}</h2>
+                <div className='row slot-container'>
+                    <h3>slot</h3>
+                    <h2>{status !== BeaconStatus.offline ? slot : "N/A"}</h2>
+                    {status !== BeaconStatus.offline ? (
+                        <>
+                            <ReactTooltip />
+                            <span
+                                className={status === BeaconStatus.syncing ? "sync-progress-icon" : "success-icon"}
+                                data-tip={status === BeaconStatus.syncing ? "Syncing" : "Synced"}
+                            />
+                        </>
+                    ) : null}
+                </div>
+            </div>
 
             <div className='beacon-node-charts-container'>
                 <BeaconNodeResponseTimeChart data={avgLatency} ticks={avgLatencyTicks} />

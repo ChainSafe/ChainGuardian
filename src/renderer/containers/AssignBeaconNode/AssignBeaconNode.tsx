@@ -43,7 +43,8 @@ export const AssignBeaconNode: React.FC = () => {
                     <thead>
                         <tr>
                             <th />
-                            <th />
+                            <th>url</th>
+                            <th>network</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,6 +54,7 @@ export const AssignBeaconNode: React.FC = () => {
                                     <CheckBox checked={key === selected} id={key} />
                                 </td>
                                 <td>{beaconDictionary[key].url}</td>
+                                <td>{beaconDictionary[key].network}</td>
                             </tr>
                         ))}
                     </tbody>

@@ -95,7 +95,7 @@ function* startLocalBeaconSaga({
         switch (network) {
             default:
                 yield put(
-                    addBeacon(`http://localhost:${rpcPort}`, {
+                    addBeacon(`http://localhost:${rpcPort}`, network, {
                         id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, {
                             ports,
                             // eslint-disable-next-line max-len
@@ -162,9 +162,10 @@ function* initializeBeaconsFromStore(): Generator<
     | Promise<boolean>
     | AllEffect<CallEffect>
     | AllEffect<ForkEffect>
+    | AllEffect<INetworkConfig>
     | TakeEffect,
     void,
-    Beacons & ({syncing: boolean; slot: number} | null)[] & boolean
+    Beacons & ({syncing: boolean; slot: number} | null)[] & boolean & INetworkConfig[]
 > {
     const store = yield database.beacons.get();
     if (store !== null) {
@@ -186,6 +187,7 @@ function* initializeBeaconsFromStore(): Generator<
         }
 
         const stats = yield all(beacons.map(({url}) => call(getBeaconStatus, url)));
+        const networks = yield all(beacons.map(({url}) => call(readBeaconChainNetwork, url)));
 
         yield all(beacons.map(({url}) => fork(watchOnHead, url)));
 
@@ -193,6 +195,7 @@ function* initializeBeaconsFromStore(): Generator<
             addBeacons(
                 beacons.map(({url, docker}, index) => ({
                     url,
+                    network: networks[index]?.networkName || "Unknown",
                     docker: docker.id !== "" ? docker : undefined,
                     slot: stats[index]?.slot || 0,
                     status:
