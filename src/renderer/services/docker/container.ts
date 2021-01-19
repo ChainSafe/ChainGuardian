@@ -1,7 +1,7 @@
 import {dockerPath} from "./path";
 import {IDockerRunParams} from "./type";
 import {Command} from "./command";
-import {ICmdRun, runCmd, runCmdAsync, runDetached} from "../utils/cmd";
+import {ICmdRun, runCmd, runCmdAsync} from "../utils/cmd";
 import {Readable} from "stream";
 import {extractDockerVersion} from "./utils";
 import {ICGLogger, ILogRecord} from "../utils/logging/interface";
@@ -136,8 +136,7 @@ export abstract class Container {
                 throw new Error("Unable to run instance because docker not installed.");
             }
             try {
-                // start new docker instance
-                runDetached(await Command.run(this.params));
+                runCmd(await Command.run(this.params));
                 await this.runDockerLogger();
                 cgLogger.info(`Docker instance ${this.docker.name} started.`);
                 return this.docker;

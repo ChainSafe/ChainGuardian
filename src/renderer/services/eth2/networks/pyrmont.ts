@@ -37,5 +37,6 @@ export const PyrmontConfig: INetworkConfig = Object.freeze({
                 host: "5052",
             },
         ],
+        detached: true,
     },
 });

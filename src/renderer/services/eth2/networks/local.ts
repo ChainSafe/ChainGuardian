@@ -34,5 +34,6 @@ export const LocalhostConfig: INetworkConfig = Object.freeze({
                 host: "5052",
             },
         ],
+        detached: true,
     },
 });
