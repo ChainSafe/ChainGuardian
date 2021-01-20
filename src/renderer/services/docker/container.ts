@@ -1,7 +1,7 @@
 import {dockerPath} from "./path";
 import {IDockerRunParams} from "./type";
 import {Command} from "./command";
-import {ICmdRun, runCmd, runCmdAsync, runDetached} from "../utils/cmd";
+import {ICmdRun, runCmd, runCmdAsync} from "../utils/cmd";
 import {Readable} from "stream";
 import {extractDockerVersion} from "./utils";
 import {ICGLogger, ILogRecord} from "../utils/logging/interface";
@@ -136,8 +136,7 @@ export abstract class Container {
                 throw new Error("Unable to run instance because docker not installed.");
             }
             try {
-                // start new docker instance
-                runDetached(await Command.run(this.params));
+                runCmd(await Command.run(this.params));
                 await this.runDockerLogger();
                 cgLogger.info(`Docker instance ${this.docker.name} started.`);
                 return this.docker;
@@ -256,11 +255,12 @@ export abstract class Container {
 
     private async runDockerLogger(): Promise<void> {
         const onExit = async (code: number | null, signal: string | null): Promise<void> => {
-            if (signal === "SIGTERM") {
-                const newLogs = runCmd(await Command.logs(this.params.name, true, 0), {onExit});
+            this.logger.removeAllStreamSourceListeners(logs.stdout);
+            this.logger.removeAllStreamSourceListeners(logs.stderr);
+            if (signal === "SIGTERM" || signal === "SIGINT" || (code === 1 && signal === null)) {
+                const newLogs = runCmd(await Command.logs(this.params.name, true, 1), {onExit});
                 this.addCmdStreamSource(newLogs);
             } else {
-                // TODO: check codes and signals for other operative systems (win, apple)
                 mainLogger.warn("unhandled exit logger process", code, signal);
             }
         };

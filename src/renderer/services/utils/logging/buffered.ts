@@ -8,8 +8,7 @@ export interface IBufferedLoggerOptions {
 }
 
 export class BufferedLogger implements ICGLogger {
-    private cachedLogs: FifoQueue<ILogRecord>;
-
+    private readonly cachedLogs: FifoQueue<ILogRecord>;
     private readonly opts: IBufferedLoggerOptions;
 
     public constructor(opts?: Partial<IBufferedLoggerOptions>) {
@@ -43,6 +42,10 @@ export class BufferedLogger implements ICGLogger {
         stream.on("data", (chunk) => {
             this.push(chunk, source);
         });
+    }
+
+    public removeAllStreamSourceListeners(stream: Readable): void {
+        stream.removeAllListeners();
     }
 
     public push(log: string | Uint8Array, source: LogSource = "unknown"): void {

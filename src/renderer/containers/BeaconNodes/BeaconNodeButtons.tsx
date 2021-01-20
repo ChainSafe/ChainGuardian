@@ -41,7 +41,10 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
     useEffect(() => {
         if (image) {
             if (isRunning && beacon.status === BeaconStatus.offline) setIsRunning(false);
-            else DockerRegistry.getContainer(image).isRunning().then(setIsRunning);
+            else {
+                const container = DockerRegistry.getContainer(image);
+                if (container) container.isRunning().then(setIsRunning);
+            }
         }
     }, [beacon.status]);
 

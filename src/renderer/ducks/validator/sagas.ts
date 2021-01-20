@@ -84,7 +84,7 @@ function* loadValidatorsSaga(): Generator<
         const validators: ICGKeystore[] = yield auth.loadValidators();
         const validatorArray: IValidator[] = yield Promise.all(
             validators.map(async (keyStore, index) => {
-                const beaconNodes = await database.validatorBeaconNodes.get(keyStore.getPublicKey());
+                const beaconNodes = await database.validator.beaconNodes.get(keyStore.getPublicKey());
                 const network = auth.getValidatorNetwork(keyStore.getPublicKey());
                 const name = keyStore.getName() ?? `Validator - ${index}`;
                 try {
@@ -139,13 +139,18 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
 
 function* removeValidatorSaga(
     action: ReturnType<typeof removeActiveValidator>,
-): Generator<SelectEffect | PutEffect, void, CGAccount | null> {
+): Generator<SelectEffect | PutEffect | AllEffect<Promise<void>>, void, CGAccount | null> {
     cgLogger.info("Removing validator", action.payload);
+    yield put(unsubscribeToBlockListening(action.payload));
+
     const auth: CGAccount | null = yield select(getAuthAccount);
     deleteKeystore(auth.directory, action.payload);
     auth.removeValidator(action.meta);
 
-    yield put(unsubscribeToBlockListening(action.payload));
+    yield all([
+        database.validator.balance.delete(action.payload),
+        database.validator.beaconNodes.delete(action.payload),
+    ]);
     yield put(removeValidator(action.payload));
 }
 
@@ -247,7 +252,7 @@ function* setValidatorBeacon({
     void,
     ValidatorBeaconNodes & IValidator & ValidatorStatus
 > {
-    const beaconNodes = yield database.validatorBeaconNodes.update(meta, payload);
+    const beaconNodes = yield database.validator.beaconNodes.update(meta, payload);
     yield put(storeValidatorBeaconNodes(beaconNodes.nodes, meta));
     cgLogger.info("Set validator", meta, "beacon node/s", beaconNodes.nodes);
     const validator = yield select(getValidator, {publicKey: meta});
