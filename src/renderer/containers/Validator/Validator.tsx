@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {PasswordPrompt} from "../../components/Prompt/PasswordPrompt";
 import {Routes} from "../../constants/routes";
 import {calculateROI} from "../../services/utils/math";
-import {AddButton} from "../../components/Button/ButtonAction";
+import {EditButton} from "../../components/Button/ButtonAction";
 import {ButtonDestructive, ButtonPrimary} from "../../components/Button/ButtonStandard";
 import {ValidatorStat} from "../../components/Cards/ValidatorStat";
 import {PrivateKeyField} from "../../components/PrivateKeyField/PrivateKeyField";
@@ -76,7 +76,7 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
                     </div>
 
                     <Link to={Routes.ASSIGN_BEACON_NODE.replace(":validatorKey", props.publicKey)}>
-                        <AddButton />
+                        <EditButton />
                     </Link>
                 </div>
             </div>

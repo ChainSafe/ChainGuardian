@@ -4,6 +4,8 @@ import add from "../../assets/img/buttons/Add.svg";
 import copyDefault from "../../assets/img/buttons/CopyDefault.svg";
 import ReactTooltip from "react-tooltip";
 import {getRandomInt} from "../../services/mnemonic/utils/random";
+import {faPen} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export interface IActionButtonProps {
     onClick?: () => void;
@@ -70,6 +72,14 @@ export const AddButton: React.FunctionComponent<IActionButtonProps> = ({onClick}
     return (
         <button className={"add-button"} onClick={onClick}>
             <img className={"icon"} src={add} />
+        </button>
+    );
+};
+
+export const EditButton: React.FunctionComponent<IActionButtonProps> = ({onClick}) => {
+    return (
+        <button className='add-button' onClick={onClick}>
+            <FontAwesomeIcon className='icon' icon={faPen} size='lg' transform={{x: 1}} />
         </button>
     );
 };

@@ -1,36 +1,24 @@
 import React, {ReactElement, useEffect, useState} from "react";
-import {useHistory} from "react-router";
-import {useDispatch} from "react-redux";
 import {ButtonSecondary} from "../../../components/Button/ButtonStandard";
-import {exportKeystore} from "../../../services/utils/account";
 import {IValidator} from "../../../ducks/validator/slice";
-import {createNotification} from "../../../ducks/notification/actions";
 import {SimpleLineChart, SimpleLineChartRecord} from "../../../components/SimpleLineChart/SimpleLineChart";
 import {ResponsiveContainer} from "recharts";
 import database from "../../../services/db/api/database";
 import {utils} from "ethers";
+import {shell} from "electron";
+import ReactTooltip from "react-tooltip";
 
 interface IValidatorStatsProps {
     validator: IValidator;
 }
 
 export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement => {
-    const history = useHistory();
-    const dispatch = useDispatch();
     const [data, setData] = useState<SimpleLineChartRecord[]>([]);
 
-    const onExportValidator = (): void => {
-        const result = exportKeystore(validator);
-        // show notification only if success or error, not on cancel
-        if (result) {
-            dispatch(
-                createNotification({
-                    source: history.location.pathname,
-                    title: result.message,
-                    level: result.level,
-                }),
-            );
-        }
+    const onBeaconChainClick = (): void => {
+        const network = validator.network !== "mainet" ? validator.network + "." : "";
+        const validatorId = validator.publicKey.substr(2);
+        shell.openExternal(`https://${network}beaconcha.in/validator/${validatorId}`);
     };
 
     useEffect(() => {
@@ -56,7 +44,10 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
         <div className='validator-details-stats'>
             <div className='row space-between'>
                 <h2>{validator.name}</h2>
-                <ButtonSecondary onClick={onExportValidator}>EXPORT</ButtonSecondary>
+                <ReactTooltip />
+                <ButtonSecondary onClick={onBeaconChainClick} data-tip='Ethereum 2.0 Beacon Chain Explorer'>
+                    Explorer
+                </ButtonSecondary>
             </div>
 
             <div className='node-graph-container' style={{width: "100%"}}>
