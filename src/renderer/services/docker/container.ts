@@ -255,11 +255,12 @@ export abstract class Container {
 
     private async runDockerLogger(): Promise<void> {
         const onExit = async (code: number | null, signal: string | null): Promise<void> => {
-            if (signal === "SIGTERM") {
-                const newLogs = runCmd(await Command.logs(this.params.name, true, 0), {onExit});
+            this.logger.removeAllStreamSourceListeners(logs.stdout);
+            this.logger.removeAllStreamSourceListeners(logs.stderr);
+            if (signal === "SIGTERM" || signal === "SIGINT" || (code === 1 && signal === null)) {
+                const newLogs = runCmd(await Command.logs(this.params.name, true, 1), {onExit});
                 this.addCmdStreamSource(newLogs);
             } else {
-                // TODO: check codes and signals for other operative systems (win, apple)
                 mainLogger.warn("unhandled exit logger process", code, signal);
             }
         };
