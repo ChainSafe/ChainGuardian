@@ -48,8 +48,11 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                                             url={url}
                                             isSyncing={beacons.beacons[url].status === BeaconStatus.syncing}
                                             value={
-                                                beacons.beacons[url].status !== BeaconStatus.offline
+                                                beacons.beacons[url].status !== BeaconStatus.offline &&
+                                                beacons.beacons[url].status !== BeaconStatus.starting
                                                     ? beacons.beacons[url].slot
+                                                    : beacons.beacons[url].status === BeaconStatus.starting
+                                                    ? "starting"
                                                     : "N/A"
                                             }
                                         />

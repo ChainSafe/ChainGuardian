@@ -62,12 +62,22 @@ export const BeaconNode: React.FC<IBeaconNodeProps> = ({
                 <h2>{capitalize(network)}</h2>
                 <div className='row slot-container'>
                     <h3>slot</h3>
-                    <h2>{status !== BeaconStatus.offline ? slot : "N/A"}</h2>
+                    <h2>
+                        {status !== BeaconStatus.offline
+                            ? status === BeaconStatus.starting
+                                ? "starting"
+                                : slot
+                            : "N/A"}
+                    </h2>
                     {status !== BeaconStatus.offline ? (
                         <>
                             <ReactTooltip />
                             <span
-                                className={status === BeaconStatus.syncing ? "sync-progress-icon" : "success-icon"}
+                                className={
+                                    status === BeaconStatus.syncing || status === BeaconStatus.starting
+                                        ? "sync-progress-icon"
+                                        : "success-icon"
+                                }
                                 data-tip={status === BeaconStatus.syncing ? "Syncing" : "Synced"}
                             />
                         </>
