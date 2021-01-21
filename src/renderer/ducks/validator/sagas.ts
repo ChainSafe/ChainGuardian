@@ -294,7 +294,7 @@ function* validatorInfoUpdater(
                     const balance = yield getValidatorBalance(publicKey, network, payload.beacon, payload.slot);
                     if (balance) {
                         yield database.validator.balance.addRecords(publicKey, [
-                            {balance, epoch: BigInt(payload.slot)},
+                            {balance, epoch: BigInt(payload.epoch)},
                         ]);
                         yield put(updateValidatorBalance(publicKey, balance));
                     }
