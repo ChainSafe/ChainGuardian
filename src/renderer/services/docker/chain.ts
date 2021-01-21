@@ -42,7 +42,7 @@ export class BeaconChain extends Container {
         const savedNodes = await database.beacons.get();
         if (savedNodes) {
             cgLogger.info("Going to start all stopped local beacon nodes...");
-            for (const beacon of savedNodes.beacons) {
+            for (const beacon of savedNodes.beacons.filter(({docker}) => docker.id)) {
                 if (beacon.docker) {
                     const image = await Container.getImageName(beacon.docker.id);
                     if (image) {
