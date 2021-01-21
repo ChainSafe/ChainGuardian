@@ -16,7 +16,7 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
     const [data, setData] = useState<SimpleLineChartRecord[]>([]);
 
     const onBeaconChainClick = (): void => {
-        const network = validator.network !== "mainet" ? validator.network + "." : "";
+        const network = validator.network !== "mainnet" ? validator.network + "." : "";
         const validatorId = validator.publicKey.substr(2);
         shell.openExternal(`https://${network}beaconcha.in/validator/${validatorId}`);
     };
