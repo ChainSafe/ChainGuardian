@@ -1,0 +1,30 @@
+.switch-container {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+
+
+  p {
+    margin: 0;
+    color: $neutral-100;
+    font-weight: bold;
+
+    &:first-of-type {
+      padding-right: 8px;
+    }
+    &:last-of-type {
+      padding-left: 6px;
+    }
+  }
+
+  .react-switch-bg {
+    background-color: $neutral-500 !important;
+  }
+
+  .react-switch-handle {
+    background-color: $primary-blue-400 !important;
+    &:hover {
+      background-color: $primary-blue-300 !important;
+    }
+  }
+}
