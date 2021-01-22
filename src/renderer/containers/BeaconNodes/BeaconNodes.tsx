@@ -44,11 +44,15 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
                                                     ? "Local Docker container"
                                                     : "Remote Beacon node"
                                             }
+                                            network={beacons.beacons[url].network}
                                             url={url}
                                             isSyncing={beacons.beacons[url].status === BeaconStatus.syncing}
                                             value={
-                                                beacons.beacons[url].status !== BeaconStatus.offline
+                                                beacons.beacons[url].status !== BeaconStatus.offline &&
+                                                beacons.beacons[url].status !== BeaconStatus.starting
                                                     ? beacons.beacons[url].slot
+                                                    : beacons.beacons[url].status === BeaconStatus.starting
+                                                    ? "starting"
                                                     : "N/A"
                                             }
                                         />
@@ -56,16 +60,20 @@ export const BeaconNodesContainer: React.FunctionComponent = () => {
 
                                     <div className='flex-column stretch space-between'>
                                         <div className='flex-column'>
-                                            <h5>Connected validators:</h5>
-
-                                            {beaconValidators[url] &&
-                                                beaconValidators[url].map(({name, publicKey}) => (
-                                                    <div className='flex-column' key={name}>
-                                                        <p>
-                                                            <b>{name} </b>- {truncatePublicKey(publicKey)}
-                                                        </p>
-                                                    </div>
-                                                ))}
+                                            {beaconValidators[url] ? (
+                                                <>
+                                                    <h5>Connected validators:</h5>
+                                                    {beaconValidators[url].map(({name, publicKey}) => (
+                                                        <div className='flex-column' key={name}>
+                                                            <p>
+                                                                <b>{name} </b>- {truncatePublicKey(publicKey)}
+                                                            </p>
+                                                        </div>
+                                                    ))}
+                                                </>
+                                            ) : (
+                                                <h5>No connected validators</h5>
+                                            )}
                                         </div>
 
                                         <BeaconNodeButtons image={beacons.beacons[url].docker?.id} url={url} />

@@ -78,6 +78,17 @@ a {
     font-weight: bold;
 }
 
+.dn_content {
+    font-family: "Palanquin", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 28px;
+    color: $neutral-300;
+    text-align: center;
+    margin: 15px 5px 50px;
+}
+
 /**
  * Global scrollbar styling
  */

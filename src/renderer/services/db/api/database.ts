@@ -13,6 +13,7 @@ import {ValidatorAttestationEffectivenessRepository} from "./repositories/valida
 interface IValidatorDB {
     network: ValidatorNetworkRepository;
     balance: ValidatorBalanceRepository;
+    beaconNodes: ValidatorBeaconNodesRepository;
     attestationEffectiveness: ValidatorAttestationEffectivenessRepository;
 }
 export class CGDatabase extends DatabaseService {
@@ -21,7 +22,6 @@ export class CGDatabase extends DatabaseService {
     public validator: IValidatorDB;
     public settings: SettingsRepository;
     public beacons: BeaconsRepository;
-    public validatorBeaconNodes: ValidatorBeaconNodesRepository;
     public networkMetrics: NetworkMetricsRepository;
 
     public constructor(opts: IDatabaseApiOptions) {
@@ -31,11 +31,11 @@ export class CGDatabase extends DatabaseService {
         this.validator = {
             network: new ValidatorNetworkRepository(this.db),
             balance: new ValidatorBalanceRepository(this.db),
+            beaconNodes: new ValidatorBeaconNodesRepository(this.db),
             attestationEffectiveness: new ValidatorAttestationEffectivenessRepository(this.db),
         };
         this.settings = new SettingsRepository(this.db);
         this.beacons = new BeaconsRepository(this.db);
-        this.validatorBeaconNodes = new ValidatorBeaconNodesRepository(this.db);
         this.networkMetrics = new NetworkMetricsRepository(this.db);
     }
 }

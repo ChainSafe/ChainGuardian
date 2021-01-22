@@ -7,6 +7,7 @@ import {wordlists} from "bip39";
 import {randBetween} from "@chainsafe/lodestar-utils";
 import {useDispatch} from "react-redux";
 import {setName as setNameAction} from "../../../ducks/register/actions";
+import {capitalize} from "../../../services/utils/formatting";
 
 export const ConfigureValidatorContainer: React.FC = () => {
     const history = useHistory();
@@ -14,8 +15,6 @@ export const ConfigureValidatorContainer: React.FC = () => {
     const [defaultName, setDefaultName] = useState("");
 
     useEffect(() => {
-        const capitalize = (string: string): string => string.charAt(0).toUpperCase() + string.slice(1);
-
         const englishWordList = wordlists["english"];
         setDefaultName(
             "Validator " +

@@ -81,9 +81,9 @@ export class HttpClient {
 const handleError = (error: AxiosError): Error => {
     let message: string;
     if (error.response) {
-        message = error.response.data || error.response.statusText;
+        message = JSON.stringify(error.response.data) || error.response.statusText;
     } else {
-        message = error.message.toString();
+        message = JSON.stringify(error.toJSON());
     }
     return new Error(message);
 };

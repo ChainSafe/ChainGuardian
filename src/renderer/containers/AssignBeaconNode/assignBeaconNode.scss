@@ -8,15 +8,30 @@
   th {
     font-size: 1.1rem;
     padding-bottom: 10px;
+    text-align: center;
+  }
+
+  th:nth-child(2) {
+    text-align: left;
   }
 
   tbody {
     tr {
       cursor: pointer;
+      border-bottom: rgba($neutral-600, 0.6) solid 1px;
+    }
+
+    tr:last-child {
+      border-bottom: none;
     }
 
     td {
       padding: 10px 5px;
+    }
+
+    td:last-child {
+      border-left: rgba($neutral-600, 0.6) solid 1px;
+      text-align: center;
     }
 
     tr:hover {

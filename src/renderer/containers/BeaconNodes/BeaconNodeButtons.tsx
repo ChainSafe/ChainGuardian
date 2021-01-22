@@ -7,7 +7,7 @@ import {ConfirmModal} from "../../components/ConfirmModal/ConfirmModal";
 import {Loading} from "../../components/Loading/Loading";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 import {createNotification} from "../../ducks/notification/actions";
-import {removeBeacon} from "../../ducks/beacon/actions";
+import {removeBeacon, updateStatus} from "../../ducks/beacon/actions";
 import {Routes} from "../../constants/routes";
 import {IRootState} from "../../ducks/reducers";
 import {getBeaconByKey} from "../../ducks/beacon/selectors";
@@ -41,7 +41,11 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
     useEffect(() => {
         if (image) {
             if (isRunning && beacon.status === BeaconStatus.offline) setIsRunning(false);
-            else DockerRegistry.getContainer(image).isRunning().then(setIsRunning);
+            else if (beacon.status === BeaconStatus.starting) setIsRunning(false);
+            else {
+                const container = DockerRegistry.getContainer(image);
+                if (container) container.isRunning().then(setIsRunning);
+            }
         }
     }, [beacon.status]);
 
@@ -67,7 +71,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
         setLoading(true);
         try {
             await DockerRegistry.getContainer(image)!.startStoppedContainer();
-            setIsRunning(true);
+            dispatch(updateStatus(BeaconStatus.starting, url));
         } catch (e) {
             logger.error(e);
             dispatch(
@@ -137,7 +141,9 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
                             </ButtonDestructive>
                         </>
                     ) : (
-                        <ButtonPrimary onClick={(): void => setConfirmModal(Modal.start)} disabled={beacon.slot === 0}>
+                        <ButtonPrimary
+                            onClick={(): void => setConfirmModal(Modal.start)}
+                            disabled={beacon.status === BeaconStatus.starting}>
                             Start
                         </ButtonPrimary>
                     )
@@ -148,7 +154,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
             <ConfirmModal
                 showModal={confirmModal === Modal.remove}
                 question={"Are you sure?"}
-                description={"This will remove all your beacon chain data."}
+                description={"This will remove your beacon node container."}
                 onOKClick={removeContainer}
                 onCancelClick={(): void => setConfirmModal(Modal.none)}
             />

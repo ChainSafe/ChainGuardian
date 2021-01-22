@@ -5,7 +5,7 @@ import {ButtonPrimary, ButtonSecondary} from "../Button/ButtonStandard";
 import {InputForm} from "../Input/InputForm";
 
 interface IInputBeaconNodeProps {
-    onGoSubmit: (url: string) => void;
+    onGoSubmit: (url: string, network: string) => void;
     onRunNodeSubmit: () => void;
     displayNetwork?: boolean;
 }
@@ -22,7 +22,7 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
         setBeaconNodeInput(e.currentTarget.value);
     };
 
-    const isValidBeaconNode = async (): Promise<boolean> => {
+    const isValidBeaconNode = async (): Promise<false | string> => {
         const beaconNodeInputSchema = Joi.string().uri();
         const validationResult = beaconNodeInputSchema.validate(beaconNodeInput);
         if (validationResult.error) {
@@ -36,17 +36,17 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
                 setErrorMessage("Beacon chain network not supported");
                 return false;
             }
+            return network.networkName;
         } catch (e) {
             setErrorMessage("Beacon chain not found");
             return false;
         }
-
-        return true;
     };
 
     const onGoSubmit = async (): Promise<void> => {
-        if (await isValidBeaconNode()) {
-            props.onGoSubmit(beaconNodeInput);
+        const network = await isValidBeaconNode();
+        if (network) {
+            props.onGoSubmit(beaconNodeInput, network);
         }
     };
 

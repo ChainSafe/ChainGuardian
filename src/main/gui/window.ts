@@ -1,7 +1,7 @@
 import path from "path";
 import {BrowserWindow} from "electron";
 import {iconExtensions, installExtensions} from "./utils";
-import {dialog} from "electron";
+import {dialog, app} from "electron";
 
 let win: BrowserWindow | null;
 
@@ -26,7 +26,7 @@ export async function createWindow(): Promise<void> {
             webSecurity: false,
             // TODO: https://github.com/electron/electron/issues/21408
             enableRemoteModule: true,
-            devTools: process.env.NODE_ENV !== "production",
+            devTools: process.env.NODE_ENV !== "production" ? true : app.commandLine.hasSwitch("enable-devtools"),
         },
         backgroundColor: "#052437",
         show: false,

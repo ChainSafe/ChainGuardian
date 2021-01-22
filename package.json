@@ -1,7 +1,7 @@
 {
   "name": "chainguardian",
   "productName": "ChainGuardian",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Eth2.0 desktop validator client",
   "keywords": [
     "eth2",
@@ -184,7 +184,7 @@
     "bigint-buffer": "1.1.5",
     "bip39": "3.0.2",
     "date-fns": "^2.16.1",
-    "electron-log": "^3.0.9",
+    "electron-log": "^4.3.1",
     "electron-mock-ipc": "^0.3.9",
     "ethereumjs-abi": "^0.6.8",
     "ethers": "^5.0.19",

@@ -17,7 +17,7 @@ export class CgEth2Config implements ICGEth2Config {
             const response = await this.httpClient.get<DepositContract>("/eth/v1/config/deposit_contract");
             return response.data;
         } catch (e) {
-            logger.error("Failed to fetch deposit contract information", e.message);
+            logger.error("Failed to fetch deposit contract information", {error: e.message});
             return null;
         }
     };

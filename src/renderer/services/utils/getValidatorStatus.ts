@@ -25,7 +25,7 @@ export const getValidatorStatus = async (publicKey: string, beaconNodeUrl?: stri
         // });
         // const containsThisValidator = logs.some(({data}) => data.includes(publicKey.substr(2)));
 
-        return ValidatorStatus.WAITING_DEPOSIT;
+        return ValidatorStatus.PENDING_DEPOSIT_OR_ACTIVATION;
     } else {
         return getValidatorStatusFromString(stateValidator.status);
     }

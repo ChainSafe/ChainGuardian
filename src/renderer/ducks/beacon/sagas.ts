@@ -17,7 +17,13 @@ import {
 } from "redux-saga/effects";
 import {getNetworkConfig} from "../../services/eth2/networks";
 import {liveProcesses} from "../../services/utils/cmd";
-import {cancelDockerPull, endDockerImagePull, startDockerImagePull} from "../network/actions";
+import {
+    cancelDockerPull,
+    endDockerImagePull,
+    startDockerImagePull,
+    checkDockerDemonIsOnline,
+    setDockerDemonIsOffline,
+} from "../network/actions";
 import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, updateStatus} from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
@@ -33,26 +39,40 @@ import {AllEffect, CancelEffect, ForkEffect} from "@redux-saga/core/effects";
 import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
 import {CGBeaconEvent, CGBeaconEventType, ErrorEvent} from "../../services/eth2/client/interface";
-import logger from "electron-log";
 import {getBeaconByKey} from "./selectors";
 import {SyncingStatus} from "@chainsafe/lodestar-types";
 import {BeaconValidators, getValidatorsByBeaconNode} from "../validator/selectors";
-import {getNewValidatorBalance, storeValidatorBeaconNodes} from "../validator/actions";
+import {getNewValidatorBalance, setValidatorStatus, storeValidatorBeaconNodes} from "../validator/actions";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
+import {createNotification} from "../notification/actions";
 import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
+import {ValidatorStatus} from "../../constants/validatorStatus";
+import {cgLogger, createLogger, getBeaconLogfileFromURL} from "../../../main/logger";
 
 export function* pullDockerImage(
     network: string,
 ): Generator<PutEffect | RaceEffect<CallEffect | TakeEffect>, boolean, [boolean, Action]> {
     yield put(startDockerImagePull());
-    const image = getNetworkConfig(network).dockerConfig.image;
-    const [pullSuccess, effect] = yield race([call(BeaconChain.pullImage, image), take(cancelDockerPull)]);
-    if (effect) {
-        liveProcesses["pullImage"].kill();
-    }
-    yield put(endDockerImagePull());
+    cgLogger.info("Start beacon node image pull");
+    try {
+        const image = getNetworkConfig(network).dockerConfig.image;
+        cgLogger.info("image:", image);
+        const [pullSuccess, effect] = yield race([call(BeaconChain.pullImage, image), take(cancelDockerPull)]);
+        if (effect) {
+            liveProcesses["pullImage"].kill();
+        }
+        yield put(endDockerImagePull());
 
-    return effect !== undefined ? false : pullSuccess;
+        return effect !== undefined ? false : pullSuccess;
+    } catch (e) {
+        const message = e.stderr.includes("daemon is not running")
+            ? "Seems Docker is offline, start it and try again"
+            : "Error while pulling Docker image, try again later";
+        yield put(createNotification({title: message, source: "pullDockerImage"}));
+        yield put(endDockerImagePull());
+        cgLogger.error(e.stderr);
+        return false;
+    }
 }
 
 function* startLocalBeaconSaga({
@@ -69,15 +89,17 @@ function* startLocalBeaconSaga({
         ports.push({local: String(discoveryPort), host: String(discoveryPort)});
     }
 
+    cgLogger.info("Starting local docker beacon node & http://localhost:", rpcPort);
+    const eth1QueryLimit = 200;
     if (pullSuccess) {
         switch (network) {
             default:
                 yield put(
-                    addBeacon(`http://localhost:${rpcPort}`, {
+                    addBeacon(`http://localhost:${rpcPort}`, network, {
                         id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, {
                             ports,
                             // eslint-disable-next-line max-len
-                            cmd: `lighthouse beacon_node --network ${network} --port ${libp2pPort} --discovery-port ${discoveryPort} --http --http-address 0.0.0.0 --http-port ${rpcPort} --eth1-endpoints ${eth1Url}`,
+                            cmd: `lighthouse beacon_node --network ${network} --port ${libp2pPort} --discovery-port ${discoveryPort} --http --http-address 0.0.0.0 --http-port ${rpcPort} --eth1-endpoints ${eth1Url} --eth1-blocks-per-log-query ${eth1QueryLimit}`,
                             volume: `${chainDataDir}:/root/.lighthouse`,
                         })).getParams().name,
                         network,
@@ -104,17 +126,21 @@ function* storeBeacon({payload: {url, docker}}: ReturnType<typeof addBeacon>): G
 function* removeBeaconSaga({
     payload,
 }: ReturnType<typeof removeBeacon>): Generator<
-    SelectEffect | PutEffect | Promise<[boolean, boolean]> | Promise<ValidatorBeaconNodes>,
+    SelectEffect | PutEffect | Promise<[boolean, boolean]> | Promise<ValidatorBeaconNodes> | Promise<void>,
     void,
     [boolean, boolean] & BeaconValidators & ValidatorBeaconNodes
 > {
     const [removed] = yield database.beacons.remove(payload);
+    yield database.networkMetrics.delete(payload);
     if (removed) {
         const beaconValidators = yield select(getValidatorsByBeaconNode);
         if (beaconValidators[payload]?.length) {
             for (const {publicKey} of beaconValidators[payload]) {
-                const {nodes} = yield database.validatorBeaconNodes.remove(publicKey, payload);
+                const {nodes} = yield database.validator.beaconNodes.remove(publicKey, payload);
                 yield put(storeValidatorBeaconNodes(nodes, publicKey));
+                if (!nodes.length) {
+                    yield put(setValidatorStatus(ValidatorStatus.NO_BEACON_NODE, publicKey));
+                }
             }
         }
     }
@@ -131,17 +157,38 @@ const getBeaconStatus = async (url: string): Promise<{syncing: boolean; slot: nu
 };
 
 function* initializeBeaconsFromStore(): Generator<
-    Promise<Beacons> | PutEffect | Promise<void> | AllEffect<CallEffect> | AllEffect<ForkEffect>,
+    | Promise<Beacons>
+    | PutEffect
+    | Promise<void>
+    | Promise<boolean>
+    | AllEffect<CallEffect>
+    | AllEffect<ForkEffect>
+    | AllEffect<INetworkConfig>
+    | TakeEffect,
     void,
-    Beacons & ({syncing: boolean; slot: number} | null)[]
+    Beacons & ({syncing: boolean; slot: number} | null)[] & boolean & INetworkConfig[]
 > {
     const store = yield database.beacons.get();
     if (store !== null) {
         const {beacons}: Beacons = store;
+        cgLogger.info("Found", beacons.length, "beacon node/s");
 
-        yield BeaconChain.startAllLocalBeaconNodes();
+        if (beacons.some(({docker}) => docker.id)) {
+            if (!(yield BeaconChain.isDockerDemonRunning())) {
+                yield put(setDockerDemonIsOffline(true));
+                while (true) {
+                    yield take(checkDockerDemonIsOnline);
+                    if (yield BeaconChain.isDockerDemonRunning()) {
+                        yield put(setDockerDemonIsOffline(false));
+                        break;
+                    }
+                }
+            }
+            yield BeaconChain.startAllLocalBeaconNodes();
+        }
 
         const stats = yield all(beacons.map(({url}) => call(getBeaconStatus, url)));
+        const networks = yield all(beacons.map(({url}) => call(readBeaconChainNetwork, url)));
 
         yield all(beacons.map(({url}) => fork(watchOnHead, url)));
 
@@ -149,6 +196,7 @@ function* initializeBeaconsFromStore(): Generator<
             addBeacons(
                 beacons.map(({url, docker}, index) => ({
                     url,
+                    network: networks[index]?.networkName || "Unknown",
                     docker: docker.id !== "" ? docker : undefined,
                     slot: stats[index]?.slot || 0,
                     status:
@@ -160,7 +208,7 @@ function* initializeBeaconsFromStore(): Generator<
                 })),
             ),
         );
-    }
+    } else cgLogger.info("No beacon node found");
 }
 
 export function* watchOnHead(
@@ -187,6 +235,8 @@ export function* watchOnHead(
     let isOnline = beacon.status !== BeaconStatus.offline;
     let epoch: number | undefined;
 
+    cgLogger.info("Watching beacon on URL", url);
+    const beaconLogger = createLogger(url, getBeaconLogfileFromURL(url));
     while (true) {
         try {
             const [payload, cancelAction] = yield race([
@@ -195,6 +245,7 @@ export function* watchOnHead(
             ]);
             if (cancelAction || payload.done) {
                 if (cancelAction.payload === url) {
+                    cgLogger.info("Stopping beacon watching on", url);
                     eventStream.stop();
                     yield cancel();
                 }
@@ -207,22 +258,22 @@ export function* watchOnHead(
                 }
                 continue;
             }
-
             yield put(updateSlot(payload.value.message.slot, url));
-            const headEpoch = computeEpochAtSlot(config?.eth2Config || mainnetConfig, payload.value.message.slot);
-            if (epoch !== headEpoch) {
-                epoch = headEpoch;
-                yield put(getNewValidatorBalance(url, payload.value.message.slot));
-            }
-
             if (isSyncing || !isOnline) {
                 const result = yield client.node.getSyncingStatus();
                 isSyncing = result.syncDistance > 10;
                 isOnline = true;
                 yield put(updateStatus(isSyncing ? BeaconStatus.syncing : BeaconStatus.active, url));
             }
+            beaconLogger.info("Beacon on slot:", payload.value.message.slot);
+            const headEpoch = computeEpochAtSlot(config?.eth2Config || mainnetConfig, payload.value.message.slot);
+            if (epoch !== headEpoch) {
+                beaconLogger.info("Beacon on epoch:", headEpoch);
+                epoch = headEpoch;
+                yield put(getNewValidatorBalance(url, payload.value.message.slot));
+            }
         } catch (err) {
-            logger.error("Event error:", err.message);
+            beaconLogger.error("Event error:", err.message);
         }
     }
 }

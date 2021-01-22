@@ -3,6 +3,7 @@ import {DockerConfig} from "../../models/beacons";
 
 export enum BeaconStatus {
     active,
+    starting,
     syncing,
     offline,
 }
@@ -10,6 +11,7 @@ export enum BeaconStatus {
 export type Beacon = {
     url: string;
     status: BeaconStatus;
+    network: string;
     slot: number;
     docker?: DockerConfig;
 };
@@ -47,8 +49,8 @@ export const beaconSlice = createSlice({
                     state.keys.push(action.payload.url);
                 }
             },
-            prepare: (url: string, docker?: DockerConfig): {payload: Beacon} => ({
-                payload: {url, docker, status: BeaconStatus.syncing, slot: 0},
+            prepare: (url: string, network: string, docker?: DockerConfig): {payload: Beacon} => ({
+                payload: {url, network, docker, status: BeaconStatus.starting, slot: 0},
             }),
         },
         updateSlot: {

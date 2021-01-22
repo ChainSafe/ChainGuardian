@@ -10,6 +10,7 @@ export interface ILogRecord {
 export interface ICGLogger {
     push(log: string, source?: LogSource): void;
     addStreamSource(stream: Readable, source?: LogSource): void;
+    removeAllStreamSourceListeners(stream: Readable): void;
     getLogIterator(): AsyncIterable<ILogRecord[]>;
     getLogs(): ILogRecord[];
 }

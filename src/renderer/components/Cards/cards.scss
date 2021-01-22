@@ -37,6 +37,7 @@
     width: 284px;
     display: flex;
     flex-direction: column;
+    //justify-content: space-between;
     h2:nth-child(1){
         color: $primary-blue-200;
         margin-right: 5px;
@@ -44,6 +45,11 @@
     h2:nth-child(3){
         align-self: center;
         margin-bottom: 0px;
+    }
+    h3 {
+        color: $primary-blue-200;
+        line-height: 25px;
+        padding-bottom: 10px;
     }
 }
 .node-text{

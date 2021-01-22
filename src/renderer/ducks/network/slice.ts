@@ -8,6 +8,7 @@ const initialState: INetworkState = {
     blockSubscriptions: {},
     pullingDockerImage: false,
     finishedPullingDockerImage: false,
+    dockerDemonOffline: false,
 };
 
 export const networkSlice = createSlice({
@@ -47,6 +48,9 @@ export const networkSlice = createSlice({
         endDockerImagePull: (state): void => {
             state.pullingDockerImage = false;
             state.finishedPullingDockerImage = true;
+        },
+        setDockerDemonIsOffline: (state, action: PayloadAction<boolean>): void => {
+            state.dockerDemonOffline = action.payload;
         },
     },
 });
