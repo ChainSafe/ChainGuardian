@@ -345,7 +345,7 @@ export function* getAttestationEffectiveness({
     payload,
     meta,
 }: ReturnType<typeof signedNewAttestation>): Generator<
-    SelectEffect | TakeEffect | AllEffect<CallEffect> | Promise<void>,
+    SelectEffect | TakeEffect | AllEffect<CallEffect> | CallEffect,
     void,
     IValidatorComplete & ReturnType<typeof updateSlot> & (BlockAttestations[] | null)[]
 > {
@@ -402,7 +402,7 @@ export function* getAttestationEffectiveness({
 
     const epoch = computeEpochAtSlot(config, payload.slot);
     const efficiency = (payload.slot + 1 + skipped - payload.slot) / (inclusion - payload.slot);
-    yield database.validator.attestationEffectiveness.addRecord(meta, {
+    yield call(database.validator.attestationEffectiveness.addRecord, meta, {
         epoch,
         inclusion,
         slot: payload.slot,

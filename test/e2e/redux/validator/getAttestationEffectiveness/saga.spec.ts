@@ -1,10 +1,14 @@
-import {TestApi, testSaga} from "redux-saga-test-plan";
+import {expectSaga, TestApi, testSaga} from "redux-saga-test-plan";
 import {getAttestationEffectiveness} from "../../../../../src/renderer/ducks/validator/sagas";
 import {signedNewAttestation} from "../../../../../src/renderer/ducks/validator/actions";
 import {getValidator} from "../../../../../src/renderer/ducks/validator/selectors";
 import {V4Keystore} from "../../../../../src/renderer/services/keystore";
 import {IValidatorComplete} from "../../../../../src/renderer/ducks/validator/slice";
 import {ValidatorStatus} from "../../../../../src/renderer/constants/validatorStatus";
+import {updateSlot} from "../../../../../src/renderer/ducks/beacon/actions";
+import {mockBeaconBlockAttestations} from "./mockBeaconBlockAttestations";
+import {CgEth2ApiClient} from "../../../../../src/renderer/services/eth2/client/eth2ApiClient";
+import {mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 
 /** test koraci koji moraju biti pokriveni
  * "normalne" situacije
@@ -40,6 +44,10 @@ import {ValidatorStatus} from "../../../../../src/renderer/constants/validatorSt
  * */
 
 const publicKey = "0x9331f1ec6672748ca7b080faff7038da35838f57d223db4f2cb5020246e6c31695c3fb3db0d78db13d266476e34e4e65";
+// todo sync with mock data...
+const block = "0xc3687c87021f5b7855465caf6501b3f742f20f26b65cc7a107ff7a78f0b28b79";
+const index = 11;
+const slot = 466969;
 
 const selectedValidator: IValidatorComplete = {
     balance: BigInt(31917137053),
@@ -58,11 +66,50 @@ describe("getAttestationEffectiveness", () => {
     let saga: TestApi;
 
     beforeEach(() => {
-        saga = testSaga(getAttestationEffectiveness, signedNewAttestation(publicKey, "b", 1, 2));
+        saga = testSaga(getAttestationEffectiveness, signedNewAttestation(publicKey, block, index, slot));
         saga.next().select(getValidator, {publicKey}).next(selectedValidator).save(AFTER_INITIALIZATION);
     });
 
-    it("case: A", () => {
-        saga.next();
+    afterEach(() => {
+        saga.restore(AFTER_INITIALIZATION);
+    });
+
+    it("#1", async () => {
+        saga.next(updateSlot(slot + 1, "http://localhost:5052"))
+            .next([mockBeaconBlockAttestations(block, slot + 1, index, false, true)])
+            .next(updateSlot(slot + 3, "http://localhost:5052"))
+            .next([
+                mockBeaconBlockAttestations(block, slot + 2, index, false, true),
+                mockBeaconBlockAttestations(block, slot + 3, index, false, true),
+            ])
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            .inspect<any>((i1) => {
+                // console.warn("i1", i1);
+                // console.warn("i1", i1.payload);
+                // console.warn("i1", i1.payload.args);
+                // console.warn("i1", i1.payload.args[1]);
+            })
+            .next();
+        // .isDone();
+
+        const eth2API = new CgEth2ApiClient(mainnetConfig, "http://localhost:5052");
+
+        let tempSlot = slot;
+        const a = await expectSaga(getAttestationEffectiveness, signedNewAttestation(publicKey, block, index, slot))
+            .provide({
+                select: () => selectedValidator,
+                take: () => {
+                    tempSlot++;
+                    return updateSlot(tempSlot, "http://localhost:5052");
+                },
+                call: (effect, next) => {
+                    if (effect.args[0] !== publicKey)
+                        return mockBeaconBlockAttestations(block, effect.args[0], index, false, true);
+                    next();
+                },
+            })
+            .run(false);
+
+        console.log(a.effects.call[a.effects.call.length - 1]);
     });
 });
