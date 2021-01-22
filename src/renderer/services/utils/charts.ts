@@ -2,6 +2,9 @@ import {NetworkMetrics} from "../../models/networkMetrics";
 import {SimpleLineChartRecord} from "../../components/SimpleLineChart/SimpleLineChart";
 import {addMinutes, format, roundToNearestMinutes, subDays, subMinutes} from "date-fns";
 import {ResponseErrorPieData} from "../../containers/BeaconNode/BeaconNodeResponseErrorPieChart";
+import {ValidatorBalance} from "../../models/validatorBalances";
+import {getNetworkConfig} from "../eth2/networks";
+import {computeTimeAtSlot, computeStartSlotAtEpoch} from "@chainsafe/lodestar-beacon-state-transition";
 
 export const getLatencyChartData = (metrics: NetworkMetrics): {data: SimpleLineChartRecord[]; ticks: string[]} => {
     const baseTime = roundToNearestMinutes(subDays(new Date(), 1), {nearestTo: 15});
@@ -36,4 +39,39 @@ export const getNetworkErrorPieData = (metrics: NetworkMetrics): ResponseErrorPi
         }
     });
     return pieData;
+};
+
+export const getValidatorBalanceChartData = (
+    validatorBalances: ValidatorBalance[],
+    network: string,
+): {epoch: SimpleLineChartRecord[]; date: SimpleLineChartRecord[]} => {
+    const data: {epoch: SimpleLineChartRecord[]; date: SimpleLineChartRecord[]} = {epoch: [], date: []};
+    if (!validatorBalances.length) return data;
+
+    const {eth2Config, genesisTime} = getNetworkConfig(network);
+
+    const firstEpoch = validatorBalances[0].epoch;
+    const lastEpoch = validatorBalances[validatorBalances.length - 1].epoch;
+    const arrayLength = Number(lastEpoch - firstEpoch) + 1;
+    let skipped = 0;
+    Array(arrayLength)
+        .fill(null)
+        .forEach((_, index) => {
+            const epoch = index + Number(firstEpoch);
+            const balancesIndex = index - skipped;
+            const slot = computeStartSlotAtEpoch(eth2Config, epoch);
+            const time = new Date(computeTimeAtSlot(eth2Config, slot, genesisTime) * 1000);
+            const date = format(time, "d MMM, yyyy  HH:mm");
+
+            if (Number(validatorBalances[balancesIndex].epoch) === epoch) {
+                data.epoch.push({label: String(epoch), value: Number(validatorBalances[balancesIndex].balance)});
+                data.date.push({label: date, value: Number(validatorBalances[balancesIndex].balance)});
+            } else {
+                skipped++;
+                data.epoch.push({label: String(epoch)});
+                data.date.push({label: date});
+            }
+        });
+
+    return data;
 };

@@ -270,7 +270,7 @@ export function* watchOnHead(
             if (epoch !== headEpoch) {
                 beaconLogger.info("Beacon on epoch:", headEpoch);
                 epoch = headEpoch;
-                yield put(getNewValidatorBalance(url, payload.value.message.slot));
+                yield put(getNewValidatorBalance(url, payload.value.message.slot, headEpoch));
             }
         } catch (err) {
             beaconLogger.error("Event error:", err.message);

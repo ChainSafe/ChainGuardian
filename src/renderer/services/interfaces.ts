@@ -53,6 +53,7 @@ export interface IV3Keystore {
 
 export interface INetworkConfig {
     eth2Config: IBeaconConfig;
+    genesisTime: number;
     networkId: number;
     networkName: string;
     eth1Provider: ethers.providers.BaseProvider;

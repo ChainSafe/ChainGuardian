@@ -199,6 +199,7 @@
     "react-dom": "^16.8.6",
     "react-redux": "^7.0.3",
     "react-router-dom": "^5.2.0",
+    "react-switch": "^6.0.0",
     "react-tooltip": "^3.11.1",
     "recharts": "^1.8.5",
     "redux": "^4.0.1",

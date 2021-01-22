@@ -66,12 +66,13 @@ export const slashingProtectionCancel = createAction("validator/slashingProtecti
 export type GetNewValidatorBalance = (
     beacon: string,
     slot: number,
+    epoch: number,
 ) => {
-    payload: {beacon: string; slot: number};
+    payload: {beacon: string; slot: number; epoch: number};
 };
 export const getNewValidatorBalance = createAction<GetNewValidatorBalance>(
     "validator/getNewValidatorBalance",
-    (beacon: string, slot: number) => ({
-        payload: {beacon, slot},
+    (beacon: string, slot: number, epoch: number) => ({
+        payload: {beacon, slot, epoch},
     }),
 );
