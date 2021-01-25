@@ -395,7 +395,7 @@ export function* getAttestationEffectiveness({
     }
     // Hack to handle some case when there is no record of attestation
     // TODO: figure out why is this happening
-    if (!inclusion) {
+    if (inclusion === 0) {
         inclusion = payload.slot + 1;
         skipped = 0;
     }
