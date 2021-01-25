@@ -4,10 +4,10 @@ export const mockBeaconBlockAttestations = (
     block: string,
     slot: number,
     index: number,
-    missed: boolean,
+    skipped: boolean,
     empty: boolean,
 ): BlockAttestations[] | null => {
-    if (missed) return null;
+    if (skipped) return null;
     const blocks: BlockAttestations[] = [];
 
     const randomLength = Math.floor(Math.random() * 4);

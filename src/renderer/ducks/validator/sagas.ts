@@ -381,7 +381,7 @@ export function* getAttestationEffectiveness({
                 sanitizedAttestations.forEach(({data}) => {
                     if (data.slot > inclusion && data.slot > payload.slot) {
                         inclusion = data.slot;
-                        if (data.slot === payload.slot + 1 && skippedQue === 1) skippedQue--;
+                        // if (data.slot === payload.slot + 1 && skippedQue === 1) skippedQue--;
                         skipped += skippedQue;
                         skippedQue = 0;
                     }

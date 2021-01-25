@@ -1,30 +1,18 @@
-import {expectSaga, TestApi, testSaga} from "redux-saga-test-plan";
-import {getAttestationEffectiveness} from "../../../../../src/renderer/ducks/validator/sagas";
-import {signedNewAttestation} from "../../../../../src/renderer/ducks/validator/actions";
-import {getValidator} from "../../../../../src/renderer/ducks/validator/selectors";
-import {V4Keystore} from "../../../../../src/renderer/services/keystore";
-import {IValidatorComplete} from "../../../../../src/renderer/ducks/validator/slice";
-import {ValidatorStatus} from "../../../../../src/renderer/constants/validatorStatus";
-import {updateSlot} from "../../../../../src/renderer/ducks/beacon/actions";
-import {mockBeaconBlockAttestations} from "./mockBeaconBlockAttestations";
-import {CgEth2ApiClient} from "../../../../../src/renderer/services/eth2/client/eth2ApiClient";
-import {mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
-
 /** test koraci koji moraju biti pokriveni
  * "normalne" situacije
- * - () kad je sve uredu i u iducem bloku se moze vidjet atterstatcija (Effectiveness 1)
- * - () kad je sve uredu ali nemoze se pronac atterstatcija (Effectiveness 1)
- * - () kad atterstatcija upisana 2 blok bez praznog bloka izmedu (Effectiveness 0.5)
- * - () kad atterstatcija upisana 3 blok bez praznog bloka izmedu (Effectiveness 0.333)
- * - () kad atterstatcija upisana 2 blok sa preskocenim 1 blokom (Effectiveness 1)
- * - () kad atterstatcija upisana 3 blok sa preskocenim 2 blokom (Effectiveness 1)
- * - () kad atterstatcija upisana 3 blok sa preskocenim 1 blokom (Effectiveness 0.66)
- *      - () sticuacija kad se preskoceni blok odma nalazi na prvom mjestu
- *      - () sticuacija kad se preskoceni blok nalazi bloku prije upisivanja
- * - () kad atterstatcija upisana 4 blok sa preskocenim 2 blokom (Effectiveness 0.75)
- *      - () sticuacija kad se preskocene blokovi odma nalazi na pocetku (start, null, null, miss, atter)
- *      - () sticuacija kad se preskocene blokovi nalaze na kraju (start, miss, null, null, atter)
- *      - () sticuacija kad se preskocene blok nalazi na pocetku i kraju (start, null, miss, null, atter)
+ * - (1) kad je sve uredu i u iducem bloku se moze vidjet atterstatcija (Effectiveness 1)
+ * - (2) kad je sve uredu ali nemoze se pronac atterstatcija (Effectiveness 1)
+ * - (3) kad atterstatcija upisana 2 blok bez praznog bloka izmedu (Effectiveness 0.5)
+ * - (4) kad atterstatcija upisana 3 blok bez praznog bloka izmedu (Effectiveness 0.333)
+ * - (5?) kad atterstatcija upisana 2 blok sa preskocenim 1 blokom (Effectiveness 1)
+ * - (6?) kad atterstatcija upisana 3 blok sa preskocenim 2 blokom (Effectiveness 1)
+ * - (7?) kad atterstatcija upisana 3 blok sa preskocenim 1 blokom (Effectiveness 0.66)
+ *      - (_1) sticuacija kad se preskoceni blok odma nalazi na prvom mjestu
+ *      - (_2) sticuacija kad se preskoceni blok nalazi bloku prije upisivanja
+ * - (8?) kad atterstatcija upisana 4 blok sa preskocenim 2 blokom (Effectiveness 0.75)
+ *      - (_1) sticuacija kad se preskocene blokovi odma nalazi na pocetku (start, null, null, miss, atter)
+ *      - (_2) sticuacija kad se preskocene blokovi nalaze na kraju (start, miss, null, null, atter)
+ *      - (_3) sticuacija kad se preskocene blok nalazi na pocetku i kraju (start, null, miss, null, atter)
  * "rubne" situacije
  * - () kad atterstatcija upisana 5 blok a izmedu se nalaze nekolicina blokovi bez informacije o atterstatciji
  *      - () tipa (start, empty, empty, empty, miss, atter)
@@ -43,73 +31,159 @@ import {mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
  *  - () kad nakon zadnjeg poznatog bloka nalazi se preskocena atterstatcija tipa (...end, null, null, empty...)
  * */
 
-const publicKey = "0x9331f1ec6672748ca7b080faff7038da35838f57d223db4f2cb5020246e6c31695c3fb3db0d78db13d266476e34e4e65";
-// todo sync with mock data...
-const block = "0xc3687c87021f5b7855465caf6501b3f742f20f26b65cc7a107ff7a78f0b28b79";
-const index = 11;
-const slot = 466969;
-
-const selectedValidator: IValidatorComplete = {
-    balance: BigInt(31917137053),
-    beaconNodes: ["http://localhost:5052"],
-    isRunning: true,
-    keystore: undefined as V4Keystore,
-    name: "Validator Because Link",
-    network: "pyrmont",
-    status: ValidatorStatus.ACTIVE,
-    publicKey,
-};
-
-const AFTER_INITIALIZATION = "afterInitialization";
+import {testAttestationEffectivenessSaga} from "./testAttestationEffectivenessSaga";
 
 describe("getAttestationEffectiveness", () => {
-    let saga: TestApi;
-
-    beforeEach(() => {
-        saga = testSaga(getAttestationEffectiveness, signedNewAttestation(publicKey, block, index, slot));
-        saga.next().select(getValidator, {publicKey}).next(selectedValidator).save(AFTER_INITIALIZATION);
-    });
-
-    afterEach(() => {
-        saga.restore(AFTER_INITIALIZATION);
-    });
-
-    it("#1", async () => {
-        saga.next(updateSlot(slot + 1, "http://localhost:5052"))
-            .next([mockBeaconBlockAttestations(block, slot + 1, index, false, true)])
-            .next(updateSlot(slot + 3, "http://localhost:5052"))
-            .next([
-                mockBeaconBlockAttestations(block, slot + 2, index, false, true),
-                mockBeaconBlockAttestations(block, slot + 3, index, false, true),
-            ])
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            .inspect<any>((i1) => {
-                // console.warn("i1", i1);
-                // console.warn("i1", i1.payload);
-                // console.warn("i1", i1.payload.args);
-                // console.warn("i1", i1.payload.args[1]);
-            })
-            .next();
-        // .isDone();
-
-        const eth2API = new CgEth2ApiClient(mainnetConfig, "http://localhost:5052");
-
-        let tempSlot = slot;
-        const a = await expectSaga(getAttestationEffectiveness, signedNewAttestation(publicKey, block, index, slot))
-            .provide({
-                select: () => selectedValidator,
-                take: () => {
-                    tempSlot++;
-                    return updateSlot(tempSlot, "http://localhost:5052");
+    it(
+        "#1",
+        testAttestationEffectivenessSaga([{slotOffset: 1, skipped: false, empty: false}], {
+            efficiency: 1,
+            inclusionOffset: 1,
+        }),
+    );
+    it(
+        "#2",
+        testAttestationEffectivenessSaga([], {
+            efficiency: 1,
+            inclusionOffset: 1,
+        }),
+    );
+    it(
+        "#3",
+        testAttestationEffectivenessSaga(
+            [
+                {slotOffset: 1, skipped: false, empty: false},
+                {slotOffset: 2, skipped: false, empty: false},
+                {slotOffset: 3, skipped: false, empty: false},
+            ],
+            {
+                efficiency: 0.5,
+                inclusionOffset: 2,
+            },
+        ),
+    );
+    it(
+        "#4",
+        testAttestationEffectivenessSaga(
+            [
+                {slotOffset: 1, skipped: false, empty: false},
+                {slotOffset: 2, skipped: false, empty: false},
+                {slotOffset: 3, skipped: false, empty: false},
+                {slotOffset: 4, skipped: false, empty: false},
+            ],
+            {
+                efficiency: 0.3333333333333333,
+                inclusionOffset: 3,
+            },
+        ),
+    );
+    it(
+        "#5",
+        testAttestationEffectivenessSaga(
+            [
+                {slotOffset: 1, skipped: true, empty: false},
+                {slotOffset: 2, skipped: false, empty: false},
+            ],
+            {
+                efficiency: 1,
+                inclusionOffset: 1,
+            },
+        ),
+    );
+    it(
+        "#6",
+        testAttestationEffectivenessSaga(
+            [
+                {slotOffset: 1, skipped: true, empty: false},
+                {slotOffset: 2, skipped: true, empty: false},
+                {slotOffset: 3, skipped: false, empty: false},
+            ],
+            {
+                efficiency: 1,
+                inclusionOffset: 2,
+            },
+        ),
+    );
+    describe("#7", () => {
+        it(
+            "_1",
+            testAttestationEffectivenessSaga(
+                [
+                    {slotOffset: 1, skipped: true, empty: false},
+                    {slotOffset: 2, skipped: false, empty: false},
+                    {slotOffset: 3, skipped: false, empty: false},
+                    {slotOffset: 4, skipped: false, empty: false},
+                ],
+                {
+                    efficiency: 0.6666666666666666,
+                    inclusionOffset: 3,
                 },
-                call: (effect, next) => {
-                    if (effect.args[0] !== publicKey)
-                        return mockBeaconBlockAttestations(block, effect.args[0], index, false, true);
-                    next();
+            ),
+        );
+        it(
+            "_2",
+            testAttestationEffectivenessSaga(
+                [
+                    {slotOffset: 1, skipped: false, empty: false},
+                    {slotOffset: 2, skipped: true, empty: false},
+                    {slotOffset: 3, skipped: false, empty: false},
+                    {slotOffset: 4, skipped: false, empty: false},
+                ],
+                {
+                    efficiency: 0.6666666666666666,
+                    inclusionOffset: 3,
                 },
-            })
-            .run(false);
-
-        console.log(a.effects.call[a.effects.call.length - 1]);
+            ),
+        );
+    });
+    describe("#7", () => {
+        it(
+            "_1",
+            testAttestationEffectivenessSaga(
+                [
+                    {slotOffset: 1, skipped: true, empty: false},
+                    {slotOffset: 2, skipped: true, empty: false},
+                    {slotOffset: 3, skipped: false, empty: false},
+                    {slotOffset: 4, skipped: false, empty: false},
+                    {slotOffset: 5, skipped: false, empty: false},
+                ],
+                {
+                    efficiency: 0.75,
+                    inclusionOffset: 4,
+                },
+            ),
+        );
+        it(
+            "_2",
+            testAttestationEffectivenessSaga(
+                [
+                    {slotOffset: 1, skipped: false, empty: false},
+                    {slotOffset: 2, skipped: true, empty: false},
+                    {slotOffset: 3, skipped: true, empty: false},
+                    {slotOffset: 4, skipped: false, empty: false},
+                    {slotOffset: 5, skipped: false, empty: false},
+                ],
+                {
+                    efficiency: 0.75,
+                    inclusionOffset: 4,
+                },
+            ),
+        );
+        it(
+            "_3",
+            testAttestationEffectivenessSaga(
+                [
+                    {slotOffset: 1, skipped: true, empty: false},
+                    {slotOffset: 2, skipped: false, empty: false},
+                    {slotOffset: 3, skipped: true, empty: false},
+                    {slotOffset: 4, skipped: false, empty: false},
+                    {slotOffset: 5, skipped: false, empty: false},
+                ],
+                {
+                    efficiency: 0.75,
+                    inclusionOffset: 4,
+                },
+            ),
+        );
     });
 });
