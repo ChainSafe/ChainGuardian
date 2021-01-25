@@ -2,10 +2,10 @@ import {expectSaga} from "redux-saga-test-plan";
 import {getAttestationEffectiveness} from "../../../../../src/renderer/ducks/validator/sagas";
 import {signedNewAttestation} from "../../../../../src/renderer/ducks/validator/actions";
 import {updateSlot} from "../../../../../src/renderer/ducks/beacon/actions";
-import {mockBeaconBlockAttestations} from "./mockBeaconBlockAttestations";
 import {IValidatorComplete} from "../../../../../src/renderer/ducks/validator/slice";
 import {V4Keystore} from "../../../../../src/renderer/services/keystore";
 import {ValidatorStatus} from "../../../../../src/renderer/constants/validatorStatus";
+import {BlockAttestations} from "../../../../../src/renderer/services/eth2/client/interface";
 
 const publicKey = "0x9331f1ec6672748ca7b080faff7038da35838f57d223db4f2cb5020246e6c31695c3fb3db0d78db13d266476e34e4e65";
 const block = "0xc3687c87021f5b7855465caf6501b3f742f20f26b65cc7a107ff7a78f0b28b79";
@@ -80,4 +80,54 @@ export const testAttestationEffectivenessSaga = (
     };
     expect(efficiency).toEqual(expects.efficiency);
     expect(inclusion).toEqual(slot + expects.inclusionOffset);
+};
+
+const mockBeaconBlockAttestations = (
+    block: string,
+    slot: number,
+    index: number,
+    skipped: boolean,
+    empty: boolean,
+): BlockAttestations[] | null => {
+    if (skipped) return null;
+    const blocks: BlockAttestations[] = [];
+
+    const randomLength = Math.floor(Math.random() * 4);
+    for (let i = 0; i <= randomLength; i++) {
+        const randomIndex = Math.floor(Math.random() * 30);
+        if (randomIndex === index) continue;
+        blocks.push(createAttestations(slot - 1, randomIndex, block));
+    }
+    if (!empty) {
+        blocks.push(createAttestations(slot - 1, index, block));
+    }
+
+    return blocks;
+};
+
+const createAttestations = (slot: number, index: number, beaconBlockRoot: string): BlockAttestations => ({
+    aggregationBits: "0x" + createRandomBigNumber(41).toString(16),
+    data: {
+        slot,
+        index,
+        beaconBlockRoot,
+        source,
+        target,
+    },
+    signature: "0x" + createRandomBigNumber(231).toString(16),
+});
+const source = {
+    epoch: 14591,
+    root: "0xd0031a93c16cb0293ded16fc2fbe154577b81df0bae7f79b56b2fec70571d048",
+};
+const target = {
+    epoch: 14592,
+    root: "0xcc8507c2ac01efd5ac1c8c3a817a7a4ab30b05cb8415fe9b5222ded407eb35c4",
+};
+const createRandomBigNumber = (length: number): bigint => {
+    let numberString = "";
+    for (let i = 0; i <= length; i++) {
+        numberString += String(Math.floor(Math.random() * 10));
+    }
+    return BigInt(numberString);
 };
