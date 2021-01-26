@@ -62,11 +62,12 @@ import {ValidatorStatus} from "../../constants/validatorStatus";
 import {getNetworkConfig} from "../../services/eth2/networks";
 import {updateSlot} from "../beacon/actions";
 import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
-import {BlockAttestations} from "../../services/eth2/client/interface";
 import {getBeaconByKey} from "../beacon/selectors";
 import {Beacon, BeaconStatus} from "../beacon/slice";
 import {updateStatus} from "../beacon/actions";
 import {cgLogger} from "../../../main/logger";
+import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
+import {toHex} from "@chainsafe/lodestar-utils";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -347,7 +348,7 @@ export function* getAttestationEffectiveness({
 }: ReturnType<typeof signedNewAttestation>): Generator<
     SelectEffect | TakeEffect | AllEffect<CallEffect> | CallEffect,
     void,
-    IValidatorComplete & ReturnType<typeof updateSlot> & (BlockAttestations[] | null)[]
+    IValidatorComplete & ReturnType<typeof updateSlot> & (Attestation[] | null)[]
 > {
     const validator = yield select(getValidator, {publicKey: meta});
     const config = getNetworkConfig(validator.network)?.eth2Config || mainnetConfig;
@@ -376,7 +377,7 @@ export function* getAttestationEffectiveness({
                 skippedQue++;
             } else {
                 const sanitizedAttestations = result.filter(
-                    ({data}) => payload.block === data.beaconBlockRoot && data.index === payload.index,
+                    ({data}) => payload.block === toHex(data.beaconBlockRoot) && data.index === payload.index,
                 );
                 if (!sanitizedAttestations.length) empty++;
                 else empty = 0;
