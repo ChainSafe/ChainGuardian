@@ -365,11 +365,13 @@ export function* getAttestationEffectiveness({
         const newSlot = yield take(updateSlot);
         if (newSlot.meta !== validator.beaconNodes[0]) continue;
         if (lastSlot >= newSlot.payload) continue;
-        if (newSlot.payload > timeoutSlot) break;
 
+        // get all block information from last to current (mostly is only one but is important to get every block)
         const range = new Array(newSlot.payload - lastSlot).fill(null).map((_, index) => lastSlot + index + 1);
         const results = yield all(range.map((slot) => call(eth2API.beacon.blocks.getBlockAttestations, slot)));
+
         results.forEach((result, index) => {
+            /** the main logic for collecting when is attestation may be included and the number of skipped blocks */
             if (result === null) {
                 skippedQue++;
             } else {
@@ -381,7 +383,6 @@ export function* getAttestationEffectiveness({
                 sanitizedAttestations.forEach(({data}) => {
                     if (data.slot > inclusion && data.slot > payload.slot) {
                         inclusion = data.slot;
-                        // if (data.slot === payload.slot + 1 && skippedQue === 1) skippedQue--;
                         skipped += skippedQue;
                         skippedQue = 0;
                     }
@@ -389,24 +390,34 @@ export function* getAttestationEffectiveness({
                 previousSlot = range[index];
             }
         });
+        /**
+         * break from loop after some number of blocks without information about followed attestations, whit that we
+         * can conclude that code fund block where is attestation included and there is no reason to continue this loop
+         * (in some rare case can cause premature breaking a loop, if is a problem increase "maxEmptyBlocks")
+         * */
+        const maxEmptyBlocks = 3;
+        if (previousSlot !== 0 && empty >= maxEmptyBlocks + skippedQue) break;
 
-        if (previousSlot !== 0 && empty >= 3 + skippedQue) break;
         lastSlot = newSlot.payload;
+        if (lastSlot > timeoutSlot) break;
     }
-    // Hack to handle some case when there is no record of attestation
-    // TODO: figure out why is this happening
+    /**
+     * this handle case when is assertion included in block but is not visible in next block
+     * like assertion for block 23491 but for some reason is not visible in aggregation on block 23492
+     */
     if (inclusion === 0) {
         inclusion = payload.slot + 1;
         skipped = 0;
     }
 
-    const epoch = computeEpochAtSlot(config, payload.slot);
+    // efficiency calculation from https://www.attestant.io/posts/defining-attestation-effectiveness/#malicious-activity
     const efficiency = (payload.slot + 1 + skipped - payload.slot) / (inclusion - payload.slot);
+
     yield call(database.validator.attestationEffectiveness.addRecord, meta, {
-        epoch,
+        epoch: computeEpochAtSlot(config, payload.slot),
         inclusion,
         slot: payload.slot,
-        efficiency: efficiency > 1 ? 1 : efficiency,
+        efficiency: efficiency > 1 ? 1 : Math.round(efficiency * 1000) / 1000,
         time: Date.now(),
     });
 }

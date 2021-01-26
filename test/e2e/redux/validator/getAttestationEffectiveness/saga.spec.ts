@@ -1,6 +1,5 @@
 import {testAttestationEffectivenessSaga} from "./testAttestationEffectivenessSaga";
 
-// TODO: manually validate tests
 describe("getAttestationEffectiveness", () => {
     /** Usual case for attestation */
     it(
@@ -41,7 +40,7 @@ describe("getAttestationEffectiveness", () => {
                 {slotOffset: 4, skipped: false, empty: false},
             ],
             {
-                efficiency: 0.3333333333333333,
+                efficiency: 0.333,
                 inclusionOffset: 3,
             },
         ),
@@ -53,10 +52,11 @@ describe("getAttestationEffectiveness", () => {
                 [
                     {slotOffset: 1, skipped: true, empty: false},
                     {slotOffset: 2, skipped: false, empty: false},
+                    {slotOffset: 3, skipped: false, empty: false},
                 ],
                 {
                     efficiency: 1,
-                    inclusionOffset: 1,
+                    inclusionOffset: 2,
                 },
             ),
         );
@@ -67,10 +67,11 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 1, skipped: true, empty: false},
                     {slotOffset: 2, skipped: true, empty: false},
                     {slotOffset: 3, skipped: false, empty: false},
+                    {slotOffset: 4, skipped: false, empty: false},
                 ],
                 {
                     efficiency: 1,
-                    inclusionOffset: 2,
+                    inclusionOffset: 3,
                 },
             ),
         );
@@ -102,7 +103,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 4, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 0.6666666666666666,
+                    efficiency: 0.667,
                     inclusionOffset: 3,
                 },
             ),
@@ -117,7 +118,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 4, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 0.6666666666666666,
+                    efficiency: 0.667,
                     inclusionOffset: 3,
                 },
             ),
@@ -178,7 +179,7 @@ describe("getAttestationEffectiveness", () => {
         testAttestationEffectivenessSaga(
             new Array(17).fill(null).map((_, index) => ({slotOffset: index + 1, skipped: false, empty: false})),
             {
-                efficiency: 0.0625,
+                efficiency: 0.063,
                 inclusionOffset: 16,
             },
         ),
