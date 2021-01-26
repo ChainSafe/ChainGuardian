@@ -15,6 +15,7 @@ import {
     AllEffect,
     ForkEffect,
     CallEffect,
+    call,
 } from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
 import {deleteKeystore} from "../../services/utils/account";
@@ -41,6 +42,7 @@ import {
     updateValidatorBalance,
     setValidatorStatus,
     getNewValidatorBalance,
+    signedNewAttestation,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
@@ -57,10 +59,15 @@ import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
 import {CGSlashingProtection} from "../../services/eth2/client/slashingProtection";
 import {readFileSync} from "fs";
 import {ValidatorStatus} from "../../constants/validatorStatus";
+import {getNetworkConfig} from "../../services/eth2/networks";
+import {updateSlot} from "../beacon/actions";
+import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
 import {getBeaconByKey} from "../beacon/selectors";
 import {Beacon, BeaconStatus} from "../beacon/slice";
 import {updateStatus} from "../beacon/actions";
 import {cgLogger} from "../../../main/logger";
+import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
+import {toHex} from "@chainsafe/lodestar-utils";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -181,7 +188,7 @@ function* startService(
         const config = (yield readBeaconChainNetwork(validator.beaconNodes[0]))?.eth2Config || mainnetConfig;
 
         // TODO: Use beacon chain proxy instead of first node
-        const eth2API = new CgEth2ApiClient(config, validator.beaconNodes[0]);
+        const eth2API = new CgEth2ApiClient(config, validator.beaconNodes[0], publicKey);
 
         const slashingProtection = new CGSlashingProtection({
             config,
@@ -335,6 +342,87 @@ function* onBeaconNodeStatusChangeUpdateValidatorState(
     }
 }
 
+export function* getAttestationEffectiveness({
+    payload,
+    meta,
+}: ReturnType<typeof signedNewAttestation>): Generator<
+    SelectEffect | TakeEffect | AllEffect<CallEffect> | CallEffect,
+    void,
+    IValidatorComplete & ReturnType<typeof updateSlot> & (Attestation[] | null)[]
+> {
+    const validator = yield select(getValidator, {publicKey: meta});
+    const config = getNetworkConfig(validator.network)?.eth2Config || mainnetConfig;
+
+    const eth2API = new CgEth2ApiClient(config, validator.beaconNodes[0]);
+
+    let lastSlot = payload.slot,
+        previousSlot = 0,
+        empty = 0,
+        skipped = 0,
+        skippedQue = 0,
+        inclusion = 0;
+    const timeoutSlot = config.params.SLOTS_PER_EPOCH + payload.slot;
+    while (true) {
+        const newSlot = yield take(updateSlot);
+        if (newSlot.meta !== validator.beaconNodes[0]) continue;
+        if (lastSlot >= newSlot.payload) continue;
+
+        // get all block information from last to current (mostly is only one but is important to get every block)
+        const range = new Array(newSlot.payload - lastSlot).fill(null).map((_, index) => lastSlot + index + 1);
+        const results = yield all(range.map((slot) => call(eth2API.beacon.blocks.getBlockAttestations, slot)));
+
+        results.forEach((result, index) => {
+            /** the main logic for collecting when is attestation may be included and the number of skipped blocks */
+            if (result === null) {
+                skippedQue++;
+            } else {
+                const sanitizedAttestations = result.filter(
+                    ({data}) => payload.block === toHex(data.beaconBlockRoot) && data.index === payload.index,
+                );
+                if (!sanitizedAttestations.length) empty++;
+                else empty = 0;
+                sanitizedAttestations.forEach(({data}) => {
+                    if (data.slot > inclusion && data.slot > payload.slot) {
+                        inclusion = data.slot;
+                        skipped += skippedQue;
+                        skippedQue = 0;
+                    }
+                });
+                previousSlot = range[index];
+            }
+        });
+        /**
+         * break from loop after some number of blocks without information about followed attestations, whit that we
+         * can conclude that code fund block where is attestation included and there is no reason to continue this loop
+         * (in some rare case can cause premature breaking a loop, if is a problem increase "maxEmptyBlocks")
+         * */
+        const maxEmptyBlocks = 3;
+        if (previousSlot !== 0 && empty >= maxEmptyBlocks + skippedQue) break;
+
+        lastSlot = newSlot.payload;
+        if (lastSlot > timeoutSlot) break;
+    }
+    /**
+     * this handle case when is assertion included in block but is not visible in next block
+     * like assertion for block 23491 but for some reason is not visible in aggregation on block 23492
+     */
+    if (inclusion === 0) {
+        inclusion = payload.slot + 1;
+        skipped = 0;
+    }
+
+    // efficiency calculation from https://www.attestant.io/posts/defining-attestation-effectiveness/#malicious-activity
+    const efficiency = (payload.slot + 1 + skipped - payload.slot) / (inclusion - payload.slot);
+
+    yield call(database.validator.attestationEffectiveness.addRecord, meta, {
+        epoch: computeEpochAtSlot(config, payload.slot),
+        inclusion,
+        slot: payload.slot,
+        efficiency: efficiency > 1 ? 1 : Math.round(efficiency * 1000) / 1000,
+        time: Date.now(),
+    });
+}
+
 export function* validatorSagaWatcher(): Generator {
     yield all([
         takeEvery(loadValidatorsAction, loadValidatorsSaga),
@@ -344,5 +432,6 @@ export function* validatorSagaWatcher(): Generator {
         takeEvery(stopActiveValidatorService, stopService),
         takeEvery(setValidatorBeaconNode, setValidatorBeacon),
         takeEvery(updateStatus, onBeaconNodeStatusChangeUpdateValidatorState),
+        takeEvery(signedNewAttestation, getAttestationEffectiveness),
     ]);
 }

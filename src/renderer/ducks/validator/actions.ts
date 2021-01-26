@@ -76,3 +76,20 @@ export const getNewValidatorBalance = createAction<GetNewValidatorBalance>(
         payload: {beacon, slot, epoch},
     }),
 );
+
+export type SignedNewAttestation = (
+    publicKey: string,
+    block: string,
+    index: number,
+    slot: number,
+) => {
+    payload: {block: string; index: number; slot: number};
+    meta: string;
+};
+export const signedNewAttestation = createAction<SignedNewAttestation>(
+    "validator/signedNewAttestation",
+    (publicKey: string, block: string, index: number, slot: number) => ({
+        payload: {block, index, slot},
+        meta: publicKey,
+    }),
+);

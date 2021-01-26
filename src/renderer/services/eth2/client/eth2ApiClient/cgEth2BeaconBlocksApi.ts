@@ -1,8 +1,9 @@
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {SignedBeaconBlock} from "@chainsafe/lodestar-types";
-import {Json} from "@chainsafe/ssz";
+import {Json, List} from "@chainsafe/ssz";
 import {ICGETH2BeaconBlocksApi} from "../interface";
+import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
 
 export class CgEth2BeaconBlocksApi implements ICGETH2BeaconBlocksApi {
     private readonly httpClient: HttpClient;
@@ -22,5 +23,14 @@ export class CgEth2BeaconBlocksApi implements ICGETH2BeaconBlocksApi {
     public getBlock = async (blockId: "head" | "genesis" | "finalized" | number): Promise<SignedBeaconBlock> => {
         const blocksResponse = await this.httpClient.get<{data: Json}>(`/eth/v1/beacon/blocks/${blockId}`);
         return this.config.types.SignedBeaconBlock.fromJson(blocksResponse.data, {case: "snake"});
+    };
+
+    public getBlockAttestations = async (
+        blockId: "head" | "genesis" | "finalized" | number,
+    ): Promise<List<Attestation> | null> => {
+        const block = await this.getBlock(blockId);
+
+        if (typeof blockId === "number" && block.message.slot !== blockId) return null;
+        return block.message.body.attestations;
     };
 }

@@ -18,9 +18,12 @@ import {
     ValidatorStatus,
     SignedBeaconBlock,
 } from "@chainsafe/lodestar-types";
+import {List} from "@chainsafe/ssz";
+import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
 
 export interface ICGETH2BeaconBlocksApi extends IBeaconBlocksApi {
     getBlock(blockId: "head" | "genesis" | "finalized" | number): Promise<SignedBeaconBlock>;
+    getBlockAttestations(blockId: "head" | "genesis" | "finalized" | number): Promise<List<Attestation> | null>;
 }
 
 // extend all known statuses can get from different beacon nodes vendors

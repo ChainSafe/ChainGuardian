@@ -8,11 +8,13 @@ import {ValidatorNetworkRepository} from "./repositories/validator/network";
 import {ValidatorBeaconNodesRepository} from "./repositories/validatorBeaconNodes";
 import {NetworkMetricsRepository} from "./repositories/networkMetrics";
 import {ValidatorBalanceRepository} from "./repositories/validator/balance";
+import {ValidatorAttestationEffectivenessRepository} from "./repositories/validator/attestationEffectiveness";
 
 interface IValidatorDB {
     network: ValidatorNetworkRepository;
     balance: ValidatorBalanceRepository;
     beaconNodes: ValidatorBeaconNodesRepository;
+    attestationEffectiveness: ValidatorAttestationEffectivenessRepository;
 }
 export class CGDatabase extends DatabaseService {
     public account: AccountRepository;
@@ -30,6 +32,7 @@ export class CGDatabase extends DatabaseService {
             network: new ValidatorNetworkRepository(this.db),
             balance: new ValidatorBalanceRepository(this.db),
             beaconNodes: new ValidatorBeaconNodesRepository(this.db),
+            attestationEffectiveness: new ValidatorAttestationEffectivenessRepository(this.db),
         };
         this.settings = new SettingsRepository(this.db);
         this.beacons = new BeaconsRepository(this.db);
