@@ -16,6 +16,7 @@ import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Json, toHexString} from "@chainsafe/ssz";
 import querystring from "querystring";
+import {aAPLogger} from "../../../../../main/logger";
 
 export class CgEth2ValidatorApi implements ICGEth2ValidatorApi {
     private readonly httpClient: HttpClient;
@@ -98,9 +99,15 @@ export class CgEth2ValidatorApi implements ICGEth2ValidatorApi {
     };
 
     public publishAggregateAndProofs = async (signedAggregateAndProofs: SignedAggregateAndProof[]): Promise<void> => {
-        await this.httpClient.post<Json[], void>(
-            "/eth/v1/validator/aggregate_and_proofs",
-            signedAggregateAndProofs.map((a) => this.config.types.SignedAggregateAndProof.toJson(a, {case: "snake"})),
+        const data = signedAggregateAndProofs.map((a) =>
+            this.config.types.SignedAggregateAndProof.toJson(a, {case: "snake"}),
         );
+        try {
+            await this.httpClient.post<Json[], void>("/eth/v1/validator/aggregate_and_proofs", data);
+        } catch (e) {
+            aAPLogger.error(e);
+        } finally {
+            aAPLogger.debug(data);
+        }
     };
 }
