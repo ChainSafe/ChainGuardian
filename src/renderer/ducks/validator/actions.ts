@@ -93,3 +93,15 @@ export const signedNewAttestation = createAction<SignedNewAttestation>(
         meta: publicKey,
     }),
 );
+
+export type ExportValidator = (
+    path: string,
+    publicKey: string,
+) => {
+    payload: string;
+    meta: string;
+};
+export const exportValidator = createAction<ExportValidator>(
+    "validator/exportValidator",
+    (path: string, publicKey: string) => ({payload: path, meta: publicKey}),
+);
