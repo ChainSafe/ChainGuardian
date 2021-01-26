@@ -28,10 +28,9 @@ export class CgEth2BeaconBlocksApi implements ICGETH2BeaconBlocksApi {
     public getBlockAttestations = async (
         blockId: "head" | "genesis" | "finalized" | number,
     ): Promise<List<Attestation> | null> => {
-        const blocksResponse = await this.httpClient.get<{data: Json}>(`/eth/v1/beacon/blocks/${blockId}`);
-        const serialized = this.config.types.SignedBeaconBlock.fromJson(blocksResponse.data, {case: "snake"});
+        const block = await this.getBlock(blockId);
 
-        if (typeof blockId === "number" && serialized.message.slot !== blockId) return null;
-        return serialized.message.body.attestations;
+        if (typeof blockId === "number" && block.message.slot !== blockId) return null;
+        return block.message.body.attestations;
     };
 }
