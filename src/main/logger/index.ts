@@ -13,6 +13,8 @@ export const mainLogger = createLogger("mainLogger", "core.log");
 
 export const cgLogger = createLogger("chainGuardian", "chainGuardian.log");
 
+export const aAPLogger = createLogger("aggregateAndProofs", "aggregateAndProofs.log");
+
 export const getBeaconLogfileFromURL = (host: string): string => {
     const url = new URL(host);
     // change all character from url can cause problems while creating/writing logs
