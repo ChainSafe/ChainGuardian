@@ -2,14 +2,14 @@ import {SecretKey} from "@chainsafe/bls";
 import electron, {remote} from "electron";
 import path from "path";
 import {getConfig} from "../../../config/config";
-import {Level} from "../../components/Notification/NotificationEnums";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
-import {IValidator} from "../../ducks/validator/slice";
 import {DockerRegistry} from "../docker/docker-registry";
 import {networks} from "../eth2/networks";
 import {V4Keystore} from "../keystore";
-import {copyFile, removeDirRecursive} from "./file";
+import {removeDirRecursive} from "./file";
 import {cgLogger} from "../../../main/logger";
+import fs from "fs";
+import {Interchange} from "@chainsafe/lodestar-validator/lib/slashingProtection/interchange";
 
 export const cleanUpAccount = async (): Promise<void> => {
     const config = getConfig(electron.remote.app);
@@ -78,29 +78,20 @@ export const deleteBeaconNodeContainers = async (): Promise<void> => {
     );
 };
 
-export interface IExportStatus {
-    message: string;
-    level: Level;
-}
+export const saveValidatorData = (
+    exportPath: string,
+    publicKey: string,
+    name: string,
+    slashingDB?: Interchange,
+): void => {
+    // store Keystore
+    const keystorePath = path.join(getConfig(remote.app).storage.accountsDir, DEFAULT_ACCOUNT, `${publicKey}.json`);
+    const keystoreSavePath = path.join(exportPath, `keystore-${name}.json`);
+    fs.copyFileSync(keystorePath, keystoreSavePath);
 
-export const exportKeystore = (validator: IValidator): IExportStatus | null => {
-    const savePath = remote.dialog.showSaveDialogSync(remote.getCurrentWindow(), {
-        title: `Saving keystore for validator "${validator.name}"`,
-        buttonLabel: "Export",
-        filters: [{name: "Keystore", extensions: ["json"]}],
-        defaultPath: path.join(remote.app.getPath("home"), `${validator.publicKey}.json`),
-    });
-    // save keystore if destination selected
-    if (savePath) {
-        const keystorePath = path.join(getConfig().storage.accountsDir, DEFAULT_ACCOUNT, `${validator.publicKey}.json`);
-        const copyResult = copyFile(keystorePath, savePath);
-        return {
-            level: copyResult.success ? Level.INFO : Level.ERROR,
-            message: copyResult.success
-                ? `Successfully exported keystore for validator ${validator.name} to ${savePath}.`
-                : `Export failed: ${copyResult.message}.`,
-        };
+    // store slashing DB
+    if (slashingDB) {
+        const slashingDBSavePath = path.join(exportPath, `${name}-slashing-db.json`);
+        fs.writeFileSync(slashingDBSavePath, JSON.stringify(slashingDB, null, 2));
     }
-    // destination path not selected
-    return null;
 };

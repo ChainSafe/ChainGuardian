@@ -18,7 +18,7 @@ import {
     call,
 } from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
-import {deleteKeystore} from "../../services/utils/account";
+import {deleteKeystore, saveValidatorData} from "../../services/utils/account";
 import {ValidatorLogger} from "../../services/eth2/client/logger";
 import database, {cgDbController} from "../../services/db/api/database";
 import {config as mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
@@ -43,6 +43,7 @@ import {
     setValidatorStatus,
     getNewValidatorBalance,
     signedNewAttestation,
+    exportValidator,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
@@ -68,6 +69,9 @@ import {updateStatus} from "../beacon/actions";
 import {cgLogger} from "../../../main/logger";
 import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
 import {toHex} from "@chainsafe/lodestar-utils";
+import {Interchange} from "@chainsafe/lodestar-validator/lib/slashingProtection/interchange";
+import {createNotification} from "../notification/actions";
+import {Level} from "../../components/Notification/NotificationEnums";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -342,6 +346,55 @@ function* onBeaconNodeStatusChangeUpdateValidatorState(
     }
 }
 
+export function* exportValidatorData({
+    payload,
+    meta,
+}: ReturnType<typeof exportValidator>): Generator<
+    CallEffect | SelectEffect | PutEffect | Promise<INetworkConfig | null>,
+    void,
+    IValidatorComplete & (INetworkConfig | null) & Interchange & Genesis
+> {
+    const validator = yield select(getValidator, {publicKey: meta});
+    cgLogger.log("exporting validator", validator.name);
+
+    try {
+        let db: undefined | Interchange;
+        if (validator.beaconNodes[0]) {
+            const config = (yield readBeaconChainNetwork(validator.beaconNodes[0]))?.eth2Config || mainnetConfig;
+            const slashingProtection = new CGSlashingProtection({
+                config,
+                controller: cgDbController,
+            });
+            const genesis = yield call(new CgEth2ApiClient(config, validator.beaconNodes[0]).beacon.getGenesis);
+            db = yield call(slashingProtection.exportSlashingJson, genesis.genesisValidatorsRoot, meta);
+        }
+
+        const name = validator.name
+            .toLowerCase()
+            .replace(/ /g, "_")
+            .replace(/[^a-zA-Z0-9_]/g, "");
+        yield call(saveValidatorData, payload, meta, name, db);
+
+        cgLogger.info(`Successfully exported validator ${validator.name} - ${validator.publicKey} to ${payload}.`);
+        yield put(
+            createNotification({
+                source: "exportValidatorData",
+                title: `Successfully exported validator ${validator.name} to ${payload}.`,
+                level: Level.INFO,
+            }),
+        );
+    } catch (e) {
+        cgLogger.error("validator export error", e);
+        yield put(
+            createNotification({
+                source: "exportValidatorData",
+                title: `Export failed: ${e.message}`,
+                level: Level.ERROR,
+            }),
+        );
+    }
+}
+
 export function* getAttestationEffectiveness({
     payload,
     meta,
@@ -433,5 +486,6 @@ export function* validatorSagaWatcher(): Generator {
         takeEvery(setValidatorBeaconNode, setValidatorBeacon),
         takeEvery(updateStatus, onBeaconNodeStatusChangeUpdateValidatorState),
         takeEvery(signedNewAttestation, getAttestationEffectiveness),
+        takeEvery(exportValidator, exportValidatorData),
     ]);
 }

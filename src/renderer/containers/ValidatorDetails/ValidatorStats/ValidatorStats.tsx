@@ -9,9 +9,8 @@ import {remote, shell} from "electron";
 import ReactTooltip from "react-tooltip";
 import {Switch} from "../../../components/Switch/Switch";
 import {getValidatorBalanceChartData} from "../../../services/utils/charts";
-import path from "path";
 import {useDispatch} from "react-redux";
-import { exportValidator } from "../../../ducks/validator/actions";
+import {exportValidator} from "../../../ducks/validator/actions";
 
 interface IValidatorStatsProps {
     validator: IValidator;
