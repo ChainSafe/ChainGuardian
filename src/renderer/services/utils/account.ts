@@ -10,7 +10,7 @@ import {removeDirRecursive} from "./file";
 import {cgLogger} from "../../../main/logger";
 import fs from "fs";
 import {Interchange} from "@chainsafe/lodestar-validator/lib/slashingProtection/interchange";
-import { format } from "date-fns";
+import {format} from "date-fns";
 
 export const cleanUpAccount = async (): Promise<void> => {
     const config = getConfig(electron.remote.app);
