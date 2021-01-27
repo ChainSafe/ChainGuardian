@@ -31,14 +31,18 @@ export interface IValidatorSimpleProps {
 }
 
 const hideValidatorButtons = (status: ValidatorStatus): boolean =>
+    [ValidatorStatus.NO_BEACON_NODE, ValidatorStatus.BEACON_NODE_OFFLINE, ValidatorStatus.SYNCING_BEACON_NODE].includes(
+        status,
+    );
+
+const showValidatorQueButton = (status: ValidatorStatus): boolean =>
     [
-        ValidatorStatus.NO_BEACON_NODE,
-        ValidatorStatus.BEACON_NODE_OFFLINE,
-        ValidatorStatus.SYNCING_BEACON_NODE,
         ValidatorStatus.WAITING_DEPOSIT,
         ValidatorStatus.PROCESSING_DEPOSIT,
         ValidatorStatus.PENDING_DEPOSIT_OR_ACTIVATION,
         ValidatorStatus.ERROR,
+        ValidatorStatus.DEPOSITED,
+        ValidatorStatus.QUEUE,
     ].includes(status);
 
 export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props: IValidatorSimpleProps) => {
@@ -113,12 +117,8 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
                 {validator.isRunning ? (
                     <ButtonDestructive onClick={(): void => setAskPassword("stop")}>Stop</ButtonDestructive>
                 ) : (
-                    <ButtonPrimary
-                        onClick={(): void => setAskPassword("start")}
-                        disabled={
-                            validator.status === ValidatorStatus.DEPOSITED || validator.status === ValidatorStatus.QUEUE
-                        }>
-                        Start
+                    <ButtonPrimary onClick={(): void => setAskPassword("start")}>
+                        {showValidatorQueButton(validator.status) ? "Auto Start" : "Start"}
                     </ButtonPrimary>
                 )}
             </div>
