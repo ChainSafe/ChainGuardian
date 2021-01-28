@@ -1,8 +1,9 @@
 import React, {useState} from "react";
-import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {Joi} from "../../services/validation";
 import {ButtonPrimary, ButtonSecondary} from "../Button/ButtonStandard";
 import {InputForm} from "../Input/InputForm";
+import axios from "axios";
+import {getNetworkConfigByGenesisVersion} from "../../services/eth2/networks";
 
 interface IInputBeaconNodeProps {
     onGoSubmit: (url: string, network: string) => void;
@@ -31,7 +32,12 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
         }
 
         try {
-            const network = await readBeaconChainNetwork(beaconNodeInput);
+            // eslint-disable-next-line camelcase
+            const response = await axios.get<{data: {genesis_fork_version: string}}>(`/eth/v1/beacon/genesis`, {
+                baseURL: beaconNodeInput,
+                timeout: 1000,
+            });
+            const network = await getNetworkConfigByGenesisVersion(response.data.data.genesis_fork_version);
             if (!network) {
                 setErrorMessage("Beacon chain network not supported");
                 return false;
