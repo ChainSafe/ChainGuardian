@@ -1,14 +1,13 @@
 import React, {ReactElement, useEffect, useState} from "react";
 import {ButtonSecondary} from "../../../components/Button/ButtonStandard";
 import {IValidator} from "../../../ducks/validator/slice";
-import {SimpleLineChart, SimpleLineChartRecord} from "../../../components/SimpleLineChart/SimpleLineChart";
-import {ResponsiveContainer, TickFormatterFunction} from "recharts";
+import {SimpleLineChartRecord} from "../../../components/SimpleLineChart/SimpleLineChart";
 import database from "../../../services/db/api/database";
-import {utils} from "ethers";
 import {shell} from "electron";
 import ReactTooltip from "react-tooltip";
-import {Switch} from "../../../components/Switch/Switch";
-import {getValidatorBalanceChartData} from "../../../services/utils/charts";
+import {getValidatorBalanceChartData, getAttestationEfficiencyChartData} from "../../../services/utils/charts";
+import {ValidatorBalanceChart} from "./ValidatorBalanceChart";
+import {ValidatorAttestationEfficiencyChart, AttestationRecord} from "./ValidatorAttestationEfficiencyChart";
 
 interface IValidatorStatsProps {
     validator: IValidator;
@@ -16,8 +15,10 @@ interface IValidatorStatsProps {
 
 export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement => {
     const [epochData, setEpochData] = useState<SimpleLineChartRecord[]>([]);
-    const [dateData, setDateData] = useState<SimpleLineChartRecord[]>([]);
-    const [useDate, setUseData] = useState(false);
+    const [dateData, setDateData] = useState<AttestationRecord[]>([]);
+    const [useDate, setUseDate] = useState(false);
+
+    const [attestationData, setAttestationData] = useState<SimpleLineChartRecord[]>([]);
 
     const onBeaconChainClick = (): void => {
         const network = validator.network !== "mainnet" ? validator.network + "." : "";
@@ -32,6 +33,9 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
             const {epoch, date} = getValidatorBalanceChartData(balances.records, validator.network);
             setEpochData(epoch);
             setDateData(date);
+
+            const attestations = await database.validator.attestationEffectiveness.get(validator.publicKey);
+            setAttestationData(getAttestationEfficiencyChartData(attestations));
         };
         intervalFn();
         const interval = setInterval(intervalFn, 2 * 60 * 1000);
@@ -39,25 +43,6 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
             clearInterval(interval);
         };
     }, []);
-
-    const formatter = (value: string | number | Array<string | number>): [string, string] => [
-        utils.formatEther(utils.parseUnits(value.toString(), "gwei")),
-        "ETH",
-    ];
-    const labelFormatter = (label: string | number): React.ReactNode => {
-        const index = (useDate ? dateData : epochData).findIndex((value) => value.label === label);
-        if (index !== -1) {
-            return (
-                <span>
-                    Epoch {epochData[index].label}
-                    <br />
-                    {dateData[index].label}
-                </span>
-            );
-        }
-        return "unknown";
-    };
-    const tickFormatter: TickFormatterFunction = (tick: string) => (useDate ? tick.slice(0, -6) : tick);
 
     return (
         <div className='validator-details-stats'>
@@ -68,33 +53,14 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
                     Explorer
                 </ButtonSecondary>
             </div>
-
-            <div className='node-graph-container' style={{width: "100%"}}>
-                <div className='graph-header'>
-                    <div className='graph-title'>Validator Balance</div>
-                    <Switch checked={useDate} onChange={setUseData} offLabel='Epoch' onLabel='Date' />
-                </div>
-                <div className='graph-content'>
-                    <ResponsiveContainer width='100%' height={200}>
-                        <SimpleLineChart
-                            data={useDate ? dateData : epochData}
-                            tooltip={{formatter, labelFormatter, separator: " "}}
-                            xAxis={{
-                                height: 40,
-                                label: {value: useDate ? "date" : "epoch", position: "insideBottom"},
-                                interval: "preserveStartEnd",
-                                tickFormatter,
-                            }}
-                            yAxis={{
-                                hide: false,
-                                tick: false,
-                                axisLine: false,
-                                width: 3,
-                                label: {value: "ETH", angle: -90, position: "insideLeft", offset: -8},
-                            }}
-                        />
-                    </ResponsiveContainer>
-                </div>
+            <div className='beacon-node-charts-container'>
+                <ValidatorBalanceChart
+                    dateData={dateData}
+                    epochData={epochData}
+                    useDate={useDate}
+                    setUseDate={setUseDate}
+                />
+                <ValidatorAttestationEfficiencyChart data={attestationData} />
             </div>
             <br />
             <p>Performance statistics are coming soon!</p>
