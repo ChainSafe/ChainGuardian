@@ -18,6 +18,8 @@ import {
     getName,
     getRegisterPublicKey,
 } from "./selectors";
+import {getAuthAccount} from "../auth/selectors";
+import {reauthorize} from "../auth/actions";
 
 function* afterCreatePasswordProcess({
     payload,
@@ -48,7 +50,7 @@ function* afterConfirmPasswordProcess({
 function* saveAccount(
     signingKey: SecretKey | string,
     directory: string,
-): Generator<CallEffect | Promise<void> | SelectEffect | PutEffect, void, string> {
+): Generator<CallEffect | Promise<void> | SelectEffect | PutEffect, void, string & (CGAccount | null)> {
     // Save account to db
     const account = new CGAccount({
         name: "Default",
@@ -68,6 +70,11 @@ function* saveAccount(
     yield call(addNewValidatorSaga, addNewValidator(validatorPubKey, name, account));
 
     yield put(completedRegistrationSubmission());
+
+    const auth: CGAccount | null = yield select(getAuthAccount);
+    if (!auth) {
+        yield put(reauthorize());
+    }
 }
 
 export function* registerSagaWatcher(): Generator {
