@@ -2,8 +2,7 @@ import React, {useState} from "react";
 import {Joi} from "../../services/validation";
 import {ButtonPrimary, ButtonSecondary} from "../Button/ButtonStandard";
 import {InputForm} from "../Input/InputForm";
-import axios from "axios";
-import {getNetworkConfigByGenesisVersion} from "../../services/eth2/networks";
+import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
 
 interface IInputBeaconNodeProps {
     onGoSubmit: (url: string, network: string) => void;
@@ -32,19 +31,9 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
         }
 
         try {
-            // eslint-disable-next-line camelcase
-            const response = await axios.get<{data: {genesis_fork_version: string}}>(`/eth/v1/beacon/genesis`, {
-                baseURL: beaconNodeInput,
-                timeout: 1000,
-            });
-            const network = await getNetworkConfigByGenesisVersion(response.data.data.genesis_fork_version);
-            if (!network) {
-                setErrorMessage("Beacon chain network not supported");
-                return false;
-            }
-            return network.networkName;
+            return await CgEth2ApiClient.getBeaconURLNetworkName(beaconNodeInput);
         } catch (e) {
-            setErrorMessage("Beacon chain not found");
+            setErrorMessage(e.message);
             return false;
         }
     };
