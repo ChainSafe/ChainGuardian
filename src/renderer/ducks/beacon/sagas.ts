@@ -2,7 +2,7 @@ import {
     all,
     call,
     put,
-    fork,
+    spawn,
     takeEvery,
     PutEffect,
     CallEffect,
@@ -120,7 +120,7 @@ function* storeBeacon({payload: {url, docker}}: ReturnType<typeof addBeacon>): G
         // eslint-disable-next-line no-param-reassign
         docker = {id: "", network: "", chainDataDir: "", eth1Url: "", discoveryPort: "", libp2pPort: "", rpcPort: ""};
     yield database.beacons.upsert({url, docker});
-    yield fork(watchOnHead, url);
+    yield spawn(watchOnHead, url);
 }
 
 function* removeBeaconSaga({
@@ -190,7 +190,7 @@ function* initializeBeaconsFromStore(): Generator<
         const stats = yield all(beacons.map(({url}) => call(getBeaconStatus, url)));
         const networks = yield all(beacons.map(({url}) => call(readBeaconChainNetwork, url)));
 
-        yield all(beacons.map(({url}) => fork(watchOnHead, url)));
+        yield all(beacons.map(({url}) => spawn(watchOnHead, url)));
 
         yield put(
             addBeacons(
