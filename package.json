@@ -191,6 +191,7 @@
     "event-iterator": "^2.0.0",
     "it-all": "^1.0.4",
     "it-pushable": "^1.4.0",
+    "javascript-color-gradient": "^1.3.2",
     "joi": "^17.3.0",
     "json-bigint": "^0.3.0",
     "level": "^6.0.1",

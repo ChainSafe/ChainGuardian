@@ -6,6 +6,7 @@ import {ValidatorBalance} from "../../models/validatorBalances";
 import {getNetworkConfig} from "../eth2/networks";
 import {computeTimeAtSlot, computeStartSlotAtEpoch} from "@chainsafe/lodestar-beacon-state-transition";
 import {AttestationEffectiveness} from "../../models/attestationEffectiveness";
+import {AttestationRecord} from "../../containers/ValidatorDetails/ValidatorStats/ValidatorAttestationEfficiencyChart";
 
 export const getLatencyChartData = (metrics: NetworkMetrics): {data: SimpleLineChartRecord[]; ticks: string[]} => {
     const baseTime = roundToNearestMinutes(subDays(new Date(), 1), {nearestTo: 15});
@@ -23,7 +24,7 @@ export const getLatencyChartData = (metrics: NetworkMetrics): {data: SimpleLineC
 
 export const getAttestationEfficiencyChartData = (
     attestationEffectiveness: AttestationEffectiveness,
-): SimpleLineChartRecord[] => {
+): AttestationRecord[] => {
     const baseTime = subDays(new Date(), 6);
     return new Array(7).fill(null).map((_, index) => {
         const time = addDays(new Date(baseTime), index);

@@ -7,7 +7,7 @@ import {shell} from "electron";
 import ReactTooltip from "react-tooltip";
 import {getValidatorBalanceChartData, getAttestationEfficiencyChartData} from "../../../services/utils/charts";
 import {ValidatorBalanceChart} from "./ValidatorBalanceChart";
-import {ValidatorAttestationEfficiencyChart} from "./ValidatorAttestationEfficiencyChart";
+import {ValidatorAttestationEfficiencyChart, AttestationRecord} from "./ValidatorAttestationEfficiencyChart";
 
 interface IValidatorStatsProps {
     validator: IValidator;
@@ -15,7 +15,7 @@ interface IValidatorStatsProps {
 
 export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement => {
     const [epochData, setEpochData] = useState<SimpleLineChartRecord[]>([]);
-    const [dateData, setDateData] = useState<SimpleLineChartRecord[]>([]);
+    const [dateData, setDateData] = useState<AttestationRecord[]>([]);
     const [useDate, setUseDate] = useState(false);
 
     const [attestationData, setAttestationData] = useState<SimpleLineChartRecord[]>([]);
