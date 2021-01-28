@@ -48,6 +48,7 @@ import {createNotification} from "../notification/actions";
 import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
 import {ValidatorStatus} from "../../constants/validatorStatus";
 import {cgLogger, createLogger, getBeaconLogfileFromURL} from "../../../main/logger";
+import {setInitialBeacons} from "../settings/actions";
 
 export function* pullDockerImage(
     network: string,
@@ -209,6 +210,7 @@ function* initializeBeaconsFromStore(): Generator<
             ),
         );
     } else cgLogger.info("No beacon node found");
+    yield put(setInitialBeacons(false));
 }
 
 export function* watchOnHead(

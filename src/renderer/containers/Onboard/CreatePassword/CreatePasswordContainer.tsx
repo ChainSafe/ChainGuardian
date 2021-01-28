@@ -14,6 +14,7 @@ import {IRootState} from "../../../ducks/reducers";
 import {afterConfirmPassword, afterCreatePassword} from "../../../ducks/register/actions";
 import {getAuthAccount} from "../../../ducks/auth/selectors";
 import {getKeystorePath} from "../../../ducks/register/selectors";
+import {setLoadingValidator} from "../../../ducks/settings/actions";
 
 export interface IState {
     password: string;
@@ -33,6 +34,7 @@ interface IStateProps {
 interface IInjectedProps {
     afterCreatePassword: typeof afterCreatePassword;
     afterConfirmPassword: typeof afterConfirmPassword;
+    setLoadingValidator: typeof setLoadingValidator;
 }
 
 export class CreatePassword extends Component<Pick<RouteComponentProps, "history"> & IInjectedProps & IStateProps> {
@@ -143,6 +145,7 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
         if (this.props.isFirstTimeRegistration) {
             this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONSENT));
         } else {
+            this.props.setLoadingValidator(true);
             this.props.history.push(Routes.DASHBOARD_ROUTE);
         }
     };
@@ -153,6 +156,7 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
         {
             afterCreatePassword,
             afterConfirmPassword,
+            setLoadingValidator,
         },
         dispatch,
     );

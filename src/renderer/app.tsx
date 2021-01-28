@@ -11,6 +11,7 @@ import "./style/index.scss";
 import store from "./ducks/store";
 import {DockerDemonNotificator} from "./DockerDemonNotificator";
 import {mainLogger} from "../main/logger";
+import {GlobalLoader} from "./GlobalLoader";
 
 initSentry();
 
@@ -26,6 +27,7 @@ const render = (Component: () => JSX.Element): void => {
                 <Component />
                 <NotificationRenderer />
                 <DockerDemonNotificator />
+                <GlobalLoader />
             </Provider>
         </AppContainer>,
         mainElement,

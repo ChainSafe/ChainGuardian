@@ -68,6 +68,7 @@ import {updateStatus} from "../beacon/actions";
 import {cgLogger} from "../../../main/logger";
 import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
 import {toHex} from "@chainsafe/lodestar-utils";
+import {setInitialValidators, setLoadingValidator} from "../settings/actions";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -123,6 +124,7 @@ function* loadValidatorsSaga(): Generator<
             }),
         );
         yield put(loadValidators(validatorArray));
+        yield put(setInitialValidators(false));
         yield all(validatorArray.map(({publicKey, network}) => fork(validatorInfoUpdater, publicKey, network)));
     }
 }
@@ -141,6 +143,7 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
     cgLogger.info("Adding validator", validator.name, "pubkey", validator.publicKey, "network", validator.network);
 
     yield put(addValidator(validator));
+    yield put(setLoadingValidator(false));
     yield fork(validatorInfoUpdater, validator.publicKey, validator.network);
 }
 
