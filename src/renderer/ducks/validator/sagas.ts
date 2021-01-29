@@ -8,7 +8,7 @@ import {
     race,
     take,
     cancel,
-    fork,
+    spawn,
     RaceEffect,
     CancelEffect,
     TakeEffect,
@@ -127,7 +127,7 @@ function* loadValidatorsSaga(): Generator<
             }),
         );
         yield put(loadValidators(validatorArray));
-        yield all(validatorArray.map(({publicKey, network}) => fork(validatorInfoUpdater, publicKey, network)));
+        yield all(validatorArray.map(({publicKey, network}) => spawn(validatorInfoUpdater, publicKey, network)));
     }
 }
 
@@ -145,7 +145,7 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
     cgLogger.info("Adding validator", validator.name, "pubkey", validator.publicKey, "network", validator.network);
 
     yield put(addValidator(validator));
-    yield fork(validatorInfoUpdater, validator.publicKey, validator.network);
+    yield spawn(validatorInfoUpdater, validator.publicKey, validator.network);
 }
 
 function* removeValidatorSaga(
