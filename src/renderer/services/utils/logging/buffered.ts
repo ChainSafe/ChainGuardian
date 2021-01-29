@@ -5,6 +5,7 @@ import {Readable} from "stream";
 
 export interface IBufferedLoggerOptions {
     maxCache: number;
+    transformer: (logLine: string) => string;
 }
 
 export class BufferedLogger implements ICGLogger {
@@ -12,7 +13,7 @@ export class BufferedLogger implements ICGLogger {
     private readonly opts: IBufferedLoggerOptions;
 
     public constructor(opts?: Partial<IBufferedLoggerOptions>) {
-        this.opts = Object.assign({}, {maxCache: 1000}, opts);
+        this.opts = Object.assign({}, {maxCache: 1000, transformer: (l: string) => l}, opts);
         this.cachedLogs = new FifoQueue<ILogRecord>(this.opts.maxCache);
     }
 
@@ -58,7 +59,7 @@ export class BufferedLogger implements ICGLogger {
                     .split("\n")
                     .filter((l) => !!l)
                     .map((logLine) => ({
-                        log: logLine,
+                        log: this.opts.transformer(logLine),
                         source,
                     })),
             );
