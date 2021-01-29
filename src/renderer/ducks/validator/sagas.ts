@@ -44,6 +44,7 @@ import {
     getNewValidatorBalance,
     signedNewAttestation,
     exportValidator,
+    setValidatorIsRunning,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
@@ -174,10 +175,12 @@ function* startService(
     | Promise<boolean>
     | Promise<INetworkConfig | null>
     | Promise<Genesis | null>
-    | RaceEffect<TakeEffect>,
+    | RaceEffect<TakeEffect>
+    | CancelEffect,
     void,
     IValidatorComplete &
         [ReturnType<typeof slashingProtectionUpload> | undefined, ReturnType<typeof slashingProtectionCancel>] &
+        [ReturnType<typeof stopActiveValidatorService> | undefined, ReturnType<typeof setValidatorStatus>] &
         (INetworkConfig | null) &
         (Genesis | null) &
         boolean
@@ -222,6 +225,15 @@ function* startService(
                     ).toString(),
                 );
                 yield slashingProtection.importInterchange(interchange, genesisValidatorsRoot);
+            }
+        }
+
+        if (validator.status !== ValidatorStatus.ACTIVE) {
+            yield put(setValidatorIsRunning(true, validator.publicKey));
+            while (true) {
+                const [stop, status] = yield race([take(stopActiveValidatorService), take(setValidatorStatus)]);
+                if (stop) yield cancel();
+                if (status.meta === validator.publicKey && status.payload === ValidatorStatus.ACTIVE) break;
             }
         }
 

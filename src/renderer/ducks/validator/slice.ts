@@ -77,6 +77,15 @@ export const validatorSlice = createSlice({
                 meta: publicKey,
             }),
         },
+        setValidatorIsRunning: {
+            reducer: (state, action: PayloadAction<boolean, string, string>): void => {
+                state.byPublicKey[action.meta].isRunning = true;
+            },
+            prepare: (isRunning: boolean, publicKey: string): {payload: boolean; meta: string} => ({
+                payload: isRunning,
+                meta: publicKey,
+            }),
+        },
         storeValidatorBeaconNodes: {
             reducer: (state, action: PayloadAction<string[], string, string>): void => {
                 state.byPublicKey[action.meta].beaconNodes = action.payload;
