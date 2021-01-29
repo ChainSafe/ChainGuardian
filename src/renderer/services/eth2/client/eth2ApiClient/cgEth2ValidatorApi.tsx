@@ -99,6 +99,7 @@ export class CgEth2ValidatorApi implements ICGEth2ValidatorApi {
     };
 
     public publishAggregateAndProofs = async (signedAggregateAndProofs: SignedAggregateAndProof[]): Promise<void> => {
+        let error: Error;
         const data = signedAggregateAndProofs.map((a) =>
             this.config.types.SignedAggregateAndProof.toJson(a, {case: "snake"}),
         );
@@ -106,8 +107,10 @@ export class CgEth2ValidatorApi implements ICGEth2ValidatorApi {
             await this.httpClient.post<Json[], void>("/eth/v1/validator/aggregate_and_proofs", data);
         } catch (e) {
             aAPLogger.error(e);
+            error = e;
         } finally {
             aAPLogger.debug(data);
         }
+        if (error) throw error;
     };
 }

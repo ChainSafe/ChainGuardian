@@ -6,6 +6,9 @@
     color: $neutral-200;
     background: transparent;
 
+    padding-left: 30px;
+    text-indent: -30px;
+
     &.error {
         color: $system-error-500;
     }

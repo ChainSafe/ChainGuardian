@@ -13,7 +13,7 @@ export class ValidatorLogger extends WinstonLogger {
         const stream = new PassThrough();
         transports = [new winston.transports.Stream({stream: stream}), consoleTransport];
         super(options, transports);
-        this.bufferedLogger = new BufferedLogger({maxCache: 1000});
+        this.bufferedLogger = new BufferedLogger({maxCache: 1000, transformer: this.transformer});
         this.bufferedLogger.addStreamSource(stream);
 
         if (publicKey) {
@@ -37,5 +37,9 @@ export class ValidatorLogger extends WinstonLogger {
 
     public getLogIterator(): AsyncIterable<ILogRecord[]> {
         return this.bufferedLogger.getLogIterator();
+    }
+
+    private transformer(logLine: string): string {
+        return logLine.replace(/(\[\]\s{10,20}|.\[3[0-9]m)/g, "");
     }
 }
