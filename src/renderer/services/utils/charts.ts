@@ -1,10 +1,12 @@
 import {NetworkMetrics} from "../../models/networkMetrics";
 import {SimpleLineChartRecord} from "../../components/SimpleLineChart/SimpleLineChart";
-import {addMinutes, format, roundToNearestMinutes, subDays, subMinutes} from "date-fns";
+import {addMinutes, format, roundToNearestMinutes, subDays, subMinutes, endOfDay, addDays, startOfDay} from "date-fns";
 import {ResponseErrorPieData} from "../../containers/BeaconNode/BeaconNodeResponseErrorPieChart";
 import {ValidatorBalance} from "../../models/validatorBalances";
 import {getNetworkConfig} from "../eth2/networks";
 import {computeTimeAtSlot, computeStartSlotAtEpoch} from "@chainsafe/lodestar-beacon-state-transition";
+import {AttestationEffectiveness} from "../../models/attestationEffectiveness";
+import {AttestationRecord} from "../../containers/ValidatorDetails/ValidatorStats/ValidatorAttestationEfficiencyChart";
 
 export const getLatencyChartData = (metrics: NetworkMetrics): {data: SimpleLineChartRecord[]; ticks: string[]} => {
     const baseTime = roundToNearestMinutes(subDays(new Date(), 1), {nearestTo: 15});
@@ -18,6 +20,21 @@ export const getLatencyChartData = (metrics: NetworkMetrics): {data: SimpleLineC
     });
 
     return {data, ticks};
+};
+
+export const getAttestationEfficiencyChartData = (
+    attestationEffectiveness: AttestationEffectiveness,
+): AttestationRecord[] => {
+    const baseTime = subDays(new Date(), 6);
+    return new Array(7).fill(null).map((_, index) => {
+        const time = addDays(new Date(baseTime), index);
+        const value =
+            Math.round(
+                attestationEffectiveness.getAverageAttestationEfficiency(startOfDay(time), endOfDay(time)) * 100,
+            ) || null;
+        const label = format(time, "EEEE");
+        return {value, label};
+    });
 };
 
 export const getNetworkErrorPieData = (metrics: NetworkMetrics): ResponseErrorPieData => {
