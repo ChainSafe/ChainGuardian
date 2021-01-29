@@ -1,11 +1,11 @@
 import * as React from "react";
-import {Notification} from "./components/Notification/Notification";
+import {Notification} from "../components/Notification/Notification";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
-import {removeNotification} from "./ducks/notification/actions";
-import {IRootState} from "./ducks/reducers";
-import {INotificationState} from "./ducks/notification/slice";
-import {getNotifications} from "./ducks/notification/selectors";
+import {removeNotification} from "../ducks/notification/actions";
+import {IRootState} from "../ducks/reducers";
+import {INotificationState} from "../ducks/notification/slice";
+import {getNotifications} from "../ducks/notification/selectors";
 
 const NotificationRendererContainer: React.FunctionComponent<IInjectedProps & Pick<IRootState, "notificationArray">> = (
     props,

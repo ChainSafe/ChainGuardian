@@ -1,0 +1,30 @@
+.discord-overlay {
+  position: fixed;
+  bottom: 25px;
+  left: 30px;
+  z-index: 999;
+
+  .container {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    border: none;
+    background-color: $neutral-700;
+    box-shadow: 0 1px 3px $neutral-800;
+
+    &:hover {
+      background-color: $neutral-600;
+    }
+  }
+  .hover-width {
+    width: 80px;
+  }
+  img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -47%);
+    width: 50px;
+    height: 50px;
+  }
+}

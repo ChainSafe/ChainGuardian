@@ -1,8 +1,8 @@
 import React from "react";
-import {ButtonSecondary} from "./components/Button/ButtonStandard";
+import {ButtonSecondary} from "../components/Button/ButtonStandard";
 import {useDispatch, useSelector} from "react-redux";
-import {isDockerDemonIsOffline} from "./ducks/network/selectors";
-import {checkDockerDemonIsOnline} from "./ducks/network/actions";
+import {isDockerDemonIsOffline} from "../ducks/network/selectors";
+import {checkDockerDemonIsOnline} from "../ducks/network/actions";
 
 export const DockerDemonNotificator: React.FC = () => {
     const dispatch = useDispatch();
