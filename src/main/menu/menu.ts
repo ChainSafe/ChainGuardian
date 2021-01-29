@@ -1,8 +1,18 @@
-import {MenuItemConstructorOptions, MenuItem, Menu, shell, app} from "electron";
+import {MenuItemConstructorOptions, MenuItem, Menu, shell, app, BrowserWindow, dialog} from "electron";
+
+const reloadDialog = (window: BrowserWindow): number =>
+    dialog.showMessageBoxSync(window, {
+        type: "question",
+        buttons: ["Yes", "No"],
+        title: "Confirm",
+        message: "Reloading the Application will require to start all the validators again. Are you sure?",
+    });
+
+const isMac = process.platform === "darwin";
 
 const template = [
     {
-        label: process.platform === "darwin" ? app.getName() : "Application",
+        label: isMac ? app.getName() : "Application",
         submenu: [
             {
                 label: "Homepage",
@@ -16,14 +26,30 @@ const template = [
                     await shell.openExternal("https://discord.gg/4GBwH52cFb");
                 },
             },
-            ...(process.platform === "darwin" ? [{role: "about"}] : []),
+            ...(isMac ? [{role: "about"}] : []),
             {type: "separator"},
-            {role: "reload"},
-            {role: "forcereload"},
+            {
+                label: "Reload",
+                accelerator: "CmdOrCtrl+R",
+                nonNativeMacOSRole: true,
+                click: (event: KeyboardEvent, window: BrowserWindow): void => {
+                    if (reloadDialog(window) === 0) {
+                        window.reload();
+                    }
+                },
+            },
+            {
+                label: "Force Reload",
+                accelerator: "Shift+CmdOrCtrl+R",
+                nonNativeMacOSRole: true,
+                click: (event: KeyboardEvent, window: BrowserWindow): void => {
+                    if (reloadDialog(window) === 0) {
+                        window.webContents.reloadIgnoringCache();
+                    }
+                },
+            },
             {type: "separator"},
-            ...(process.platform === "darwin"
-                ? [{role: "hide"}, {role: "hideothers"}, {role: "unhide"}, {type: "separator"}]
-                : []),
+            ...(isMac ? [{role: "hide"}, {role: "hideothers"}, {role: "unhide"}, {type: "separator"}] : []),
             {role: "quit"},
         ],
     },
