@@ -5,6 +5,7 @@ import {notificationSlice} from "./notification/slice";
 import {registerSlice} from "./register/slice";
 import {validatorSlice} from "./validator/slice";
 import {beaconSlice} from "./beacon/slice";
+import {settingsSlice} from "./settings/slice";
 
 export type IRootState = ReturnType<typeof rootReducer>;
 
@@ -15,4 +16,5 @@ export const rootReducer = combineReducers({
     network: networkSlice.reducer,
     validators: validatorSlice.reducer,
     beacons: beaconSlice.reducer,
+    settings: settingsSlice.reducer,
 });

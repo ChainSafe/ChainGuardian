@@ -73,6 +73,7 @@ import {toHex} from "@chainsafe/lodestar-utils";
 import {Interchange} from "@chainsafe/lodestar-validator/lib/slashingProtection/interchange";
 import {createNotification} from "../notification/actions";
 import {Level} from "../../components/Notification/NotificationEnums";
+import {setInitialValidators, setLoadingValidator} from "../settings/actions";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -128,6 +129,7 @@ function* loadValidatorsSaga(): Generator<
             }),
         );
         yield put(loadValidators(validatorArray));
+        yield put(setInitialValidators(false));
         yield all(validatorArray.map(({publicKey, network}) => spawn(validatorInfoUpdater, publicKey, network)));
     }
 }
@@ -146,6 +148,7 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
     cgLogger.info("Adding validator", validator.name, "pubkey", validator.publicKey, "network", validator.network);
 
     yield put(addValidator(validator));
+    yield put(setLoadingValidator(false));
     yield spawn(validatorInfoUpdater, validator.publicKey, validator.network);
 }
 
