@@ -8,7 +8,7 @@ import {shell} from "electron";
 
 export const Overlays: React.FC = () => {
     const onDiscordClick = (): void => {
-        shell.openExternal("https://chainguardian.nodefactory.io/");
+        shell.openExternal(process.env.DISCORD_URL);
     };
 
     return (
