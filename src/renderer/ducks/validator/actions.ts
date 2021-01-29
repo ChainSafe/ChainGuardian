@@ -12,6 +12,7 @@ export const {
     stopValidatorService,
     storeValidatorBeaconNodes,
     updateValidatorBalance,
+    setValidatorIsRunning,
 } = validatorSlice.actions;
 
 export const loadValidatorsAction = createAction("validator/loadValidatorsAction");
@@ -92,4 +93,16 @@ export const signedNewAttestation = createAction<SignedNewAttestation>(
         payload: {block, index, slot},
         meta: publicKey,
     }),
+);
+
+export type ExportValidator = (
+    path: string,
+    publicKey: string,
+) => {
+    payload: string;
+    meta: string;
+};
+export const exportValidator = createAction<ExportValidator>(
+    "validator/exportValidator",
+    (path: string, publicKey: string) => ({payload: path, meta: publicKey}),
 );

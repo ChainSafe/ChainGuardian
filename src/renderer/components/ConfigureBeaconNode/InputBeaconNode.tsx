@@ -1,8 +1,8 @@
 import React, {useState} from "react";
-import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {Joi} from "../../services/validation";
 import {ButtonPrimary, ButtonSecondary} from "../Button/ButtonStandard";
 import {InputForm} from "../Input/InputForm";
+import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
 
 interface IInputBeaconNodeProps {
     onGoSubmit: (url: string, network: string) => void;
@@ -31,14 +31,9 @@ export const InputBeaconNode: React.FunctionComponent<IInputBeaconNodeProps> = (
         }
 
         try {
-            const network = await readBeaconChainNetwork(beaconNodeInput);
-            if (!network) {
-                setErrorMessage("Beacon chain network not supported");
-                return false;
-            }
-            return network.networkName;
+            return await CgEth2ApiClient.getBeaconURLNetworkName(beaconNodeInput);
         } catch (e) {
-            setErrorMessage("Beacon chain not found");
+            setErrorMessage(e.message);
             return false;
         }
     };
