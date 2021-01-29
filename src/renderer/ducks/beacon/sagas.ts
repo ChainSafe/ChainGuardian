@@ -231,7 +231,10 @@ export function* watchOnHead(
     const eventStream = client.events.getEventStream([BeaconEventType.HEAD]);
 
     const beacon = yield select(getBeaconByKey, {key: url});
-    let isSyncing = beacon.status === BeaconStatus.syncing || beacon.status === BeaconStatus.offline;
+    let isSyncing =
+        beacon.status === BeaconStatus.syncing ||
+        beacon.status === BeaconStatus.offline ||
+        beacon.status === BeaconStatus.starting;
     let isOnline = beacon.status !== BeaconStatus.offline;
     let epoch: number | undefined;
 
