@@ -134,7 +134,7 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
         publicKey: action.payload.publicKey,
         network: action.meta!.getValidatorNetwork(action.payload.publicKey),
         keystore,
-        status: undefined,
+        status: ValidatorStatus.NO_BEACON_NODE,
         isRunning: false,
         beaconNodes: [],
     };
