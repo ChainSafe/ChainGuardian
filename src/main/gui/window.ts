@@ -2,6 +2,7 @@ import path from "path";
 import {BrowserWindow} from "electron";
 import {iconExtensions, installExtensions} from "./utils";
 import {dialog, app} from "electron";
+import {setApplicationMenu} from "../menu/menu";
 
 let win: BrowserWindow | null;
 
@@ -41,6 +42,7 @@ export async function createWindow(): Promise<void> {
     win.webContents.on("did-finish-load", async () => {
         if (win !== null) {
             win.setTitle("ChainGuardian");
+            setApplicationMenu();
         }
     });
 
