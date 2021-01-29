@@ -9,6 +9,8 @@ import {CgEth2ValidatorApi} from "./cgEth2ValidatorApi";
 import {CgEth2NodeApi} from "./cgEth2NodeApi";
 import {CgEth2EventsApi} from "./cgEth2EventsApi";
 import {CgEth2Config} from "./cgEth2Config";
+import axios from "axios";
+import {getNetworkConfigByGenesisVersion} from "../../networks";
 
 export class CgEth2ApiClient extends AbstractApiClient implements ICgEth2ApiClient {
     public validator: ICGEth2ValidatorApi;
@@ -32,4 +34,21 @@ export class CgEth2ApiClient extends AbstractApiClient implements ICgEth2ApiClie
         this.node = new CgEth2NodeApi(config, this.httpClient);
         this.networkConfig = new CgEth2Config(config, this.httpClient);
     }
+
+    public static getBeaconURLNetworkName = async (url: string): Promise<string> => {
+        try {
+            // eslint-disable-next-line camelcase
+            const response = await axios.get<{data: {genesis_fork_version: string}}>(`/eth/v1/beacon/genesis`, {
+                baseURL: url,
+                timeout: 1000,
+            });
+            const network = await getNetworkConfigByGenesisVersion(response.data.data.genesis_fork_version);
+            if (!network) {
+                throw new Error("Beacon chain network not supported");
+            }
+            return network.networkName;
+        } catch (e) {
+            throw new Error("Beacon chain not found");
+        }
+    };
 }
