@@ -8,6 +8,9 @@ import ReactTooltip from "react-tooltip";
 import {getValidatorBalanceChartData, getAttestationEfficiencyChartData} from "../../../services/utils/charts";
 import {ValidatorBalanceChart} from "./ValidatorBalanceChart";
 import {ValidatorAttestationEfficiencyChart, AttestationRecord} from "./ValidatorAttestationEfficiencyChart";
+import {useSelector} from "react-redux";
+import {getBeaconByKey} from "../../../ducks/beacon/selectors";
+import {IRootState} from "../../../ducks/reducers";
 
 interface IValidatorStatsProps {
     validator: IValidator;
@@ -20,8 +23,10 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
 
     const [attestationData, setAttestationData] = useState<SimpleLineChartRecord[]>([]);
 
+    const beaconNode = useSelector((state: IRootState) => getBeaconByKey(state, {key: validator.beaconNodes[0]}));
+
     const onBeaconChainClick = (): void => {
-        const network = validator.network !== "mainnet" ? validator.network + "." : "";
+        const network = validator.network !== "mainnet" ? beaconNode?.network + "." : "";
         const validatorId = validator.publicKey.substr(2);
         shell.openExternal(`https://${network}beaconcha.in/validator/${validatorId}`);
     };
@@ -49,9 +54,11 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
             <div className='row space-between'>
                 <h2>{validator.name}</h2>
                 <ReactTooltip />
-                <ButtonSecondary onClick={onBeaconChainClick} data-tip='Ethereum 2.0 Beacon Chain Explorer'>
-                    Explorer
-                </ButtonSecondary>
+                {beaconNode && (
+                    <ButtonSecondary onClick={onBeaconChainClick} data-tip='Ethereum 2.0 Beacon Chain Explorer'>
+                        Go to explorer
+                    </ButtonSecondary>
+                )}
             </div>
             <div className='beacon-node-charts-container'>
                 <ValidatorBalanceChart
