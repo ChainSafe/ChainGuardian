@@ -33,9 +33,6 @@ module.exports = {
           }),
           new webpack.DefinePlugin({
             "process.env.DOCKER_LIGHTHOUSE_IMAGE": JSON.stringify(process.env.DOCKER_LIGHTHOUSE_IMAGE || "sigp/lighthouse:v1.0.6"),
-            "process.env.DISCORD_URL": JSON.stringify(process.env.DISCORD_URL || "https://discord.gg/4GBwH52cFb"),
-            "process.env.CHAINGUARDIAN_URL": JSON.stringify(process.env.CHAINGUARDIAN_URL || "https://chainguardian.nodefactory.io/"),
-            "process.env.GITHUB_URL": JSON.stringify(process.env.GITHUB_URL || "https://github.com/NodeFactoryIo/ChainGuardian"),
         }),
     ]
 };

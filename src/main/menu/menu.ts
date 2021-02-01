@@ -17,13 +17,13 @@ const template = [
             {
                 label: "Homepage",
                 click: async (): Promise<void> => {
-                    await shell.openExternal(process.env.CHAINGUARDIAN_URL);
+                    await shell.openExternal("https://chainguardian.nodefactory.io/");
                 },
             },
             {
                 label: "Discord",
                 click: async (): Promise<void> => {
-                    await shell.openExternal(process.env.DISCORD_URL);
+                    await shell.openExternal("https://discord.gg/4GBwH52cFb");
                 },
             },
             ...(isMac ? [{role: "about"}] : []),
@@ -59,19 +59,19 @@ const template = [
             {
                 label: "Discord Support",
                 click: async (): Promise<void> => {
-                    await shell.openExternal(process.env.DISCORD_URL);
+                    await shell.openExternal("https://discord.gg/4GBwH52cFb");
                 },
             },
             {
                 label: "Github repo",
                 click: async (): Promise<void> => {
-                    await shell.openExternal(process.env.GITHUB_URL);
+                    await shell.openExternal("https://github.com/NodeFactoryIo/ChainGuardian");
                 },
             },
             {
                 label: "Search Issues",
                 click: async (): Promise<void> => {
-                    await shell.openExternal(process.env.GITHUB_URL + "/issues");
+                    await shell.openExternal("https://github.com/NodeFactoryIo/ChainGuardian/issues");
                 },
             },
         ],
