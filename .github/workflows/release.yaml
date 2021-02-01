@@ -26,61 +26,6 @@ jobs:
           with_initial_version: false
         id: get-latest-tag
 
-    outputs:
-      tag: ${{ steps.tag.outputs.tagname }}
-      previous_tag: ${{ steps.get-latest-tag.outputs.tag }}
-      version: ${{ steps.tag.outputs.version }}
-
-  release:
-    name: Publish
-    runs-on: ${{ matrix.os }}
-    needs: tag
-    strategy:
-      matrix:
-        os: [ubuntu-latest,windows-latest,macos-latest]
-    if: needs.tag.outputs.tag != ''
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.13
-
-      - name: Restore dependencies
-        uses: actions/cache@master
-        id: cache-deps
-        with:
-          path: |
-            node_modules
-            packages/*/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-ignore-optional
-      
-      - name: Install
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile --ignore-optional#--network-timeout 1000000 
-
-
-      
-      - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1.6.0
-        with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release: true
-          windows_certs: ${{ secrets.WIN_CERT }}
-          windows_certs_password: ${{ secrets.WIN_PASSWORD }}
-          mac_certs: ${{ secrets.MAC_CERT }}
-          mac_certs_password: ${{ secrets.MAC_PASSWORD }}
-        env:
-          EP_PRE_RELEASE: true
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          SENTRY_ORG: "nodefactory"
-          SENTRY_PROJECT: "chainguardian"
-          SENTRY_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-
       - name: Generate changelog
         id: changelog
         uses: heinrichreimer/github-changelog-generator-action@v2.2
@@ -106,9 +51,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ needs.tag.outputs.tag }}
+          tag_name: ${{ steps.tag.outputs.tagname }}
           body: ${{ steps.changelog.outputs.changelog }}
-          release_name: Release ${{ needs.tag.outputs.tag }}
+          release_name: Release ${{ steps.tag.outputs.tagname }}
           prerelease: true # we can promote to release trough github
 
       #in case of failure
@@ -117,6 +62,71 @@ jobs:
         uses: author/action-rollback@9ec72a6af74774e00343c6de3e946b0901c23013
         with:
           id: ${{ steps.create_release.outputs.id }}
+          tag: ${{ steps.tag.outputs.tagname }}
+          delete_orphan_tag: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}# workflow name
+
+    outputs:
+      tag: ${{ steps.tag.outputs.tagname }}
+      previous_tag: ${{ steps.get-latest-tag.outputs.tag }}
+      release: ${{ steps.create_release.outputs.id }}
+      version: ${{ steps.tag.outputs.version }}
+
+  release:
+    name: Publish
+    runs-on: ${{ matrix.os }}
+    needs: tag
+    strategy:
+      matrix:
+        os: [ubuntu-latest,windows-latest,macos-latest]
+    if: needs.tag.outputs.tag != ''
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.13
+
+      - name: Restore dependencies
+        uses: actions/cache@master
+        id: cache-deps
+        with:
+          path: |
+            node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-ignore-optional
+
+      - name: Install
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile --ignore-optional#--network-timeout 1000000
+
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1.6.0
+        with:
+          # GitHub token, automatically provided to the action
+          # (No need to define this secret in the repo settings)
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release: true
+          windows_certs: ${{ secrets.WIN_CERT }}
+          windows_certs_password: ${{ secrets.WIN_PASSWORD }}
+          mac_certs: ${{ secrets.MAC_CERT }}
+          mac_certs_password: ${{ secrets.MAC_PASSWORD }}
+        env:
+          EP_PRE_RELEASE: true
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SENTRY_ORG: "nodefactory"
+          SENTRY_PROJECT: "chainguardian"
+          SENTRY_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      #in case of failure
+      - name: Rollback on failure
+        if: failure()
+        uses: author/action-rollback@9ec72a6af74774e00343c6de3e946b0901c23013
+        with:
+          id: ${{ needs.tag.outputs.release }}
           tag: ${{ needs.tag.outputs.tag }}
           delete_orphan_tag: true
         env:
