@@ -40,7 +40,7 @@ jobs:
           compareLink: "true"
           filterByMilestone: "false"
           unreleased: "false"
-          sinceTag: "${{ needs.tag.outputs.previous_tag }}"
+          sinceTag: "${{ steps.get-latest-tag.outputs.tag }}"
           maxIssues: "0"
           stripGeneratorNotice: "true"
 
