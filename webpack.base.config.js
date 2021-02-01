@@ -32,7 +32,7 @@ module.exports = {
             resourceRegExp: /\@chainsafe\/blst/,
           }),
           new webpack.DefinePlugin({
-            "process.env.DOCKER_LIGHTHOUSE_IMAGE": JSON.stringify(process.env.DOCKER_LIGHTHOUSE_IMAGE || "sigp/lighthouse:v1.0.5")
+            "process.env.DOCKER_LIGHTHOUSE_IMAGE": JSON.stringify(process.env.DOCKER_LIGHTHOUSE_IMAGE || "sigp/lighthouse:v1.0.6"),
         }),
     ]
 };

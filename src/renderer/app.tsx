@@ -5,13 +5,11 @@ import {AppContainer} from "react-hot-loader";
 import {init as initBLS} from "@chainsafe/bls";
 
 import {initSentry} from "../main/sentry";
-import {NotificationRenderer} from "./NotificationRenderer";
 import Application from "./containers/Application";
 import "./style/index.scss";
 import store from "./ducks/store";
-import {DockerDemonNotificator} from "./DockerDemonNotificator";
 import {mainLogger} from "../main/logger";
-import {GlobalLoader} from "./GlobalLoader";
+import {Overlays} from "./overlays";
 
 initSentry();
 
@@ -25,9 +23,7 @@ const render = (Component: () => JSX.Element): void => {
         <AppContainer>
             <Provider store={store}>
                 <Component />
-                <NotificationRenderer />
-                <DockerDemonNotificator />
-                <GlobalLoader />
+                <Overlays />
             </Provider>
         </AppContainer>,
         mainElement,
