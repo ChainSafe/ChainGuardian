@@ -20,23 +20,29 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           tag_prefix: "v"
 
-            # - name: Generate changelog
-      #   id: changelog
-      #   uses: heinrichreimer/github-changelog-generator-action@v2.2
-      #   with:
-      #     token: ${{ secrets.GH_PAGES_TOKEN }}
-      #     issues: "false"
-      #     issuesWoLabels: "false"
-      #     pullRequests: "true"
-      #     prWoLabels: "true"
-      #     author: "true"
-      #     usernamesAsGithubLogins: "true"
-      #     compareLink: "true"
-      #     filterByMilestone: "false"
-      #     unreleased: "false"
-      #     sinceTag: "${{ needs.tag.outputs.previous_tag }}"
-      #     maxIssues: "0"
-      #     stripGeneratorNotice: "true"
+      - name: Get latest tag
+        uses: actions-ecosystem/action-get-latest-tag@v1
+        with:
+          with_initial_version: false
+        id: get-latest-tag
+
+      - name: Generate changelog
+        id: changelog
+        uses: heinrichreimer/github-changelog-generator-action@v2.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issues: "false"
+          issuesWoLabels: "false"
+          pullRequests: "true"
+          prWoLabels: "true"
+          author: "true"
+          usernamesAsGithubLogins: "true"
+          compareLink: "true"
+          filterByMilestone: "false"
+          unreleased: "false"
+          sinceTag: "${{ needs.tag.outputs.previous_tag }}"
+          maxIssues: "0"
+          stripGeneratorNotice: "true"
 
       - name: Create Release
         id: create_release
@@ -46,11 +52,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.tag.outputs.tagname }}
-          body: "${{ steps.tag.outputs.tagname }}"
+          body: ${{ steps.changelog.outputs.changelog }}
           release_name: Release ${{ steps.tag.outputs.tagname }}
           prerelease: true # we can promote to release trough github
 
-            #in case of failure
+      #in case of failure
       - name: Rollback on failure
         if: failure()
         uses: author/action-rollback@9ec72a6af74774e00343c6de3e946b0901c23013
@@ -60,8 +66,10 @@ jobs:
           delete_orphan_tag: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}# workflow name
+
     outputs:
       tag: ${{ steps.tag.outputs.tagname }}
+      previous_tag: ${{ steps.get-latest-tag.outputs.tag }}
       release: ${{ steps.create_release.outputs.id }}
       version: ${{ steps.tag.outputs.version }}
 
@@ -76,7 +84,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
@@ -90,13 +98,11 @@ jobs:
             node_modules
             packages/*/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-ignore-optional
-      
+
       - name: Install
         if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile --ignore-optional#--network-timeout 1000000 
+        run: yarn install --frozen-lockfile --ignore-optional#--network-timeout 1000000
 
-
-      
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1.6.0
         with:
@@ -114,8 +120,7 @@ jobs:
           SENTRY_ORG: "nodefactory"
           SENTRY_PROJECT: "chainguardian"
           SENTRY_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          
-      
+
       #in case of failure
       - name: Rollback on failure
         if: failure()
