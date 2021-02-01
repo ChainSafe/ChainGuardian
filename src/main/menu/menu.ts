@@ -59,7 +59,7 @@ const template = [
             {
                 label: "Discord Support",
                 click: async (): Promise<void> => {
-                    await shell.openExternal("https://discord.gg/4GBwH52cFb");
+                    await shell.openExternal("https://discord.gg/uM9rZFDefm");
                 },
             },
             {

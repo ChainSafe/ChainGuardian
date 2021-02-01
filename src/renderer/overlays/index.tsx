@@ -8,7 +8,7 @@ import {shell} from "electron";
 
 export const Overlays: React.FC = () => {
     const onDiscordClick = (): void => {
-        shell.openExternal("https://discord.gg/4GBwH52cFb");
+        shell.openExternal("https://discord.gg/uM9rZFDefm");
     };
 
     return (
