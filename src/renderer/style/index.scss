@@ -2,6 +2,7 @@
 @import './base.scss';
 @import './common.scss';
 @import './icons.scss';
+@import 'chart.scss';
 @import '../overlays/index';
 
 @import '../components/Button/buttons.scss';
@@ -18,9 +19,6 @@
 @import '../components/VerifyMnemonic/VerifyMnemonic.scss';
 @import '../components/Cards/cards.scss';
 @import '../components/Loading/loading.scss';
-@import '../components/LineGraph/linegraph.scss';
-@import '../components/ErrorFrequencyGraph/errorfrequencygraph.scss';
-@import '../components/ResponseCodeError/responsecodeerror.scss';
 @import '../components/Prompt/inputprompt.scss';
 @import '../components/ConfirmModal/confirmmodal.scss';
 @import '../components/MultipleInputVertical/multipleinputvertical.scss';
