@@ -5,7 +5,7 @@ export interface ICopyFieldProps {
     value: string;
     label?: string;
     textAlign?: "right" | "left" | "center";
-    onCopy: () => void;
+    onCopy?: () => void;
     mnemonic?: boolean;
 }
 
