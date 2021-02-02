@@ -1,4 +1,3 @@
-import {PublicKey} from "@chainsafe/bls";
 import {BLSPubkey} from "@chainsafe/lodestar-types";
 import {warn} from "electron-log";
 import {IEth1Client} from "../../deposit/ethers";
@@ -51,9 +50,4 @@ async function isBeaconNodeSyncing(eth2Api: ICgEth2ApiClient): Promise<boolean> 
         warn("Failed to get syncing status", e);
         return true;
     }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function hasDeposited(pubkey: BLSPubkey, eth1: IEth1Client): Promise<boolean> {
-    return await eth1.hasUserDeposited(PublicKey.fromBytes(pubkey as Uint8Array));
 }
