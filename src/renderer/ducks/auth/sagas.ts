@@ -6,6 +6,7 @@ import {DEFAULT_ACCOUNT} from "../../constants/account";
 import {postInit} from "../store";
 import {loadValidatorsAction} from "../validator/actions";
 import {cgLogger} from "../../../main/logger";
+import {setInitialValidators} from "../settings/actions";
 
 export function* authorize(): Generator<Promise<CGAccount> | PutEffect, void, CGAccount | null> {
     try {
@@ -15,6 +16,7 @@ export function* authorize(): Generator<Promise<CGAccount> | PutEffect, void, CG
             yield put(storeAuth(account));
             yield put(loadValidatorsAction());
         } else {
+            yield put(setInitialValidators(false));
             cgLogger.info("Account not found");
         }
     } catch (e) {
