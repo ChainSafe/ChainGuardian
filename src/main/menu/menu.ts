@@ -48,6 +48,9 @@ const template = [
                     }
                 },
             },
+            ...(process.env.NODE_ENV !== "production" || app.commandLine.hasSwitch("enable-devtools")
+                ? [{role: "toggleDevTools"}]
+                : []),
             {type: "separator"},
             ...(isMac ? [{role: "hide"}, {role: "hideothers"}, {role: "unhide"}, {type: "separator"}] : []),
             {role: "quit"},
