@@ -24,7 +24,7 @@ export async function createWindow(): Promise<void> {
             nodeIntegration: true,
             nodeIntegrationInWorker: true,
             nodeIntegrationInSubFrames: true,
-            webSecurity: false,
+            webSecurity: true,
             // TODO: https://github.com/electron/electron/issues/21408
             enableRemoteModule: true,
             devTools: process.env.NODE_ENV !== "production" ? true : app.commandLine.hasSwitch("enable-devtools"),

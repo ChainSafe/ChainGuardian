@@ -1,25 +1,16 @@
 import {INetworkConfig} from "../../interfaces";
 import {getNetworkConfig, getNetworkConfigByGenesisVersion} from "../networks";
 import {ICgEth2ApiClient} from "./interface";
-import {ILogger, WinstonLogger} from "@chainsafe/lodestar-utils";
 import {HttpClient} from "../../api";
 
-export function getEth2ApiClient(url: string, network: string, logger?: ILogger): ICgEth2ApiClient | undefined {
+export function getEth2ApiClient(url: string, network: string): ICgEth2ApiClient | undefined {
     const networkConfig = getNetworkConfig(network);
     if (!networkConfig) {
         return undefined;
     }
-    if (!logger) {
-        logger = new WinstonLogger();
-    }
 
     switch (network) {
         default:
-        // return new LighthouseEth2ApiClient({
-        //     baseUrl: url,
-        //     logger,
-        //     config: networkConfig.eth2Config,
-        // });
     }
 }
 

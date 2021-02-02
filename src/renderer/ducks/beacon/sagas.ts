@@ -93,6 +93,7 @@ function* startLocalBeaconSaga({
     cgLogger.info("Starting local docker beacon node & http://localhost:", rpcPort);
     const eth1QueryLimit = 200;
     if (pullSuccess) {
+        const cors = process.env.NODE_ENV !== "production" ? " --http-allow-origin http://localhost:2003 " : " ";
         switch (network) {
             default:
                 yield put(
@@ -100,7 +101,7 @@ function* startLocalBeaconSaga({
                         id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, {
                             ports,
                             // eslint-disable-next-line max-len
-                            cmd: `lighthouse beacon_node --network ${network} --port ${libp2pPort} --discovery-port ${discoveryPort} --http --http-address 0.0.0.0 --http-port ${rpcPort} --eth1-endpoints ${eth1Url} --eth1-blocks-per-log-query ${eth1QueryLimit}`,
+                            cmd: `lighthouse beacon_node --network ${network} --port ${libp2pPort} --discovery-port ${discoveryPort} --http --http-address 0.0.0.0 --http-port ${rpcPort}${cors}--eth1-endpoints ${eth1Url} --eth1-blocks-per-log-query ${eth1QueryLimit}`,
                             volume: `${chainDataDir}:/root/.lighthouse`,
                         })).getParams().name,
                         network,

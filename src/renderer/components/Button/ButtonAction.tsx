@@ -11,10 +11,6 @@ export interface IActionButtonProps {
     onClick?: () => void;
 }
 
-export interface ICopyButtonProps {
-    onClick: () => void;
-}
-
 export const BackTab: React.FunctionComponent<IActionButtonProps> = ({onClick}) => {
     return (
         <button className={"back-tab"} onClick={onClick}>
@@ -23,12 +19,12 @@ export const BackTab: React.FunctionComponent<IActionButtonProps> = ({onClick}) 
     );
 };
 
-export const CopyButton: React.FunctionComponent<ICopyButtonProps> = (props: ICopyButtonProps) => {
+export const CopyButton: React.FunctionComponent<IActionButtonProps> = ({onClick}) => {
     const [clicked, setClicked] = useState(false);
     const [timeoutId, setTimeoutId] = useState<number | null>(null);
 
     const handleClick = (): void => {
-        props.onClick();
+        if (onClick) onClick();
         const handleTimeout = (): void => {
             setClicked(false);
         };

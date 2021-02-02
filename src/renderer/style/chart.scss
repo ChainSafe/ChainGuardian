@@ -1,0 +1,71 @@
+.node-graph-container{
+  background-color: $neutral-600;
+  width: 405px;
+  height: 256px;
+  box-shadow: inset 0 2px 6px rgba(10, 39, 51, 0.2);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.graph-content{
+  display: flex;
+  padding-bottom: 16px;
+}
+.graph-legend{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.legend-item{
+  display: flex;
+  align-items: center;
+  width: 78px;
+  height: 24px;
+  padding-left: 29px;
+  margin-top: 8px;
+  margin-left:16px;
+  font-family: "Fira Code", sans-serif;
+  font-size: 16px;
+  line-height: 18px;
+  letter-spacing: 0.04em;
+  color: $neutral-200;
+  &.success{
+    background: url(../assets/img/response_code_errors/Polygon_success.svg) no-repeat;
+  }
+  &.warning{
+    background: url(../assets/img/response_code_errors/Polygon_warning.svg) no-repeat;
+  }
+  &.error{
+    background: url(../assets/img/response_code_errors/Polygon_error.svg) no-repeat;
+  }
+}
+.graph-header{
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 16px 10px 16px;
+}
+.graph-title{
+  font-family: "Palanquin", sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 28px;
+  color: $neutral-100;
+  letter-spacing: 0.01em;
+}
+.recharts-label {
+  font-family: "Fira Code", sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  fill: $secondary-green-100;
+}
+.recharts-tooltip-wrapper{
+  font-family: "Fira Code", sans-serif;
+}
+.recharts-cartesian-axis-tick {
+  font-family: "Fira Code", sans-serif;
+  font-size: 11px;
+  line-height: 18px;
+  letter-spacing: 0.04em;
+  color: $neutral-400;
+}
