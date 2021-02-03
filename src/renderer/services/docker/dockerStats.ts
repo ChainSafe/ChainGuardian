@@ -37,6 +37,9 @@ export class DockerStats {
         public push(items: Stats[]): void {
             this.stats = items;
             this.emit("stats", items);
+            for (const item of items) {
+                this.emit(item.container, item);
+            }
         }
 
         public getAll(): Stats[] {
@@ -61,6 +64,27 @@ export class DockerStats {
                 statsSource.on("stats", statsHandler);
                 return (): void => {
                     statsSource.removeListener("stats", statsHandler);
+                };
+            });
+        })();
+    }
+
+    public getStatsIterator(id: string | number): AsyncGenerator<Stats> {
+        const stats = this.stats.getAll();
+        const index = stats.findIndex(({container, name, pid}) =>
+            typeof id === "number" ? pid === id : container === id || name === id,
+        );
+        const statsSource = this.stats;
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+        return (async function* () {
+            yield stats[index];
+            yield* new EventIterator<Stats>(({push}) => {
+                const statsHandler = (newStats: Stats): void => {
+                    push(newStats);
+                };
+                statsSource.on(stats[index].container, statsHandler);
+                return (): void => {
+                    statsSource.removeListener(stats[index].container, statsHandler);
                 };
             });
         })();

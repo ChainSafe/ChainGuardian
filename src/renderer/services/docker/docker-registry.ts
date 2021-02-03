@@ -1,11 +1,21 @@
 import {ipcRenderer} from "electron";
 
 import {Container} from "./container";
+import {DockerStats, Stats} from "./dockerStats";
 
 type Registry = {[network: string]: Container};
 
 class DockerRegistryClass {
     private DockerRegistry: Registry = {};
+    private stats = new DockerStats();
+
+    public getAllStatsIterator(): AsyncGenerator<Stats[]> {
+        return this.stats.getAllStatsIterator();
+    }
+
+    public getStatsIterator(id: string | number): AsyncGenerator<Stats> {
+        return this.stats.getStatsIterator(id);
+    }
 
     public addContainer(name: string, container: Container): void {
         this.DockerRegistry[name] = container;
