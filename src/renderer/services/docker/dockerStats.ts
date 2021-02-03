@@ -2,6 +2,7 @@ import {EventEmitter} from "events";
 import {runCmd} from "../utils/cmd";
 import {Command} from "./command";
 import {EventIterator} from "event-iterator";
+import {memoryStringToNumber} from "../utils/memory";
 
 export type Stats = {
     container: string;
@@ -86,25 +87,25 @@ export class DockerStats {
                     name: r[2],
                     cpu: Number(r[3]),
                     memory: {
-                        usage: Number(r[4]),
-                        usageRaw: r[4] + r[5],
-                        limit: Number(r[6]),
-                        limitRaw: r[6] + r[7],
-                        percentage: Number(r[8]),
+                        usage: memoryStringToNumber(r[4]),
+                        usageRaw: r[4],
+                        limit: memoryStringToNumber(r[5]),
+                        limitRaw: r[5],
+                        percentage: Number(r[6]),
                     },
                     network: {
-                        input: Number(r[9]),
-                        inputRaw: r[9] + r[10],
-                        output: Number(r[11]),
-                        outputRaw: r[11] + r[12],
+                        input: memoryStringToNumber(r[7]),
+                        inputRaw: r[7],
+                        output: memoryStringToNumber(r[8]),
+                        outputRaw: r[8],
                     },
                     block: {
-                        input: Number(r[13]),
-                        inputRaw: r[13] + r[14],
-                        output: Number(r[15]),
-                        outputRaw: r[15] + r[16],
+                        input: memoryStringToNumber(r[9]),
+                        inputRaw: r[9],
+                        output: memoryStringToNumber(r[10]),
+                        outputRaw: r[10],
                     },
-                    pid: Number(r[17]),
+                    pid: Number(r[11]),
                 }),
             );
     }
@@ -115,7 +116,7 @@ const space = "\\s*";
 const container = "(\\w{12})";
 const name = "([a-z\\-]+)";
 const prec = "(\\d+\\.?\\d*)\\%";
-const data = "(\\d+\\.?\\d*)(\\w*)";
+const data = "(\\d+\\.?\\d*\\w*)";
 const resources = data + "\\s*\\/\\s*" + data;
 const pid = "(\\d+)";
 
