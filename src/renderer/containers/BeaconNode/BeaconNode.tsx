@@ -10,7 +10,7 @@ import {SimpleLineChartRecord} from "../../components/SimpleLineChart/SimpleLine
 import {getLatencyChartData, getNetworkErrorPieData} from "../../services/utils/charts";
 import ReactTooltip from "react-tooltip";
 import {capitalize} from "../../services/utils/formatting";
-import {Stats} from "../../services/docker/dockerStats";
+import {Stats} from "../../services/docker/stats";
 
 interface IBeaconNodeProps {
     beacon: Beacon;

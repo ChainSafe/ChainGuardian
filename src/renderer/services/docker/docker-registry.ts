@@ -1,7 +1,7 @@
 import {ipcRenderer} from "electron";
 
 import {Container} from "./container";
-import {DockerStats, Stats} from "./dockerStats";
+import {DockerStats, Stats} from "./stats";
 
 type Registry = {[network: string]: Container};
 
