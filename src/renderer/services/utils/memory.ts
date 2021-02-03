@@ -9,17 +9,18 @@ export const memoryNumberToString = (value: number, isI = false): string => {
     }
 
     const pw = Math.floor(Math.log(value) / Math.log(thresh));
-    return Math.round((value / Math.pow(thresh, pw)) * 100) / 100 + " " + (isI ? iByte : mByte)[pw];
+    return Math.round((value / Math.pow(thresh, pw)) * 100) / 100 + " " + (isI ? iByte : mByte)[pw - 1];
 };
 
 export const memoryStringToNumber = (value: string): number => {
     const i = iByte.find((v) => value.includes(v));
     const m = mByte.find((v) => value.includes(v));
     const thresh = i ? 1000 : 1024;
-    const number = Number(value.replace(new RegExp(i || m, "g"), ""));
+    const number = Number(value.replace(new RegExp(i || m || "B", "g"), "").trim());
 
     if (isNaN(number)) return 0;
+    if (!i && !m) return number;
     const pw = i ? iByte.findIndex((v) => v === i) : mByte.findIndex((v) => v === m);
 
-    return number * Math.pow(thresh, pw + 1);
+    return Math.floor(number * Math.pow(thresh, pw + 1));
 };
