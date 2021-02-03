@@ -68,4 +68,9 @@ export class Command {
         const path = await dockerPath.getPath();
         return `"${path}" container ls -a`;
     }
+
+    public static async stats(): Promise<string> {
+        const path = await dockerPath.getPath();
+        return `"${path}" stats`;
+    }
 }
