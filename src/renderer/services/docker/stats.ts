@@ -1,8 +1,7 @@
 import {EventEmitter} from "events";
-import {runCmd} from "../utils/cmd";
-import {Command} from "./command";
 import {EventIterator} from "event-iterator";
 import {memoryStringToNumber} from "../utils/memory";
+import {Readable} from "stream";
 
 export type Stats = {
     container: string;
@@ -47,8 +46,13 @@ export class DockerStats {
         }
     })();
 
-    public constructor() {
-        this.watchDockerStats();
+    public constructor(stdout: Readable) {
+        stdout.on("data", (data: string) => {
+            if (Buffer.isBuffer(data)) data = data.toString();
+            if (data.includes("PIDS")) {
+                this.stats.push(this.transformDataToStats(data));
+            }
+        });
     }
 
     public getAllStatsIterator(): AsyncGenerator<Stats[]> {
@@ -90,20 +94,11 @@ export class DockerStats {
         })();
     }
 
-    private async watchDockerStats(): Promise<void> {
-        const {stdout} = runCmd(await Command.stats());
-        stdout.on("data", (data: string) => {
-            if (data.length > 10) {
-                this.stats.push(this.transformDataToStats(data));
-            }
-        });
-    }
-
     private transformDataToStats(data: string): Stats[] {
         return data
             .replace(/^(.*?)PIDS/, "")
             .split("\n")
-            .map((c) => regex.exec(c))
+            .map((c) => regex().exec(c))
             .filter((r) => !!r)
             .map(
                 (r): Stats => ({
@@ -138,7 +133,7 @@ export class DockerStats {
 // regex builder for parsing stats lines
 const space = "\\s*";
 const container = "(\\w{12})";
-const name = "([a-z\\-]+)";
+const name = "(\\S+)";
 const prec = "(\\d+\\.?\\d*)\\%";
 const data = "(\\d+\\.?\\d*\\w*)";
 const resources = data + "\\s*\\/\\s*" + data;
@@ -146,4 +141,4 @@ const pid = "(\\d+)";
 
 // CONTAINER ID | NAME | CPU % | MEM USAGE / LIMIT | MEM % | NET I/O | BLOCK I/O | PIDS
 const regexString = [container, name, prec, resources, prec, resources, resources, pid].join(space);
-const regex = new RegExp(regexString, "g");
+const regex = (): RegExp => new RegExp(regexString, "g");

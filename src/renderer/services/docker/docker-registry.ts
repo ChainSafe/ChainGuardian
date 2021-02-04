@@ -2,12 +2,21 @@ import {ipcRenderer} from "electron";
 
 import {Container} from "./container";
 import {DockerStats, Stats} from "./stats";
+import {runCmd} from "../utils/cmd";
+import {Command} from "./command";
 
 type Registry = {[network: string]: Container};
 
 class DockerRegistryClass {
     private DockerRegistry: Registry = {};
-    private stats = new DockerStats();
+    private stats: DockerStats;
+
+    public constructor() {
+        Command.stats().then((cmd) => {
+            const {stdout} = runCmd(cmd);
+            this.stats = new DockerStats(stdout);
+        });
+    }
 
     public getAllStatsIterator(): AsyncGenerator<Stats[]> {
         return this.stats.getAllStatsIterator();
