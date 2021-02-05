@@ -6,12 +6,10 @@ import {RouteComponentProps} from "react-router-dom";
 import {Background} from "../../components/Background/Background";
 import {BackButton} from "../../components/Button/ButtonAction";
 import {TabNavigation} from "../../components/TabNavigation/TabNavigation";
-import {BeaconNode} from "../BeaconNode/BeaconNode";
 import {ValidatorLogs} from "./ValidatorLogs";
 import {ValidatorStats} from "./ValidatorStats/ValidatorStats";
 import {IRootState} from "../../ducks/reducers";
 import {getValidator, getValidatorKeys} from "../../ducks/validator/selectors";
-import {getBeaconDictionary} from "../../ducks/beacon/selectors";
 
 export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {tab: "BN"}>): ReactElement => {
     const [currentTab, setCurrentTab] = useState(props.location?.state?.tab! === "BN" ? 2 : 0);
@@ -21,20 +19,11 @@ export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {ta
     const validatorsIndex = validatorKeys.indexOf(publicKey);
     const validator = useSelector((state: IRootState) => getValidator(state, {publicKey}));
     const validatorId = validatorsIndex > 0 ? validatorsIndex : 0;
-    const beacons = useSelector(getBeaconDictionary);
 
     const tabs = [
         {tabId: 0, tabName: "Validator stats", index: validatorId},
         {tabId: 1, tabName: "Validator logs", index: validatorId},
     ];
-    // Load dynamically all validator's beacon node in tabs
-    validator.beaconNodes.forEach((node, index) =>
-        tabs.push({
-            tabId: tabs.length + index,
-            tabName: "Beacon node",
-            index,
-        }),
-    );
 
     return (
         <Background scrollable={true}>
@@ -47,12 +36,6 @@ export const ValidatorDetailsContainer = (props: RouteComponentProps<{}, {}, {ta
                     {currentTab === tabs[0].tabId ? <ValidatorStats validator={validator} /> : null}
 
                     {currentTab === tabs[1].tabId ? <ValidatorLogs logger={validator.logger} /> : null}
-
-                    {tabs.map((tab) =>
-                        tab.tabName === "Beacon node" && currentTab === tab.tabId ? (
-                            <BeaconNode key={tab.tabId} beacon={beacons[validator.beaconNodes[tab.index]]} />
-                        ) : null,
-                    )}
                 </div>
             </div>
         </Background>

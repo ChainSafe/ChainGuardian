@@ -68,10 +68,10 @@ const Dashboard: React.FunctionComponent<DashBoardProps> = ({
                             <div key={index} className={"validator-wrapper"}>
                                 <Validator
                                     publicKey={publicKey}
-                                    onBeaconNodeClick={() => (): void => {
-                                        history.push(Routes.VALIDATOR_DETAILS.replace(":publicKey", publicKey), {
-                                            tab: "BN",
-                                        });
+                                    onBeaconNodeClick={(url) => (): void => {
+                                        history.push(
+                                            Routes.BEACON_NODE_DETAILS.replace(":url", encodeURIComponent(url)),
+                                        );
                                     }}
                                     onRemoveClick={(): void => {
                                         onRemoveValidator(index);
