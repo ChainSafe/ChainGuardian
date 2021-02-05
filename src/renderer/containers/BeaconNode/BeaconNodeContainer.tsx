@@ -1,30 +1,35 @@
-import React from "react";
+import React, {useState} from "react";
 import {Background} from "../../components/Background/Background";
 import {BackButton} from "../../components/Button/ButtonAction";
-import {BeaconNode} from "../BeaconNode/BeaconNode";
 import {useHistory, useParams} from "react-router";
 import {useSelector} from "react-redux";
 import {getBeaconByKey} from "../../ducks/beacon/selectors";
 import {IRootState} from "../../ducks/reducers";
-import {BeaconNodeButtons} from "./BeaconNodeButtons";
+import {TabNavigation} from "../../components/TabNavigation/TabNavigation";
+import {BeaconNodeDashboard} from "./dashboard/BeaconNodeDashboard";
+import {BeaconNodeLogs} from "./BeaconNodeLogs";
 
-export const BeaconNodeDetailsContainer: React.FC = () => {
+export const BeaconNodeContainer: React.FC = () => {
     const history = useHistory();
     const {url} = useParams();
     const beacon = useSelector((state: IRootState) => getBeaconByKey(state, {key: decodeURIComponent(url)}));
+    const [currentTab, setCurrentTab] = useState(0);
+
+    const tabs = [{tabId: 0, tabName: "Dashboard", index: 0}];
+    if (beacon.docker) {
+        tabs.push({tabId: 1, tabName: "Logs", index: 0}, {tabId: 2, tabName: "Performance", index: 0});
+    }
 
     return (
         <Background scrollable={true}>
             <div className='flex-column validator-container beacon-node-details-container'>
                 <div className='row'>
                     <BackButton onClick={(): void => history.goBack()} />
-                    <h2>Beacon node</h2>
-                    <h5 className='beacon-url'>{beacon.url}</h5>
+                    <TabNavigation onTab={setCurrentTab} tabs={tabs} current={currentTab} />
                 </div>
                 <div className='container-scroll-y'>
-                    <BeaconNode beacon={beacon} showTitle={false} />
-
-                    {beacon.docker && <BeaconNodeButtons image={beacon.docker.id} url={beacon.url} />}
+                    {currentTab === tabs[0].tabId && <BeaconNodeDashboard beacon={beacon} />}
+                    {currentTab === tabs[1].tabId && <BeaconNodeLogs beacon={beacon} />}
                 </div>
             </div>
         </Background>

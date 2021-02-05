@@ -1,7 +1,7 @@
 import {NetworkMetrics} from "../../models/networkMetrics";
 import {SimpleLineChartRecord} from "../../components/SimpleLineChart/SimpleLineChart";
 import {addMinutes, format, roundToNearestMinutes, subDays, subMinutes, endOfDay, addDays, startOfDay} from "date-fns";
-import {ResponseErrorPieData} from "../../containers/BeaconNode/BeaconNodeResponseErrorPieChart";
+import {ResponseErrorPieData} from "../../containers/BeaconNode/dashboard/BeaconNodeResponseErrorPieChart";
 import {ValidatorBalance} from "../../models/validatorBalances";
 import {getNetworkConfig} from "../eth2/networks";
 import {computeTimeAtSlot, computeStartSlotAtEpoch} from "@chainsafe/lodestar-beacon-state-transition";
