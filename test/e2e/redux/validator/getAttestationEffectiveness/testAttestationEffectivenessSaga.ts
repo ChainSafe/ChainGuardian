@@ -41,7 +41,7 @@ export const testAttestationEffectivenessSaga = (
 ): (() => Promise<void>) => async (): Promise<void> => {
     let index = -1;
     let lastSlot = slot;
-    const result = await expectSaga(
+    const result1 = await expectSaga(
         getAttestationEffectiveness,
         signedNewAttestation(publicKey, block, committee, slot),
     )
@@ -75,12 +75,55 @@ export const testAttestationEffectivenessSaga = (
         })
         .run(false);
 
-    const {inclusion, efficiency} = result.effects.call[result.effects.call.length - 1].payload.args[1] as {
+    const {inclusion: in1, efficiency: ef1} = result1.effects.call[result1.effects.call.length - 1].payload.args[1] as {
         inclusion: number;
         efficiency: number;
     };
-    expect(efficiency).toEqual(expects.efficiency);
-    expect(inclusion).toEqual(slot + expects.inclusionOffset);
+    expect(ef1).toEqual(expects.efficiency);
+    expect(in1).toEqual(slot + expects.inclusionOffset);
+
+    index = -1;
+    lastSlot = slot;
+    const result2 = await expectSaga(
+        getAttestationEffectiveness,
+        signedNewAttestation(publicKey, block, committee, slot),
+    )
+        .provide({
+            select: () => selectedValidator,
+            take: () => {
+                index++;
+                if (cases[index]) {
+                    lastSlot = slot + cases[index].slotOffset;
+                } else {
+                    lastSlot++;
+                }
+                return updateSlot(lastSlot, "http://localhost:5052");
+            },
+            call: (effect, next) => {
+                if (effect.args[0] === publicKey) next();
+                else {
+                    if (cases[index]) {
+                        return mockBeaconBlockAttestations(
+                            block,
+                            slot,
+                            committee,
+                            cases[index].skipped,
+                            cases[index].empty,
+                        );
+                    } else {
+                        return mockBeaconBlockAttestations(block, slot, committee, false, true);
+                    }
+                }
+            },
+        })
+        .run(false);
+
+    const {inclusion: in2, efficiency: ef2} = result2.effects.call[result2.effects.call.length - 1].payload.args[1] as {
+        inclusion: number;
+        efficiency: number;
+    };
+    expect(ef2).toEqual(expects.efficiency);
+    expect(in2).toEqual(slot + expects.inclusionOffset);
 };
 
 const mockBeaconBlockAttestations = (
