@@ -10,6 +10,7 @@ import {SimpleLineChartRecord} from "../../components/SimpleLineChart/SimpleLine
 import {getLatencyChartData, getNetworkErrorPieData} from "../../services/utils/charts";
 import ReactTooltip from "react-tooltip";
 import {capitalize} from "../../services/utils/formatting";
+import {Stats} from "../../services/docker/stats";
 
 interface IBeaconNodeProps {
     beacon: Beacon;
@@ -29,6 +30,7 @@ export const BeaconNode: React.FC<IBeaconNodeProps> = ({
         {name: "4xx", value: null, color: "#EDFF86"},
         {name: "5xx", value: null, color: "#EA526F"},
     ]);
+    const [stats, setStats] = useState<Stats>();
 
     useEffect(() => {
         const intervalFn = async (): Promise<void> => {
@@ -44,6 +46,12 @@ export const BeaconNode: React.FC<IBeaconNodeProps> = ({
         };
         intervalFn();
         const interval = setInterval(intervalFn, 60 * 1000);
+
+        (async function (): Promise<void> {
+            for await (const stats of DockerRegistry.getStatsIterator(docker.id)) {
+                setStats(stats);
+            }
+        })();
         return (): void => {
             clearInterval(interval);
         };
@@ -84,6 +92,22 @@ export const BeaconNode: React.FC<IBeaconNodeProps> = ({
                     ) : null}
                 </div>
             </div>
+
+            {stats && (
+                <div className='row space-between'>
+                    <h2>Hardware Usage</h2>
+                    <div style={{display: "flex"}}>
+                        <div className='row slot-container'>
+                            <h3>cpu</h3>
+                            <h2>{stats.cpu}%</h2>
+                        </div>
+                        <div className='row slot-container' style={{marginLeft: 20}}>
+                            <h3>ram</h3>
+                            <h2>{stats.memory.percentage}%</h2>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className='beacon-node-charts-container'>
                 <BeaconNodeResponseTimeChart data={avgLatency} ticks={avgLatencyTicks} />
