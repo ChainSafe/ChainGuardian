@@ -165,6 +165,7 @@ function* removeValidatorSaga(
     yield all([
         database.validator.balance.delete(action.payload),
         database.validator.beaconNodes.delete(action.payload),
+        database.validator.attestationEffectiveness.delete(action.payload),
     ]);
     yield put(removeValidator(action.payload));
 }
