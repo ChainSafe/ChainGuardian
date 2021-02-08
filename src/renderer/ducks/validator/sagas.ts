@@ -486,7 +486,7 @@ export function* getAttestationEffectiveness({
         epoch: computeEpochAtSlot(config, payload.slot),
         inclusion,
         slot: payload.slot,
-        efficiency: efficiency > 1 ? 1 : Math.round(efficiency * 1000) / 1000,
+        efficiency: efficiency > 1 ? 100 : Math.floor(efficiency * 100),
         time: Date.now(),
     });
 }

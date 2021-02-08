@@ -5,14 +5,14 @@ describe("getAttestationEffectiveness", () => {
     it(
         "attestation is visible in next block",
         testAttestationEffectivenessSaga([{slotOffset: 1, skipped: false, empty: false}], {
-            efficiency: 1,
+            efficiency: 100,
             inclusionOffset: 1,
         }),
     );
     it(
         "attestation is not visible in next block, but its attested is included",
         testAttestationEffectivenessSaga([], {
-            efficiency: 1,
+            efficiency: 100,
             inclusionOffset: 1,
         }),
     );
@@ -25,7 +25,7 @@ describe("getAttestationEffectiveness", () => {
                 {slotOffset: 3, skipped: false, empty: false},
             ],
             {
-                efficiency: 0.5,
+                efficiency: 50,
                 inclusionOffset: 2,
             },
         ),
@@ -40,7 +40,7 @@ describe("getAttestationEffectiveness", () => {
                 {slotOffset: 4, skipped: false, empty: false},
             ],
             {
-                efficiency: 0.333,
+                efficiency: 33,
                 inclusionOffset: 3,
             },
         ),
@@ -55,7 +55,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 3, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 1,
+                    efficiency: 100,
                     inclusionOffset: 2,
                 },
             ),
@@ -70,7 +70,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 4, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 1,
+                    efficiency: 100,
                     inclusionOffset: 3,
                 },
             ),
@@ -86,7 +86,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 5, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 1,
+                    efficiency: 100,
                     inclusionOffset: 4,
                 },
             ),
@@ -103,7 +103,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 4, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 0.667,
+                    efficiency: 66,
                     inclusionOffset: 3,
                 },
             ),
@@ -118,7 +118,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 4, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 0.667,
+                    efficiency: 66,
                     inclusionOffset: 3,
                 },
             ),
@@ -135,7 +135,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 5, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 0.75,
+                    efficiency: 75,
                     inclusionOffset: 4,
                 },
             ),
@@ -150,7 +150,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 5, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 0.75,
+                    efficiency: 75,
                     inclusionOffset: 4,
                 },
             ),
@@ -166,7 +166,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 5, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 0.75,
+                    efficiency: 75,
                     inclusionOffset: 4,
                 },
             ),
@@ -179,7 +179,7 @@ describe("getAttestationEffectiveness", () => {
         testAttestationEffectivenessSaga(
             new Array(17).fill(null).map((_, index) => ({slotOffset: index + 1, skipped: false, empty: false})),
             {
-                efficiency: 0.063,
+                efficiency: 6,
                 inclusionOffset: 16,
             },
         ),
@@ -194,7 +194,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 11, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 0.5,
+                    efficiency: 50,
                     inclusionOffset: 10,
                 },
             ),
@@ -209,7 +209,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 11, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 0.5,
+                    efficiency: 50,
                     inclusionOffset: 10,
                 },
             ),
@@ -231,7 +231,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 11, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 0.5,
+                    efficiency: 50,
                     inclusionOffset: 10,
                 },
             ),
@@ -249,7 +249,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 11, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 0.5,
+                    efficiency: 50,
                     inclusionOffset: 10,
                 },
             ),
@@ -268,7 +268,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 6, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 0.4,
+                    efficiency: 40,
                     inclusionOffset: 5,
                 },
             ),
@@ -284,7 +284,7 @@ describe("getAttestationEffectiveness", () => {
                     {slotOffset: 6, skipped: false, empty: false},
                 ],
                 {
-                    efficiency: 0.2,
+                    efficiency: 20,
                     inclusionOffset: 5,
                 },
             ),
