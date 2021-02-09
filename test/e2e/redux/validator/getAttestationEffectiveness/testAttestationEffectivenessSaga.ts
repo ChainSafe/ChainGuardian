@@ -10,6 +10,10 @@ import {BitList} from "@chainsafe/ssz";
 
 const publicKey = "0x9331f1ec6672748ca7b080faff7038da35838f57d223db4f2cb5020246e6c31695c3fb3db0d78db13d266476e34e4e65";
 const block = "0xc3687c87021f5b7855465caf6501b3f742f20f26b65cc7a107ff7a78f0b28b79";
+const bitsString =
+    // eslint-disable-next-line max-len
+    "[false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]";
+const bitsArray = JSON.parse(bitsString);
 const committee = 11;
 const slot = 466969;
 
@@ -41,52 +45,9 @@ export const testAttestationEffectivenessSaga = (
 ): (() => Promise<void>) => async (): Promise<void> => {
     let index = -1;
     let lastSlot = slot;
-    const result1 = await expectSaga(
+    const result = await expectSaga(
         getAttestationEffectiveness,
-        signedNewAttestation(publicKey, block, committee, slot),
-    )
-        .provide({
-            select: () => selectedValidator,
-            take: () => {
-                index++;
-                if (cases[index]) {
-                    lastSlot = slot + cases[index].slotOffset;
-                } else {
-                    lastSlot++;
-                }
-                return updateSlot(lastSlot, "http://localhost:5052");
-            },
-            call: (effect, next) => {
-                if (effect.args[0] === publicKey) next();
-                else {
-                    if (cases[index]) {
-                        return mockBeaconBlockAttestations(
-                            block,
-                            effect.args[0],
-                            committee,
-                            cases[index].skipped,
-                            cases[index].empty,
-                        );
-                    } else {
-                        return mockBeaconBlockAttestations(block, effect.args[0], committee, false, true);
-                    }
-                }
-            },
-        })
-        .run(false);
-
-    const {inclusion: in1, efficiency: ef1} = result1.effects.call[result1.effects.call.length - 1].payload.args[1] as {
-        inclusion: number;
-        efficiency: number;
-    };
-    expect(ef1).toEqual(expects.efficiency);
-    expect(in1).toEqual(slot + expects.inclusionOffset);
-
-    index = -1;
-    lastSlot = slot;
-    const result2 = await expectSaga(
-        getAttestationEffectiveness,
-        signedNewAttestation(publicKey, block, committee, slot),
+        signedNewAttestation(publicKey, block, committee, slot, bitsString),
     )
         .provide({
             select: () => selectedValidator,
@@ -118,12 +79,12 @@ export const testAttestationEffectivenessSaga = (
         })
         .run(false);
 
-    const {inclusion: in2, efficiency: ef2} = result2.effects.call[result2.effects.call.length - 1].payload.args[1] as {
+    const {inclusion, efficiency} = result.effects.call[result.effects.call.length - 1].payload.args[1] as {
         inclusion: number;
         efficiency: number;
     };
-    expect(ef2).toEqual(expects.efficiency);
-    expect(in2).toEqual(slot + expects.inclusionOffset);
+    expect(efficiency).toEqual(expects.efficiency);
+    expect(inclusion).toEqual(slot + expects.inclusionOffset);
 };
 
 const mockBeaconBlockAttestations = (
@@ -140,17 +101,17 @@ const mockBeaconBlockAttestations = (
     for (let i = 0; i <= randomLength; i++) {
         const randomIndex = Math.floor(Math.random() * 30);
         if (randomIndex === index) continue;
-        blocks.push(createAttestations(slot - 1, randomIndex, block));
+        blocks.push(createAttestations(slot, randomIndex, block));
     }
     if (!empty) {
-        blocks.push(createAttestations(slot - 1, index, block));
+        blocks.push(createAttestations(slot, index, block, bitsArray));
     }
 
     return blocks;
 };
 
-const createAttestations = (slot: number, index: number, beaconBlockRoot: string): Attestation => ({
-    aggregationBits: createRandomAggregationBits(),
+const createAttestations = (slot: number, index: number, beaconBlockRoot: string, bits?: boolean[]): Attestation => ({
+    aggregationBits: bits || createRandomAggregationBits(),
     data: {
         slot,
         index,
