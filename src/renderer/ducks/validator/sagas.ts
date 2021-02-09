@@ -446,17 +446,19 @@ export function* getAttestationEffectiveness({
                 skippedQue++;
             } else {
                 const sanitizedAttestations = result.filter(
-                    ({data}) => payload.block === toHex(data.beaconBlockRoot) && data.index === payload.index,
+                    ({data, aggregationBits}) =>
+                        payload.block === toHex(data.beaconBlockRoot) &&
+                        data.index === payload.index &&
+                        data.slot === payload.slot &&
+                        payload.bits === JSON.stringify(aggregationBits),
                 );
                 if (!sanitizedAttestations.length) empty++;
-                else empty = 0;
-                sanitizedAttestations.forEach(({data}) => {
-                    if (data.slot > inclusion && data.slot > payload.slot) {
-                        inclusion = data.slot;
-                        skipped += skippedQue;
-                        skippedQue = 0;
-                    }
-                });
+                else {
+                    inclusion = range[index];
+                    skipped += skippedQue;
+                    skippedQue = 0;
+                    empty = 0;
+                }
                 previousSlot = range[index];
             }
         });
@@ -465,11 +467,11 @@ export function* getAttestationEffectiveness({
          * can conclude that code fund block where is attestation included and there is no reason to continue this loop
          * (in some rare case can cause premature breaking a loop, if is a problem increase "maxEmptyBlocks")
          * */
-        const maxEmptyBlocks = 3;
-        if (previousSlot !== 0 && empty >= maxEmptyBlocks + skippedQue) break;
+        const maxEmptyBlocks = 5;
+        if (inclusion !== 0 && empty >= maxEmptyBlocks + skippedQue) break;
 
         lastSlot = newSlot.payload;
-        if (lastSlot > timeoutSlot) break;
+        if (lastSlot > timeoutSlot + skipped) break;
     }
     /**
      * this handle case when is assertion included in block but is not visible in next block
@@ -487,7 +489,7 @@ export function* getAttestationEffectiveness({
         epoch: computeEpochAtSlot(config, payload.slot),
         inclusion,
         slot: payload.slot,
-        efficiency: efficiency > 1 ? 100 : Math.floor(efficiency * 100),
+        efficiency: efficiency > 1 ? 100 : efficiency > 0 ? Math.floor(efficiency * 100) : 0,
         time: Date.now(),
     });
 }
