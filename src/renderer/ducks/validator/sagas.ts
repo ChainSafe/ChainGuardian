@@ -450,7 +450,7 @@ export function* getAttestationEffectiveness({
                         payload.block === toHex(data.beaconBlockRoot) &&
                         data.index === payload.index &&
                         data.slot === payload.slot &&
-                        payload.bits === JSON.stringify(aggregationBits),
+                        payload.bitsIndex === aggregationBits.findIndex((bit) => bit),
                 );
                 if (!sanitizedAttestations.length) empty++;
                 else {

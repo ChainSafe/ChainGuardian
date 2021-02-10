@@ -24,7 +24,7 @@ export class CgEth2BeaconPoolApi implements IBeaconPoolApi {
                     toHex(attestation.data.beaconBlockRoot),
                     attestation.data.index,
                     attestation.data.slot,
-                    JSON.stringify(attestation.aggregationBits),
+                    attestation.aggregationBits.findIndex((bit) => Number(bit) === -1),
                 ),
             );
         }

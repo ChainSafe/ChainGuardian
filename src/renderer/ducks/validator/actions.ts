@@ -83,15 +83,15 @@ export type SignedNewAttestation = (
     block: string,
     index: number,
     slot: number,
-    bits: string,
+    bitsIndex: number,
 ) => {
-    payload: {block: string; index: number; slot: number; bits: string};
+    payload: {block: string; index: number; slot: number; bitsIndex: number};
     meta: string;
 };
 export const signedNewAttestation = createAction<SignedNewAttestation>(
     "validator/signedNewAttestation",
-    (publicKey: string, block: string, index: number, slot: number, bits: string) => ({
-        payload: {block, index, slot, bits},
+    (publicKey: string, block: string, index: number, slot: number, bitsIndex: number) => ({
+        payload: {block, index, slot, bitsIndex},
         meta: publicKey,
     }),
 );
