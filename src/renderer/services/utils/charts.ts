@@ -29,9 +29,8 @@ export const getAttestationEfficiencyChartData = (
     return new Array(7).fill(null).map((_, index) => {
         const time = addDays(new Date(baseTime), index);
         const value =
-            Math.round(
-                attestationEffectiveness.getAverageAttestationEfficiency(startOfDay(time), endOfDay(time)) * 100,
-            ) || null;
+            Math.round(attestationEffectiveness.getAverageAttestationEfficiency(startOfDay(time), endOfDay(time))) ||
+            null;
         const label = format(time, "EEEE");
         return {value, label};
     });

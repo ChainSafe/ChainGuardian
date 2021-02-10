@@ -10,6 +10,8 @@ import {BitList} from "@chainsafe/ssz";
 
 const publicKey = "0x9331f1ec6672748ca7b080faff7038da35838f57d223db4f2cb5020246e6c31695c3fb3db0d78db13d266476e34e4e65";
 const block = "0xc3687c87021f5b7855465caf6501b3f742f20f26b65cc7a107ff7a78f0b28b79";
+const bitsIndex = 4;
+const bitsArray = [false, false, false, false, true, false, false, false, false, false, false, false, false, false];
 const committee = 11;
 const slot = 466969;
 
@@ -43,7 +45,7 @@ export const testAttestationEffectivenessSaga = (
     let lastSlot = slot;
     const result = await expectSaga(
         getAttestationEffectiveness,
-        signedNewAttestation(publicKey, block, committee, slot),
+        signedNewAttestation(publicKey, block, committee, slot, bitsIndex),
     )
         .provide({
             select: () => selectedValidator,
@@ -62,13 +64,13 @@ export const testAttestationEffectivenessSaga = (
                     if (cases[index]) {
                         return mockBeaconBlockAttestations(
                             block,
-                            effect.args[0],
+                            slot,
                             committee,
                             cases[index].skipped,
                             cases[index].empty,
                         );
                     } else {
-                        return mockBeaconBlockAttestations(block, effect.args[0], committee, false, true);
+                        return mockBeaconBlockAttestations(block, slot, committee, false, true);
                     }
                 }
             },
@@ -97,17 +99,17 @@ const mockBeaconBlockAttestations = (
     for (let i = 0; i <= randomLength; i++) {
         const randomIndex = Math.floor(Math.random() * 30);
         if (randomIndex === index) continue;
-        blocks.push(createAttestations(slot - 1, randomIndex, block));
+        blocks.push(createAttestations(slot, randomIndex, block));
     }
     if (!empty) {
-        blocks.push(createAttestations(slot - 1, index, block));
+        blocks.push(createAttestations(slot, index, block, bitsArray));
     }
 
     return blocks;
 };
 
-const createAttestations = (slot: number, index: number, beaconBlockRoot: string): Attestation => ({
-    aggregationBits: createRandomAggregationBits(),
+const createAttestations = (slot: number, index: number, beaconBlockRoot: string, bits?: boolean[]): Attestation => ({
+    aggregationBits: bits || createRandomAggregationBits(),
     data: {
         slot,
         index,

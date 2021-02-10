@@ -165,6 +165,7 @@ function* removeValidatorSaga(
     yield all([
         database.validator.balance.delete(action.payload),
         database.validator.beaconNodes.delete(action.payload),
+        database.validator.attestationEffectiveness.delete(action.payload),
     ]);
     yield put(removeValidator(action.payload));
 }
@@ -424,7 +425,6 @@ export function* getAttestationEffectiveness({
     const eth2API = new CgEth2ApiClient(config, validator.beaconNodes[0]);
 
     let lastSlot = payload.slot,
-        previousSlot = 0,
         empty = 0,
         skipped = 0,
         skippedQue = 0,
@@ -445,18 +445,19 @@ export function* getAttestationEffectiveness({
                 skippedQue++;
             } else {
                 const sanitizedAttestations = result.filter(
-                    ({data}) => payload.block === toHex(data.beaconBlockRoot) && data.index === payload.index,
+                    ({data, aggregationBits}) =>
+                        payload.block === toHex(data.beaconBlockRoot) &&
+                        data.index === payload.index &&
+                        data.slot === payload.slot &&
+                        aggregationBits[payload.validatorIndexInCommittee],
                 );
                 if (!sanitizedAttestations.length) empty++;
-                else empty = 0;
-                sanitizedAttestations.forEach(({data}) => {
-                    if (data.slot > inclusion && data.slot > payload.slot) {
-                        inclusion = data.slot;
-                        skipped += skippedQue;
-                        skippedQue = 0;
-                    }
-                });
-                previousSlot = range[index];
+                else {
+                    inclusion = range[index];
+                    skipped += skippedQue;
+                    skippedQue = 0;
+                    empty = 0;
+                }
             }
         });
         /**
@@ -464,11 +465,11 @@ export function* getAttestationEffectiveness({
          * can conclude that code fund block where is attestation included and there is no reason to continue this loop
          * (in some rare case can cause premature breaking a loop, if is a problem increase "maxEmptyBlocks")
          * */
-        const maxEmptyBlocks = 3;
-        if (previousSlot !== 0 && empty >= maxEmptyBlocks + skippedQue) break;
+        const maxEmptyBlocks = 5;
+        if (inclusion !== 0 && empty >= maxEmptyBlocks + skippedQue) break;
 
         lastSlot = newSlot.payload;
-        if (lastSlot > timeoutSlot) break;
+        if (lastSlot > timeoutSlot + skipped) break;
     }
     /**
      * this handle case when is assertion included in block but is not visible in next block
@@ -486,7 +487,7 @@ export function* getAttestationEffectiveness({
         epoch: computeEpochAtSlot(config, payload.slot),
         inclusion,
         slot: payload.slot,
-        efficiency: efficiency > 1 ? 1 : Math.round(efficiency * 1000) / 1000,
+        efficiency: efficiency > 1 ? 100 : efficiency > 0 ? Math.floor(efficiency * 100) : 0,
         time: Date.now(),
     });
 }
