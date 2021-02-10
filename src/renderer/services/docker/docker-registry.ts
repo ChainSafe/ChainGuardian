@@ -15,6 +15,7 @@ class DockerRegistryClass {
         Command.stats().then((cmd) => {
             const {stdout} = runCmd(cmd);
             this.stats = new DockerStats(stdout);
+            Object.freeze(DockerRegistry);
         });
     }
 
@@ -54,7 +55,6 @@ class DockerRegistryClass {
 }
 
 export const DockerRegistry = new DockerRegistryClass();
-Object.freeze(DockerRegistry);
 
 ipcRenderer &&
     ipcRenderer.on("stop-docker", async () => {

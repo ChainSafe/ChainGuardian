@@ -8,6 +8,7 @@ import {IRootState} from "../../ducks/reducers";
 import {TabNavigation} from "../../components/TabNavigation/TabNavigation";
 import {BeaconNodeDashboard} from "./dashboard/BeaconNodeDashboard";
 import {BeaconNodeLogs} from "./BeaconNodeLogs";
+import {BeaconNodePerformance} from "./BeaconNodePerformance";
 
 export const BeaconNodeContainer: React.FC = () => {
     const history = useHistory();
@@ -30,6 +31,7 @@ export const BeaconNodeContainer: React.FC = () => {
                 <div className='container-scroll-y'>
                     {currentTab === tabs[0].tabId && <BeaconNodeDashboard beacon={beacon} />}
                     {currentTab === tabs[1].tabId && <BeaconNodeLogs beacon={beacon} />}
+                    {currentTab === tabs[2].tabId && <BeaconNodePerformance beacon={beacon} />}
                 </div>
             </div>
         </Background>
