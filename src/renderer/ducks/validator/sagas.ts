@@ -449,7 +449,7 @@ export function* getAttestationEffectiveness({
                         payload.block === toHex(data.beaconBlockRoot) &&
                         data.index === payload.index &&
                         data.slot === payload.slot &&
-                        payload.bitsIndex === aggregationBits.findIndex((bit) => bit),
+                        aggregationBits[payload.validatorIndexInCommittee],
                 );
                 if (!sanitizedAttestations.length) empty++;
                 else {

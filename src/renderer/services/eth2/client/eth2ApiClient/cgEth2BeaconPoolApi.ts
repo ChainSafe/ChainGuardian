@@ -18,15 +18,17 @@ export class CgEth2BeaconPoolApi implements IBeaconPoolApi {
 
     public submitAttestation = async (attestation: Attestation): Promise<void> => {
         if (this.publicKey) {
-            store.dispatch(
-                signedNewAttestation(
-                    this.publicKey,
-                    toHex(attestation.data.beaconBlockRoot),
-                    attestation.data.index,
-                    attestation.data.slot,
-                    attestation.aggregationBits.findIndex((bit) => Number(bit) === -1),
-                ),
-            );
+            const validatorIndexInCommittee = attestation.aggregationBits.findIndex((bit) => bit);
+            if (validatorIndexInCommittee !== -1)
+                store.dispatch(
+                    signedNewAttestation(
+                        this.publicKey,
+                        toHex(attestation.data.beaconBlockRoot),
+                        attestation.data.index,
+                        attestation.data.slot,
+                        validatorIndexInCommittee,
+                    ),
+                );
         }
         await this.httpClient.post("/eth/v1/beacon/pool/attestations", [
             this.config.types.Attestation.toJson(attestation, {case: "snake"}),
