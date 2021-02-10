@@ -1,5 +1,5 @@
 import React from "react";
-import {SimpleLineChart, SimpleLineChartRecord} from "../../components/SimpleLineChart/SimpleLineChart";
+import {SimpleLineChart, SimpleLineChartRecord} from "../../../components/SimpleLineChart/SimpleLineChart";
 import {ResponsiveContainer} from "recharts";
 
 interface IProps {
