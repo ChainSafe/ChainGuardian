@@ -4,6 +4,7 @@ import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Json} from "@chainsafe/ssz";
 import {ICGBeaconStateApi, ICGValidatorResponse} from "../interface";
 import logger from "electron-log";
+import {cgLogger} from "../../../../../main/logger";
 
 export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
     private readonly httpClient: HttpClient;
@@ -52,7 +53,8 @@ export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
                 case: "snake",
             }) as ICGValidatorResponse;
         } catch (e) {
-            logger.error("Failed to fetch validator", {validatorId: id, error: e.message});
+            if (!e.message.includes('"code":404'))
+                cgLogger.error("Failed to fetch validator", {validatorId: id, error: e.message});
             return null;
         }
     };
