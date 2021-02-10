@@ -25,15 +25,17 @@ export const BeaconNodePerformance: React.FC<IBeaconNodeProps> = ({beacon: {dock
             for await (const stats of DockerRegistry.getStatsIterator(docker.id)) {
                 setStats(stats);
 
-                const label = format(new Date(), "k:mm:ss");
-                setCpu((oldState) => {
-                    oldState.shift();
-                    return [...oldState, {label, value: stats.cpu}];
-                });
-                setRam((oldState) => {
-                    oldState.shift();
-                    return [...oldState, {label, value: stats.memory.percentage + Math.random() * 0.05}];
-                });
+                if (stats && stats.cpu && stats.memory?.percentage) {
+                    const label = format(new Date(), "k:mm:ss");
+                    setCpu((oldState) => {
+                        oldState.shift();
+                        return [...oldState, {label, value: stats.cpu}];
+                    });
+                    setRam((oldState) => {
+                        oldState.shift();
+                        return [...oldState, {label, value: stats.memory.percentage + Math.random() * 0.05}];
+                    });
+                }
             }
         })();
     }, []);
