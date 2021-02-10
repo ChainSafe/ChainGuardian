@@ -425,7 +425,6 @@ export function* getAttestationEffectiveness({
     const eth2API = new CgEth2ApiClient(config, validator.beaconNodes[0]);
 
     let lastSlot = payload.slot,
-        previousSlot = 0,
         empty = 0,
         skipped = 0,
         skippedQue = 0,
@@ -459,7 +458,6 @@ export function* getAttestationEffectiveness({
                     skippedQue = 0;
                     empty = 0;
                 }
-                previousSlot = range[index];
             }
         });
         /**
