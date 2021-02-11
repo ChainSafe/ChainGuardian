@@ -22,6 +22,7 @@ export const Overlays: React.FC = () => {
                     <img src={discord} />
                 </div>
             </div>
+            <div className='version-overlay'>v{process.env.npm_package_version}</div>
         </>
     );
 };

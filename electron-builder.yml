@@ -4,7 +4,7 @@ directories:
 productName: ChainGuardian
 buildDependenciesFromSource: true
 npmRebuild: true
-copyright: 'Copyright © year ${author}'
+copyright: 'Copyright © 2021 ${author}'
 appId: io.nodefactory.chainguardian
 asar: true
 asarUnpack:

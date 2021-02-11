@@ -1,4 +1,4 @@
-import {MenuItemConstructorOptions, MenuItem, Menu, shell, app, BrowserWindow, dialog} from "electron";
+import {MenuItemConstructorOptions, MenuItem, Menu, shell, app, BrowserWindow, dialog, nativeImage} from "electron";
 import path from "path";
 import {existsSync, createWriteStream} from "fs";
 import {mainLogger} from "../logger";
@@ -30,7 +30,26 @@ const template = [
                     await shell.openExternal("https://discord.gg/4GBwH52cFb");
                 },
             },
-            ...(isMac ? [{role: "about"}] : []),
+            ...(isMac
+                ? [{role: "about"}]
+                : [
+                      {
+                          label: "About",
+                          click: (event: KeyboardEvent, window: BrowserWindow): void => {
+                              const iconPath = nativeImage.createFromPath(
+                                  path.join(__dirname, `../src/renderer/assets/ico/app_icon.png`),
+                              );
+                              dialog.showMessageBox(window, {
+                                  type: "none",
+                                  message: "Chain Guardian",
+                                  detail: `Version ${
+                                      process.env.npm_package_version
+                                  }${"\n"}${"\n"}Copyright © 2021 NodeFactory`,
+                                  icon: iconPath,
+                              });
+                          },
+                      },
+                  ]),
             {type: "separator"},
             {
                 label: "Reload",

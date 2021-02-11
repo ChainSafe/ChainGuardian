@@ -20,6 +20,7 @@ app.on("before-quit", db.stop.bind(db));
 
 app.whenReady().then(async function () {
     mainLogger.info(`Starting ChainGuardian`);
+    mainLogger.info(`Version ${process.env.npm_package_version}`);
     try {
         await initBLS("herumi");
         await Promise.all([db.start(), createWindow()]);
