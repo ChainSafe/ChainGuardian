@@ -1,4 +1,8 @@
-import {MenuItemConstructorOptions, MenuItem, Menu, shell, app, BrowserWindow, dialog} from "electron";
+import {MenuItemConstructorOptions, MenuItem, Menu, shell, app, BrowserWindow, dialog, nativeImage} from "electron";
+import path from "path";
+import {existsSync, createWriteStream} from "fs";
+import {mainLogger} from "../logger";
+import archiver from "archiver";
 
 const reloadDialog = (window: BrowserWindow): number =>
     dialog.showMessageBoxSync(window, {
@@ -26,7 +30,26 @@ const template = [
                     await shell.openExternal("https://discord.gg/4GBwH52cFb");
                 },
             },
-            ...(isMac ? [{role: "about"}] : []),
+            ...(isMac
+                ? [{role: "about"}]
+                : [
+                      {
+                          label: "About",
+                          click: (event: KeyboardEvent, window: BrowserWindow): void => {
+                              const iconPath = nativeImage.createFromPath(
+                                  path.join(__dirname, `../src/renderer/assets/ico/app_icon.png`),
+                              );
+                              dialog.showMessageBox(window, {
+                                  type: "none",
+                                  message: "Chain Guardian",
+                                  detail: `Version ${
+                                      process.env.npm_package_version
+                                  }${"\n"}${"\n"}Copyright © 2021 NodeFactory`,
+                                  icon: iconPath,
+                              });
+                          },
+                      },
+                  ]),
             {type: "separator"},
             {
                 label: "Reload",
@@ -66,7 +89,7 @@ const template = [
                 },
             },
             {
-                label: "Github repo",
+                label: "Github Repository",
                 click: async (): Promise<void> => {
                     await shell.openExternal("https://github.com/NodeFactoryIo/ChainGuardian");
                 },
@@ -75,6 +98,38 @@ const template = [
                 label: "Search Issues",
                 click: async (): Promise<void> => {
                     await shell.openExternal("https://github.com/NodeFactoryIo/ChainGuardian/issues");
+                },
+            },
+            {type: "separator"},
+            {
+                label: "Open logs directory",
+                click: async (): Promise<void> => {
+                    const error = await shell.openPath(path.join(app.getPath("userData"), "logs"));
+                    if (error) await shell.openPath(app.getPath("userData"));
+                },
+            },
+            {
+                label: "Export logs",
+                click: async (event: KeyboardEvent, window: BrowserWindow): Promise<void> => {
+                    const savePath = dialog.showOpenDialogSync(window, {
+                        title: `Saving logs to destination"`,
+                        defaultPath: app.getPath("home"),
+                        buttonLabel: "Export",
+                        properties: ["openDirectory"],
+                    });
+                    if (savePath && savePath.length) {
+                        const logsPath = path.join(app.getPath("userData"), "logs");
+                        if (existsSync(logsPath)) {
+                            const filename = `logs-${Date.now()}.zip`;
+                            const output = createWriteStream(path.join(savePath[0], filename));
+                            const archive = archiver("zip", {zlib: {level: 9}});
+                            archive.pipe(output);
+                            archive.directory(logsPath, false);
+                            await archive.finalize();
+                        }
+                        // this should never naturally happens on production but if is case create new log to fix it.
+                        else mainLogger.error("Missing logs!");
+                    }
                 },
             },
         ],

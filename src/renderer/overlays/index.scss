@@ -28,3 +28,12 @@
     height: 50px;
   }
 }
+.version-overlay {
+  position: fixed;
+  bottom: 5px;
+  right: 20px;
+  z-index: 999;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: rgba($primary-blue-700, 0.5);
+}
