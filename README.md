@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/NodeFactoryIo/ChainGuardian.svg?branch=master)](https://travis-ci.org/NodeFactoryIo/ChainGuardian)
 [![codecov](https://codecov.io/gh/NodeFactoryIo/ChainGuardian/branch/master/graph/badge.svg)](https://codecov.io/gh/NodeFactoryIo/ChainGuardian)
-![Discord](https://img.shields.io/discord/608204864593461248?color=blue&label=Discord&logo=discord)
-![GitHub](https://img.shields.io/github/license/NodeFactoryIo/ChainGuardian)
+[![Discord](https://img.shields.io/discord/608204864593461248?color=blue&label=Discord&logo=discord)](https://discord.gg/7Kd4FZq)
+[![GitHub](https://img.shields.io/github/license/NodeFactoryIo/ChainGuardian)](./LICENSE)
 
 Eth2.0 desktop validator client.
 
