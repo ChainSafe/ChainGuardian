@@ -4,6 +4,7 @@ import {Container} from "./container";
 import {DockerStats, Stats} from "./stats";
 import {runCmd} from "../utils/cmd";
 import {Command} from "./command";
+import {mainLogger} from "../../../main/logger";
 
 type Registry = {[network: string]: Container};
 
@@ -13,7 +14,15 @@ class DockerRegistryClass {
 
     public constructor() {
         Command.stats().then((cmd) => {
-            const {stdout} = runCmd(cmd);
+            const onExit = async (code: number | null, signal: string | null): Promise<void> => {
+                if (signal === "SIGTERM" || signal === "SIGINT" || (code === 1 && signal === null)) {
+                    const {stdout} = runCmd(cmd, {onExit});
+                    this.stats.updateReadable(stdout);
+                } else {
+                    mainLogger.warn("unhandled exit performance monitor", code, signal);
+                }
+            };
+            const {stdout} = runCmd(cmd, {onExit});
             this.stats = new DockerStats(stdout);
             Object.freeze(DockerRegistry);
         });

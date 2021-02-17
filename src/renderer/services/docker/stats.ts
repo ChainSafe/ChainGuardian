@@ -47,6 +47,10 @@ export class DockerStats {
     })();
 
     public constructor(stdout: Readable) {
+        this.updateReadable(stdout);
+    }
+
+    public updateReadable(stdout: Readable): void {
         stdout.on("data", (data: string) => {
             if (Buffer.isBuffer(data)) data = data.toString();
             if (data.includes("PIDS")) {
