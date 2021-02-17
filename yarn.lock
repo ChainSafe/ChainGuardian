@@ -1257,66 +1257,66 @@
     bls-eth-wasm "^0.4.4"
     randombytes "^2.1.0"
 
-"@chainsafe/lodestar-beacon-state-transition@0.13.0", "@chainsafe/lodestar-beacon-state-transition@^0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-beacon-state-transition/-/lodestar-beacon-state-transition-0.13.0.tgz#bbd1ac0bfcd110eb27e25d65b633305de9145a8b"
-  integrity sha512-7hyAZjV21SzsoKe20a/IDUK1uvlTBMfGAJSvzz13/4atvCCHp1QyllqHvIWtzadpuAoP9sun2Ee4bOjjaWBKNg==
+"@chainsafe/lodestar-beacon-state-transition@0.16.0", "@chainsafe/lodestar-beacon-state-transition@^0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-beacon-state-transition/-/lodestar-beacon-state-transition-0.16.0.tgz#3303aee53bddceddc3ebb96fa8ad11f243f45e9e"
+  integrity sha512-tdXZU9i5FIkzjw6MwMxy137aRzNK4cLc8TrEGDB0hjuxEOJ2il4zozuamljMSLPyArEAjeWjanAvsdoFOpemBw==
   dependencies:
     "@chainsafe/bls" "5.1.0"
-    "@chainsafe/lodestar-config" "^0.13.0"
-    "@chainsafe/lodestar-utils" "^0.13.0"
+    "@chainsafe/lodestar-config" "^0.16.0"
+    "@chainsafe/lodestar-utils" "^0.16.0"
     "@chainsafe/ssz" "^0.6.13"
     bigint-buffer "^1.1.5"
     buffer-xor "^2.0.2"
 
-"@chainsafe/lodestar-config@0.13.0", "@chainsafe/lodestar-config@^0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-config/-/lodestar-config-0.13.0.tgz#508efd9d9ca3d4253035c4239af91c36ef532006"
-  integrity sha512-bHj9kxHO0Czy61Hcj1o64B04BnjRoBLUevU9LWjakp4kRlv7p8hMxkYtNuuC1UTS22Ef8IPVwz4iVOsakUdX/Q==
+"@chainsafe/lodestar-config@0.16.0", "@chainsafe/lodestar-config@^0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-config/-/lodestar-config-0.16.0.tgz#42e1c9fee84ccd3cfb32a94723fcf55f282bf642"
+  integrity sha512-R+zXVQpmyCsEHxxmfoiQLEpGeNOK4qCAkigKhxeaktRlGXKH7V0bolEzR+csPLHn0inqBt401ITeArlKnLvZcA==
   dependencies:
-    "@chainsafe/lodestar-params" "^0.13.0"
-    "@chainsafe/lodestar-types" "^0.13.0"
+    "@chainsafe/lodestar-params" "^0.16.0"
+    "@chainsafe/lodestar-types" "^0.16.0"
 
-"@chainsafe/lodestar-db@0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-db/-/lodestar-db-0.13.0.tgz#955c07b9066184a9bf26f9a000c87e7062d0c2c9"
-  integrity sha512-5cE3gwEo2nS6c9TwY+4Mxy22bNzVRv6HHAm/EPOjDMjDN47kC4TlG5mf+nL7iJxJjn9nHGAGL+afTd5MTAbcCg==
+"@chainsafe/lodestar-db@0.16.0", "@chainsafe/lodestar-db@^0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-db/-/lodestar-db-0.16.0.tgz#308169a0165235c030e5bf96786bdf72a5e895b0"
+  integrity sha512-kj+kcc/fnqT9jK8f3YvJet2SlR9M2WRr//uRBjyISGB4VYQSfliBVFcseyzb7oQNmMN6j0zSrnoC08LqIPYRCQ==
   dependencies:
-    "@chainsafe/lodestar-config" "^0.13.0"
-    "@chainsafe/lodestar-types" "^0.13.0"
-    "@chainsafe/lodestar-utils" "^0.13.0"
+    "@chainsafe/lodestar-config" "^0.16.0"
+    "@chainsafe/lodestar-utils" "^0.16.0"
     "@chainsafe/ssz" "^0.6.13"
     it-all "^1.0.2"
     it-pushable "^1.4.0"
     level "^6.0.1"
     levelup "^4.4.0"
 
-"@chainsafe/lodestar-params@^0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-params/-/lodestar-params-0.13.0.tgz#f2720e3d9898150b95fc5367ccf52b65df2225de"
-  integrity sha512-rd88F8fy3CE4UGUhf33xLZXdfwFiSdKX7omSISiI9YFluCU7yh0BZEtST4EmGd+v8wMm44i/R6CBOXVxf7eDoA==
+"@chainsafe/lodestar-params@^0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-params/-/lodestar-params-0.16.0.tgz#35e41e8060f4f64e507a6ec8cc36fc8edba38789"
+  integrity sha512-nUIZS3c+5LC9Zg21FxRyZflJaGmWz0edrNrFQGAzVWrx0IOkYrM3w4ZovpC4Ackf88HeoXRjLUz/esjOtneU6Q==
   dependencies:
     "@chainsafe/ssz" "^0.6.13"
     "@types/js-yaml" "^3.12.2"
     axios "^0.21.0"
     js-yaml "^3.13.1"
 
-"@chainsafe/lodestar-types@0.13.0", "@chainsafe/lodestar-types@^0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-types/-/lodestar-types-0.13.0.tgz#4eff6fca2566f9e2b99636e5c2143d9c25278ff2"
-  integrity sha512-+CJiK0ArS2XRoQQ9tvIup6L4cjfadfX4MInWvEkl9SENCDtNjI0LYspIJNDfNZcz+2lMZ/ZpxNw92YrG8mbMpw==
+"@chainsafe/lodestar-types@0.16.0", "@chainsafe/lodestar-types@^0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-types/-/lodestar-types-0.16.0.tgz#f894675db0085d94912d0625791148e664353a7b"
+  integrity sha512-73WB61TpJtC8DAyBZpMzmYpZdAP9v9bmORoAfcL+lKFQ2ZB29//7E4/+gyrPw+0crUkhWFgfTY7dFkiHn3LT1g==
   dependencies:
-    "@chainsafe/lodestar-params" "^0.13.0"
+    "@chainsafe/lodestar-params" "^0.16.0"
     "@chainsafe/ssz" "^0.6.13"
 
-"@chainsafe/lodestar-utils@0.13.0", "@chainsafe/lodestar-utils@^0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-utils/-/lodestar-utils-0.13.0.tgz#d98b73a74704505497ac55ee6b055c03d1e02b53"
-  integrity sha512-NKdNPfwK8i7D4KvFqs0cQdXKUvOgIw7UNZKHbRBk/K6DSpiPNNvIl6J8euoMlRkxs9IRUXgZMic5pAaWEdm2AA==
+"@chainsafe/lodestar-utils@0.16.0", "@chainsafe/lodestar-utils@^0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-utils/-/lodestar-utils-0.16.0.tgz#765a72d292f50dcba86e7c5b2adb531f923bd9c6"
+  integrity sha512-CAO9MaIwlDfsKBc7nQcgjLQROab4B3QCZ2HzpYe7XVrzLhZphL7Lr34WaJAzSuDvek7K9OYwY/0FKkV+RTyQMg==
   dependencies:
     "@chainsafe/bls" "5.1.0"
     "@chainsafe/ssz" "^0.6.13"
     abort-controller "^3.0.0"
+    any-signal "2.1.1"
     bigint-buffer "^1.1.5"
     chalk "^2.4.2"
     event-iterator "^2.0.0"
@@ -1324,21 +1324,21 @@
     winston "^3.3.3"
     winston-transport "^4.3.0"
 
-"@chainsafe/lodestar-validator@0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-validator/-/lodestar-validator-0.13.0.tgz#d3403ff32395a3f95d6a966b93eca7fcaafa7b73"
-  integrity sha512-texiOWlbuQ49fNTY61LCPg+BD6MUDQkWbohdvSWiHWBCK0aO+xQCGNOBNlFj5UfFg3JTbXUQupldi1AGhdBCbw==
+"@chainsafe/lodestar-validator@0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-validator/-/lodestar-validator-0.16.0.tgz#b04e3dd69806b1baa2f3f2ecde00ff064bbf3f6b"
+  integrity sha512-NCza2FBynEvKfYZ8vw545rgIsnp5kZU60KPWE/MzHG68jDuUfPzYI0vSlhKA/tdQnuqY4nUVtaFOawTHuKPGVA==
   dependencies:
     "@chainsafe/bls" "5.1.0"
-    "@chainsafe/lodestar-beacon-state-transition" "^0.13.0"
-    "@chainsafe/lodestar-config" "^0.13.0"
-    "@chainsafe/lodestar-types" "^0.13.0"
-    "@chainsafe/lodestar-utils" "^0.13.0"
+    "@chainsafe/lodestar-beacon-state-transition" "^0.16.0"
+    "@chainsafe/lodestar-config" "^0.16.0"
+    "@chainsafe/lodestar-db" "^0.16.0"
+    "@chainsafe/lodestar-types" "^0.16.0"
+    "@chainsafe/lodestar-utils" "^0.16.0"
     "@chainsafe/ssz" "^0.6.13"
     abort-controller "^3.0.0"
     abortable-iterator "^3.0.0"
-    any-signal "2.1.1"
-    axios "^0.19.0"
+    axios "^0.21.1"
     axios-mock-adapter "^1.17.0"
     bigint-buffer "^1.1.5"
     eventsource "^1.0.7"
@@ -1350,6 +1350,11 @@
   integrity sha512-07Hi5QiogeTuwNiZXxg7PQnwNyEqV3ArfITpEloGJ8JVOHxQ2Tha1fo4oNBF54628vTDMcDpMVFGrfnIMsQnxg==
   dependencies:
     "@chainsafe/as-sha256" "^0.2.0"
+
+"@chainsafe/persistent-ts@0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@chainsafe/persistent-ts/-/persistent-ts-0.16.0.tgz#91df9438e90949d3fed9c8301fa74af3bf4e1cbb"
+  integrity sha512-B2Yhe4Qr8S3FWT/+1VnhmK7RRKNtIZh4WFaeVrLHKEcYqehzL0mDvlA+MOuJPmBdXyJ5gTt8VFlra9iDiUnVFA==
 
 "@chainsafe/ssz@0.6.13", "@chainsafe/ssz@^0.6.13":
   version "0.6.13"
@@ -4335,19 +4340,12 @@ axios-mock-adapter@^1.17.0:
     fast-deep-equal "^3.1.1"
     is-buffer "^2.0.3"
 
-axios@0.21.1, axios@^0.21.0:
+axios@0.21.1, axios@^0.21.0, axios@^0.21.1:
   version "0.21.1"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
   integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
   dependencies:
     follow-redirects "^1.10.0"
-
-axios@^0.19.0:
-  version "0.19.2"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
-  integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
-  dependencies:
-    follow-redirects "1.5.10"
 
 babel-code-frame@^6.22.0:
   version "6.26.0"
@@ -6544,13 +6542,6 @@ debug@4, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
   dependencies:
     ms "^2.1.1"
 
-debug@=3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
-  integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
-  dependencies:
-    ms "2.0.0"
-
 debug@^3.1.1, debug@^3.2.5:
   version "3.2.6"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.6.tgz#e83d17de16d8a7efb7717edbe5fb10135eee629b"
@@ -8360,13 +8351,6 @@ focus-lock@^0.6.3:
   version "0.6.8"
   resolved "https://registry.yarnpkg.com/focus-lock/-/focus-lock-0.6.8.tgz#61985fadfa92f02f2ee1d90bc738efaf7f3c9f46"
   integrity sha512-vkHTluRCoq9FcsrldC0ulQHiyBYgVJB2CX53I8r0nTC6KnEij7Of0jpBspjt3/CuNb6fyoj3aOh9J2HgQUM0og==
-
-follow-redirects@1.5.10:
-  version "1.5.10"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.5.10.tgz#7b7a9f9aea2fdff36786a94ff643ed07f4ff5e2a"
-  integrity sha512-0V5l4Cizzvqt5D44aTXbFZz+FtyXV1vrDN6qrelxtfYQKW0KO0W2T/hkE8xvGa/540LkZlkaUjO4ailYTFtHVQ==
-  dependencies:
-    debug "=3.1.0"
 
 follow-redirects@^1.0.0, follow-redirects@^1.10.0:
   version "1.13.0"
