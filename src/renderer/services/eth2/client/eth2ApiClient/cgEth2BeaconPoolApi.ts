@@ -1,7 +1,7 @@
 import {IBeaconPoolApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
-import {Attestation} from "@chainsafe/lodestar-types";
+import {Attestation, SignedVoluntaryExit} from "@chainsafe/lodestar-types";
 import store from "../../../../ducks/store";
 import {signedNewAttestation} from "../../../../ducks/validator/actions";
 import {toHex} from "@chainsafe/lodestar-utils";
@@ -34,4 +34,11 @@ export class CgEth2BeaconPoolApi implements IBeaconPoolApi {
             this.config.types.Attestation.toJson(attestation, {case: "snake"}),
         ]);
     };
+
+    public async submitVoluntaryExit(signedVoluntaryExit: SignedVoluntaryExit): Promise<void> {
+        await this.httpClient.post(
+            "/pool/voluntary_exits",
+            this.config.types.SignedVoluntaryExit.toJson(signedVoluntaryExit, {case: "snake"}),
+        );
+    }
 }

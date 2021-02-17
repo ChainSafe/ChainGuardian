@@ -20,7 +20,7 @@ export class MockEth2ApiClient extends EventEmitter implements ICgEth2ApiClient 
     public validator: SinonStubbedInstance<ICGEth2ValidatorApi>;
     public events: SinonStubbedInstance<IEventsApi>;
     public clock: SinonStubbedInstance<IBeaconClock>;
-    public networkConfig: SinonStubbedInstance<ICGEth2Config>;
+    public configApi: SinonStubbedInstance<ICGEth2Config>;
     public genesisValidatorsRoot: Root = Buffer.alloc(32, 0);
     public connect = sinon.stub();
     public disconnect = sinon.stub();
