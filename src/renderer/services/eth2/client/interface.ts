@@ -17,6 +17,7 @@ import {
     ValidatorResponse,
     ValidatorStatus,
     SignedBeaconBlock,
+    Fork,
 } from "@chainsafe/lodestar-types";
 import {List} from "@chainsafe/ssz";
 import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
@@ -84,17 +85,18 @@ export type DepositContract = {
     };
 };
 export interface ICGEth2Config {
+    getForkSchedule(): Promise<Fork[]>;
     getDepositContract(): Promise<DepositContract["data"]>;
 }
 
 /**
  * Extends minimal interface(IApiClient) required by lodestar validator
  */
-export interface ICgEth2ApiClient extends Omit<IApiClient, "beacon" | "validator" | "node"> {
+export interface ICgEth2ApiClient extends Omit<IApiClient, "beacon" | "validator" | "node" | "configApi"> {
     beacon: ICGEth2BeaconApi;
     validator: ICGEth2ValidatorApi;
     node: ICGEth2NodeApi;
-    networkConfig: ICGEth2Config;
+    configApi: ICGEth2Config;
 }
 
 export type IValidatorBeaconClient = IApiClient;
