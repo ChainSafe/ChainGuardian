@@ -39,7 +39,6 @@ jobs:
           compareLink: "true"
           filterByMilestone: "false"
           unreleased: "false"
-          excludeLabels: "duplicate,question,invalid,wontfix,release"
           sinceTag: "${{ steps.get-latest-tag.outputs.tag }}"
           maxIssues: "0"
           stripGeneratorNotice: "true"
