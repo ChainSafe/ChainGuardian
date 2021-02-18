@@ -32,7 +32,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issues: "false"
-          issuesWoLabels: "false"
           pullRequests: "true"
           prWoLabels: "true"
           author: "true"
