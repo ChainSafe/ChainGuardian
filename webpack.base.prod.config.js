@@ -8,6 +8,7 @@ const plugins = [
         "process.env.SENTRY_ORG": JSON.stringify(process.env.SENTRY_ORG || "nodefactory"),
         "process.env.SENTRY_PROJECT": JSON.stringify(process.env.SENTRY_PROJECT || "chainguardian"),
         "process.env.SENTRY_AUTH_TOKEN": JSON.stringify(process.env.SENTRY_AUTH_TOKEN || ""),
+        "process.env.npm_package_version": JSON.stringify(packageJson.version),
     }),
 ];
 
