@@ -3,7 +3,7 @@ import path from "path";
 import {existsSync, createWriteStream} from "fs";
 import {mainLogger} from "../logger";
 import archiver from "archiver";
-import logo from "../../../assets/logo.png"
+import logo from "../../../assets/logo.png";
 
 const reloadDialog = (window: BrowserWindow): number =>
     dialog.showMessageBoxSync(window, {
