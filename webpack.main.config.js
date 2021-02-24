@@ -31,7 +31,20 @@ module.exports = merge.smart(baseConfig, {
                         ["@babel/plugin-proposal-class-properties", {loose: true}]
                     ]
                 }
-            }
+            },
+            {
+                // used for menu "about"
+                test: /\.(png)$/,
+                use: [
+                    "file-loader",
+                    {
+                        loader: "image-webpack-loader",
+                        options: {
+                            disable: true
+                        }
+                    }
+                ]
+            },
         ]
     },
     plugins: [
