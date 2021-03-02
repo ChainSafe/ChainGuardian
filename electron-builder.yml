@@ -25,7 +25,7 @@ mac:
   category: public.app-category.finance
   target: dmg
   entitlements: ./osx/entitlements.mac.plist
-  entitlementsInherits: ./osx/entitlements.mac.plist
+  entitlementsInherit: ./osx/entitlements.mac.plist
   publish:
     - github
 
