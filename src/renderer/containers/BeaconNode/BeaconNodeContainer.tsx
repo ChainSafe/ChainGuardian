@@ -29,9 +29,9 @@ export const BeaconNodeContainer: React.FC = () => {
                     <TabNavigation onTab={setCurrentTab} tabs={tabs} current={currentTab} />
                 </div>
                 <div className='container-scroll-y'>
-                    {currentTab === tabs[0].tabId && <BeaconNodeDashboard beacon={beacon} />}
-                    {currentTab === tabs[1].tabId && <BeaconNodeLogs beacon={beacon} />}
-                    {currentTab === tabs[2].tabId && <BeaconNodePerformance beacon={beacon} />}
+                    {currentTab === tabs[0]?.tabId && <BeaconNodeDashboard beacon={beacon} />}
+                    {currentTab === tabs[1]?.tabId && <BeaconNodeLogs beacon={beacon} />}
+                    {currentTab === tabs[2]?.tabId && <BeaconNodePerformance beacon={beacon} />}
                 </div>
             </div>
         </Background>
