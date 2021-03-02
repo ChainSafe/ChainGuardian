@@ -131,6 +131,7 @@
     "dotenv-webpack": "^1.8.0",
     "electron": "10.2.0",
     "electron-builder": "22.9.1",
+    "electron-builder-notarize": "^1.2.0",
     "electron-devtools-installer": "3.1.1",
     "env-prompt": "^1.2.3",
     "eslint": "^6.5.0",

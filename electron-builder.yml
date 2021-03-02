@@ -6,6 +6,7 @@ buildDependenciesFromSource: true
 npmRebuild: true
 copyright: 'Copyright © 2021 ${author}'
 appId: io.nodefactory.chainguardian
+afterSign: 'electron-builder-notarize'
 asar: true
 asarUnpack:
   - '**/node_modules/bcrypto/**/*'
@@ -20,8 +21,10 @@ files:
 
 mac:
   icon: ./assets/logo.icns
+  hardenedRuntime: true
   category: public.app-category.finance
   target: dmg
+  entitlements: ./osx/entitlements.mac.plist
   publish:
     - github
 

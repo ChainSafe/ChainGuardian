@@ -102,6 +102,14 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile --ignore-optional#--network-timeout 1000000
 
+      - name: Prepare for app notarization
+        if: startsWith(matrix.os, 'macos')
+        # Import Apple API key for app notarization on macOS
+        run: |
+          mkdir -p ~/private_keys/
+          echo '${{ secrets.MAC_API_KEY }}' > ~/private_keys/AuthKey_${{ secrets.MAC_API_KEY_ID }}.p8
+
+
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1.6.0
         with:
@@ -115,6 +123,8 @@ jobs:
           mac_certs_password: ${{ secrets.MAC_PASSWORD }}
         env:
           EP_PRE_RELEASE: true
+          API_KEY_ID: ${{ secrets.MAC_API_KEY_ID }}
+          API_KEY_ISSUER_ID: ${{ secrets.MAC_API_KEY_ISSUER_ID }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           SENTRY_ORG: "nodefactory"
           SENTRY_PROJECT: "chainguardian"
