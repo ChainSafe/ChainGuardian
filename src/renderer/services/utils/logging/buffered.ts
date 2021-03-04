@@ -5,6 +5,7 @@ import {Readable} from "stream";
 
 export interface IBufferedLoggerOptions {
     maxCache: number;
+    ignoreMessages: string[];
     transformer: (logLine: string) => string;
 }
 
@@ -13,7 +14,7 @@ export class BufferedLogger implements ICGLogger {
     private readonly opts: IBufferedLoggerOptions;
 
     public constructor(opts?: Partial<IBufferedLoggerOptions>) {
-        this.opts = Object.assign({}, {maxCache: 1000, transformer: (l: string) => l}, opts);
+        this.opts = Object.assign( {maxCache: 1000, transformer: (l: string) => l, ignoreMessages: []}, opts);
         this.cachedLogs = new FifoQueue<ILogRecord>(this.opts.maxCache);
     }
 
@@ -58,6 +59,7 @@ export class BufferedLogger implements ICGLogger {
                 ...log
                     .split("\n")
                     .filter((l) => !!l)
+                    .filter((l) => !this.opts.ignoreMessages.some((m) => l.includes(m)))
                     .map((logLine) => ({
                         log: this.opts.transformer(logLine),
                         source,
