@@ -14,7 +14,7 @@ export class BufferedLogger implements ICGLogger {
     private readonly opts: IBufferedLoggerOptions;
 
     public constructor(opts?: Partial<IBufferedLoggerOptions>) {
-        this.opts = Object.assign( {maxCache: 1000, transformer: (l: string) => l, ignoreMessages: []}, opts);
+        this.opts = Object.assign({maxCache: 1000, transformer: (l: string) => l, ignoreMessages: []}, opts);
         this.cachedLogs = new FifoQueue<ILogRecord>(this.opts.maxCache);
     }
 
