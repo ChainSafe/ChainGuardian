@@ -258,7 +258,7 @@ export abstract class Container {
             this.logger.removeAllStreamSourceListeners(logs.stdout);
             this.logger.removeAllStreamSourceListeners(logs.stderr);
             if (signal === "SIGTERM" || signal === "SIGINT" || (code === 1 && signal === null)) {
-                const newLogs = runCmd(await Command.logs(this.params.name, true, 1000), {onExit});
+                const newLogs = runCmd(await Command.logs(this.params.name, true, trail), {onExit});
                 this.addCmdStreamSource(newLogs);
             } else {
                 mainLogger.warn("unhandled exit logger process", code, signal);
