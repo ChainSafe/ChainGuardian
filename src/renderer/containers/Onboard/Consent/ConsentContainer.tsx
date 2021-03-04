@@ -4,9 +4,11 @@ import {connect} from "react-redux";
 import {RouteComponentProps} from "react-router";
 import {ButtonPrimary, ButtonSecondary} from "../../../components/Button/ButtonStandard";
 import {Routes} from "../../../constants/routes";
-import {saveAccountSettings} from "../../../ducks/settings/actions";
+import {saveAccountSettings, setLoadingValidator} from "../../../ducks/settings/actions";
+import {IRootState} from "../../../ducks/reducers";
+import {getHasBeacons} from "../../../ducks/beacon/selectors";
 
-class Consent extends Component<Pick<RouteComponentProps, "history"> & IInjectedProps> {
+class Consent extends Component<Pick<RouteComponentProps, "history"> & IInjectedProps & IStateProps> {
     public onYesClick(): void {
         this.onButtonClick(true);
     }
@@ -22,6 +24,7 @@ class Consent extends Component<Pick<RouteComponentProps, "history"> & IInjected
         this.props.saveSettings({
             reporting,
         });
+        if (!this.props.hasBeacons) this.props.setLoadingValidator(true);
         this.props.history.push(Routes.DASHBOARD_ROUTE);
     }
 
@@ -49,10 +52,20 @@ class Consent extends Component<Pick<RouteComponentProps, "history"> & IInjected
 
 interface IInjectedProps {
     saveSettings: typeof saveAccountSettings;
+    setLoadingValidator: typeof setLoadingValidator;
 }
 
 const mapDispatchToProps: IInjectedProps = {
     saveSettings: saveAccountSettings,
+    setLoadingValidator: setLoadingValidator,
 };
 
-export const ConsentContainer = connect(null, mapDispatchToProps)(Consent);
+interface IStateProps {
+    hasBeacons: boolean;
+}
+
+const mapStateToProps = (state: IRootState): IStateProps => ({
+    hasBeacons: getHasBeacons(state),
+});
+
+export const ConsentContainer = connect(mapStateToProps, mapDispatchToProps)(Consent);
