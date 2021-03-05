@@ -131,6 +131,14 @@ export abstract class Container {
         return false;
     }
 
+    public async startDockerLogger(): Promise<boolean> {
+        if (!this.getIsLoggerAttached()) {
+            await this.runDockerLogger();
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Runs docker instance defined trough constructor param.
      *
