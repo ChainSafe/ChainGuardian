@@ -21,6 +21,7 @@ export const settingsSlice = createSlice({
         },
         setInitialValidators: (state, action: PayloadAction<boolean>): void => {
             state.initialValidators = action.payload;
+            state.loadingValidator = false;
         },
         setLoadingValidator: (state, action: PayloadAction<boolean>): void => {
             state.loadingValidator = action.payload;

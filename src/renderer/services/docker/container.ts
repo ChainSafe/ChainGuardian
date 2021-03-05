@@ -31,7 +31,7 @@ export abstract class Container {
     protected constructor(params: IDockerRunParams) {
         this.docker = null;
         this.params = params;
-        this.logger = new BufferedLogger({maxCache: 1000});
+        this.logger = new BufferedLogger({maxCache: 1000, ignoreMessages: ["No such container"]});
     }
 
     /**
