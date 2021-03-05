@@ -254,14 +254,14 @@ export abstract class Container {
     }
 
     private async runDockerLogger(): Promise<void> {
-        const onExit = async (code: number | null, signal: string | null): Promise<void> => {
+        const onExit = async (): Promise<void> => {
             this.logger.removeAllStreamSourceListeners(logs.stdout);
             this.logger.removeAllStreamSourceListeners(logs.stderr);
-            if (signal === "SIGTERM" || signal === "SIGINT" || (code === 1 && signal === null)) {
+            if (await this.isRunning()) {
                 const newLogs = runCmd(await Command.logs(this.params.name, true, 1000), {onExit});
                 this.addCmdStreamSource(newLogs);
             } else {
-                mainLogger.warn("unhandled exit logger process", code, signal);
+                mainLogger.warn(`unable to read logs, container: ${this.params.name} is not running`);
             }
         };
         // Use the same way as docker run
