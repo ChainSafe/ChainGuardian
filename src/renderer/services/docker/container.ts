@@ -14,6 +14,7 @@ import {cgLogger, createLogger, mainLogger} from "../../../main/logger";
  */
 export interface IDocker {
     name: string;
+    isLoggerAttached: boolean;
     stdout?: Readable;
     stderr?: Readable;
 }
@@ -121,6 +122,13 @@ export abstract class Container {
         if (this.docker) {
             return this.logger.getLogIterator();
         }
+    }
+
+    public getIsLoggerAttached(): boolean {
+        if (this.docker) {
+            return this.docker.isLoggerAttached;
+        }
+        return false;
     }
 
     /**
@@ -255,6 +263,7 @@ export abstract class Container {
 
     private async runDockerLogger(): Promise<void> {
         const onExit = async (): Promise<void> => {
+            this.docker.isLoggerAttached = false;
             this.logger.removeAllStreamSourceListeners(logs.stdout);
             this.logger.removeAllStreamSourceListeners(logs.stderr);
             if (await this.isRunning()) {
@@ -271,7 +280,7 @@ export abstract class Container {
     }
 
     private addCmdStreamSource(run: ICmdRun): void {
-        this.docker = {name: this.params.name, stdout: run.stdout, stderr: run.stderr};
+        this.docker = {name: this.params.name, stdout: run.stdout, stderr: run.stderr, isLoggerAttached: true};
         this.logger.addStreamSource(run.stdout, "stdout");
         this.logger.addStreamSource(run.stderr, "stderr");
     }
