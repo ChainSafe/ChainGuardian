@@ -49,6 +49,7 @@ import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
 import {ValidatorStatus} from "../../constants/validatorStatus";
 import {cgLogger, createLogger, getBeaconLogfileFromURL} from "../../../main/logger";
 import {setInitialBeacons} from "../settings/actions";
+import {DockerRegistry} from "../../services/docker/docker-registry";
 
 export function* pullDockerImage(
     network: string,
@@ -270,6 +271,7 @@ export function* watchOnHead(
                 isSyncing = result.syncDistance > 10;
                 isOnline = true;
                 yield put(updateStatus(isSyncing ? BeaconStatus.syncing : BeaconStatus.active, url));
+                if (beacon.docker?.id) DockerRegistry.getContainer(beacon.docker?.id).startDockerLogger();
             }
             beaconLogger.info("Beacon on slot:", payload.value.message.slot);
             const headEpoch = computeEpochAtSlot(config?.eth2Config || mainnetConfig, payload.value.message.slot);

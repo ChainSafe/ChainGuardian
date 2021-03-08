@@ -14,6 +14,7 @@ import {cgLogger, createLogger, mainLogger} from "../../../main/logger";
  */
 export interface IDocker {
     name: string;
+    isLoggerAttached: boolean;
     stdout?: Readable;
     stderr?: Readable;
 }
@@ -121,6 +122,21 @@ export abstract class Container {
         if (this.docker) {
             return this.logger.getLogIterator();
         }
+    }
+
+    public getIsLoggerAttached(): boolean {
+        if (this.docker) {
+            return this.docker.isLoggerAttached;
+        }
+        return false;
+    }
+
+    public async startDockerLogger(): Promise<boolean> {
+        if (!this.getIsLoggerAttached()) {
+            await this.runDockerLogger();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -254,14 +270,15 @@ export abstract class Container {
     }
 
     private async runDockerLogger(): Promise<void> {
-        const onExit = async (code: number | null, signal: string | null): Promise<void> => {
+        const onExit = async (): Promise<void> => {
+            this.docker.isLoggerAttached = false;
             this.logger.removeAllStreamSourceListeners(logs.stdout);
             this.logger.removeAllStreamSourceListeners(logs.stderr);
-            if (signal === "SIGTERM" || signal === "SIGINT" || (code === 1 && signal === null)) {
-                const newLogs = runCmd(await Command.logs(this.params.name, true, 1), {onExit});
+            if (await this.isRunning()) {
+                const newLogs = runCmd(await Command.logs(this.params.name, true, 1000), {onExit});
                 this.addCmdStreamSource(newLogs);
             } else {
-                mainLogger.warn("unhandled exit logger process", code, signal);
+                mainLogger.warn(`unable to read logs, container: ${this.params.name} is not running`);
             }
         };
         // Use the same way as docker run
@@ -271,7 +288,7 @@ export abstract class Container {
     }
 
     private addCmdStreamSource(run: ICmdRun): void {
-        this.docker = {name: this.params.name, stdout: run.stdout, stderr: run.stderr};
+        this.docker = {name: this.params.name, stdout: run.stdout, stderr: run.stderr, isLoggerAttached: true};
         this.logger.addStreamSource(run.stdout, "stdout");
         this.logger.addStreamSource(run.stderr, "stderr");
     }
