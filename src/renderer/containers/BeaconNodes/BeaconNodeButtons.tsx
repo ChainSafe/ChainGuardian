@@ -37,6 +37,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
     const [confirmModal, setConfirmModal] = useState(Modal.none);
     const [loading, setLoading] = useState(false);
     const [isRunning, setIsRunning] = useState(false);
+    const [firstLoading, setFirstLoading] = useState(true);
 
     useEffect(() => {
         if (image) {
@@ -44,7 +45,11 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
             else if (beacon.status === BeaconStatus.starting) setIsRunning(false);
             else {
                 const container = DockerRegistry.getContainer(image);
-                if (container) container.isRunning().then(setIsRunning);
+                if (container)
+                    container.isRunning().then((running) => {
+                        setIsRunning(running);
+                        setFirstLoading(false);
+                    });
             }
         }
     }, [beacon.status]);
@@ -132,7 +137,7 @@ export const BeaconNodeButtons: React.FunctionComponent<IBeaconNodeButtonsProps>
     return (
         <>
             <div className='row buttons'>
-                {image ? (
+                {image && !firstLoading ? (
                     isRunning ? (
                         <>
                             <ButtonInverted onClick={(): void => setConfirmModal(Modal.stop)}>Stop</ButtonInverted>
