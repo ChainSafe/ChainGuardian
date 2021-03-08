@@ -223,12 +223,14 @@ export function* watchOnHead(
     | RaceEffect<Promise<IteratorResult<CGBeaconEvent | ErrorEvent>> | TakeEffect>
     | CallEffect
     | SelectEffect
-    | Promise<SyncingStatus>,
+    | Promise<SyncingStatus>
+    | Promise<boolean>,
     void,
     [IteratorResult<HeadEvent | ErrorEvent>, ReturnType<typeof removeBeacon>] &
         (INetworkConfig | null) &
         Beacon &
-        SyncingStatus
+        SyncingStatus &
+        boolean
 > {
     const config = yield retry(30, 1000, readBeaconChainNetwork, url);
     const client = new CgEth2ApiClient(config?.eth2Config || mainnetConfig, url);
@@ -241,6 +243,11 @@ export function* watchOnHead(
         beacon.status === BeaconStatus.starting;
     let isOnline = beacon.status !== BeaconStatus.offline;
     let epoch: number | undefined;
+    let isStarting = beacon.status === BeaconStatus.starting;
+    // fail safe in case of unexpected situation
+    setTimeout(() => {
+        isStarting = false;
+    }, 30 * 1000);
 
     cgLogger.info("Watching beacon on URL", url);
     const beaconLogger = createLogger(url, getBeaconLogfileFromURL(url));
@@ -259,9 +266,16 @@ export function* watchOnHead(
                 continue;
             }
             if (payload.value.type === CGBeaconEventType.ERROR) {
-                if (isOnline) {
+                const isRunning = beacon.docker?.id
+                    ? yield DockerRegistry.getContainer(beacon.docker?.id).isRunning()
+                    : true;
+                console.warn(isRunning);
+                if (isOnline && !isStarting) {
                     yield put(updateStatus(BeaconStatus.offline, url));
                     isOnline = false;
+                } else if (isRunning && !isStarting && beacon.docker?.id) {
+                    isStarting = true;
+                    yield put(updateStatus(BeaconStatus.starting, url));
                 }
                 continue;
             }
@@ -270,6 +284,7 @@ export function* watchOnHead(
                 const result = yield client.node.getSyncingStatus();
                 isSyncing = result.syncDistance > 10;
                 isOnline = true;
+                isStarting = false;
                 yield put(updateStatus(isSyncing ? BeaconStatus.syncing : BeaconStatus.active, url));
                 if (beacon.docker?.id) DockerRegistry.getContainer(beacon.docker?.id).startDockerLogger();
             }
