@@ -12,6 +12,7 @@ Thank you for your pull request. Please provide all required information
 - [ ] I have run linter locally
 - [ ] I have run unit and integration tests locally
 - [ ] Rebased to master branch / merged master
+- [ ] Updated `docker.json` on beacon node breaking change
 
 ### Changes
 <!-- Please describe all changes made to codebase. -->
