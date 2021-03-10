@@ -91,12 +91,36 @@ function* startLocalBeaconSaga({
         ports.push({local: String(discoveryPort), host: String(discoveryPort)});
     }
 
+    const image = "teku";
+
     cgLogger.info("Starting local docker beacon node & http://localhost:", rpcPort);
     const eth1QueryLimit = 200;
     if (pullSuccess) {
-        const cors = process.env.NODE_ENV !== "production" ? " --http-allow-origin http://localhost:2003 " : " ";
-        switch (network) {
-            default:
+        switch (image) {
+            case "teku": {
+                const cors =
+                    process.env.NODE_ENV !== "production" ? " --rest-api-cors-origins=http://localhost:2003 " : " ";
+                yield put(
+                    addBeacon(`http://localhost:${rpcPort}`, network, {
+                        id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, {
+                            ports,
+                            // eslint-disable-next-line max-len
+                            cmd: `--network=${network} --p2p-port=${libp2pPort} --p2p-advertised-port=${discoveryPort} --rest-api-enabled=true --rest-api-interface=0.0.0.0 --rest-api-port=${rpcPort}${cors}--eth1-endpoint=${eth1Url} --eth1-deposit-contract-max-request-size=${eth1QueryLimit} --log-destination=CONSOLE`,
+                            volume: `${chainDataDir}:/opt/teku/.local/share/teku/beacon`,
+                        })).getParams().name,
+                        network,
+                        chainDataDir,
+                        eth1Url,
+                        discoveryPort,
+                        libp2pPort,
+                        rpcPort,
+                    }),
+                );
+                break;
+            }
+            case "lighthouse": {
+                const cors =
+                    process.env.NODE_ENV !== "production" ? " --http-allow-origin http://localhost:2003 " : " ";
                 yield put(
                     addBeacon(`http://localhost:${rpcPort}`, network, {
                         id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, {
@@ -113,6 +137,8 @@ function* startLocalBeaconSaga({
                         rpcPort,
                     }),
                 );
+                break;
+            }
         }
         onComplete();
     }
