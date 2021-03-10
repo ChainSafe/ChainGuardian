@@ -15,7 +15,6 @@ import {
     select,
     SelectEffect,
 } from "redux-saga/effects";
-import {getNetworkConfig} from "../../services/eth2/networks";
 import {liveProcesses} from "../../services/utils/cmd";
 import {
     cancelDockerPull,
@@ -47,17 +46,18 @@ import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {createNotification} from "../notification/actions";
 import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
 import {ValidatorStatus} from "../../constants/validatorStatus";
-import {cgLogger, createLogger, getBeaconLogfileFromURL} from "../../../main/logger";
+import {cgLogger, createLogger, getBeaconLogfileFromURL, mainLogger} from "../../../main/logger";
 import {setInitialBeacons} from "../settings/actions";
 import {DockerRegistry} from "../../services/docker/docker-registry";
+import {getDockerImage} from "../../services/utils/githubConfig";
 
 export function* pullDockerImage(
-    network: string,
-): Generator<PutEffect | RaceEffect<CallEffect | TakeEffect>, boolean, [boolean, Action]> {
+    client: string,
+): Generator<PutEffect | RaceEffect<CallEffect | TakeEffect> | Promise<string>, boolean, string & [boolean, Action]> {
     yield put(startDockerImagePull());
     cgLogger.info("Start beacon node image pull");
     try {
-        const image = getNetworkConfig(network).dockerConfig.image;
+        const image = yield getDockerImage(client);
         cgLogger.info("image:", image);
         const [pullSuccess, effect] = yield race([call(BeaconChain.pullImage, image), take(cancelDockerPull)]);
         if (effect) {
@@ -67,12 +67,17 @@ export function* pullDockerImage(
 
         return effect !== undefined ? false : pullSuccess;
     } catch (e) {
-        const message = e.stderr.includes("daemon is not running")
-            ? "Seems Docker is offline, start it and try again"
-            : "Error while pulling Docker image, try again later";
-        yield put(createNotification({title: message, source: "pullDockerImage"}));
+        if (e.stderr) {
+            const message = e.stderr.includes("daemon is not running")
+                ? "Seems Docker is offline, start it and try again"
+                : "Error while pulling Docker image, try again later";
+            yield put(createNotification({title: message, source: "pullDockerImage"}));
+            cgLogger.error(e.stderr);
+        } else {
+            yield put(createNotification({title: e.message, source: "pullDockerImage"}));
+            mainLogger.error(e.message);
+        }
         yield put(endDockerImagePull());
-        cgLogger.error(e.stderr);
         return false;
     }
 }
@@ -81,7 +86,7 @@ function* startLocalBeaconSaga({
     payload: {network, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort},
     meta: {onComplete},
 }: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
-    const pullSuccess = yield call(pullDockerImage, network);
+    const pullSuccess = yield call(pullDockerImage, "lighthouse");
 
     const ports = [
         {local: String(libp2pPort), host: String(libp2pPort)},
