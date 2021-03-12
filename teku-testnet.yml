@@ -1,0 +1,21 @@
+version: '3.6'
+
+####
+# https://github.com/ConsenSys/teku/tree/master/test-network
+
+services:
+  teku:
+    image: "${DOCKER_TEKU_IMAGE}"
+    container_name: "eth2_testnet_teku"
+    volumes:
+      - ./testnet/teku/data:/etc/teku/data
+      - ./testnet/teku/start.sh:/opt/teku/start.sh
+    ports:
+      - '5051:5051'
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512m
+    env_file: ./testnet/teku/vars.env
+    entrypoint: ["bash", "-c", "chmod +x teku.autocomplete.sh; ./start.sh"]
