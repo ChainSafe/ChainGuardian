@@ -14,7 +14,7 @@ GENESIS_TIME=$((CURRENT_TIME + START_DELAY))
  --data-storage-mode=archive \
  --Xinterop-genesis-time=${GENESIS_TIME} \
  --Xinterop-owned-validator-start-index=0 \
- --Xinterop-owned-validator-count=8 \
+ --Xinterop-owned-validator-count=7 \
  --Xinterop-number-of-validators=8 \
  --Xinterop-enabled \
  --p2p-enabled=false \
