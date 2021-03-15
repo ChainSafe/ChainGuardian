@@ -4,9 +4,7 @@ START_DELAY=30
 CURRENT_TIME=$(date +%s)
 GENESIS_TIME=$((CURRENT_TIME + START_DELAY))
 
-java -version
-
-exec /opt/teku/bin/teku \
+/opt/teku/bin/teku \
  --network=minimal \
  --rest-api-enabled \
  --rest-api-cors-origins=http://localhost:2003 \
