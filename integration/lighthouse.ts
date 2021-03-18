@@ -10,7 +10,7 @@ const sk = "222222222222222222222222222222222222222222222222222";
     const {proposer, attestation} = await restValidation({
         baseUrl: "http://localhost:5052",
         getValidatorPrivateKey: async () => SecretKey.fromBytes(await Keystore.fromObject(keystore).decrypt(sk)),
-        limit: 5,
+        limit: 2,
     });
 
     assert.equal(proposer.proposed, proposer.delegated);
