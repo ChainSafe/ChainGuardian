@@ -3,6 +3,7 @@ import {IStoppableEventIterable, LodestarEventIterator} from "@chainsafe/lodesta
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {ContainerType} from "@chainsafe/ssz";
 import {CGBeaconEventType, CGBeaconEvent, ICGEventsApi, ErrorEvent} from "../interface";
+import EventSource from "eventsource";
 
 export class CgEth2EventsApi implements ICGEventsApi {
     private readonly baseUrl: string;
