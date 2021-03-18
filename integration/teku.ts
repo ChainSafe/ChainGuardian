@@ -1,4 +1,4 @@
-import {getInteropKey} from "../../src/renderer/services/validator/interop_keys";
+import {getInteropKey} from "../src/renderer/services/validator/interop_keys";
 import assert from "assert";
 import {restValidation} from "./restValidation";
 
