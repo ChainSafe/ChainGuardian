@@ -56,6 +56,11 @@ export class CgEth2EventsApi implements ICGEventsApi {
                     type: CGBeaconEventType.FINALIZED_CHECKPOINT,
                     message: this.deserializeEventData(this.config.types.FinalizedCheckpoint, msg.data),
                 };
+            case CGBeaconEventType.ATTESTATION:
+                return {
+                    type: CGBeaconEventType.ATTESTATION,
+                    message: this.deserializeEventData(this.config.types.Attestation, msg.data),
+                };
             default:
                 throw new Error("Unsupported beacon event type " + msg.type);
         }
