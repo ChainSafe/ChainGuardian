@@ -64,6 +64,7 @@ export const restValidation = ({
 }> =>
     new Promise((resolve) => {
         (async (): Promise<void> => {
+            process.env.NODE_ENV = "validator-test";
             await initBLS("blst-native");
             const validatorPrivateKey = await getValidatorPrivateKey();
             const validatorPublicKey = validatorPrivateKey.toPublicKey();
