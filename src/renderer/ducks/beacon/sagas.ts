@@ -269,7 +269,6 @@ export function* watchOnHead(
                 const isRunning = beacon.docker?.id
                     ? yield DockerRegistry.getContainer(beacon.docker?.id).isRunning()
                     : true;
-                console.warn(isRunning);
                 if (isOnline && !isStarting) {
                     yield put(updateStatus(BeaconStatus.offline, url));
                     isOnline = false;
