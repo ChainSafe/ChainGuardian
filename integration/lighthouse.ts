@@ -4,12 +4,13 @@ import keystore from "./lighthouse-keystore.json";
 import assert from "assert";
 
 import {restValidation} from "./restValidation";
-const secretKey = "222222222222222222222222222222222222222222222222222";
+const keystorePassword = "222222222222222222222222222222222222222222222222222";
 
 (async function (): Promise<void> {
     const {proposer, attestation} = await restValidation({
         baseUrl: "http://localhost:5052",
-        getValidatorPrivateKey: async () => SecretKey.fromBytes(await Keystore.fromObject(keystore).decrypt(secretKey)),
+        getValidatorPrivateKey: async () =>
+            SecretKey.fromBytes(await Keystore.fromObject(keystore).decrypt(keystorePassword)),
         limit: 2,
     });
 
