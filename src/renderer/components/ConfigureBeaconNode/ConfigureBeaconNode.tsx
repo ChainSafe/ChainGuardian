@@ -11,6 +11,7 @@ import {Accordion} from "../Accordion/Accordion";
 
 export interface IConfigureBNSubmitOptions {
     network: string;
+    client: string;
     chainDataDir: string;
     eth1Url: string;
     discoveryPort: string;
@@ -23,9 +24,12 @@ interface IConfigureBNProps {
     clientName?: string;
 }
 
+const clients = ["teku", "lighthouse"];
+
 export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (props: IConfigureBNProps) => {
     // TODO: refactor to use list from src/renderer/services/eth2/networks/index.ts
     const [networkIndex, setNetworkIndex] = useState(0);
+    const [clientIndex, setClientIndex] = useState(0);
     const defaults = getDefaultsForClient(props.clientName);
 
     const defaultChainDataDir = path.join(getConfig(remote.app).storage.dataDir, "beacon");
@@ -51,6 +55,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
             libp2pPort,
             rpcPort,
             network: networksList[networkIndex],
+            client: clients[clientIndex],
         });
     };
 
@@ -74,6 +79,13 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
         <>
             <h1>Configure Beacon node settings</h1>
             <p>You can skip customizing this data if you want to use the default values.</p>
+
+            <div className='configure-port'>
+                <div className='row'>
+                    <h3>Client</h3>
+                </div>
+                <Dropdown current={clientIndex} onChange={setClientIndex} options={clients} />
+            </div>
 
             <div className='configure-port'>
                 <div className='row'>

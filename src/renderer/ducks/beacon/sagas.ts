@@ -78,7 +78,7 @@ export function* pullDockerImage(
 }
 
 function* startLocalBeaconSaga({
-    payload: {network, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort},
+    payload: {network, client, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort},
     meta: {onComplete},
 }: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
     const pullSuccess = yield call(pullDockerImage, network);
@@ -91,12 +91,10 @@ function* startLocalBeaconSaga({
         ports.push({local: String(discoveryPort), host: String(discoveryPort)});
     }
 
-    const image = "teku";
-
     cgLogger.info("Starting local docker beacon node & http://localhost:", rpcPort);
     const eth1QueryLimit = 200;
     if (pullSuccess) {
-        switch (image) {
+        switch (client) {
             case "teku": {
                 const cors =
                     process.env.NODE_ENV !== "production" ? " --rest-api-cors-origins=http://localhost:2003 " : " ";
