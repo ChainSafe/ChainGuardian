@@ -59,20 +59,22 @@ export class HttpClient {
         const start = Date.now();
         return {
             onComplete: ({request, status, config}: AxiosResponse): void => {
-                database.networkMetrics.addRecord(config.baseURL, {
-                    url: request.responseURL,
-                    code: status,
-                    latency: Date.now() - start,
-                    time: Date.now(),
-                });
+                if (process.env.NODE_ENV !== "validator-test")
+                    database.networkMetrics.addRecord(config.baseURL, {
+                        url: request.responseURL,
+                        code: status,
+                        latency: Date.now() - start,
+                        time: Date.now(),
+                    });
             },
             onError: ({response, config}: AxiosError): void => {
-                database.networkMetrics.addRecord(config.baseURL, {
-                    url: config.url,
-                    code: response?.status || 0,
-                    latency: Date.now() - start,
-                    time: Date.now(),
-                });
+                if (process.env.NODE_ENV !== "validator-test")
+                    database.networkMetrics.addRecord(config.baseURL, {
+                        url: config.url,
+                        code: response?.status || 0,
+                        latency: Date.now() - start,
+                        time: Date.now(),
+                    });
             },
         };
     };

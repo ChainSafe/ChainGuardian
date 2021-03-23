@@ -1,4 +1,4 @@
-import {config as mainnetBeaconConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
+import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
 import {INetworkConfig} from "../../interfaces";
 import {ethers} from "ethers";
 
@@ -15,10 +15,10 @@ export const LocalhostConfig: INetworkConfig = Object.freeze({
     },
     genesisTime: Date.now(),
     eth2Config: {
-        ...mainnetBeaconConfig,
+        ...config,
         params: {
-            ...mainnetBeaconConfig.params,
-            GENESIS_FORK_VERSION: Buffer.from("0x00000000"),
+            ...config.params,
+            GENESIS_FORK_VERSION: Buffer.from("0x00000001"),
         },
     },
     eth1Provider: new ethers.providers.JsonRpcProvider("http://localhost:8545"),

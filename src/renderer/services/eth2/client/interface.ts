@@ -18,6 +18,7 @@ import {
     ValidatorStatus,
     SignedBeaconBlock,
     Fork,
+    BeaconCommitteeResponse,
 } from "@chainsafe/lodestar-types";
 import {List} from "@chainsafe/ssz";
 import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
@@ -44,6 +45,7 @@ export interface ICGBeaconStateApi extends Omit<IBeaconStateApi, "getStateValida
         validatorId: ValidatorIndex | BLSPubkey,
     ): Promise<ICGValidatorResponse | null>;
     getLastEpoch(): Promise<bigint | null>;
+    getCommittees(stateId?: "head" | number): Promise<BeaconCommitteeResponse[]>;
 }
 
 export interface ICGEth2BeaconApi extends Omit<IBeaconApi, "blocks" | "state"> {
@@ -59,6 +61,7 @@ export enum CGBeaconEventType {
     CHAIN_REORG = "chain_reorg",
     HEAD = "head",
     FINALIZED_CHECKPOINT = "finalized_checkpoint",
+    ATTESTATION = "attestation",
     ERROR = "error",
 }
 
@@ -67,11 +70,21 @@ export declare type FinalizedCheckpointEvent = {
     message: FinalizedCheckpoint;
 };
 
+export declare type AttestationEvent = {
+    type: typeof CGBeaconEventType.ATTESTATION;
+    message: Attestation;
+};
+
 export declare type ErrorEvent = {
     type: typeof CGBeaconEventType.ERROR;
 };
 
-export type CGBeaconEvent = BeaconBlockEvent | BeaconChainReorgEvent | HeadEvent | FinalizedCheckpointEvent;
+export type CGBeaconEvent =
+    | BeaconBlockEvent
+    | BeaconChainReorgEvent
+    | HeadEvent
+    | FinalizedCheckpointEvent
+    | AttestationEvent;
 
 export interface ICGEventsApi extends Omit<IEventsApi, "getEventStream"> {
     getEventStream(topics: CGBeaconEventType[]): IStoppableEventIterable<CGBeaconEvent | ErrorEvent>;

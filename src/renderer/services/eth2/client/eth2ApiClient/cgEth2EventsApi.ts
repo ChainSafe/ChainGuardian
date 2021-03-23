@@ -3,6 +3,7 @@ import {IStoppableEventIterable, LodestarEventIterator} from "@chainsafe/lodesta
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {ContainerType} from "@chainsafe/ssz";
 import {CGBeaconEventType, CGBeaconEvent, ICGEventsApi, ErrorEvent} from "../interface";
+import EventSource from "eventsource";
 
 export class CgEth2EventsApi implements ICGEventsApi {
     private readonly baseUrl: string;
@@ -54,6 +55,11 @@ export class CgEth2EventsApi implements ICGEventsApi {
                 return {
                     type: CGBeaconEventType.FINALIZED_CHECKPOINT,
                     message: this.deserializeEventData(this.config.types.FinalizedCheckpoint, msg.data),
+                };
+            case CGBeaconEventType.ATTESTATION:
+                return {
+                    type: CGBeaconEventType.ATTESTATION,
+                    message: this.deserializeEventData(this.config.types.Attestation, msg.data),
                 };
             default:
                 throw new Error("Unsupported beacon event type " + msg.type);
