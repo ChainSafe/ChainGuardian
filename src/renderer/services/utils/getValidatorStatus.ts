@@ -1,8 +1,7 @@
 import {ValidatorStatus} from "../../constants/validatorStatus";
-import {CgEth2ApiClient} from "../eth2/client/eth2ApiClient";
 import {fromHexString} from "@chainsafe/ssz";
-import {readBeaconChainNetwork} from "../eth2/client";
 import logger from "electron-log";
+import {readBeaconChainNetwork, CgEth2ApiClient} from "../eth2/client/module";
 
 export const getValidatorStatus = async (publicKey: string, beaconNodeUrl?: string): Promise<ValidatorStatus> => {
     if (!beaconNodeUrl) return ValidatorStatus.NO_BEACON_NODE;

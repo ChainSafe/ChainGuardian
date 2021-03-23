@@ -1,6 +1,6 @@
 import React, {ReactElement} from "react";
 import {LogStream} from "../../components/LogStream/LogStream";
-import {ValidatorLogger} from "../../services/eth2/client/logger";
+import {ValidatorLogger} from "../../services/eth2/client/module";
 
 type ValidatorLogsProps = {
     logger?: ValidatorLogger;

@@ -32,11 +32,9 @@ import {Beacons} from "../../models/beacons";
 import {postInit} from "../store";
 import {Beacon, BeaconStatus} from "./slice";
 import {Action} from "redux";
-import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
 import {mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {BeaconEventType, HeadEvent} from "@chainsafe/lodestar-validator/lib/api/interface/events";
 import {AllEffect, CancelEffect, ForkEffect} from "@redux-saga/core/effects";
-import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
 import {CGBeaconEvent, CGBeaconEventType, ErrorEvent} from "../../services/eth2/client/interface";
 import {getBeaconByKey} from "./selectors";
@@ -50,6 +48,7 @@ import {ValidatorStatus} from "../../constants/validatorStatus";
 import {cgLogger, createLogger, getBeaconLogfileFromURL} from "../../../main/logger";
 import {setInitialBeacons} from "../settings/actions";
 import {DockerRegistry} from "../../services/docker/docker-registry";
+import {CgEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client/module";
 
 export function* pullDockerImage(
     network: string,

@@ -1,13 +1,13 @@
 import {readdirSync} from "fs";
 import path from "path";
 
-import {getEth2ApiClient} from "../services/eth2/client";
 import {ICGKeystore, ICGKeystoreFactory, V4KeystoreFactory} from "../services/keystore";
 import {BeaconNode} from "./beaconNode";
 import database from "../services/db/api/database";
 import {IValidatorNetwork} from "./network";
 import {error} from "electron-log";
 import {BlsKeypair} from "../types/keys";
+import {getEth2ApiClient} from "../services/eth2/client/module";
 
 export interface IAccount {
     name: string;
