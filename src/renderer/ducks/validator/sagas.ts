@@ -54,7 +54,7 @@ import {getAuthAccount} from "../auth/selectors";
 import {getValidator, getValidatorsByBeaconNode, BeaconValidators} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
-import {readBeaconChainNetwork} from "../../services/eth2/client";
+import {getBeaconNodeEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
 import {getValidatorBalance} from "../../services/utils/validator";
 import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
@@ -180,6 +180,7 @@ function* startService(
     | Promise<INetworkConfig | null>
     | Promise<Genesis | null>
     | RaceEffect<TakeEffect>
+    | Promise<CgEth2ApiClient>
     | CancelEffect,
     void,
     IValidatorComplete &
@@ -187,6 +188,7 @@ function* startService(
         [ReturnType<typeof stopActiveValidatorService> | undefined, ReturnType<typeof setValidatorStatus>] &
         (INetworkConfig | null) &
         (Genesis | null) &
+        CgEth2ApiClient &
         boolean
 > {
     try {
@@ -199,7 +201,8 @@ function* startService(
         const config = (yield readBeaconChainNetwork(validator.beaconNodes[0]))?.eth2Config || mainnetConfig;
 
         // TODO: Use beacon chain proxy instead of first node
-        const eth2API = new CgEth2ApiClient(config, validator.beaconNodes[0], {publicKey, dispatch: put});
+        const ApiClient = yield getBeaconNodeEth2ApiClient(validator.beaconNodes[0]);
+        const eth2API = new ApiClient(config, validator.beaconNodes[0], {publicKey, dispatch: put});
 
         const slashingProtection = new CGSlashingProtection({
             config,
