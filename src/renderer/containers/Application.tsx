@@ -10,6 +10,7 @@ import {DashboardContainer} from "./Dashboard/DashboardContainer";
 import {ValidatorDetailsContainer} from "./ValidatorDetails/ValidatorDetailsContainer";
 import {AssignBeaconNode} from "./AssignBeaconNode/AssignBeaconNode";
 import {BeaconNodeContainer} from "./BeaconNode/BeaconNodeContainer";
+import {Settings} from "./Settings/Settings";
 
 const Application = (): ReactElement => (
     <div className='cg-app'>
@@ -21,6 +22,7 @@ const Application = (): ReactElement => (
             <Route path={Routes.BEACON_NODE_DETAILS} component={BeaconNodeContainer} />
             <Route path={Routes.ADD_BEACON_NODE} component={AddBeaconNodeContainer} />
             <Route path={Routes.ASSIGN_BEACON_NODE} component={AssignBeaconNode} />
+            <Route path={Routes.SETTINGS} component={Settings} />
             <Redirect from='/' to={Routes.DASHBOARD_ROUTE} />
         </Switch>
     </div>

@@ -1,6 +1,7 @@
 export class Routes {
     public static DASHBOARD_ROUTE = "/dashboard";
     public static LOGIN_ROUTE = "/login";
+    public static SETTINGS = "/settings";
     public static ONBOARD_ROUTE = "/onboard/:step";
     public static VALIDATOR_DETAILS = "/details/:publicKey";
     public static BEACON_NODES = "/beacon-nodes";
