@@ -68,22 +68,30 @@ const getValidatorStatusFromString = (status: string): ValidatorStatus => {
         case "waiting_for_finality":
             return ValidatorStatus.DEPOSITED;
         case "waiting_in_queue":
+        case "pending_initialized":
             return ValidatorStatus.QUEUE;
         case "standby_for_active":
+        case "pending_queued":
             return ValidatorStatus.PENDING;
         case "active":
+        case "active_ongoing":
             return ValidatorStatus.ACTIVE;
         case "active_awaiting_voluntary_exit":
+        case "active_exiting":
             return ValidatorStatus.GOOD_BOY_EXITING;
         case "active_awaiting_slashed_exit":
+        case "active_slashed":
             return ValidatorStatus.SLASHED_EXITING;
         case "exited_voluntarily":
+        case "exited_unslashed":
             return ValidatorStatus.VOLUNTARILY_EXITED;
         case "exited_slashed":
             return ValidatorStatus.SLASHED;
         case "withdrawable":
+        case "withdrawal_possible":
             return ValidatorStatus.WITHDRAWABLE;
         case "withdrawn":
+        case "withdrawal_done":
             return ValidatorStatus.WITHDRAWNED;
         default:
             logger.error(`Status: "${status}" not found`);
