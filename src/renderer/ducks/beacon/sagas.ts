@@ -51,12 +51,11 @@ import {DockerRegistry} from "../../services/docker/docker-registry";
 import {CgEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client/module";
 
 export function* pullDockerImage(
-    network: string,
+    image: string,
 ): Generator<PutEffect | RaceEffect<CallEffect | TakeEffect>, boolean, [boolean, Action]> {
     yield put(startDockerImagePull());
     cgLogger.info("Start beacon node image pull");
     try {
-        const image = getNetworkConfig(network).dockerConfig.image;
         cgLogger.info("image:", image);
         const [pullSuccess, effect] = yield race([call(BeaconChain.pullImage, image), take(cancelDockerPull)]);
         if (effect) {
@@ -80,7 +79,17 @@ function* startLocalBeaconSaga({
     payload: {network, client, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort},
     meta: {onComplete},
 }: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
-    const pullSuccess = yield call(pullDockerImage, network);
+    const image = ((): string => {
+        switch (client) {
+            case "teku":
+                return process.env.DOCKER_TEKU_IMAGE;
+            case "lighthouse":
+                return process.env.DOCKER_LIGHTHOUSE_IMAGE;
+            default:
+                return getNetworkConfig(network).dockerConfig.image;
+        }
+    })();
+    const pullSuccess = yield call(pullDockerImage, image);
 
     const ports = [
         {local: String(libp2pPort), host: String(libp2pPort)},
