@@ -1,13 +1,4 @@
-import {
-    MenuItemConstructorOptions,
-    MenuItem,
-    Menu,
-    shell,
-    app,
-    BrowserWindow,
-    dialog,
-    nativeImage,
-} from "electron";
+import {MenuItemConstructorOptions, MenuItem, Menu, shell, app, BrowserWindow, dialog, nativeImage} from "electron";
 import path from "path";
 import {existsSync, createWriteStream} from "fs";
 import {mainLogger} from "../logger";

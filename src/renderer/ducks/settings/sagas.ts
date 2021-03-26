@@ -3,7 +3,7 @@ import {DEFAULT_ACCOUNT} from "../../constants/account";
 import {all, put, PutEffect, takeEvery} from "redux-saga/effects";
 import {saveAccountSettings as saveAccountSettingsAction, setReporting} from "./actions";
 import {postInit} from "../store";
-import {Settings} from "../../models/settings";
+import {ISettings, Settings} from "../../models/settings";
 
 function* loadAccountSettings(): Generator<PutEffect | Promise<Settings | null>, void, Settings | null> {
     const settings = yield database.settings.get(DEFAULT_ACCOUNT);
@@ -11,9 +11,7 @@ function* loadAccountSettings(): Generator<PutEffect | Promise<Settings | null>,
     if (settings?.reporting !== undefined) yield put(setReporting(settings.reporting));
 }
 
-function* saveAccountSettings(
-    action: ReturnType<typeof saveAccountSettingsAction>,
-): Generator<PutEffect | Promise<void>> {
+function* saveAccountSettings(action: {payload: ISettings}): Generator<PutEffect | Promise<void>> {
     yield database.settings.set(DEFAULT_ACCOUNT, action.payload);
 
     if (action.payload.reporting !== undefined) yield put(setReporting(action.payload.reporting));
