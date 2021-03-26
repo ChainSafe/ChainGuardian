@@ -1,14 +1,24 @@
 import database from "../../services/db/api/database";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
-import {all, takeEvery} from "redux-saga/effects";
-import {saveAccountSettings as saveAccountSettingsAction} from "./actions";
+import {all, put, PutEffect, takeEvery} from "redux-saga/effects";
+import {saveAccountSettings as saveAccountSettingsAction, setReporting} from "./actions";
+import {postInit} from "../store";
+import {Settings} from "../../models/settings";
 
-function* saveAccountSettings(action: ReturnType<typeof saveAccountSettingsAction>): Generator<Promise<void>> {
+function* loadAccountSettings(): Generator<PutEffect | Promise<Settings | null>, void, Settings | null> {
+    const settings = yield database.settings.get(DEFAULT_ACCOUNT);
+
+    if (settings?.reporting !== undefined) yield put(setReporting(settings.reporting));
+}
+
+function* saveAccountSettings(
+    action: ReturnType<typeof saveAccountSettingsAction>,
+): Generator<PutEffect | Promise<void>> {
     yield database.settings.set(DEFAULT_ACCOUNT, action.payload);
 
-    // yield put(); some settings redux store function
+    if (action.payload.reporting !== undefined) yield put(setReporting(action.payload.reporting));
 }
 
 export function* settingsSagaWatcher(): Generator {
-    yield all([takeEvery(saveAccountSettingsAction, saveAccountSettings)]);
+    yield all([takeEvery(postInit, loadAccountSettings), takeEvery(saveAccountSettingsAction, saveAccountSettings)]);
 }
