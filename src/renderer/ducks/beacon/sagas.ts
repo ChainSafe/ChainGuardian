@@ -49,6 +49,7 @@ import {cgLogger, createLogger, getBeaconLogfileFromURL} from "../../../main/log
 import {setInitialBeacons} from "../settings/actions";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 import {CgEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client/module";
+import {getClientParams} from "../../services/docker/getClientParams";
 
 export function* pullDockerImage(
     image: string,
@@ -100,52 +101,30 @@ function* startLocalBeaconSaga({
     }
 
     cgLogger.info("Starting local docker beacon node & http://localhost:", rpcPort);
-    const eth1QueryLimit = 200;
     if (pullSuccess) {
-        switch (client) {
-            case "teku": {
-                const cors =
-                    process.env.NODE_ENV !== "production" ? " --rest-api-cors-origins=http://localhost:2003 " : " ";
-                yield put(
-                    addBeacon(`http://localhost:${rpcPort}`, network, {
-                        id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, {
-                            ports,
-                            // eslint-disable-next-line max-len
-                            cmd: `--network=${network} --p2p-port=${libp2pPort} --p2p-advertised-port=${discoveryPort} --rest-api-enabled=true --rest-api-interface=0.0.0.0 --rest-api-port=${rpcPort}${cors}--eth1-endpoint=${eth1Url} --eth1-deposit-contract-max-request-size=${eth1QueryLimit} --log-destination=CONSOLE`,
-                            volume: `${chainDataDir}:/opt/teku/.local/share/teku/beacon`,
-                        })).getParams().name,
+        yield put(
+            addBeacon(`http://localhost:${rpcPort}`, network, {
+                id: (yield call(
+                    BeaconChain.startBeaconChain,
+                    SupportedNetworks.LOCALHOST,
+                    getClientParams(ports, {
                         network,
-                        chainDataDir,
-                        eth1Url,
-                        discoveryPort,
                         libp2pPort,
-                        rpcPort,
-                    }),
-                );
-                break;
-            }
-            case "lighthouse": {
-                const cors =
-                    process.env.NODE_ENV !== "production" ? " --http-allow-origin http://localhost:2003 " : " ";
-                yield put(
-                    addBeacon(`http://localhost:${rpcPort}`, network, {
-                        id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, {
-                            ports,
-                            // eslint-disable-next-line max-len
-                            cmd: `lighthouse beacon_node --network ${network} --port ${libp2pPort} --discovery-port ${discoveryPort} --http --http-address 0.0.0.0 --http-port ${rpcPort}${cors}--eth1-endpoints ${eth1Url} --eth1-blocks-per-log-query ${eth1QueryLimit}`,
-                            volume: `${chainDataDir}:/root/.lighthouse`,
-                        })).getParams().name,
-                        network,
-                        chainDataDir,
-                        eth1Url,
                         discoveryPort,
-                        libp2pPort,
                         rpcPort,
+                        client,
+                        eth1Url,
+                        chainDataDir,
                     }),
-                );
-                break;
-            }
-        }
+                )).getParams().name,
+                network,
+                chainDataDir,
+                eth1Url,
+                discoveryPort,
+                libp2pPort,
+                rpcPort,
+            }),
+        );
         onComplete();
     }
 }
