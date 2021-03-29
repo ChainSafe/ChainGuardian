@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {FormEvent, useRef, useState} from "react";
 import path from "path";
 import {networksList} from "../../services/eth2/networks";
 import {ButtonPrimary} from "../Button/ButtonStandard";
@@ -58,6 +58,11 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
         } as IConfigureBNSubmitOptions);
     };
 
+    const onInputSubmit = (event: FormEvent<HTMLFormElement>): void => {
+        event.preventDefault();
+        onSubmit();
+    };
+
     const focused = useRef(false);
     const onFocus = async (): Promise<void> => {
         if (!focused.current) {
@@ -94,10 +99,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                 <InputForm
                     onChange={(e): void => setEth1URL(e.currentTarget.value)}
                     inputValue={eth1Url}
-                    onSubmit={(e): void => {
-                        e.preventDefault();
-                        onSubmit();
-                    }}
+                    onSubmit={onInputSubmit}
                 />
             </div>
 
@@ -110,10 +112,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                         onChange={(e): void => setChainDataDir(e.currentTarget.value)}
                         inputValue={chainDataDir}
                         onFocus={onFocus}
-                        onSubmit={(e): void => {
-                            e.preventDefault();
-                            onSubmit();
-                        }}
+                        onSubmit={onInputSubmit}
                     />
                 </div>
 
@@ -126,10 +125,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                         inputLabel='TCP'
                         onChange={(e): void => setRpcPort(e.currentTarget.value)}
                         inputValue={rpcPort}
-                        onSubmit={(e): void => {
-                            e.preventDefault();
-                            onSubmit();
-                        }}
+                        onSubmit={onInputSubmit}
                     />
                 </div>
 
@@ -142,10 +138,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                         inputLabel='TCP'
                         onChange={(e): void => setLibp2pPort(e.currentTarget.value)}
                         inputValue={libp2pPort}
-                        onSubmit={(e): void => {
-                            e.preventDefault();
-                            onSubmit();
-                        }}
+                        onSubmit={onInputSubmit}
                     />
                 </div>
 
@@ -158,10 +151,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                         inputLabel='UDP'
                         onChange={(e): void => setDiscoveryPort(e.currentTarget.value)}
                         inputValue={discoveryPort}
-                        onSubmit={(e): void => {
-                            e.preventDefault();
-                            onSubmit();
-                        }}
+                        onSubmit={onInputSubmit}
                     />
                 </div>
 
@@ -173,10 +163,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                     <InputForm
                         onChange={(e): void => setMemory(e.currentTarget.value)}
                         inputValue={memory}
-                        onSubmit={(e): void => {
-                            e.preventDefault();
-                            onSubmit();
-                        }}
+                        onSubmit={onInputSubmit}
                     />
                 </div>
             </Accordion>
