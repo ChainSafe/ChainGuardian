@@ -16,6 +16,7 @@ export interface IConfigureBNSubmitOptions {
     discoveryPort: string;
     libp2pPort: string;
     rpcPort: string;
+    memory: string;
 }
 
 interface IConfigureBNProps {
@@ -43,6 +44,9 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
     const defaultDiscoveryPort = String(defaults.beacon.discoveryPort);
     const [discoveryPort, setDiscoveryPort] = useState(defaultDiscoveryPort);
 
+    const defaultMemory = defaults.beacon.memory;
+    const [memory, setMemory] = useState(defaultMemory);
+
     const onSubmit = (): void => {
         props.onSubmit({
             chainDataDir,
@@ -51,7 +55,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
             libp2pPort,
             rpcPort,
             network: networksList[networkIndex],
-        });
+        } as IConfigureBNSubmitOptions);
     };
 
     const focused = useRef(false);
@@ -154,6 +158,21 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                         inputLabel='UDP'
                         onChange={(e): void => setDiscoveryPort(e.currentTarget.value)}
                         inputValue={discoveryPort}
+                        onSubmit={(e): void => {
+                            e.preventDefault();
+                            onSubmit();
+                        }}
+                    />
+                </div>
+
+                <div className='configure-port'>
+                    <div className='row'>
+                        <h3>Container max Ram Limit</h3>
+                        <p>(default: {defaultMemory})</p>
+                    </div>
+                    <InputForm
+                        onChange={(e): void => setMemory(e.currentTarget.value)}
+                        inputValue={memory}
                         onSubmit={(e): void => {
                             e.preventDefault();
                             onSubmit();
