@@ -1,6 +1,6 @@
 import {hot} from "react-hot-loader/root";
 import React from "react";
-import {MemoryRouter as Router, Switch, Route, Redirect} from "react-router-dom";
+import {Switch, Route, Redirect} from "react-router-dom";
 import {ReactElement} from "react";
 import {OnboardContainer} from "./Onboard/OnboardContainer";
 import {Routes} from "../constants/routes";
@@ -10,21 +10,21 @@ import {DashboardContainer} from "./Dashboard/DashboardContainer";
 import {ValidatorDetailsContainer} from "./ValidatorDetails/ValidatorDetailsContainer";
 import {AssignBeaconNode} from "./AssignBeaconNode/AssignBeaconNode";
 import {BeaconNodeContainer} from "./BeaconNode/BeaconNodeContainer";
+import {Settings} from "./Settings/Settings";
 
 const Application = (): ReactElement => (
     <div className='cg-app'>
-        <Router>
-            <Switch>
-                <Route path={Routes.ONBOARD_ROUTE} component={OnboardContainer} />
-                <Route path={Routes.DASHBOARD_ROUTE} component={DashboardContainer} />
-                <Route path={Routes.VALIDATOR_DETAILS} component={ValidatorDetailsContainer} />
-                <Route path={Routes.BEACON_NODES} component={BeaconNodesContainer} />
-                <Route path={Routes.BEACON_NODE_DETAILS} component={BeaconNodeContainer} />
-                <Route path={Routes.ADD_BEACON_NODE} component={AddBeaconNodeContainer} />
-                <Route path={Routes.ASSIGN_BEACON_NODE} component={AssignBeaconNode} />
-                <Redirect from='/' to={Routes.DASHBOARD_ROUTE} />
-            </Switch>
-        </Router>
+        <Switch>
+            <Route path={Routes.ONBOARD_ROUTE} component={OnboardContainer} />
+            <Route path={Routes.DASHBOARD_ROUTE} component={DashboardContainer} />
+            <Route path={Routes.VALIDATOR_DETAILS} component={ValidatorDetailsContainer} />
+            <Route path={Routes.BEACON_NODES} component={BeaconNodesContainer} />
+            <Route path={Routes.BEACON_NODE_DETAILS} component={BeaconNodeContainer} />
+            <Route path={Routes.ADD_BEACON_NODE} component={AddBeaconNodeContainer} />
+            <Route path={Routes.ASSIGN_BEACON_NODE} component={AssignBeaconNode} />
+            <Route path={Routes.SETTINGS} component={Settings} />
+            <Redirect from='/' to={Routes.DASHBOARD_ROUTE} />
+        </Switch>
     </div>
 );
 
