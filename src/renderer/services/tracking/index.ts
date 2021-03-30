@@ -1,12 +1,12 @@
 import MatomoTracker from "@datapunt/matomo-tracker-js";
-import History from "history";
 import database from "../db/api/database";
 import {DEFAULT_ACCOUNT} from "../../constants/account";
 import {Routes} from "../../constants/routes";
+import {useHistory} from "react-router";
 
 export let matomo: null | MatomoTracker = null;
 
-export const initializeTracking = async (history: History): Promise<void> => {
+export const initializeTracking = async (history: ReturnType<typeof useHistory>): Promise<void> => {
     const setting = await database.settings.get(DEFAULT_ACCOUNT);
     if (!setting) history.push(Routes.CONSENT);
     else if (setting.reporting) startMatomo();
