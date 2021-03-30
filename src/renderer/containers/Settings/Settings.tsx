@@ -32,7 +32,7 @@ export const Settings: React.FC = () => {
                     <CheckBox
                         checked={isReporting}
                         id='reporting'
-                        label='Send your error reports.'
+                        label='Send your reports.'
                         onClick={(): void => {
                             setIsReporting(!isReporting);
                         }}

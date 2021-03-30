@@ -2,6 +2,7 @@ export class Routes {
     public static DASHBOARD_ROUTE = "/dashboard";
     public static LOGIN_ROUTE = "/login";
     public static SETTINGS = "/settings";
+    public static CONSENT = "/consent";
     public static ONBOARD_ROUTE = "/onboard/:step";
     public static VALIDATOR_DETAILS = "/details/:publicKey";
     public static BEACON_NODES = "/beacon-nodes";
@@ -17,5 +18,4 @@ export enum OnBoardingRoutes {
     SIGNING_IMPORT_MNEMONIC = "1_2",
     CONFIGURE = "2_0",
     PASSWORD = "3_0",
-    CONSENT = "4_0",
 }

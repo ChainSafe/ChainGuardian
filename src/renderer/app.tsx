@@ -11,6 +11,7 @@ import store from "./ducks/store";
 import {mainLogger} from "../main/logger";
 import {Overlays} from "./overlays";
 import {MemoryRouter as Router} from "react-router";
+import {Tracking} from "./containers/Tracking/Tracking";
 
 initSentry();
 
@@ -26,6 +27,7 @@ const render = (Component: () => JSX.Element): void => {
                 <Router>
                     <Component />
                     <Overlays />
+                    <Tracking />
                 </Router>
             </Provider>
         </AppContainer>,
