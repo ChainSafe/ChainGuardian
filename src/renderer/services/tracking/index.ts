@@ -12,7 +12,7 @@ export const initializeTracking = async (history: ReturnType<typeof useHistory>)
     else if (setting.reporting) startMatomo();
 };
 
-let timer: NodeJS.Timeout | undefined;
+let timer: number | undefined;
 const startTimer = (): void => {
     const hour = 60 * 60 * 1000;
     const day = 24 * hour;
@@ -34,7 +34,7 @@ const startTimer = (): void => {
                 await database.settings.set(DEFAULT_ACCOUNT, {lastTrack: Date.now()});
             }
         }
-    }, hour);
+    }, hour) as number;
 };
 
 export const startMatomo = (): void => {
