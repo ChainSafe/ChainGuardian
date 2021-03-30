@@ -16,7 +16,7 @@ let timer: number | undefined;
 const startTimer = (): void => {
     const hour = 60 * 60 * 1000;
     const day = 24 * hour;
-    timer = setInterval(async () => {
+    timer = (setInterval(async () => {
         const setting = await database.settings.get(DEFAULT_ACCOUNT);
         if (Date.now() >= setting.lastTrack + day) {
             const account = await database.account.get(DEFAULT_ACCOUNT);
@@ -34,7 +34,7 @@ const startTimer = (): void => {
                 await database.settings.set(DEFAULT_ACCOUNT, {lastTrack: Date.now()});
             }
         }
-    }, hour) as number;
+    }, hour) as unknown) as number;
 };
 
 export const startMatomo = (): void => {
