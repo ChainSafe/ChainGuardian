@@ -20,7 +20,7 @@ export class SettingsRepository extends Repository<Settings> {
         const existingRecord = await this.get(id);
 
         await super.set(id, {
-            ...(existingRecord || {dockerPath: ""}),
+            ...(existingRecord || {dockerPath: "", reporting: true, lastTrack: 0}),
             ...value,
         });
     }

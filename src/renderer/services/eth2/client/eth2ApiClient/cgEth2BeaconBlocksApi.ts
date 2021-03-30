@@ -4,6 +4,7 @@ import {SignedBeaconBlock} from "@chainsafe/lodestar-types";
 import {Json, List} from "@chainsafe/ssz";
 import {ICGETH2BeaconBlocksApi} from "../interface";
 import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
+import {matomo} from "../../../tracking";
 
 export class CgEth2BeaconBlocksApi implements ICGETH2BeaconBlocksApi {
     private readonly httpClient: HttpClient;
@@ -18,6 +19,7 @@ export class CgEth2BeaconBlocksApi implements ICGETH2BeaconBlocksApi {
             "/eth/v1/beacon/blocks",
             this.config.types.SignedBeaconBlock.toJson(block, {case: "snake"}),
         );
+        if (matomo) matomo.trackEvent({category: "block", action: "proposed", value: block.message.slot});
     };
 
     public getBlock = async (blockId: "head" | "genesis" | "finalized" | number): Promise<SignedBeaconBlock> => {

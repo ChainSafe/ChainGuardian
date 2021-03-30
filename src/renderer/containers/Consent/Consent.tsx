@@ -6,6 +6,7 @@ import {CheckBox} from "../../components/CheckBox/CheckBox";
 import {useHistory} from "react-router";
 import {useDispatch} from "react-redux";
 import {saveAccountSettings} from "../../ducks/settings/actions";
+import {Routes} from "../../constants/routes";
 
 export const Consent: React.FC = () => {
     const history = useHistory();
@@ -16,6 +17,7 @@ export const Consent: React.FC = () => {
 
     const onContinueClick = (): void => {
         dispatch(saveAccountSettings({reporting: isReporting}));
+        history.push(Routes.DASHBOARD_ROUTE);
     };
 
     return (
