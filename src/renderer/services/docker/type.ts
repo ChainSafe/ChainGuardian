@@ -23,6 +23,9 @@ export interface IDockerRunParams {
     // COMMAND
     cmd?: string;
 
+    // MAXIMUM MEMORY LIMIT
+    memory?: string;
+
     // volume-name:mount-point - https://docs.docker.com/storage/volumes/
     volume?: string;
 }

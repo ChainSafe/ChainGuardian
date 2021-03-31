@@ -77,7 +77,7 @@ export function* pullDockerImage(
 }
 
 function* startLocalBeaconSaga({
-    payload: {network, client, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort},
+    payload: {network, client, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort, memory},
     meta: {onComplete},
 }: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
     const image = ((): string => {
@@ -113,6 +113,7 @@ function* startLocalBeaconSaga({
                         discoveryPort,
                         rpcPort,
                         client,
+                        memory,
                         eth1Url,
                         chainDataDir,
                     }),

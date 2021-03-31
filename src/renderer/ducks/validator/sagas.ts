@@ -77,6 +77,7 @@ import {
     readBeaconChainNetwork,
     ValidatorLogger,
 } from "../../services/eth2/client/module";
+import store from "../store";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -205,7 +206,7 @@ function* startService(
 
         // TODO: Use beacon chain proxy instead of first node
         const ApiClient = yield getBeaconNodeEth2ApiClient(validator.beaconNodes[0]);
-        const eth2API = new ApiClient(config, validator.beaconNodes[0], {publicKey, dispatch: put});
+        const eth2API = new ApiClient(config, validator.beaconNodes[0], {publicKey, dispatch: store.dispatch});
 
         const slashingProtection = new CGSlashingProtection({
             config,

@@ -184,6 +184,7 @@
     "@chainsafe/lodestar-validator": "0.16.0",
     "@chainsafe/persistent-ts": "0.16.0",
     "@chainsafe/ssz": "0.6.13",
+    "@datapunt/matomo-tracker-js": "^0.4.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/react-fontawesome": "^0.1.12",

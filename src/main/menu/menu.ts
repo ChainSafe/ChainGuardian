@@ -49,6 +49,12 @@ const template = [
                           },
                       },
                   ]),
+            {
+                label: "Settings",
+                click: (event: KeyboardEvent, window: BrowserWindow): void => {
+                    window.webContents.send("open-settings-menu");
+                },
+            },
             {type: "separator"},
             {
                 label: "Reload",

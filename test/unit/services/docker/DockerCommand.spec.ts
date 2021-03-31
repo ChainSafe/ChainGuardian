@@ -16,9 +16,11 @@ describe("DockerCommand unit tests", () => {
 
     // run command
     it("should check if docker run command generating properly", async () => {
-        const params: IDockerRunParams = {name: "test-image", image: "test-image"};
+        const params: IDockerRunParams = {name: "test-image", image: "test-image", memory: "300m"};
         params.cmd = "test-image-cmd";
-        expect(await Command.run(params)).toBe(`"docker" run --name ${params.name} test-image test-image-cmd`);
+        expect(await Command.run(params)).toBe(
+            `"docker" run --memory=300m --name ${params.name} test-image test-image-cmd`,
+        );
     });
 
     // ps command
