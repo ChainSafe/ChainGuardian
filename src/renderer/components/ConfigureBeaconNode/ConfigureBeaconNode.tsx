@@ -58,9 +58,10 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
             discoveryPort,
             libp2pPort,
             rpcPort,
+            memory,
             network: networksList[networkIndex],
             client: clients[clientIndex],
-        } as IConfigureBNSubmitOptions);
+        });
     };
 
     const onInputSubmit = (event: FormEvent<HTMLFormElement>): void => {

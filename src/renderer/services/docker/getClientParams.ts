@@ -3,7 +3,7 @@ import {IConfigureBNSubmitOptions} from "../../components/ConfigureBeaconNode/Co
 
 export const getClientParams = (
     ports: DockerPort[],
-    {network, libp2pPort, discoveryPort, rpcPort, eth1Url, chainDataDir, client}: IConfigureBNSubmitOptions,
+    {network, libp2pPort, discoveryPort, rpcPort, eth1Url, chainDataDir, client, memory}: IConfigureBNSubmitOptions,
 ): Partial<Exclude<IDockerRunParams, "name">> => {
     const eth1QueryLimit = 200;
     switch (client) {
@@ -23,6 +23,7 @@ export const getClientParams = (
             return {
                 ports,
                 cmd,
+                memory,
                 volume: `${chainDataDir}:/opt/teku/.local/share/teku/beacon`,
             };
         }
@@ -40,6 +41,7 @@ export const getClientParams = (
             return {
                 ports,
                 cmd,
+                memory,
                 volume: `${chainDataDir}:/root/.lighthouse`,
             };
         }
