@@ -1,8 +1,7 @@
-import React, {useState} from "react";
-import {ButtonPrimary} from "../../components/Button/ButtonStandard";
+import React from "react";
+import {ButtonPrimary, ButtonSecondary} from "../../components/Button/ButtonStandard";
 import {Background} from "../../components/Background/Background";
 import {Modal} from "../../components/Modal/Modal";
-import {CheckBox} from "../../components/CheckBox/CheckBox";
 import {useHistory} from "react-router";
 import {useDispatch} from "react-redux";
 import {saveAccountSettings} from "../../ducks/settings/actions";
@@ -12,45 +11,33 @@ export const Consent: React.FC = () => {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const [isTracking, setIsTracking] = useState(true);
-    const [isReporting, setIsReporting] = useState(true);
-
-    const onContinueClick = (): void => {
-        dispatch(saveAccountSettings({reporting: isReporting}));
+    const onButtonClick = (reporting: boolean) => (): void => {
+        dispatch(saveAccountSettings({reporting}));
         history.push(Routes.DASHBOARD_ROUTE);
     };
 
     return (
         <Background>
             <Modal>
-                <h1>Collecting data Consent?</h1>
+                <h1>Help us to improve ChainGuardian</h1>
                 <p>
-                    By sharing ChainGuardian bug reports and analytics data we will be able to improve your app
-                    experience. Don&#39;t worry! We will never be able to access your keys or share to 3th party.
+                    <br />
+                    By sharing bug reports and analytics data we will be able to improve your app experience. An open
+                    source data analytics platform Matamo and bug reporting platform Sentry is used.
+                    <br />
+                    <br />
+                    We understand that your privacy must be protected so we don&apos;t store any personally identifiable
+                    information or your keys and no data is given to third parties.
                 </p>
 
-                <div className='consent-options-container'>
-                    <CheckBox
-                        checked={isTracking}
-                        id='tracking'
-                        label='Send your analytics data.'
-                        onClick={(): void => {
-                            setIsTracking(!isTracking);
-                        }}
-                    />
-                    <CheckBox
-                        checked={isReporting}
-                        id='reporting'
-                        label='Send your error reports.'
-                        onClick={(): void => {
-                            setIsReporting(!isReporting);
-                        }}
-                    />
+                <div className='action-buttons'>
+                    <ButtonPrimary onClick={onButtonClick(true)} large>
+                        Sure
+                    </ButtonPrimary>
+                    <ButtonSecondary onClick={onButtonClick(false)} large>
+                        Decline
+                    </ButtonSecondary>
                 </div>
-
-                <ButtonPrimary onClick={onContinueClick} large>
-                    Continue
-                </ButtonPrimary>
             </Modal>
         </Background>
     );
