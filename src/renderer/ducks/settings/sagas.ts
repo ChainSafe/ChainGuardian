@@ -4,6 +4,7 @@ import {all, put, PutEffect, takeEvery} from "redux-saga/effects";
 import {saveAccountSettings as saveAccountSettingsAction, setReporting} from "./actions";
 import {postInit} from "../store";
 import {ISettings, Settings} from "../../models/settings";
+import {startMatomo, stopMatomo} from "../../services/tracking";
 
 function* loadAccountSettings(): Generator<PutEffect | Promise<Settings | null>, void, Settings | null> {
     const settings = yield database.settings.get(DEFAULT_ACCOUNT);
@@ -14,7 +15,12 @@ function* loadAccountSettings(): Generator<PutEffect | Promise<Settings | null>,
 function* saveAccountSettings(action: {payload: ISettings}): Generator<PutEffect | Promise<void>> {
     yield database.settings.set(DEFAULT_ACCOUNT, action.payload);
 
-    if (action.payload.reporting !== undefined) yield put(setReporting(action.payload.reporting));
+    if (action.payload.reporting !== undefined) {
+        yield put(setReporting(action.payload.reporting));
+
+        if (action.payload.reporting) startMatomo();
+        else stopMatomo();
+    }
 }
 
 export function* settingsSagaWatcher(): Generator {

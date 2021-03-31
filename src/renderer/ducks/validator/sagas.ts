@@ -74,6 +74,7 @@ import {Interchange} from "@chainsafe/lodestar-validator/lib/slashingProtection/
 import {createNotification} from "../notification/actions";
 import {Level} from "../../components/Notification/NotificationEnums";
 import {setInitialValidators, setLoadingValidator} from "../settings/actions";
+import store from "../store";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -199,7 +200,7 @@ function* startService(
         const config = (yield readBeaconChainNetwork(validator.beaconNodes[0]))?.eth2Config || mainnetConfig;
 
         // TODO: Use beacon chain proxy instead of first node
-        const eth2API = new CgEth2ApiClient(config, validator.beaconNodes[0], {publicKey, dispatch: put});
+        const eth2API = new CgEth2ApiClient(config, validator.beaconNodes[0], {publicKey, dispatch: store.dispatch});
 
         const slashingProtection = new CGSlashingProtection({
             config,

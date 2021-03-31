@@ -11,6 +11,7 @@ import {ValidatorDetailsContainer} from "./ValidatorDetails/ValidatorDetailsCont
 import {AssignBeaconNode} from "./AssignBeaconNode/AssignBeaconNode";
 import {BeaconNodeContainer} from "./BeaconNode/BeaconNodeContainer";
 import {Settings} from "./Settings/Settings";
+import {Consent} from "./Consent/Consent";
 
 const Application = (): ReactElement => (
     <div className='cg-app'>
@@ -23,6 +24,7 @@ const Application = (): ReactElement => (
             <Route path={Routes.ADD_BEACON_NODE} component={AddBeaconNodeContainer} />
             <Route path={Routes.ASSIGN_BEACON_NODE} component={AssignBeaconNode} />
             <Route path={Routes.SETTINGS} component={Settings} />
+            <Route path={Routes.CONSENT} component={Consent} />
             <Redirect from='/' to={Routes.DASHBOARD_ROUTE} />
         </Switch>
     </div>

@@ -78,6 +78,7 @@ export async function createWindow(): Promise<void> {
             if (choice === 1) {
                 e.preventDefault();
             } else {
+                win.webContents.send("close-confirm");
                 if (process.env.NODE_ENV !== "production") {
                     win.webContents.send("stop-docker");
                 }
