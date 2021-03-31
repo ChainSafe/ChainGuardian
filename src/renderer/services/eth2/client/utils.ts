@@ -2,6 +2,7 @@ import {INetworkConfig} from "../../interfaces";
 import {getNetworkConfig, getNetworkConfigByGenesisVersion} from "../networks";
 import {ICgEth2ApiClient} from "./interface";
 import {HttpClient} from "../../api";
+import {CgLighthouseEth2Api, CgTekuEth2Api, CgEth2ApiClient} from "./module";
 
 export function getEth2ApiClient(url: string, network: string): ICgEth2ApiClient | undefined {
     const networkConfig = getNetworkConfig(network);
@@ -22,5 +23,19 @@ export async function readBeaconChainNetwork(url: string): Promise<INetworkConfi
         return getNetworkConfigByGenesisVersion(genesisResponse.data.genesis_fork_version);
     } catch {
         return null;
+    }
+}
+
+export async function getBeaconNodeEth2ApiClient(beaconNodeUrl: string): Promise<typeof CgEth2ApiClient> {
+    const response = await new HttpClient(beaconNodeUrl).get<{data: {version: string}}>(`/eth/v1/node/version`);
+    const version = response.data.version.toLowerCase();
+
+    switch (true) {
+        case version.includes("lighthouse"):
+            return CgLighthouseEth2Api;
+        case version.includes("teku"):
+            return CgTekuEth2Api;
+        default:
+            return CgEth2ApiClient;
     }
 }

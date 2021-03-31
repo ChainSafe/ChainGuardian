@@ -24,7 +24,7 @@ export const LocalhostConfig: INetworkConfig = Object.freeze({
     eth1Provider: new ethers.providers.JsonRpcProvider("http://localhost:8545"),
     dockerConfig: {
         name: "lighthouse_beacon",
-        image: process.env.DOCKER_LIGHTHOUSE_IMAGE,
+        image: process.env.DOCKER_TEKU_IMAGE,
         ports: [
             {
                 local: "9000",

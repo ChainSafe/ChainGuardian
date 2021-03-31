@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {Joi} from "../../services/validation";
 import {ButtonPrimary, ButtonSecondary} from "../Button/ButtonStandard";
 import {InputForm} from "../Input/InputForm";
-import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
+import {CgEth2ApiClient} from "../../services/eth2/client/module";
 
 interface IInputBeaconNodeProps {
     onGoSubmit: (url: string, network: string) => void;

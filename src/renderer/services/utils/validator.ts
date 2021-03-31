@@ -1,6 +1,6 @@
 import {getNetworkConfig} from "../eth2/networks";
-import {CgEth2ApiClient} from "../eth2/client/eth2ApiClient";
 import {fromHexString} from "@chainsafe/ssz";
+import {CgEth2ApiClient} from "../eth2/client/module";
 
 export const getValidatorBalance = async (
     publicKey: string,

@@ -22,7 +22,7 @@ export class CgEth2ApiClient extends AbstractApiClient implements ICgEth2ApiClie
 
     public url: string;
 
-    private readonly httpClient: HttpClient;
+    protected readonly httpClient: HttpClient;
     public constructor(
         config: IBeaconConfig,
         url: string,

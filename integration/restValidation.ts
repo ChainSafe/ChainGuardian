@@ -1,14 +1,14 @@
 import {init as initBLS, SecretKey} from "@chainsafe/bls";
 import {LogLevel, WinstonLogger} from "@chainsafe/lodestar-utils";
 import {Validator} from "@chainsafe/lodestar-validator";
-import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
-import {CgEth2ApiClient} from "../src/renderer/services/eth2/client/eth2ApiClient";
 import {CGSlashingProtection} from "../src/renderer/services/eth2/client/slashingProtection";
 import sinon from "sinon";
 import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
 import {BeaconCommitteeResponse, BLSPubkey, ProposerDuty} from "@chainsafe/lodestar-types";
 import {AttestationEvent, CGBeaconEventType, ICgEth2ApiClient} from "../src/renderer/services/eth2/client/interface";
 import {BeaconBlockEvent, BeaconEventType} from "@chainsafe/lodestar-validator/lib/api/interface/events";
+import {IBeaconConfig} from "@chainsafe/lodestar-config";
+import {CgEth2ApiClient} from "../src/renderer/services/eth2/client/module";
 
 const getCommitteesFactory = (apiClient: ICgEth2ApiClient) => async (
     validatorIndex: number,
@@ -58,6 +58,7 @@ const processBlock = async (
     getProposer: ReturnType<typeof getProposerFactory>,
     getCommittees: ReturnType<typeof getCommitteesFactory>,
     limit: number,
+    config: IBeaconConfig,
 ): Promise<{
     epoch: number;
     lastEpoch: number;
@@ -89,10 +90,14 @@ export const restValidation = ({
     baseUrl,
     getValidatorPrivateKey,
     limit,
+    config,
+    ApiClient,
 }: {
     baseUrl: string;
     getValidatorPrivateKey: () => Promise<SecretKey>;
     limit: number;
+    ApiClient: typeof CgEth2ApiClient;
+    config: IBeaconConfig;
 }): Promise<{
     proposer: {
         proposed: number;
@@ -115,7 +120,7 @@ export const restValidation = ({
             const logger = new WinstonLogger({module: "ChainGuardian", level: LogLevel.verbose});
             const slashingProtection = sinon.createStubInstance(CGSlashingProtection);
 
-            const eth2API = new CgEth2ApiClient(config, baseUrl);
+            const eth2API = new ApiClient(config, baseUrl);
             const validatorService = new Validator({
                 slashingProtection,
                 api: eth2API,
@@ -175,6 +180,7 @@ export const restValidation = ({
                             getProposer,
                             getCommittees,
                             startEpoch + limit,
+                            config,
                         );
 
                         lastEpoch = rest.lastEpoch;

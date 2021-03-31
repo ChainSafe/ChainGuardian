@@ -10,10 +10,9 @@ import {
 } from "../../ducks/validator/actions";
 import {CheckBox} from "../../components/CheckBox/CheckBox";
 import {validateSlashingFile} from "../../services/utils/validateSlashingFile";
-import {readBeaconChainNetwork} from "../../services/eth2/client";
-import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Root} from "@chainsafe/lodestar-types/lib/types/primitive";
+import {readBeaconChainNetwork, CgEth2ApiClient} from "../../services/eth2/client/module";
 
 interface IProps {
     visible: boolean;
