@@ -1,5 +1,6 @@
 // docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND]
 import {IDockerRunParams} from "./type";
+import {totalmem} from "os";
 
 export function generateRunCommand(params: IDockerRunParams): string {
     const ports = params.publishAllPorts
@@ -7,11 +8,11 @@ export function generateRunCommand(params: IDockerRunParams): string {
         : params.ports
         ? ` -p=${params.ports.map((p) => `${p.local}:${p.host}`).join(" -p ")}`
         : "";
-    const options = `--name ${params.name}${params.detached ? " -d" : ""}${
-        params.privileged ? ` --privileged=${params.privileged}` : ""
-    }${params.ipc ? ` --ipc="${params.ipc}"` : ""}${params.restart ? ` --restart=${params.restart}` : ""}${ports}${
-        params.volume ? ` -v ${params.volume}` : ""
-    }`;
+    const options = `--memory=${params.memory || `${Math.floor(totalmem() / 2 / 1048576)}m`} --name ${params.name}${
+        params.detached ? " -d" : ""
+    }${params.privileged ? ` --privileged=${params.privileged}` : ""}${params.ipc ? ` --ipc="${params.ipc}"` : ""}${
+        params.restart ? ` --restart=${params.restart}` : ""
+    }${ports}${params.volume ? ` -v ${params.volume}` : ""}`;
 
     return `${options} ${params.image} ${params.cmd ? params.cmd : ""}`.trim();
 }

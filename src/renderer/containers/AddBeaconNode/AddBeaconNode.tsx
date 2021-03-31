@@ -49,7 +49,7 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
                         libp2pPort,
                         rpcPort,
                         ...rest,
-                    },
+                    } as IConfigureBNSubmitOptions,
                     () => history.push(Routes.BEACON_NODES),
                 ),
             );
