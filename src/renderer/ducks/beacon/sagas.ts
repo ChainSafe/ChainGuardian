@@ -82,6 +82,8 @@ function* startLocalBeaconSaga({
 }: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
     const image = ((): string => {
         switch (client) {
+            case "prysm":
+                return process.env.DOCKER_PRYSM_IMAGE;
             case "teku":
                 return process.env.DOCKER_TEKU_IMAGE;
             case "lighthouse":
@@ -104,20 +106,20 @@ function* startLocalBeaconSaga({
     if (pullSuccess) {
         yield put(
             addBeacon(`http://localhost:${rpcPort}`, network, {
-                id: (yield call(
-                    BeaconChain.startBeaconChain,
-                    SupportedNetworks.LOCALHOST,
-                    getClientParams(ports, {
+                id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, {
+                    ...getClientParams({
                         network,
                         libp2pPort,
                         discoveryPort,
                         rpcPort,
                         client,
-                        memory,
                         eth1Url,
                         chainDataDir,
                     }),
-                )).getParams().name,
+                    memory,
+                    ports,
+                    image,
+                })).getParams().name,
                 network,
                 chainDataDir,
                 eth1Url,

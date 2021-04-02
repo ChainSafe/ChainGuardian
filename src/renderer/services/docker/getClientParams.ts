@@ -1,12 +1,34 @@
-import {DockerPort, IDockerRunParams} from "./type";
+import {IDockerRunParams} from "./type";
 import {IConfigureBNSubmitOptions} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 
-export const getClientParams = (
-    ports: DockerPort[],
-    {network, libp2pPort, discoveryPort, rpcPort, eth1Url, chainDataDir, client, memory}: IConfigureBNSubmitOptions,
-): Partial<Exclude<IDockerRunParams, "name">> => {
+export const getClientParams = ({
+    network,
+    libp2pPort,
+    discoveryPort,
+    rpcPort,
+    eth1Url,
+    chainDataDir,
+    client,
+}: Exclude<IConfigureBNSubmitOptions, "memory">): Partial<Exclude<IDockerRunParams, "name">> => {
     const eth1QueryLimit = 200;
     switch (client) {
+        case "prysm": {
+            const networkEnvironment = network !== "mainet" ? " --" + network : "";
+            const cmd = [
+                `--accept-terms-of-use`,
+                `--datadir=/data${networkEnvironment}`,
+                `--p2p-tcp-port=${libp2pPort}`,
+                `--p2p-udp-port=${discoveryPort}`,
+                `--grpc-gateway-host=0.0.0.0`,
+                `--grpc-gateway-port=${rpcPort}`,
+                `--http-web3provider=${eth1Url}`,
+                // --fallback-web3provider=<PROVIDER 1> --fallback-web3provider=<PROVIDER 2>
+            ].join(" ");
+            return {
+                cmd,
+                volume: `${chainDataDir}:/data`,
+            };
+        }
         case "teku": {
             const cors =
                 process.env.NODE_ENV !== "production" ? " --rest-api-cors-origins=http://localhost:2003 " : " ";
@@ -21,9 +43,7 @@ export const getClientParams = (
                 `--log-destination=CONSOLE`,
             ].join(" ");
             return {
-                ports,
                 cmd,
-                memory,
                 volume: `${chainDataDir}:/opt/teku/.local/share/teku/beacon`,
             };
         }
@@ -39,9 +59,7 @@ export const getClientParams = (
                 `--eth1-blocks-per-log-query ${eth1QueryLimit}`,
             ].join(" ");
             return {
-                ports,
                 cmd,
-                memory,
                 volume: `${chainDataDir}:/root/.lighthouse`,
             };
         }
