@@ -18,14 +18,11 @@ export class SettingsRepository extends Repository<Settings> {
     public async set(id = DEFAULT_ACCOUNT, value: Settings): Promise<void> {
         // Merge new values with possible existing settings
         const existingRecord = await this.get(id);
-        if (existingRecord) {
-            return super.set(id, {
-                ...existingRecord,
-                ...value,
-            });
-        }
 
-        await super.set(id, value);
+        await super.set(id, {
+            ...(existingRecord || {dockerPath: "", reporting: true, lastTrack: 0}),
+            ...value,
+        });
     }
 
     public async delete(id = DEFAULT_ACCOUNT): Promise<void> {

@@ -128,7 +128,7 @@ jobs:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           SENTRY_ORG: "nodefactory"
           SENTRY_PROJECT: "chainguardian"
-          SENTRY_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       #in case of failure
       - name: Rollback on failure

@@ -27,7 +27,7 @@ export const PyrmontConfig: INetworkConfig = Object.freeze({
     ),
     dockerConfig: {
         name: "lighthouse_beacon",
-        image: process.env.DOCKER_LIGHTHOUSE_IMAGE,
+        image: process.env.DOCKER_TEKU_IMAGE,
         ports: [
             {
                 local: "9000",

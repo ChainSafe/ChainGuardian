@@ -57,7 +57,9 @@
     "script": "node -r ts-node/register",
     "generate:validators": "yarn run script scripts/generate_interop_validators.ts",
     "testnet:dev": "./testnet/lighthouse/reset_genesis_time.sh && docker-compose -f lighthouse-testnet.yml up",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "integration:lighthouse": "yarn run script integration/lighthouse.ts",
+    "integration:teku": "yarn run script integration/teku.ts.ts"
   },
   "jest": {
     "transform": {
@@ -104,6 +106,7 @@
     "@types/date-fns": "^2.6.0",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/ethereumjs-abi": "^0.6.3",
+    "@types/eventsource": "^1.1.5",
     "@types/jest": "^26.0.9",
     "@types/leveldown": "^4.0.0",
     "@types/levelup": "^3.1.1",
@@ -172,6 +175,7 @@
     "@chainsafe/bls": "5.1.1",
     "@chainsafe/bls-keygen": "0.3.0",
     "@chainsafe/bls-keystore": "2.0.0",
+    "@chainsafe/blst": "^0.1.6",
     "@chainsafe/lodestar-beacon-state-transition": "0.16.0",
     "@chainsafe/lodestar-config": "0.16.0",
     "@chainsafe/lodestar-db": "0.16.0",
@@ -180,6 +184,7 @@
     "@chainsafe/lodestar-validator": "0.16.0",
     "@chainsafe/persistent-ts": "0.16.0",
     "@chainsafe/ssz": "0.6.13",
+    "@datapunt/matomo-tracker-js": "^0.4.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/react-fontawesome": "^0.1.12",
@@ -195,6 +200,7 @@
     "ethereumjs-abi": "^0.6.8",
     "ethers": "^5.0.19",
     "event-iterator": "^2.0.0",
+    "eventsource": "^1.0.7",
     "it-all": "^1.0.4",
     "it-pushable": "^1.4.0",
     "javascript-color-gradient": "^1.3.2",

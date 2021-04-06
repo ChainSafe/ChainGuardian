@@ -19,7 +19,6 @@ import {
 } from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
 import {deleteKeystore, saveValidatorData} from "../../services/utils/account";
-import {ValidatorLogger} from "../../services/eth2/client/logger";
 import database, {cgDbController} from "../../services/db/api/database";
 import {config as mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {IValidator, IValidatorComplete} from "./slice";
@@ -53,8 +52,6 @@ import {Genesis} from "@chainsafe/lodestar-types";
 import {getAuthAccount} from "../auth/selectors";
 import {getValidator, getValidatorsByBeaconNode, BeaconValidators} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
-import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
-import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
 import {getValidatorBalance} from "../../services/utils/validator";
 import {getValidatorStatus} from "../../services/utils/getValidatorStatus";
@@ -74,6 +71,13 @@ import {Interchange} from "@chainsafe/lodestar-validator/lib/slashingProtection/
 import {createNotification} from "../notification/actions";
 import {Level} from "../../components/Notification/NotificationEnums";
 import {setInitialValidators, setLoadingValidator} from "../settings/actions";
+import {
+    CgEth2ApiClient,
+    getBeaconNodeEth2ApiClient,
+    readBeaconChainNetwork,
+    ValidatorLogger,
+} from "../../services/eth2/client/module";
+import store from "../store";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -180,6 +184,7 @@ function* startService(
     | Promise<INetworkConfig | null>
     | Promise<Genesis | null>
     | RaceEffect<TakeEffect>
+    | Promise<typeof CgEth2ApiClient>
     | CancelEffect,
     void,
     IValidatorComplete &
@@ -187,6 +192,7 @@ function* startService(
         [ReturnType<typeof stopActiveValidatorService> | undefined, ReturnType<typeof setValidatorStatus>] &
         (INetworkConfig | null) &
         (Genesis | null) &
+        typeof CgEth2ApiClient &
         boolean
 > {
     try {
@@ -199,7 +205,8 @@ function* startService(
         const config = (yield readBeaconChainNetwork(validator.beaconNodes[0]))?.eth2Config || mainnetConfig;
 
         // TODO: Use beacon chain proxy instead of first node
-        const eth2API = new CgEth2ApiClient(config, validator.beaconNodes[0], publicKey);
+        const ApiClient = yield getBeaconNodeEth2ApiClient(validator.beaconNodes[0]);
+        const eth2API = new ApiClient(config, validator.beaconNodes[0], {publicKey, dispatch: store.dispatch});
 
         const slashingProtection = new CGSlashingProtection({
             config,

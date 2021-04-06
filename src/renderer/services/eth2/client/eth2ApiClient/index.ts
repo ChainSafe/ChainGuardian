@@ -11,6 +11,7 @@ import {CgEth2EventsApi} from "./cgEth2EventsApi";
 import {CgEth2Config} from "./cgEth2Config";
 import axios from "axios";
 import {getNetworkConfigByGenesisVersion} from "../../networks";
+import {Dispatch} from "redux";
 
 export class CgEth2ApiClient extends AbstractApiClient implements ICgEth2ApiClient {
     public validator: ICGEth2ValidatorApi;
@@ -21,15 +22,19 @@ export class CgEth2ApiClient extends AbstractApiClient implements ICgEth2ApiClie
 
     public url: string;
 
-    private readonly httpClient: HttpClient;
-    public constructor(config: IBeaconConfig, url: string, publicKey?: string) {
+    protected readonly httpClient: HttpClient;
+    public constructor(
+        config: IBeaconConfig,
+        url: string,
+        {publicKey, dispatch}: {publicKey?: string; dispatch?: Dispatch} = {},
+    ) {
         // TODO: logger: create new or get it from outside?
         super(config, new WinstonLogger());
         this.url = url;
         this.httpClient = new HttpClient(url);
 
         this.validator = new CgEth2ValidatorApi(config, this.httpClient);
-        this.beacon = new CgEth2BeaconApi(config, this.httpClient, publicKey);
+        this.beacon = new CgEth2BeaconApi(config, this.httpClient, publicKey, dispatch);
         this.events = (new CgEth2EventsApi(config, url) as unknown) as IEventsApi;
         this.node = new CgEth2NodeApi(config, this.httpClient);
         this.configApi = new CgEth2Config(config, this.httpClient);

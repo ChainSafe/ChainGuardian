@@ -4,12 +4,14 @@ interface ISettingsState {
     initialBeacons: boolean;
     initialValidators: boolean;
     loadingValidator: boolean;
+    reporting: boolean;
 }
 
 const initialState: ISettingsState = {
     initialBeacons: true,
     initialValidators: true,
     loadingValidator: false,
+    reporting: false,
 };
 
 export const settingsSlice = createSlice({
@@ -25,6 +27,9 @@ export const settingsSlice = createSlice({
         },
         setLoadingValidator: (state, action: PayloadAction<boolean>): void => {
             state.loadingValidator = action.payload;
+        },
+        setReporting: (state, action: PayloadAction<boolean>): void => {
+            state.reporting = action.payload;
         },
     },
 });

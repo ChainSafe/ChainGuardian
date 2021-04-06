@@ -2,25 +2,28 @@ import {IBeaconPoolApi} from "@chainsafe/lodestar-validator/lib/api/interface/be
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Attestation, SignedVoluntaryExit} from "@chainsafe/lodestar-types";
-import store from "../../../../ducks/store";
 import {signedNewAttestation} from "../../../../ducks/validator/actions";
 import {toHex} from "@chainsafe/lodestar-utils";
+import {Dispatch} from "redux";
 
 export class CgEth2BeaconPoolApi implements IBeaconPoolApi {
     private readonly httpClient: HttpClient;
     private readonly config: IBeaconConfig;
     private readonly publicKey?: string;
-    public constructor(config: IBeaconConfig, httpClient: HttpClient, publicKey?: string) {
+    private readonly dispatch?: Dispatch;
+
+    public constructor(config: IBeaconConfig, httpClient: HttpClient, publicKey?: string, dispatch?: Dispatch) {
         this.config = config;
         this.httpClient = httpClient;
         this.publicKey = publicKey;
+        this.dispatch = dispatch;
     }
 
     public submitAttestation = async (attestation: Attestation): Promise<void> => {
-        if (this.publicKey) {
+        if (this.publicKey && this.dispatch) {
             const validatorIndexInCommittee = attestation.aggregationBits.findIndex((bit) => bit);
             if (validatorIndexInCommittee !== -1)
-                store.dispatch(
+                this.dispatch(
                     signedNewAttestation(
                         this.publicKey,
                         toHex(attestation.data.beaconBlockRoot),

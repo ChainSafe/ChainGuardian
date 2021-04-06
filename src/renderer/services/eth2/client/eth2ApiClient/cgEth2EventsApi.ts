@@ -3,10 +3,11 @@ import {IStoppableEventIterable, LodestarEventIterator} from "@chainsafe/lodesta
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {ContainerType} from "@chainsafe/ssz";
 import {CGBeaconEventType, CGBeaconEvent, ICGEventsApi, ErrorEvent} from "../interface";
+import EventSource from "eventsource";
 
 export class CgEth2EventsApi implements ICGEventsApi {
+    protected readonly config: IBeaconConfig;
     private readonly baseUrl: string;
-    private readonly config: IBeaconConfig;
     public constructor(config: IBeaconConfig, baseUrl: string) {
         this.config = config;
         this.baseUrl = baseUrl;
@@ -29,11 +30,11 @@ export class CgEth2EventsApi implements ICGEventsApi {
         });
     };
 
-    private eventListener = (push: (value: CGBeaconEvent) => void) => (event: Event): void => {
-        push(this.deserializeBeaconEventMessage(event as MessageEvent));
+    protected deserializeEventData = <T extends CGBeaconEvent["message"]>(type: ContainerType<T>, data: string): T => {
+        return type.fromJson(JSON.parse(data), {case: "snake"});
     };
 
-    private deserializeBeaconEventMessage = (msg: MessageEvent): CGBeaconEvent => {
+    protected deserializeBeaconEventMessage = (msg: MessageEvent): CGBeaconEvent => {
         switch (msg.type) {
             case CGBeaconEventType.BLOCK:
                 return {
@@ -55,12 +56,17 @@ export class CgEth2EventsApi implements ICGEventsApi {
                     type: CGBeaconEventType.FINALIZED_CHECKPOINT,
                     message: this.deserializeEventData(this.config.types.FinalizedCheckpoint, msg.data),
                 };
+            case CGBeaconEventType.ATTESTATION:
+                return {
+                    type: CGBeaconEventType.ATTESTATION,
+                    message: this.deserializeEventData(this.config.types.Attestation, msg.data),
+                };
             default:
                 throw new Error("Unsupported beacon event type " + msg.type);
         }
     };
 
-    private deserializeEventData = <T extends CGBeaconEvent["message"]>(type: ContainerType<T>, data: string): T => {
-        return type.fromJson(JSON.parse(data), {case: "snake"});
+    private eventListener = (push: (value: CGBeaconEvent) => void) => (event: Event): void => {
+        push(this.deserializeBeaconEventMessage(event as MessageEvent));
     };
 }

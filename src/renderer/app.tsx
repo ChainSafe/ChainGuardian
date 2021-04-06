@@ -10,6 +10,8 @@ import "./style/index.scss";
 import store from "./ducks/store";
 import {mainLogger} from "../main/logger";
 import {Overlays} from "./overlays";
+import {MemoryRouter as Router} from "react-router";
+import {Tracking} from "./containers/Tracking/Tracking";
 
 initSentry();
 
@@ -22,8 +24,11 @@ const render = (Component: () => JSX.Element): void => {
     ReactDOM.render(
         <AppContainer>
             <Provider store={store}>
-                <Component />
-                <Overlays />
+                <Router>
+                    <Component />
+                    <Overlays />
+                    <Tracking />
+                </Router>
             </Provider>
         </AppContainer>,
         mainElement,
