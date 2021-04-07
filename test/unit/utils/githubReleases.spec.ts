@@ -3,8 +3,6 @@ import {isCurrentOrNewerVersion} from "../../../src/renderer/services/utils/gith
 describe("GitHub Releases", () => {
     describe("isCurrentOrNewerVersion", () => {
         it("test with 'v' prefix", () => {
-            expect(isCurrentOrNewerVersion("v1.3.2", "v2.1.2")).toBeTruthy();
-
             expect(isCurrentOrNewerVersion("v1.3.2", "v1.3.2")).toBeTruthy();
             expect(isCurrentOrNewerVersion("v1.3.2", "v1.3.2")).toBeTruthy();
             expect(isCurrentOrNewerVersion("v1.3.2", "v2.3.2")).toBeTruthy();
