@@ -11,6 +11,7 @@ describe("GitHub Releases", () => {
             expect(isCurrentOrNewerVersion("v1.3", "v1.3.3")).toBeTruthy();
 
             expect(isCurrentOrNewerVersion("v1.3.2", "v1.3.1")).toBeFalsy();
+            expect(isCurrentOrNewerVersion("v1.4.2", "v1.3.11")).toBeFalsy();
             expect(isCurrentOrNewerVersion("v1.3.2", "v1.3")).toBeFalsy();
             expect(isCurrentOrNewerVersion("v1.3.2", "v0.2.1")).toBeFalsy();
         });
@@ -24,6 +25,7 @@ describe("GitHub Releases", () => {
             expect(isCurrentOrNewerVersion("1.3", "1.3.3")).toBeTruthy();
 
             expect(isCurrentOrNewerVersion("1.3.2", "1.3.1")).toBeFalsy();
+            expect(isCurrentOrNewerVersion("1.4.2", "1.3.11")).toBeFalsy();
             expect(isCurrentOrNewerVersion("1.3.2", "1.3")).toBeFalsy();
             expect(isCurrentOrNewerVersion("1.3.2", "0.2.1")).toBeFalsy();
         });

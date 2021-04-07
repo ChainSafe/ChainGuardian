@@ -19,13 +19,11 @@ export const isCurrentOrNewerVersion = (current: string, comparingWith: string):
         currentFragments.length > comparingWithFragments.length
             ? currentFragments.length
             : comparingWithFragments.length;
-    const results: boolean[] = [];
     for (let i = 0; i < length; i++) {
-        if ((Number(comparingWithFragments[i]) || 0) > (Number(currentFragments[i]) || 0)) return true;
-        else if ((Number(comparingWithFragments[i]) || 0) >= (Number(currentFragments[i]) || 0)) results.push(true);
-        else results.push(false);
+        if ((Number(currentFragments[i]) || 0) === (Number(comparingWithFragments[i]) || 0)) continue;
+        return (Number(comparingWithFragments[i]) || 0) > (Number(currentFragments[i]) || 0);
     }
-    return results.reduce((p, c) => (!p ? p : c), true);
+    return true;
 };
 
 export const getAvailableClientReleases = async (client: string): Promise<string[]> => {
