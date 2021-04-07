@@ -9,7 +9,9 @@ const gitHubReposInstance = axios.create({
 export const getReleases = (owner: string, repo: string): Promise<AxiosResponse<IGithubRelease[]>> =>
     gitHubReposInstance.get<IGithubRelease[]>(`/${owner}/${repo}/releases`);
 
-const isCurrentOrNewerVersion = (current: string, comparingWith: string): boolean => {
+export const isCurrentOrNewerVersion = (current: string, comparingWith: string): boolean => {
+    if (current === comparingWith) return true;
+
     const currentFragments = current.replace(/[^\d.-]/g, "").split(".");
     const comparingWithFragments = comparingWith.replace(/[^\d.-]/g, "").split(".");
 
@@ -17,10 +19,13 @@ const isCurrentOrNewerVersion = (current: string, comparingWith: string): boolea
         currentFragments.length > comparingWithFragments.length
             ? currentFragments.length
             : comparingWithFragments.length;
+    const results: boolean[] = [];
     for (let i = 0; i < length; i++) {
-        if ((Number(currentFragments[i]) || 0) > (Number(comparingWithFragments[i]) || 0)) return false;
+        if ((Number(comparingWithFragments[i]) || 0) > (Number(currentFragments[i]) || 0)) return true;
+        else if ((Number(comparingWithFragments[i]) || 0) >= (Number(currentFragments[i]) || 0)) results.push(true);
+        else results.push(false);
     }
-    return true;
+    return results.reduce((p, c) => (!p ? p : c), true);
 };
 
 export const getAvailableClientReleases = async (client: string): Promise<string[]> => {
