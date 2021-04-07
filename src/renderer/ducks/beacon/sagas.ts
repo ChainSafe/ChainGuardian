@@ -47,7 +47,6 @@ import {ValidatorStatus} from "../../constants/validatorStatus";
 import {cgLogger, createLogger, getBeaconLogfileFromURL, mainLogger} from "../../../main/logger";
 import {setInitialBeacons} from "../settings/actions";
 import {DockerRegistry} from "../../services/docker/docker-registry";
-import {getDockerImage} from "../../services/utils/githubConfig";
 import {CgEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client/module";
 import {getClientParams} from "../../services/docker/getClientParams";
 
@@ -82,19 +81,9 @@ export function* pullDockerImage(
 }
 
 function* startLocalBeaconSaga({
-    payload: {network, client, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort, memory},
+    payload: {network, client, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort, memory, image},
     meta: {onComplete},
 }: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
-    const image = ((): string => {
-        switch (client) {
-            case "teku":
-                return process.env.DOCKER_TEKU_IMAGE;
-            case "lighthouse":
-                return process.env.DOCKER_LIGHTHOUSE_IMAGE;
-            default:
-                return getNetworkConfig(network).dockerConfig.image;
-        }
-    })();
     const pullSuccess = yield call(pullDockerImage, image);
 
     const ports = [
@@ -121,6 +110,7 @@ function* startLocalBeaconSaga({
                         memory,
                         eth1Url,
                         chainDataDir,
+                        image,
                     }),
                 )).getParams().name,
                 network,
