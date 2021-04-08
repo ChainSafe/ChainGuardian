@@ -21,7 +21,7 @@ export interface IAllDefaults {
 }
 
 export const getAllDefaults = (): IAllDefaults => {
-    if(process.env.NODE_ENV !== "test") {
+    if (process.env.NODE_ENV !== "test") {
         const context = require.context(".", true, /\/(.*)\/(.*)defaults.ts/);
         return context
             .keys()
