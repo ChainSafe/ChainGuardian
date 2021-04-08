@@ -134,7 +134,12 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                         <h3>Image</h3>
                         <p>(recommended: {images[images.length - 1]})</p>
                     </div>
-                    <Dropdown current={imageIndex} onChange={setImageIndex} options={images} verifiedIndex={images.length - 1} />
+                    <Dropdown
+                        current={imageIndex}
+                        onChange={setImageIndex}
+                        options={images}
+                        verifiedIndex={images.length - 1}
+                    />
                 </div>
 
                 <div className='configure-port'>

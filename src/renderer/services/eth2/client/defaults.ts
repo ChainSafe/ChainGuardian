@@ -3,6 +3,9 @@ export interface IDefaultBeaconNodeConfig {
     libp2pPort: number;
     discoveryPort: number;
     memory: string;
+    owner: string;
+    repo: string;
+    dockerImage: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -44,6 +47,9 @@ export const getDefaultsForClient = (clientName: string): IDefaults =>
             libp2pPort: 9000,
             discoveryPort: 9000,
             memory: "3500m",
+            owner: "none",
+            repo: "none",
+            dockerImage: "none",
         },
         validator: {},
     };

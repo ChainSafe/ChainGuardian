@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useState} from "react";
-import cgLogo from "../../assets/ico/app_icon.png"
+import cgLogo from "../../assets/ico/app_icon.png";
 
 export interface IDropdownProps {
     options: Array<string> | {[id: number]: string};
@@ -10,7 +10,13 @@ export interface IDropdownProps {
     verifiedIndex?: number;
 }
 
-export const Dropdown: React.FunctionComponent<IDropdownProps> = ({options, current, label, onChange, verifiedIndex}) => {
+export const Dropdown: React.FunctionComponent<IDropdownProps> = ({
+    options,
+    current,
+    label,
+    onChange,
+    verifiedIndex,
+}) => {
     const [visible, setVisible] = useState("none");
     options = Array.isArray(options) ? {...options} : options;
 
@@ -38,7 +44,7 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = ({options, curr
                 ${visible}
                 ${key === current ? "selected" : ""}`}>
                 {options[key]}
-                {verifiedIndex === key && <img alt="ChainGuardian Logo" src={cgLogo} />}
+                {verifiedIndex === key && <img alt='ChainGuardian Logo' src={cgLogo} />}
             </div>
         );
     }

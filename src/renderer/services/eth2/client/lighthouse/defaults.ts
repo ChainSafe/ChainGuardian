@@ -5,6 +5,9 @@ export const beaconNode: IDefaultBeaconNodeConfig = {
     libp2pPort: 9000,
     discoveryPort: 9000,
     memory: "3500m",
+    owner: "sigp",
+    repo: "lighthouse",
+    dockerImage: process.env.DOCKER_LIGHTHOUSE_IMAGE,
 };
 
 export const validator: IDefaultValidatorConfig = {};
