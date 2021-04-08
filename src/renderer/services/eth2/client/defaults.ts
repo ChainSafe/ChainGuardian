@@ -21,21 +21,24 @@ export interface IAllDefaults {
 }
 
 export const getAllDefaults = (): IAllDefaults => {
-    const context = require.context(".", true, /\/(.*)\/(.*)defaults.ts/);
-    return context
-        .keys()
-        .map((path) => ({
-            name: path.split("/")[1],
-            beacon: context(path).beaconNode,
-            validator: context(path).validator,
-        }))
-        .reduce(
-            (prev, {name, beacon, validator}) => ({
-                ...prev,
-                [name]: {beacon, validator},
-            }),
-            {},
-        );
+    if(process.env.NODE_ENV !== "test") {
+        const context = require.context(".", true, /\/(.*)\/(.*)defaults.ts/);
+        return context
+            .keys()
+            .map((path) => ({
+                name: path.split("/")[1],
+                beacon: context(path).beaconNode,
+                validator: context(path).validator,
+            }))
+            .reduce(
+                (prev, {name, beacon, validator}) => ({
+                    ...prev,
+                    [name]: {beacon, validator},
+                }),
+                {},
+            );
+    }
+    return {};
 };
 
 const defaults = getAllDefaults();
