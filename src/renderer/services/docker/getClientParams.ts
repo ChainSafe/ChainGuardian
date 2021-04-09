@@ -9,7 +9,7 @@ export const getClientParams = ({
     eth1Url,
     chainDataDir,
     client,
-}: Exclude<IConfigureBNSubmitOptions, "memory">): Partial<Exclude<IDockerRunParams, "name">> => {
+}: Omit<IConfigureBNSubmitOptions, "memory" | "image">): Partial<Omit<IDockerRunParams, "name">> => {
     const eth1QueryLimit = 200;
     switch (client) {
         case "prysm": {

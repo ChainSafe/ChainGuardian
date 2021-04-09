@@ -107,7 +107,6 @@ function* startLocalBeaconSaga({
                         client,
                         eth1Url,
                         chainDataDir,
-                        image,
                     }),
                     memory,
                     ports,
