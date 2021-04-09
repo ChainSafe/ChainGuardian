@@ -1,4 +1,4 @@
-import React, {FormEvent, useRef, useState} from "react";
+import React, {FormEvent, useEffect, useRef, useState} from "react";
 import path from "path";
 import {networksList} from "../../services/eth2/networks";
 import {ButtonPrimary} from "../Button/ButtonStandard";
@@ -8,6 +8,7 @@ import {remote} from "electron";
 import {getConfig} from "../../../config/config";
 import {getDefaultsForClient} from "../../services/eth2/client/defaults";
 import {Accordion} from "../Accordion/Accordion";
+import {getAvailableClientReleases} from "../../services/utils/githubReleases";
 
 export interface IConfigureBNSubmitOptions {
     network: string;
@@ -18,6 +19,7 @@ export interface IConfigureBNSubmitOptions {
     libp2pPort: string;
     rpcPort: string;
     memory: string;
+    image: string;
 }
 
 interface IConfigureBNProps {
@@ -32,6 +34,15 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
     const [networkIndex, setNetworkIndex] = useState(0);
     const [clientIndex, setClientIndex] = useState(0);
     const defaults = getDefaultsForClient(props.clientName);
+
+    const [images, setImages] = useState([]);
+    useEffect(() => {
+        getAvailableClientReleases(clients[clientIndex]).then((imageList) => {
+            setImages(imageList);
+            setImageIndex(imageList.length - 1);
+        });
+    }, [clientIndex]);
+    const [imageIndex, setImageIndex] = useState(0);
 
     const defaultChainDataDir = path.join(getConfig(remote.app).storage.dataDir, "beacon");
     const [chainDataDir, setChainDataDir] = useState(defaultChainDataDir);
@@ -61,6 +72,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
             memory,
             network: networksList[networkIndex],
             client: clients[clientIndex],
+            image: images[imageIndex],
         });
     };
 
@@ -117,6 +129,19 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
             </div>
 
             <Accordion label='Advanced' isOpen={showAdvanced} onClick={(): void => setShowAdvanced(!showAdvanced)}>
+                <div className='configure-port'>
+                    <div className='row'>
+                        <h3>Image</h3>
+                        <p>(recommended: {images[images.length - 1]})</p>
+                    </div>
+                    <Dropdown
+                        current={imageIndex}
+                        onChange={setImageIndex}
+                        options={images}
+                        verifiedIndex={images.length - 1}
+                    />
+                </div>
+
                 <div className='configure-port'>
                     <div className='row'>
                         <h3>Chain data location</h3>

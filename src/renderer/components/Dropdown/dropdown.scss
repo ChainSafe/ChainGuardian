@@ -69,6 +69,12 @@ z-index: 100;
     &.selected{
         background-color: $neutral-600;
     }
+
+    img {
+        height: 18px;
+        margin-left: 10px;
+        margin-bottom: -3px;
+    }
 }
 .dropdown-item:first-child{
     border-radius:8px 8px 0 0;

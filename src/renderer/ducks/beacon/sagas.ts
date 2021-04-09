@@ -15,7 +15,6 @@ import {
     select,
     SelectEffect,
 } from "redux-saga/effects";
-import {getNetworkConfig} from "../../services/eth2/networks";
 import {liveProcesses} from "../../services/utils/cmd";
 import {
     cancelDockerPull,
@@ -45,7 +44,7 @@ import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {createNotification} from "../notification/actions";
 import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
 import {ValidatorStatus} from "../../constants/validatorStatus";
-import {cgLogger, createLogger, getBeaconLogfileFromURL} from "../../../main/logger";
+import {cgLogger, createLogger, getBeaconLogfileFromURL, mainLogger} from "../../../main/logger";
 import {setInitialBeacons} from "../settings/actions";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 import {CgEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client/module";
@@ -66,30 +65,25 @@ export function* pullDockerImage(
 
         return effect !== undefined ? false : pullSuccess;
     } catch (e) {
-        const message = e.stderr.includes("daemon is not running")
-            ? "Seems Docker is offline, start it and try again"
-            : "Error while pulling Docker image, try again later";
-        yield put(createNotification({title: message, source: "pullDockerImage"}));
+        if (e.stderr) {
+            const message = e.stderr.includes("daemon is not running")
+                ? "Seems Docker is offline, start it and try again"
+                : "Error while pulling Docker image, try again later";
+            yield put(createNotification({title: message, source: "pullDockerImage"}));
+            cgLogger.error(e.stderr);
+        } else {
+            yield put(createNotification({title: e.message, source: "pullDockerImage"}));
+            mainLogger.error(e.message);
+        }
         yield put(endDockerImagePull());
-        cgLogger.error(e.stderr);
         return false;
     }
 }
 
 function* startLocalBeaconSaga({
-    payload: {network, client, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort, memory},
+    payload: {network, client, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort, memory, image},
     meta: {onComplete},
 }: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
-    const image = ((): string => {
-        switch (client) {
-            case "teku":
-                return process.env.DOCKER_TEKU_IMAGE;
-            case "lighthouse":
-                return process.env.DOCKER_LIGHTHOUSE_IMAGE;
-            default:
-                return getNetworkConfig(network).dockerConfig.image;
-        }
-    })();
     const pullSuccess = yield call(pullDockerImage, image);
 
     const ports = [
@@ -116,6 +110,7 @@ function* startLocalBeaconSaga({
                         memory,
                         eth1Url,
                         chainDataDir,
+                        image,
                     }),
                 )).getParams().name,
                 network,
