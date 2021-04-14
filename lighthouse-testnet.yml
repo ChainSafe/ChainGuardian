@@ -11,34 +11,18 @@ services:
       - ./testnet/lighthouse/data:/root/testnet
       - ./testnet/lighthouse/data/beacon:/root/beacon
       - ./testnet/lighthouse:/root/scripts
-    network_mode: "host"
     env_file: ./testnet/lighthouse/vars.env
     command: sh /root/scripts/start-beacon-node.sh
-
-  second_beacon_node:
-    image: "${DOCKER_LIGHTHOUSE_IMAGE}"
-    container_name: "eth2_testnet_second_beacon_lighthouse"
-    volumes:
-      - ./testnet/lighthouse/data:/root/testnet
-      - ./testnet/lighthouse/data/beacon:/root/beacon
-      - ./testnet/lighthouse/data/beacon2:/root/beacon2
-      - ./testnet/lighthouse:/root/scripts
-    network_mode: "host"
-    depends_on:
-      - beacon_node
-    env_file: ./testnet/lighthouse/vars.env
-    command: sh /root/scripts/start-second-beacon-node.sh
 
   validator_client:
     image: "${DOCKER_LIGHTHOUSE_IMAGE}"
     container_name: "eth2_testnet_validator_lighthouse"
-    network_mode: "host"
     volumes:
       - ./testnet/lighthouse/data:/root/testnet
       - ./testnet/lighthouse/data/validators:/root/validators
       - ./testnet/lighthouse/data/secrets:/root/secrets
       - ./testnet/lighthouse:/root/scripts
     depends_on:
-      - second_beacon_node
+      - beacon_node
     env_file: ./testnet/lighthouse/vars.env
     command: sh /root/scripts/start-validator-client.sh

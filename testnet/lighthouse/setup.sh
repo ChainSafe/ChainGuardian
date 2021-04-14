@@ -19,11 +19,12 @@ docker run -v $TESTNET_DIR:/root/testnet $DOCKER_LCLI_IMAGE lcli \
 echo Specification generated at $TESTNET_DIR.
 echo "Generating $VALIDATOR_COUNT validators concurrently... (this may take a while)"
 
-docker run -v $VALIDATORS_DIR:/root/validator -v $SECRETS_DIR:/root/secrets $DOCKER_LCLI_IMAGE lcli \
+docker run -v $VALIDATORS_DIR:/root/data/node_1/validators -v $SECRETS_DIR:/root/data/node_1/secrets $DOCKER_LCLI_IMAGE lcli \
 	insecure-validators \
 	--count $VALIDATOR_COUNT \
-	--validators-dir /root/validator \
-	--secrets-dir /root/secrets
+	--base-dir /root/data \
+	--node-count 1
+
 
 echo Validators generated at $VALIDATORS_DIR with keystore passwords at $SECRETS_DIR.
 echo "Building genesis state... (this might take a while)"

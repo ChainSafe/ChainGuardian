@@ -4,4 +4,4 @@ exec lighthouse --debug-level $DEBUG_LEVEL validator \
   --allow-unsynced --init-slashing-protection \
   --testnet-dir /root/testnet \
   --datadir /root \
-  --beacon-node http://localhost:5052
+  --beacon-nodes http://beacon_node:5052

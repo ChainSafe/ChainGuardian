@@ -12,3 +12,4 @@ package-lock.json
 /eth2_testnet/genesis.ssz
 .tmp
 *.sqlite*
+testnet/lighthouse/data/beacon
