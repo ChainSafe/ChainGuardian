@@ -10,5 +10,6 @@ coverage
 package-lock.json
 *.db
 /eth2_testnet/genesis.ssz
+/testnet/lighthouse/data/db
 .tmp
 *.sqlite*

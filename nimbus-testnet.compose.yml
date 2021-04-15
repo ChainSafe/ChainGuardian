@@ -1,0 +1,15 @@
+version: "3.4"
+
+services:
+  beacon_node:
+    image: "${DOCKER_NIMBUS_IMAGE}"
+    container_name: "eth2_testnet_beacon_nimbus"
+    entrypoint: "/bin/bash"
+    ports:
+      - "9190:9190"
+    volumes:
+      - ./testnet/nimbus:/tmp/scripts
+    command: /tmp/scripts/run_local_testnet.sh --reuse-existing-data-dir --data-dir /tmp/scripts --disable-vc --nodes 1
+
+volumes:
+  nimbus_chain_data:
