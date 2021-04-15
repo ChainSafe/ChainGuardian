@@ -10,6 +10,3 @@ services:
     volumes:
       - ./testnet/nimbus:/tmp/scripts
     command: /tmp/scripts/run_local_testnet.sh --reuse-existing-data-dir --data-dir /tmp/scripts --disable-vc --nodes 1
-
-volumes:
-  nimbus_chain_data:
