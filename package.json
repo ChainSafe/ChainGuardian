@@ -59,7 +59,8 @@
     "testnet:dev": "./testnet/lighthouse/reset_genesis_time.sh && docker-compose -f lighthouse-testnet.yml up",
     "build-storybook": "build-storybook",
     "integration:lighthouse": "yarn run script integration/lighthouse.ts",
-    "integration:teku": "yarn run script integration/teku.ts.ts"
+    "integration:teku": "yarn run script integration/teku.ts",
+    "integration:prysm": "yarn run script integration/prysm.ts"
   },
   "jest": {
     "transform": {
