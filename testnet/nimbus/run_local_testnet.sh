@@ -215,13 +215,13 @@ DEPOSIT_CONTRACT_BLOCK="0x000000000000000000000000000000000000000000000000000000
 NETWORK_METADATA_FILE="${DATA_DIR}/network.json"
 NUM_JOBS=${NUM_NODES}
 
-# if [[ "$REUSE_EXISTING_DATA_DIR" == "0" ]]; then
-#   ./build/deposit_contract generateSimulationDeposits \
-#     --count=${TOTAL_VALIDATORS} \
-#     --out-validators-dir="${VALIDATORS_DIR}" \
-#     --out-secrets-dir="${SECRETS_DIR}" \
-#     --out-deposits-file="${DEPOSITS_FILE}"
-# fi
+#if [[ "$REUSE_EXISTING_DATA_DIR" == "0" ]]; then
+# ~/nimbus-eth2/build/deposit_contract generateSimulationDeposits \
+#   --count=${TOTAL_VALIDATORS} \
+#   --out-validators-dir="${VALIDATORS_DIR}" \
+#   --out-secrets-dir="${SECRETS_DIR}" \
+#   --out-deposits-file="${DEPOSITS_FILE}"
+#fi
 
 if [[ $USE_GANACHE == "0" ]]; then
   GENESIS_OFFSET=30
@@ -231,7 +231,6 @@ if [[ $USE_GANACHE == "0" ]]; then
     --data-dir="${DATA_DIR}" \
     --deposits-file="${DEPOSITS_FILE}" \
     --total-validators=${TOTAL_VALIDATORS} \
-    --last-user-validator=${USER_VALIDATORS} \
     --output-genesis="${NETWORK_DIR}/genesis.ssz" \
     --output-bootstrap-file="${NETWORK_DIR}/bootstrap_nodes.txt" \
     --bootstrap-address=${BOOTSTRAP_IP} \
@@ -400,8 +399,10 @@ for NUM_NODE in $(seq 0 $(( NUM_NODES - 1 ))); do
     --rpc \
     --rpc-address="0.0.0.0" \
     --rpc-port="$(( BASE_RPC_PORT ))" \
+    --rest=true \
+    --rest-address=0.0.0.0 \
     --metrics \
-    --metrics-address="127.0.0.1" \
+    --metrics-address="0.0.0.0" \
     --metrics-port="$(( BASE_METRICS_PORT + NUM_NODE ))" \
     --doppelganger-detection=off \
     ${EXTRA_ARGS} \
