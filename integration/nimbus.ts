@@ -1,7 +1,7 @@
 import assert from "assert";
 import {restValidation} from "./restValidation";
-import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
-import {CgTekuEth2Api} from "../src/renderer/services/eth2/client/module";
+import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
+import {CgNimbusEth2Api} from "../src/renderer/services/eth2/client/module";
 import {SecretKey} from "@chainsafe/bls";
 import {Keystore} from "@chainsafe/bls-keystore";
 
@@ -10,12 +10,12 @@ const keystorePassword = "4E015C5AF6C9610B0230DBC4FD9714B786F24A28414E49C52D8595
 
 (async function (): Promise<void> {
     const {proposer, attestation} = await restValidation({
-        baseUrl: "http://localhost:5053",
+        baseUrl: "http://localhost:5052",
         getValidatorPrivateKey: async () =>
             SecretKey.fromBytes(await Keystore.fromObject(keystore).decrypt(keystorePassword)),
         limit: 5,
         config,
-        ApiClient: CgTekuEth2Api,
+        ApiClient: CgNimbusEth2Api,
     });
 
     console.log("\n\n\n");
