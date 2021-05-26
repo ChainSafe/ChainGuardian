@@ -60,7 +60,8 @@
     "testnet:nimbus": "docker-compose -f nimbus-testnet.yml up",
     "build-storybook": "build-storybook",
     "integration:lighthouse": "yarn run script integration/lighthouse.ts",
-    "integration:teku": "yarn run script integration/teku.ts.ts",
+    "integration:teku": "yarn run script integration/teku.ts",
+    "integration:prysm": "yarn run script integration/prysm.ts",
     "integration:nimbus": "yarn run script integration/nimbus.ts"
   },
   "jest": {

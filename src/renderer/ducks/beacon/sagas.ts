@@ -98,21 +98,20 @@ function* startLocalBeaconSaga({
     if (pullSuccess) {
         yield put(
             addBeacon(`http://localhost:${rpcPort}`, network, {
-                id: (yield call(
-                    BeaconChain.startBeaconChain,
-                    SupportedNetworks.LOCALHOST,
-                    getClientParams(ports, {
+                id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, {
+                    ...getClientParams({
                         network,
                         libp2pPort,
                         discoveryPort,
                         rpcPort,
                         client,
-                        memory,
                         eth1Url,
                         chainDataDir,
-                        image,
                     }),
-                )).getParams().name,
+                    memory,
+                    ports,
+                    image,
+                })).getParams().name,
                 network,
                 chainDataDir,
                 eth1Url,

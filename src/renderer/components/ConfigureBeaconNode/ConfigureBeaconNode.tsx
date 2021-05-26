@@ -27,7 +27,7 @@ interface IConfigureBNProps {
     clientName?: string;
 }
 
-const clients = ["teku", "lighthouse"];
+const clients = ["prysm", "teku", "lighthouse"];
 
 export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (props: IConfigureBNProps) => {
     // TODO: refactor to use list from src/renderer/services/eth2/networks/index.ts

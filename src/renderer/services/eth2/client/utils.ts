@@ -3,6 +3,7 @@ import {getNetworkConfig, getNetworkConfigByGenesisVersion} from "../networks";
 import {ICgEth2ApiClient} from "./interface";
 import {HttpClient} from "../../api";
 import {CgLighthouseEth2Api, CgTekuEth2Api, CgEth2ApiClient} from "./module";
+import {CgPrysmEth2Api} from "./prysm";
 
 export function getEth2ApiClient(url: string, network: string): ICgEth2ApiClient | undefined {
     const networkConfig = getNetworkConfig(network);
@@ -31,6 +32,8 @@ export async function getBeaconNodeEth2ApiClient(beaconNodeUrl: string): Promise
     const version = response.data.version.toLowerCase();
 
     switch (true) {
+        case version.includes("prysm"):
+            return CgPrysmEth2Api;
         case version.includes("lighthouse"):
             return CgLighthouseEth2Api;
         case version.includes("teku"):
