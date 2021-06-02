@@ -6,7 +6,7 @@ import {ICGValidatorResponse} from "../interface";
 import {cgLogger} from "../../../../../main/logger";
 import {base64ToHex, hexToBase64} from "./utils";
 
-type ValidatorStatusResponse = {
+export type ValidatorStatusResponse = {
     // eslint-disable-next-line camelcase
     public_key: string;
     // eslint-disable-next-line camelcase

@@ -19,8 +19,8 @@ import querystring from "querystring";
 import {aAPLogger} from "../../../../../main/logger";
 
 export class CgEth2ValidatorApi implements ICGEth2ValidatorApi {
-    private readonly httpClient: HttpClient;
-    private readonly config: IBeaconConfig;
+    protected readonly httpClient: HttpClient;
+    protected readonly config: IBeaconConfig;
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
         this.config = config;
         this.httpClient = httpClient;
