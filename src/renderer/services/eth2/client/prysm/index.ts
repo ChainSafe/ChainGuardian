@@ -1,7 +1,7 @@
 import {CgEth2ApiClient} from "../module";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Dispatch} from "redux";
-import { CgPrysmEth2BeaconApi } from "./CgPrysmEth2BeaconApi";
+import {CgPrysmEth2BeaconApi} from "./CgPrysmEth2BeaconApi";
 
 export class CgPrysmEth2Api extends CgEth2ApiClient {
     public constructor(
