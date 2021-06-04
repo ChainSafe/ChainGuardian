@@ -1,42 +1,12 @@
 import {CgEth2BeaconStateApi} from "../eth2ApiClient/cgEth2BeaconStateApi";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {HttpClient} from "../../../api";
-import {BLSPubkey, ValidatorIndex} from "@chainsafe/lodestar-types";
+import {BLSPubkey, Fork, ValidatorIndex} from "@chainsafe/lodestar-types";
 import {ICGValidatorResponse} from "../interface";
 import {cgLogger} from "../../../../../main/logger";
 import {base64ToHex, hexToBase64} from "./utils";
-
-export type ValidatorStatusResponse = {
-    // eslint-disable-next-line camelcase
-    public_key: string;
-    // eslint-disable-next-line camelcase
-    withdrawal_credentials: string;
-    // eslint-disable-next-line camelcase
-    effective_balance: string;
-    // eslint-disable-next-line camelcase
-    slashed: boolean;
-    // eslint-disable-next-line camelcase
-    activation_eligibility_epoch: string;
-    // eslint-disable-next-line camelcase
-    activation_epoch: string;
-    // eslint-disable-next-line camelcase
-    exit_epoch: string;
-    // eslint-disable-next-line camelcase
-    withdrawable_epoch: string;
-};
-
-type ValidatorStateResponse = {
-    // eslint-disable-next-line camelcase
-    status: string;
-    // eslint-disable-next-line camelcase
-    eth1_deposit_block_number: string;
-    // eslint-disable-next-line camelcase
-    deposit_inclusion_slot: string;
-    // eslint-disable-next-line camelcase
-    activation_epoch: string;
-    // eslint-disable-next-line camelcase
-    position_in_activation_queue: string;
-};
+import logger from "electron-log";
+import {ValidatorStateResponse, ValidatorStatusResponse} from "./types";
 
 export class CgPrysmEth2BeaconStateApi extends CgEth2BeaconStateApi {
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {

@@ -4,52 +4,7 @@ import {HttpClient} from "../../../api";
 import {AttesterDuty, Epoch, ProposerDuty, ValidatorIndex} from "@chainsafe/lodestar-types";
 import {Json} from "@chainsafe/ssz";
 import {base64ToHex} from "./utils";
-import {ValidatorStatusResponse} from "./CgPrysmEth2BeaconStateApi";
-
-type Assignments = {
-    epoch: string;
-    assignments: {
-        // eslint-disable-next-line camelcase
-        beacon_committees: string[];
-        // eslint-disable-next-line camelcase
-        committee_index: string;
-        // eslint-disable-next-line camelcase
-        attester_slot: string;
-        // eslint-disable-next-line camelcase
-        proposer_slots: string[];
-        // eslint-disable-next-line camelcase
-        public_key: string;
-        // eslint-disable-next-line camelcase
-        validator_index: string;
-    }[];
-    // eslint-disable-next-line camelcase
-    next_page_token: string;
-    // eslint-disable-next-line camelcase
-    total_size: number;
-};
-
-type Duty = {
-    // eslint-disable-next-line camelcase
-    committee: string[];
-    // eslint-disable-next-line camelcase
-    committee_index: string;
-    // eslint-disable-next-line camelcase
-    attester_slot: string;
-    // eslint-disable-next-line camelcase
-    proposer_slots: string[];
-    // eslint-disable-next-line camelcase
-    public_key: string;
-    // eslint-disable-next-line camelcase
-    validator_index: string;
-    status: string;
-};
-
-type DutiesResponse = {
-    // eslint-disable-next-line camelcase
-    current_epoch_duties: Duty[];
-    // eslint-disable-next-line camelcase
-    next_epoch_duties: Duty[];
-};
+import {DutiesResponse, ValidatorStatusResponse, Assignments} from "./types";
 
 export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
