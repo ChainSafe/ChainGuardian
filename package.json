@@ -70,8 +70,6 @@
     "integration:teku": "yarn run script integration/teku.ts",
     "integration:prysm": "yarn run script integration/prysm.ts",
     "integration:nimbus": "yarn run script integration/nimbus.ts",
-    "_eth1": "docker-compose -f eth1-testnet.yml up",
-    "_eth1:down": "docker-compose -f eth1-testnet.yml down"
   },
   "jest": {
     "transform": {
