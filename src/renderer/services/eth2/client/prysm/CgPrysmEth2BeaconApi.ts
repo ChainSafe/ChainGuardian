@@ -6,12 +6,16 @@ import {CgPrysmEth2BeaconStateApi} from "./CgPrysmEth2BeaconStateApi";
 import {Genesis} from "@chainsafe/lodestar-types";
 import logger from "electron-log";
 import {base64ToHex} from "./utils";
+import {CgPrysmEth2BeaconPoolApi} from "./CgPrysmEth2BeaconPoolApi";
+import {CgPrysmEth2BeaconBlocksApi} from "./CgPrysmEth2BeaconBlocksApi";
 
 export class CgPrysmEth2BeaconApi extends CgEth2BeaconApi {
     public constructor(config: IBeaconConfig, httpClient: HttpClient, publicKey?: string, dispatch?: Dispatch) {
         super(config, httpClient, publicKey, dispatch);
 
+        this.blocks = new CgPrysmEth2BeaconBlocksApi(config, httpClient);
         this.state = new CgPrysmEth2BeaconStateApi(config, httpClient);
+        this.pool = new CgPrysmEth2BeaconPoolApi(config, httpClient, publicKey, dispatch);
     }
 
     public getGenesis = async (): Promise<Genesis | null> => {
@@ -29,6 +33,7 @@ export class CgPrysmEth2BeaconApi extends CgEth2BeaconApi {
             const result = {
                 genesisTime: Math.round(new Date(genesisTime).getTime() / 1000).toString(),
                 genesisValidatorsRoot: base64ToHex(genesisValidatorsRoot),
+                // TODO: change mocked data with real
                 genesisForkVersion: "0x00000001",
             };
 

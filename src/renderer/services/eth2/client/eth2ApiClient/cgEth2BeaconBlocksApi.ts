@@ -7,8 +7,8 @@ import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
 import {matomo} from "../../../tracking";
 
 export class CgEth2BeaconBlocksApi implements ICGETH2BeaconBlocksApi {
-    private readonly httpClient: HttpClient;
-    private readonly config: IBeaconConfig;
+    protected readonly httpClient: HttpClient;
+    protected readonly config: IBeaconConfig;
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
         this.config = config;
         this.httpClient = httpClient;

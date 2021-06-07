@@ -14,5 +14,9 @@ export class CgPrysmEth2Api extends CgEth2ApiClient {
 
         this.validator = new CgPrysmEth2ValidatorApi(config, this.httpClient);
         this.beacon = new CgPrysmEth2BeaconApi(config, this.httpClient, publicKey, dispatch);
+
+        // TODO: implement class "CgEth2EventsApi(config, url) as unknown) as IEventsApi"
+        // TODO: implement class "CgEth2NodeApi(config, this.httpClient)"
+        // TODO: implement class "CgEth2Config(config, this.httpClient)"
     }
 }

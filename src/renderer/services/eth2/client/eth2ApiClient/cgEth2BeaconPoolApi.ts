@@ -7,10 +7,10 @@ import {toHex} from "@chainsafe/lodestar-utils";
 import {Dispatch} from "redux";
 
 export class CgEth2BeaconPoolApi implements IBeaconPoolApi {
-    private readonly httpClient: HttpClient;
-    private readonly config: IBeaconConfig;
-    private readonly publicKey?: string;
-    private readonly dispatch?: Dispatch;
+    protected readonly httpClient: HttpClient;
+    protected readonly config: IBeaconConfig;
+    protected readonly publicKey?: string;
+    protected readonly dispatch?: Dispatch;
 
     public constructor(config: IBeaconConfig, httpClient: HttpClient, publicKey?: string, dispatch?: Dispatch) {
         this.config = config;

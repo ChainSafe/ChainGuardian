@@ -21,8 +21,10 @@ import {
     AttestationData as PrysmAttestationData,
 } from "./types";
 import querystring from "querystring";
-// eslint-disable-next-line max-len
-import {mapProduceBlockResponseToStandardProduceBlockResponse} from "./mapProduceBlockResponseToStandardProduceBlockResponse";
+import {
+    mapAttestationData,
+    mapProduceBlockResponseToStandardProduceBlockResponse,
+} from "./mapProduceBlockResponseToStandardProduceBlockResponse";
 
 export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
@@ -139,26 +141,12 @@ export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
         const responseData = await this.httpClient.get<PrysmAttestationData>(
             `/eth/v1alpha1/validator/attestation?${query}`,
         );
-        return this.config.types.AttestationData.fromJson(
-            {
-                slot: responseData.slot,
-                index: responseData.committee_index,
-                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                beacon_block_root: base64ToHex(responseData.beacon_block_root),
-                source: {
-                    epoch: responseData.source.epoch,
-                    root: base64ToHex(responseData.source.root),
-                },
-                target: {
-                    epoch: responseData.target.epoch,
-                    root: base64ToHex(responseData.target.root),
-                },
-            },
-            {case: "snake"},
-        );
+        return this.config.types.AttestationData.fromJson((mapAttestationData(responseData) as unknown) as Json, {
+            case: "snake",
+        });
     };
 
-    /////// ignored implementations
-    // getAggregatedAttestation
-    // publishAggregateAndProofs
+    // TODO: implement method "getAggregatedAttestation"
+
+    // TODO: implement method "publishAggregateAndProofs"
 }

@@ -1,4 +1,14 @@
-import {GetBlock} from "./types";
+import {
+    Attestation,
+    AttestationData,
+    AttesterSlashing,
+    Deposit,
+    GetBlock,
+    IndexedAttestation,
+    ProposerSlashing,
+    SignedBeaconBlockHeader,
+    SignedVoluntaryExit,
+} from "./types";
 import {base64ToHex} from "./utils";
 
 /* eslint-disable camelcase */
@@ -21,33 +31,78 @@ export const mapProduceBlockResponseToStandardProduceBlockResponse = (data: GetB
                 deposit_count: data.body.eth1_data.deposit_count,
                 block_hash: base64ToHex(data.body.eth1_data.block_hash),
             },
-            // TODO: implement mapper
-            proposer_slashings: [],
-            // TODO: implement mapper
-            attester_slashings: [],
-            attestations: data.body.attestations.map((attestation) => ({
-                aggregation_bits: base64ToHex(attestation.aggregation_bits),
-                signature: base64ToHex(attestation.signature),
-                data: {
-                    slot: attestation.data.slot,
-                    index: attestation.data.committee_index,
-                    beacon_block_root: base64ToHex(attestation.data.beacon_block_root),
-                    source: {
-                        epoch: attestation.data.source.epoch,
-                        root: base64ToHex(attestation.data.source.root),
-                    },
-                    target: {
-                        epoch: attestation.data.target.epoch,
-                        root: base64ToHex(attestation.data.target.root),
-                    },
-                },
-            })),
-            // TODO: implement mapper
-            deposits: [],
-            // TODO: implement mapper
-            voluntary_exits: [],
+            proposer_slashings: data.body.proposer_slashings.map(mapProposerSlashing),
+            attester_slashings: data.body.attester_slashings.map(mapAttesterSlashing),
+            attestations: data.body.attestations.map(mapAttestation),
+            deposits: data.body.deposits.map(mapDeposit),
+            voluntary_exits: data.body.voluntary_exits.map(mapVoluntaryExit),
         },
     },
+});
+
+export const mapProposerSlashing = (proposerSlashing: ProposerSlashing): ProposerSlashingsEntity => ({
+    signed_header_1: mapSignedHeader(proposerSlashing.header_1),
+    signed_header_2: mapSignedHeader(proposerSlashing.header_2),
+});
+
+export const mapSignedHeader = (signedHeader: SignedBeaconBlockHeader): SignedHeader1OrSignedHeader2 => ({
+    message: {
+        slot: signedHeader.header.slot,
+        proposer_index: signedHeader.header.proposer_index,
+        parent_root: signedHeader.header.parent_root,
+        state_root: signedHeader.header.body_root,
+        body_root: signedHeader.header.body_root,
+    },
+    signature: signedHeader.signature,
+});
+
+export const mapAttesterSlashing = (attesterSlashing: AttesterSlashing): AttesterSlashingsEntity => ({
+    attestation_1: mapAttesterSlashingAttestation(attesterSlashing.attestation_1),
+    attestation_2: mapAttesterSlashingAttestation(attesterSlashing.attestation_2),
+});
+
+export const mapAttesterSlashingAttestation = (attesterSlashing: IndexedAttestation): Attestation1OrAttestation2 => ({
+    attesting_indices: attesterSlashing.attesting_indices || [],
+    signature: attesterSlashing.signature,
+    data: mapAttestationData(attesterSlashing.data),
+});
+
+export const mapAttestation = (attestation: Attestation): AttestationsEntity => ({
+    aggregation_bits: base64ToHex(attestation.aggregation_bits),
+    signature: base64ToHex(attestation.signature),
+    data: mapAttestationData(attestation.data),
+});
+
+export const mapAttestationData = (data: AttestationData): Data1 => ({
+    slot: data.slot,
+    index: data.committee_index,
+    beacon_block_root: base64ToHex(data.beacon_block_root),
+    source: {
+        epoch: data.source.epoch,
+        root: base64ToHex(data.source.root),
+    },
+    target: {
+        epoch: data.target.epoch,
+        root: base64ToHex(data.target.root),
+    },
+});
+
+export const mapDeposit = (deposit: Deposit): DepositsEntity => ({
+    proof: deposit.proof || [],
+    data: {
+        pubkey: base64ToHex(deposit.data.public_key),
+        withdrawal_credentials: base64ToHex(deposit.data.withdrawal_credentials),
+        amount: deposit.data.amount,
+        signature: base64ToHex(deposit.data.signature),
+    },
+});
+
+export const mapVoluntaryExit = (voluntaryExit: SignedVoluntaryExit): VoluntaryExitsEntity => ({
+    message: {
+        epoch: voluntaryExit.exit.epoch,
+        validator_index: voluntaryExit.exit.epoch,
+    },
+    signature: voluntaryExit.signature,
 });
 
 // This "garbage" is just here to help me

@@ -73,4 +73,8 @@ export class CgPrysmEth2BeaconStateApi extends CgEth2BeaconStateApi {
             return null;
         }
     };
+
+    // TODO: implement method "getLastEpoch"
+
+    // TODO: implement method "getCommittees"
 }
