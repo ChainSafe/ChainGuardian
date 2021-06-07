@@ -1,10 +1,28 @@
 import {CgEth2ValidatorApi} from "../eth2ApiClient/cgEth2ValidatorApi";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {HttpClient} from "../../../api";
-import {AttesterDuty, Epoch, ProposerDuty, ValidatorIndex} from "@chainsafe/lodestar-types";
-import {Json} from "@chainsafe/ssz";
-import {base64ToHex} from "./utils";
-import {DutiesResponse, ValidatorStatusResponse, Assignments} from "./types";
+import {
+    AttestationData,
+    AttesterDuty,
+    BeaconBlock,
+    CommitteeIndex,
+    Epoch,
+    ProposerDuty,
+    Slot,
+    ValidatorIndex,
+} from "@chainsafe/lodestar-types";
+import {Json, toHexString} from "@chainsafe/ssz";
+import {base64ToHex, hexToBase64} from "./utils";
+import {
+    DutiesResponse,
+    ValidatorStatusResponse,
+    Assignments,
+    GetBlock,
+    AttestationData as PrysmAttestationData,
+} from "./types";
+import querystring from "querystring";
+// eslint-disable-next-line max-len
+import {mapProduceBlockResponseToStandardProduceBlockResponse} from "./mapProduceBlockResponseToStandardProduceBlockResponse";
 
 export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
@@ -60,4 +78,87 @@ export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
         }
         return transformed.map((value) => this.config.types.ProposerDuty.fromJson(value, {case: "snake"}));
     };
+
+    public prepareBeaconCommitteeSubnet = async (
+        validatorIndex: ValidatorIndex,
+        committeeIndex: CommitteeIndex,
+        committeesAtSlot: number,
+        slot: Slot,
+        isAggregator: boolean,
+    ): Promise<void> => {
+        await this.httpClient.post<Json, void>("/eth/v1alpha1/validator/subnet/subscribe", {
+            slots: [slot],
+            // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+            committee_ids: [committeesAtSlot],
+            // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+            is_aggregator: [isAggregator],
+        });
+    };
+
+    // TODO: complete this code later maybe :man_shrugging:
+    public produceBlock = async (slot: Slot, randaoReveal: Uint8Array, graffiti: string): Promise<BeaconBlock> => {
+        const values = {
+            // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+            randao_reveal: hexToBase64(toHexString(randaoReveal)),
+            graffiti: hexToBase64(
+                graffiti.startsWith("0x")
+                    ? graffiti
+                    : "0x" + Buffer.from(graffiti, "utf-8").toString("hex").padEnd(64, "0"),
+            ),
+            slot: slot.toString(),
+        };
+        if (!graffiti) delete values.graffiti;
+        const query = querystring.stringify(values);
+        console.log(query);
+        const responseData = await this.httpClient.get<GetBlock>(`/eth/v1alpha1/validator/block?${query}`);
+        // console.log(JSON.stringify(responseData, undefined, 2));
+        const transformedResponseData = mapProduceBlockResponseToStandardProduceBlockResponse(responseData);
+        // console.warn(JSON.stringify(transformedResponseData, undefined, 2));
+        return this.config.types.BeaconBlock.fromJson((transformedResponseData as unknown) as Json, {case: "snake"});
+        // TODO: resolve this error
+        /* eslint-disable max-len */
+        /*2021-06-04 13:47:09 [CHAINGUARDIAN]   error: Failed to produce block slot=1860 message=Invalid JSON container field: expected field slot is undefined
+        Error: Invalid JSON container field: expected field slot is undefined
+            at forEach (/home/bernard/WebstormProjects/ChainGuardian/node_modules/@chainsafe/ssz/src/backings/structural/container.ts:202:15)
+            at Array.forEach (<anonymous>)
+            at ContainerStructuralHandler.fromJson (/home/bernard/WebstormProjects/ChainGuardian/node_modules/@chainsafe/ssz/src/backings/structural/container.ts:198:39)
+            at ContainerType.fromJson (/home/bernard/WebstormProjects/ChainGuardian/node_modules/@chainsafe/ssz/src/types/composite/abstract.ts:159:28)
+            at CgPrysmEth2ValidatorApi.produceBlock (/home/bernard/WebstormProjects/ChainGuardian/src/renderer/services/eth2/client/prysm/CgPrysmEth2ValidatorApi.ts:114:46)
+            at processTicksAndRejections (internal/process/task_queues.js:97:5)
+            at BlockProposingService.createAndPublishBlock (/home/bernard/WebstormProjects/ChainGuardian/node_modules/@chainsafe/lodestar-validator/src/services/block.ts:147:15)
+            at CgPrysmEth2Api.<anonymous> (/home/bernard/WebstormProjects/ChainGuardian/node_modules/@chainsafe/lodestar-validator/src/services/block.ts:99:7)*/
+        /* eslint-enable max-len */
+    };
+
+    public produceAttestationData = async (index: CommitteeIndex, slot: Slot): Promise<AttestationData> => {
+        const query = querystring.stringify({
+            // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+            committee_index: index,
+            slot,
+        });
+        const responseData = await this.httpClient.get<PrysmAttestationData>(
+            `/eth/v1alpha1/validator/attestation?${query}`,
+        );
+        return this.config.types.AttestationData.fromJson(
+            {
+                slot: responseData.slot,
+                index: responseData.committee_index,
+                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+                beacon_block_root: base64ToHex(responseData.beacon_block_root),
+                source: {
+                    epoch: responseData.source.epoch,
+                    root: base64ToHex(responseData.source.root),
+                },
+                target: {
+                    epoch: responseData.target.epoch,
+                    root: base64ToHex(responseData.target.root),
+                },
+            },
+            {case: "snake"},
+        );
+    };
+
+    /////// ignored implementations
+    // getAggregatedAttestation
+    // publishAggregateAndProofs
 }

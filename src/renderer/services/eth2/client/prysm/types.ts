@@ -47,3 +47,91 @@ export type ValidatorStateResponse = {
     activation_epoch: string;
     position_in_activation_queue: string;
 };
+
+export type GetBlock = {
+    slot: string;
+    proposer_index: string;
+    parent_root: string;
+    state_root: string;
+    body: {
+        randao_reveal: string;
+        eth1_data: {
+            deposit_root: string;
+            deposit_count: string;
+            block_hash: string;
+        };
+        graffiti: string;
+        proposer_slashings: ProposerSlashing[];
+        attester_slashings: AttesterSlashing[];
+        attestations: Attestation[];
+        deposits: Deposit[];
+        voluntary_exits: SignedVoluntaryExit[];
+    };
+};
+
+export type ProposerSlashing = {
+    header_1: SignedBeaconBlockHeader;
+    header_2: SignedBeaconBlockHeader;
+};
+
+export type SignedBeaconBlockHeader = {
+    signature: string;
+    header: BeaconBlockHeader;
+};
+
+export type BeaconBlockHeader = {
+    slot: string;
+    proposer_index: string;
+    parent_root: string;
+    body_root: string;
+};
+
+export type AttesterSlashing = {
+    attestation_1: IndexedAttestation;
+    attestation_2: IndexedAttestation;
+};
+
+export type IndexedAttestation = {
+    attesting_indices: string[];
+    signature: string;
+    data: AttestationData;
+};
+
+export type Attestation = {
+    aggregation_bits: string;
+    data: AttestationData;
+    signature: string;
+};
+
+export type AttestationData = {
+    slot: string;
+    committee_index: string;
+    beacon_block_root: string;
+    source: Checkpoint;
+    target: Checkpoint;
+};
+
+export type Checkpoint = {
+    epoch: string;
+    root: string;
+};
+
+export type Deposit = {
+    proof: string[];
+    data: {
+        public_key: string;
+        withdrawal_credentials: string;
+        amount: string;
+        signature: string;
+    };
+};
+
+export type SignedVoluntaryExit = {
+    exit: VoluntaryExit;
+    signature: string;
+};
+
+export type VoluntaryExit = {
+    epoch: string;
+    validator_index: string;
+};
