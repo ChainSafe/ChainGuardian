@@ -97,7 +97,6 @@ export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
         });
     };
 
-    // TODO: complete this code later maybe :man_shrugging:
     public produceBlock = async (slot: Slot, randaoReveal: Uint8Array, graffiti: string): Promise<BeaconBlock> => {
         const values = {
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
@@ -111,25 +110,11 @@ export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
         };
         if (!graffiti) delete values.graffiti;
         const query = querystring.stringify(values);
-        console.log(query);
         const responseData = await this.httpClient.get<GetBlock>(`/eth/v1alpha1/validator/block?${query}`);
-        // console.log(JSON.stringify(responseData, undefined, 2));
         const transformedResponseData = mapProduceBlockResponseToStandardProduceBlockResponse(responseData);
-        // console.warn(JSON.stringify(transformedResponseData, undefined, 2));
-        return this.config.types.BeaconBlock.fromJson((transformedResponseData as unknown) as Json, {case: "snake"});
-        // TODO: resolve this error
-        /* eslint-disable max-len */
-        /*2021-06-04 13:47:09 [CHAINGUARDIAN]   error: Failed to produce block slot=1860 message=Invalid JSON container field: expected field slot is undefined
-        Error: Invalid JSON container field: expected field slot is undefined
-            at forEach (/home/bernard/WebstormProjects/ChainGuardian/node_modules/@chainsafe/ssz/src/backings/structural/container.ts:202:15)
-            at Array.forEach (<anonymous>)
-            at ContainerStructuralHandler.fromJson (/home/bernard/WebstormProjects/ChainGuardian/node_modules/@chainsafe/ssz/src/backings/structural/container.ts:198:39)
-            at ContainerType.fromJson (/home/bernard/WebstormProjects/ChainGuardian/node_modules/@chainsafe/ssz/src/types/composite/abstract.ts:159:28)
-            at CgPrysmEth2ValidatorApi.produceBlock (/home/bernard/WebstormProjects/ChainGuardian/src/renderer/services/eth2/client/prysm/CgPrysmEth2ValidatorApi.ts:114:46)
-            at processTicksAndRejections (internal/process/task_queues.js:97:5)
-            at BlockProposingService.createAndPublishBlock (/home/bernard/WebstormProjects/ChainGuardian/node_modules/@chainsafe/lodestar-validator/src/services/block.ts:147:15)
-            at CgPrysmEth2Api.<anonymous> (/home/bernard/WebstormProjects/ChainGuardian/node_modules/@chainsafe/lodestar-validator/src/services/block.ts:99:7)*/
-        /* eslint-enable max-len */
+        return this.config.types.BeaconBlock.fromJson((transformedResponseData as unknown) as Json, {
+            case: "snake",
+        });
     };
 
     public produceAttestationData = async (index: CommitteeIndex, slot: Slot): Promise<AttestationData> => {

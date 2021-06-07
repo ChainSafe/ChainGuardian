@@ -16,27 +16,23 @@ import {base64ToHex} from "./utils";
 
 // TODO: after complete all mappings change return type "Block" to "Json"
 export const mapProduceBlockResponseToStandardProduceBlockResponse = (data: GetBlock): Block => ({
-    // TODO: get a way to get signature :man_shrugging:
-    signature: "",
-    message: {
-        slot: data.slot,
-        proposer_index: data.proposer_index,
-        parent_root: base64ToHex(data.parent_root),
-        state_root: base64ToHex(data.state_root),
-        body: {
-            randao_reveal: base64ToHex(data.body.randao_reveal),
-            graffiti: base64ToHex(data.body.graffiti),
-            eth1_data: {
-                deposit_root: base64ToHex(data.body.eth1_data.deposit_root),
-                deposit_count: data.body.eth1_data.deposit_count,
-                block_hash: base64ToHex(data.body.eth1_data.block_hash),
-            },
-            proposer_slashings: data.body.proposer_slashings.map(mapProposerSlashing),
-            attester_slashings: data.body.attester_slashings.map(mapAttesterSlashing),
-            attestations: data.body.attestations.map(mapAttestation),
-            deposits: data.body.deposits.map(mapDeposit),
-            voluntary_exits: data.body.voluntary_exits.map(mapVoluntaryExit),
+    slot: data.slot,
+    proposer_index: data.proposer_index,
+    parent_root: base64ToHex(data.parent_root),
+    state_root: base64ToHex(data.state_root),
+    body: {
+        randao_reveal: base64ToHex(data.body.randao_reveal),
+        graffiti: base64ToHex(data.body.graffiti),
+        eth1_data: {
+            deposit_root: base64ToHex(data.body.eth1_data.deposit_root),
+            deposit_count: data.body.eth1_data.deposit_count,
+            block_hash: base64ToHex(data.body.eth1_data.block_hash),
         },
+        proposer_slashings: data.body.proposer_slashings.map(mapProposerSlashing),
+        attester_slashings: data.body.attester_slashings.map(mapAttesterSlashing),
+        attestations: data.body.attestations.map(mapAttestation),
+        deposits: data.body.deposits.map(mapDeposit),
+        voluntary_exits: data.body.voluntary_exits.map(mapVoluntaryExit),
     },
 });
 
@@ -110,10 +106,6 @@ export const mapVoluntaryExit = (voluntaryExit: SignedVoluntaryExit): VoluntaryE
 
 /* eslint-disable @typescript-eslint/interface-name-prefix */
 export interface Block {
-    message: Message;
-    signature: string;
-}
-export interface Message {
     slot: string;
     proposer_index: string;
     parent_root: string;

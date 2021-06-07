@@ -108,8 +108,6 @@ export class CgEth2ValidatorApi implements ICGEth2ValidatorApi {
         } catch (e) {
             aAPLogger.error(e);
             error = e;
-        } finally {
-            aAPLogger.debug(data);
         }
         if (error) throw error;
     };

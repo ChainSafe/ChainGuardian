@@ -69,7 +69,7 @@
     "integration:lighthouse": "yarn run script integration/lighthouse.ts",
     "integration:teku": "yarn run script integration/teku.ts",
     "integration:prysm": "yarn run script integration/prysm.ts",
-    "integration:nimbus": "yarn run script integration/nimbus.ts",
+    "integration:nimbus": "yarn run script integration/nimbus.ts"
   },
   "jest": {
     "transform": {

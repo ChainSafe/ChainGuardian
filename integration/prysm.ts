@@ -2,7 +2,7 @@ import {getInteropKey} from "../src/renderer/services/validator/interop_keys";
 import assert from "assert";
 import {restValidation} from "./restValidation";
 import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
-import {CgPrysmEth2Api} from "../src/renderer/services/eth2/client/prysm";
+import {CgPrysmEth2Api} from "../src/renderer/services/eth2/client/module";
 
 (async function (): Promise<void> {
     const {proposer, attestation} = await restValidation({
