@@ -28,8 +28,6 @@ import {
     mapAttestationData,
     mapProduceBlockResponseToStandardProduceBlock,
 } from "./mapProduceBlockResponseToStandardProduceBlock";
-import {aAPLogger} from "../../../../../main/logger";
-import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition/lib/util/epoch";
 
 export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
@@ -136,7 +134,13 @@ export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
         });
     };
 
-    // TODO: implement method "getAggregatedAttestation"
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public getAggregatedAttestation = async (attestationDataRoot: Root, slot: Slot): Promise<Attestation> => {
+        throw new Error("getAggregatedAttestation not implemented");
+    };
 
-    // TODO: implement method "publishAggregateAndProofs"
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public publishAggregateAndProofs = async (signedAggregateAndProofs: SignedAggregateAndProof[]): Promise<void> => {
+        throw new Error("publishAggregateAndProofs not implemented");
+    };
 }

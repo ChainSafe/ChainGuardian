@@ -2,7 +2,7 @@ import {CgEth2BeaconPoolApi} from "../eth2ApiClient/cgEth2BeaconPoolApi";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {HttpClient} from "../../../api";
 import {Dispatch} from "redux";
-import {Attestation} from "@chainsafe/lodestar-types";
+import {Attestation, SignedVoluntaryExit} from "@chainsafe/lodestar-types";
 import {signedNewAttestation} from "../../../../ducks/validator/actions";
 import {toHex} from "@chainsafe/lodestar-utils";
 import {hexToBase64} from "./utils";
@@ -69,5 +69,8 @@ export class CgPrysmEth2BeaconPoolApi extends CgEth2BeaconPoolApi {
         await this.httpClient.post("/eth/v1alpha1/validator/attestation", mapped);
     };
 
-    // TODO: implement method "submitVoluntaryExit"
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public async submitVoluntaryExit(signedVoluntaryExit: SignedVoluntaryExit): Promise<void> {
+        throw new Error("submitVoluntaryExit not implemented");
+    }
 }

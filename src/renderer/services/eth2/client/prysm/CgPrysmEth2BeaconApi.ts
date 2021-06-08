@@ -34,7 +34,7 @@ export class CgPrysmEth2BeaconApi extends CgEth2BeaconApi {
                 genesisTime: Math.round(new Date(genesisTime).getTime() / 1000).toString(),
                 genesisValidatorsRoot: base64ToHex(genesisValidatorsRoot),
                 // TODO: change mocked data with real
-                genesisForkVersion: "0x00000001",
+                genesisForkVersion: "0x00000000",
             };
 
             return this.config.types.Genesis.fromJson(result, {case: "camel"});

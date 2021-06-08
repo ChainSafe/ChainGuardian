@@ -1,7 +1,7 @@
 import {CgEth2BeaconStateApi} from "../eth2ApiClient/cgEth2BeaconStateApi";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {HttpClient} from "../../../api";
-import {BLSPubkey, Fork, ValidatorIndex} from "@chainsafe/lodestar-types";
+import {BeaconCommitteeResponse, BLSPubkey, Fork, ValidatorIndex} from "@chainsafe/lodestar-types";
 import {ICGValidatorResponse} from "../interface";
 import {cgLogger} from "../../../../../main/logger";
 import {base64ToHex, hexToBase64} from "./utils";
@@ -19,9 +19,9 @@ export class CgPrysmEth2BeaconStateApi extends CgEth2BeaconStateApi {
         try {
             const forkMock = {
                 // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                previous_version: "0x00000001",
+                previous_version: "0x00000000",
                 // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                current_version: "0x00000001",
+                current_version: "0x00000000",
                 epoch: "0",
             };
             return this.config.types.Fork.fromJson(forkMock, {case: "snake"});
@@ -74,7 +74,12 @@ export class CgPrysmEth2BeaconStateApi extends CgEth2BeaconStateApi {
         }
     };
 
-    // TODO: implement method "getLastEpoch"
+    public getLastEpoch = async (): Promise<bigint | null> => {
+        throw new Error("getLastEpoch not implemented");
+    };
 
-    // TODO: implement method "getCommittees"
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public getCommittees = async (stateId: "head" | number = "head"): Promise<BeaconCommitteeResponse[]> => {
+        throw new Error("getCommittees not implemented");
+    };
 }
