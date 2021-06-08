@@ -2,12 +2,15 @@ import {CgEth2ValidatorApi} from "../eth2ApiClient/cgEth2ValidatorApi";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {HttpClient} from "../../../api";
 import {
+    Attestation,
     AttestationData,
     AttesterDuty,
     BeaconBlock,
     CommitteeIndex,
     Epoch,
     ProposerDuty,
+    Root,
+    SignedAggregateAndProof,
     Slot,
     ValidatorIndex,
 } from "@chainsafe/lodestar-types";
@@ -17,14 +20,16 @@ import {
     DutiesResponse,
     ValidatorStatusResponse,
     Assignments,
-    GetBlock,
+    BeaconBlock as PrysmBeaconBlock,
     AttestationData as PrysmAttestationData,
 } from "./types";
 import querystring from "querystring";
 import {
     mapAttestationData,
-    mapProduceBlockResponseToStandardProduceBlockResponse,
-} from "./mapProduceBlockResponseToStandardProduceBlockResponse";
+    mapProduceBlockResponseToStandardProduceBlock,
+} from "./mapProduceBlockResponseToStandardProduceBlock";
+import {aAPLogger} from "../../../../../main/logger";
+import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition/lib/util/epoch";
 
 export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
@@ -110,8 +115,8 @@ export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
         };
         if (!graffiti) delete values.graffiti;
         const query = querystring.stringify(values);
-        const responseData = await this.httpClient.get<GetBlock>(`/eth/v1alpha1/validator/block?${query}`);
-        const transformedResponseData = mapProduceBlockResponseToStandardProduceBlockResponse(responseData);
+        const responseData = await this.httpClient.get<PrysmBeaconBlock>(`/eth/v1alpha1/validator/block?${query}`);
+        const transformedResponseData = mapProduceBlockResponseToStandardProduceBlock(responseData);
         return this.config.types.BeaconBlock.fromJson((transformedResponseData as unknown) as Json, {
             case: "snake",
         });

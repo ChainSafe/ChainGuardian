@@ -48,7 +48,7 @@ export type ValidatorStateResponse = {
     position_in_activation_queue: string;
 };
 
-export type GetBlock = {
+export type BeaconBlock = {
     slot: string;
     proposer_index: string;
     parent_root: string;
@@ -83,6 +83,7 @@ export type BeaconBlockHeader = {
     slot: string;
     proposer_index: string;
     parent_root: string;
+    state_root: string;
     body_root: string;
 };
 
@@ -134,4 +135,20 @@ export type SignedVoluntaryExit = {
 export type VoluntaryExit = {
     epoch: string;
     validator_index: string;
+};
+
+export type SignedBeaconBlock = {
+    block: BeaconBlock;
+    signature: string;
+};
+
+export type AggregateAttestationAndProof = {
+    aggregator_index: string;
+    aggregate: Attestation;
+    selection_proof: string;
+};
+
+export type SignedAggregateAttestationAndProof = {
+    message: AggregateAttestationAndProof;
+    signature: string;
 };
