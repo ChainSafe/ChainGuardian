@@ -41,7 +41,7 @@ export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
         super(config, httpClient);
 
-        const url = new URL(`/eth/v1alpha1/beacon/attestations/stream`, `http://localhost:5050/`);
+        const url = new URL(`/eth/v1alpha1/beacon/attestations/stream`, httpClient.getBaseUrl());
         this.stream = new PrysmStreamReader<Attestation, {result: PrysmAttestation}>(url, {
             transformer: (data): Attestation =>
                 this.config.types.Attestation.fromJson((mapAttestation(data.result) as unknown) as Json, {

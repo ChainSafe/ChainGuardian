@@ -28,6 +28,7 @@ export class CgPrysmEth2BeaconBlocksApi extends CgEth2BeaconBlocksApi {
         throw new Error("getBlock not implemented");
     };
 
+    // TODO: need to be implemented for CG tests
     public getBlockAttestations = async (
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         blockId: "head" | "genesis" | "finalized" | number,

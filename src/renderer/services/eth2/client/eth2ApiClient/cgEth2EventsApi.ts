@@ -7,7 +7,7 @@ import EventSource from "eventsource";
 
 export class CgEth2EventsApi implements ICGEventsApi {
     protected readonly config: IBeaconConfig;
-    private readonly baseUrl: string;
+    protected readonly baseUrl: string;
     public constructor(config: IBeaconConfig, baseUrl: string) {
         this.config = config;
         this.baseUrl = baseUrl;
