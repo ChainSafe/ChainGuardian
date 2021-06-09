@@ -100,3 +100,12 @@ export interface VoluntaryExitMessage {
     epoch: string;
     validator_index: string;
 }
+
+export interface SignedAggregateAndProof {
+    message: {
+        aggregator_index: string;
+        aggregate: Attestation;
+        selection_proof: string;
+    };
+    signature: string;
+}

@@ -78,6 +78,7 @@ export class CgPrysmEth2BeaconStateApi extends CgEth2BeaconStateApi {
         throw new Error("getLastEpoch not implemented");
     };
 
+    // TODO: implement this? required for testing
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCommittees = async (stateId: "head" | number = "head"): Promise<BeaconCommitteeResponse[]> => {
         throw new Error("getCommittees not implemented");

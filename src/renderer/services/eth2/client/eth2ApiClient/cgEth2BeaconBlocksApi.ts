@@ -28,6 +28,7 @@ export class CgEth2BeaconBlocksApi implements ICGETH2BeaconBlocksApi {
         return this.config.types.SignedBeaconBlock.fromJson(blocksResponse.data, {case: "snake"});
     };
 
+    // TODO: rewrite this to more generic way and then overwrite for the needed cases?
     public getBlockAttestations = async (
         blockId: "head" | "genesis" | "finalized" | number,
     ): Promise<List<Attestation> | null> => {

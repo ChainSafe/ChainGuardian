@@ -22,16 +22,33 @@ import {
     Assignments,
     BeaconBlock as PrysmBeaconBlock,
     AttestationData as PrysmAttestationData,
+    Attestation as PrysmAttestation,
 } from "./types";
+import {SignedAggregateAndProof as SignedAggregateAndProofDto} from './map.types';
 import querystring from "querystring";
 import {
+    mapAttestation,
     mapAttestationData,
     mapProduceBlockResponseToStandardProduceBlock,
 } from "./mapProduceBlockResponseToStandardProduceBlock";
+import {mapAttestation as mapAttestationToBase} from "./mapProduceBlockDataToPrysmProduceBlock";
+import {PrysmStreamReader} from "./PrysmStreamReader";
+import {aAPLogger} from "../../../../../main/logger";
 
 export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
+    private readonly stream: PrysmStreamReader<Attestation, {result: PrysmAttestation}>;
+
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
         super(config, httpClient);
+
+        const url = new URL(`/eth/v1alpha1/beacon/attestations/stream`, `http://localhost:5050/`);
+        this.stream = new PrysmStreamReader<Attestation, {result: PrysmAttestation}>(url, {
+            transformer: (data): Attestation =>
+                this.config.types.Attestation.fromJson((mapAttestation(data.result) as unknown) as Json, {
+                    case: "snake",
+                }),
+            maxElements: 128,
+        });
     }
 
     public getAttesterDuties = async (epoch: Epoch, validatorIndexes: ValidatorIndex[]): Promise<AttesterDuty[]> => {
@@ -134,13 +151,54 @@ export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
         });
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getAggregatedAttestation = async (attestationDataRoot: Root, slot: Slot): Promise<Attestation> => {
-        throw new Error("getAggregatedAttestation not implemented");
+        const dataRoot = this.config.types.Root.toJson(attestationDataRoot);
+        const result = this.stream
+            .getAll()
+            .filter((attestation) => Number(attestation.data.slot) === slot)
+            .reverse()
+            .find(
+                (attestation) =>
+                    this.config.types.Root.toJson(this.config.types.AttestationData.hashTreeRoot(attestation.data)) ===
+                    dataRoot,
+            );
+
+        if (!result) throw new Error("Attestation not found");
+        return result;
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public publishAggregateAndProofs = async (signedAggregateAndProofs: SignedAggregateAndProof[]): Promise<void> => {
-        throw new Error("publishAggregateAndProofs not implemented");
+        let error: Error;
+        try {
+            await Promise.all(
+                signedAggregateAndProofs
+                    .map(
+                        (data) =>
+                            (this.config.types.SignedAggregateAndProof.toJson(data, {
+                                case: "snake",
+                            }) as unknown) as SignedAggregateAndProofDto,
+                    )
+                    .map(
+                        (data) =>
+                            (this.httpClient.post("/eth/v1alpha1/validator/aggregate", {
+                                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+                                signed_aggregate_and_proof: {
+                                    message: {
+                                        // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+                                        aggregator_index: data.message.aggregator_index,
+                                        aggregate: mapAttestationToBase(data.message.aggregate),
+                                        // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+                                        selection_proof: hexToBase64(data.message.selection_proof),
+                                    },
+                                    signature: hexToBase64(data.signature),
+                                },
+                            }) as unknown) as Json,
+                    ),
+            );
+        } catch (e) {
+            aAPLogger.error(e);
+            error = e;
+        }
+        if (error) throw error;
     };
 }
