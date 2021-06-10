@@ -24,7 +24,7 @@ import {
     AttestationData as PrysmAttestationData,
     Attestation as PrysmAttestation,
 } from "./types";
-import {SignedAggregateAndProof as SignedAggregateAndProofDto} from './map.types';
+import {SignedAggregateAndProof as SignedAggregateAndProofDto} from "./map.types";
 import querystring from "querystring";
 import {
     mapAttestation,

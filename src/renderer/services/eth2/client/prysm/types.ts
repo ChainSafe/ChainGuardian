@@ -152,3 +152,33 @@ export type SignedAggregateAttestationAndProof = {
     message: AggregateAttestationAndProof;
     signature: string;
 };
+
+export type ChainHead = {
+    head_slot: string;
+    head_epoch: string;
+    head_block_root: string;
+
+    finalized_slot: string;
+    finalized_epoch: string;
+    finalized_block_root: string;
+
+    justified_slot: string;
+    justified_epoch: string;
+    justified_block_root: string;
+
+    previous_justified_slot: string;
+    previous_justified_epoch: string;
+    previous_justified_block_root: string;
+};
+
+export type ListBlocksResponse = {
+    blockContainers: BeaconBlockContainer[];
+    next_page_token: string;
+    total_size: number;
+};
+
+export type BeaconBlockContainer = {
+    block: SignedBeaconBlock;
+    block_root: string;
+    canonical: boolean;
+};

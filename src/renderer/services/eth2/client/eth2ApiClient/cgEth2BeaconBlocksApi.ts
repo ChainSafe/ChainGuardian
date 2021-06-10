@@ -19,8 +19,8 @@ export class CgEth2BeaconBlocksApi implements ICGETH2BeaconBlocksApi {
             "/eth/v1/beacon/blocks",
             this.config.types.SignedBeaconBlock.toJson(block, {case: "snake"}),
         );
-        if (process.env.NODE_ENV !== "validator-test")
-            if (matomo) matomo.trackEvent({category: "block", action: "proposed", value: block.message.slot});
+        if (process.env.NODE_ENV !== "validator-test" && matomo)
+            matomo.trackEvent({category: "block", action: "proposed", value: block.message.slot});
     };
 
     public getBlock = async (blockId: "head" | "genesis" | "finalized" | number): Promise<SignedBeaconBlock> => {
