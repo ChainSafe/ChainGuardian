@@ -47,14 +47,11 @@ export class CgPrysmEth2BeaconPoolApi extends CgEth2BeaconPoolApi {
         }
         const data = this.config.types.Attestation.toJson(attestation) as AttestationData;
         const mapped: PrysmAttestation = {
-            // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-            aggregation_bits: hexToBase64(data.aggregationBits),
+            aggregationBits: hexToBase64(data.aggregationBits),
             data: {
                 slot: data.data.slot,
-                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                committee_index: data.data.index,
-                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                beacon_block_root: hexToBase64(data.data.beaconBlockRoot),
+                committeeIndex: data.data.index,
+                beaconBlockRoot: hexToBase64(data.data.beaconBlockRoot),
                 source: {
                     epoch: data.data.source.epoch,
                     root: hexToBase64(data.data.source.root),

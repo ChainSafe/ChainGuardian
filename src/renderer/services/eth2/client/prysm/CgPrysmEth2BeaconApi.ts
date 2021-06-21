@@ -20,14 +20,9 @@ export class CgPrysmEth2BeaconApi extends CgEth2BeaconApi {
 
     public getGenesis = async (): Promise<Genesis | null> => {
         try {
-            const {
-                genesis_time: genesisTime,
-                genesis_validators_root: genesisValidatorsRoot,
-            } = await this.httpClient.get<{
-                // eslint-disable-next-line camelcase
-                genesis_time: string;
-                // eslint-disable-next-line camelcase
-                genesis_validators_root: string;
+            const {genesisTime, genesisValidatorsRoot} = await this.httpClient.get<{
+                genesisTime: string;
+                genesisValidatorsRoot: string;
             }>("/eth/v1alpha1/node/genesis");
 
             const result = {

@@ -51,22 +51,16 @@ export class CgPrysmEth2BeaconStateApi extends CgEth2BeaconStateApi {
                 this.httpClient.get<{index: string}>(`/eth/v1alpha1/validator/index?${query}`),
             ]);
 
-            return this.config.types.ValidatorResponse.fromJson(
-                {
-                    index: indexValidatorResponse.index,
-                    balance: stateValidatorResponse.effective_balance,
-                    status: statusValidatorResponse.status,
-                    validator: {
-                        ...stateValidatorResponse,
-                        pubkey: base64ToHex(stateValidatorResponse.public_key),
-                        // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                        withdrawal_credentials: base64ToHex(stateValidatorResponse.withdrawal_credentials),
-                    },
+            return this.config.types.ValidatorResponse.fromJson({
+                index: indexValidatorResponse.index,
+                balance: stateValidatorResponse.effectiveBalance,
+                status: statusValidatorResponse.status,
+                validator: {
+                    ...stateValidatorResponse,
+                    pubkey: base64ToHex(stateValidatorResponse.publicKey),
+                    withdrawalCredentials: base64ToHex(stateValidatorResponse.withdrawalCredentials),
                 },
-                {
-                    case: "snake",
-                },
-            ) as ICGValidatorResponse;
+            }) as ICGValidatorResponse;
         } catch (e) {
             if (!e.message.includes('"code":404'))
                 cgLogger.error("Failed to fetch validator", {validatorId: id, error: e.message});

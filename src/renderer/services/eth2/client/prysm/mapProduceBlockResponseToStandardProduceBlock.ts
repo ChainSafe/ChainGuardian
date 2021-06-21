@@ -28,64 +28,64 @@ import {Json} from "@chainsafe/ssz";
 export const mapProduceBlockResponseToStandardProduceBlock = (data: PrysmBeaconBlock): Json /*Block*/ =>
     (({
         slot: data.slot,
-        proposer_index: data.proposer_index,
-        parent_root: base64ToHex(data.parent_root),
-        state_root: base64ToHex(data.state_root),
+        proposer_index: data.proposerIndex,
+        parent_root: base64ToHex(data.parentRoot),
+        state_root: base64ToHex(data.stateRoot),
         body: {
-            randao_reveal: base64ToHex(data.body.randao_reveal),
+            randao_reveal: base64ToHex(data.body.randaoReveal),
             graffiti: base64ToHex(data.body.graffiti),
             eth1_data: {
-                deposit_root: base64ToHex(data.body.eth1_data.deposit_root),
-                deposit_count: data.body.eth1_data.deposit_count,
-                block_hash: base64ToHex(data.body.eth1_data.block_hash),
+                deposit_root: base64ToHex(data.body.eth1Data.depositRoot),
+                deposit_count: data.body.eth1Data.depositCount,
+                block_hash: base64ToHex(data.body.eth1Data.blockHash),
             },
-            proposer_slashings: data.body.proposer_slashings.map(mapProposerSlashing),
-            attester_slashings: data.body.attester_slashings.map(mapAttesterSlashing),
+            proposer_slashings: data.body.proposerSlashings.map(mapProposerSlashing),
+            attester_slashings: data.body.attesterSlashings.map(mapAttesterSlashing),
             attestations: data.body.attestations.map(mapAttestation),
             deposits: data.body.deposits.map(mapDeposit),
-            voluntary_exits: data.body.voluntary_exits.map(mapVoluntaryExit),
+            voluntary_exits: data.body.voluntaryExits.map(mapVoluntaryExit),
         },
     } as unknown) as Json);
 
 export const mapProposerSlashing = (proposerSlashing: PrysmProposerSlashing): ProposerSlashing => ({
-    signed_header_1: mapSignedHeader(proposerSlashing.header_1),
-    signed_header_2: mapSignedHeader(proposerSlashing.header_2),
+    signed_header_1: mapSignedHeader(proposerSlashing.header1),
+    signed_header_2: mapSignedHeader(proposerSlashing.header2),
 });
 
 export const mapSignedHeader = (signedHeader: PrysmSignedBeaconBlockHeader): SignedHeader => ({
     message: {
         slot: signedHeader.header.slot,
-        proposer_index: signedHeader.header.proposer_index,
-        parent_root: base64ToHex(signedHeader.header.parent_root),
-        state_root: base64ToHex(signedHeader.header.state_root),
-        body_root: base64ToHex(signedHeader.header.body_root),
+        proposer_index: signedHeader.header.proposerIndex,
+        parent_root: base64ToHex(signedHeader.header.parentRoot),
+        state_root: base64ToHex(signedHeader.header.stateRoot),
+        body_root: base64ToHex(signedHeader.header.bodyRoot),
     },
     signature: base64ToHex(signedHeader.signature),
 });
 
 export const mapAttesterSlashing = (attesterSlashing: PrysmAttesterSlashing): AttestationSlashing => ({
-    attestation_1: mapAttesterSlashingAttestation(attesterSlashing.attestation_1),
-    attestation_2: mapAttesterSlashingAttestation(attesterSlashing.attestation_2),
+    attestation_1: mapAttesterSlashingAttestation(attesterSlashing.attestation1),
+    attestation_2: mapAttesterSlashingAttestation(attesterSlashing.attestation2),
 });
 
 export const mapAttesterSlashingAttestation = (
     attesterSlashing: PrysmIndexedAttestation,
 ): AttestationSlashingAttestation => ({
-    attesting_indices: attesterSlashing.attesting_indices || [],
+    attesting_indices: attesterSlashing.attestingIndices || [],
     signature: base64ToHex(attesterSlashing.signature),
     data: mapAttestationData(attesterSlashing.data),
 });
 
 export const mapAttestation = (attestation: PrysmAttestation): Attestation => ({
-    aggregation_bits: base64ToHex(attestation.aggregation_bits),
+    aggregation_bits: base64ToHex(attestation.aggregationBits),
     signature: base64ToHex(attestation.signature),
     data: mapAttestationData(attestation.data),
 });
 
 export const mapAttestationData = (data: PrysmAttestationData): AttestationData => ({
     slot: data.slot,
-    index: data.committee_index,
-    beacon_block_root: base64ToHex(data.beacon_block_root),
+    index: data.committeeIndex,
+    beacon_block_root: base64ToHex(data.beaconBlockRoot),
     source: {
         epoch: data.source.epoch,
         root: base64ToHex(data.source.root),
@@ -99,8 +99,8 @@ export const mapAttestationData = (data: PrysmAttestationData): AttestationData 
 export const mapDeposit = (deposit: PrysmDeposit): Deposit => ({
     proof: deposit.proof || [],
     data: {
-        pubkey: base64ToHex(deposit.data.public_key),
-        withdrawal_credentials: base64ToHex(deposit.data.withdrawal_credentials),
+        pubkey: base64ToHex(deposit.data.publicKey),
+        withdrawal_credentials: base64ToHex(deposit.data.withdrawalCredentials),
         amount: deposit.data.amount,
         signature: base64ToHex(deposit.data.signature),
     },

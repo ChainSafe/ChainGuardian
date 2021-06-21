@@ -30,7 +30,7 @@ export class CgPrysmEth2EventsApi extends CgEth2EventsApi {
                         message: this.config.types.BlockEventPayload.fromJson(
                             {
                                 slot: data.block.slot,
-                                block: base64ToHex(data.block.state_root),
+                                block: base64ToHex(data.block.stateRoot),
                             },
                             {case: "snake"},
                         ),
@@ -41,9 +41,9 @@ export class CgPrysmEth2EventsApi extends CgEth2EventsApi {
             // ATTESTATION
             if (topics.some((topic) => topic === "attestation")) {
                 const url = new URL(`/eth/v1alpha1/beacon/attestations/stream`, this.baseUrl);
-                streams["attestation"] = new PrysmStreamReader<Attestation, {result: PrysmAttestation}>(url, {
+                streams["attestation"] = new PrysmStreamReader<Attestation, PrysmAttestation>(url, {
                     transformer: (data): Attestation =>
-                        this.config.types.Attestation.fromJson((mapAttestation(data.result) as unknown) as Json, {
+                        this.config.types.Attestation.fromJson((mapAttestation(data) as unknown) as Json, {
                             case: "snake",
                         }),
                 });

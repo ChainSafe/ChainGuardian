@@ -1,77 +1,75 @@
-/* eslint-disable camelcase */
-
 export type Assignments = {
     epoch: string;
     assignments: {
-        beacon_committees: string[];
-        committee_index: string;
-        attester_slot: string;
-        proposer_slots: string[];
-        public_key: string;
-        validator_index: string;
+        beaconCommittees: string[];
+        committeeIndex: string;
+        attesterSlot: string;
+        proposerSlots: string[];
+        publicKey: string;
+        validatorIndex: string;
     }[];
-    next_page_token: string;
-    total_size: number;
+    nextPageToken: string;
+    totalSize: number;
 };
 
 export type Duty = {
     committee: string[];
-    committee_index: string;
-    attester_slot: string;
-    proposer_slots: string[];
-    public_key: string;
-    validator_index: string;
+    committeeIndex: string;
+    attesterSlot: string;
+    proposerSlots: string[];
+    publicKey: string;
+    validatorIndex: string;
     status: string;
 };
 
 export type DutiesResponse = {
-    current_epoch_duties: Duty[];
-    next_epoch_duties: Duty[];
+    currentEpochDuties: Duty[];
+    nextEpochDuties: Duty[];
 };
 
 export type ValidatorStatusResponse = {
-    public_key: string;
-    withdrawal_credentials: string;
-    effective_balance: string;
+    publicKey: string;
+    withdrawalCredentials: string;
+    effectiveBalance: string;
     slashed: boolean;
-    activation_eligibility_epoch: string;
-    activation_epoch: string;
-    exit_epoch: string;
-    withdrawable_epoch: string;
+    activationEligibilityEpoch: string;
+    activationEpoch: string;
+    exitEpoch: string;
+    withdrawableEpoch: string;
 };
 
 export type ValidatorStateResponse = {
     status: string;
-    eth1_deposit_block_number: string;
-    deposit_inclusion_slot: string;
-    activation_epoch: string;
-    position_in_activation_queue: string;
+    eth1DepositBlockNumber: string;
+    depositInclusionSlot: string;
+    activationEpoch: string;
+    positionInActivationQueue: string;
 };
 
 export type BeaconBlock = {
     slot: string;
-    proposer_index: string;
-    parent_root: string;
-    state_root: string;
+    proposerIndex: string;
+    parentRoot: string;
+    stateRoot: string;
     body: {
-        randao_reveal: string;
-        eth1_data: {
-            deposit_root: string;
-            deposit_count: string;
-            block_hash: string;
+        randaoReveal: string;
+        eth1Data: {
+            depositRoot: string;
+            depositCount: string;
+            blockHash: string;
         };
         graffiti: string;
-        proposer_slashings: ProposerSlashing[];
-        attester_slashings: AttesterSlashing[];
+        proposerSlashings: ProposerSlashing[];
+        attesterSlashings: AttesterSlashing[];
         attestations: Attestation[];
         deposits: Deposit[];
-        voluntary_exits: SignedVoluntaryExit[];
+        voluntaryExits: SignedVoluntaryExit[];
     };
 };
 
 export type ProposerSlashing = {
-    header_1: SignedBeaconBlockHeader;
-    header_2: SignedBeaconBlockHeader;
+    header1: SignedBeaconBlockHeader;
+    header2: SignedBeaconBlockHeader;
 };
 
 export type SignedBeaconBlockHeader = {
@@ -81,33 +79,33 @@ export type SignedBeaconBlockHeader = {
 
 export type BeaconBlockHeader = {
     slot: string;
-    proposer_index: string;
-    parent_root: string;
-    state_root: string;
-    body_root: string;
+    proposerIndex: string;
+    parentRoot: string;
+    stateRoot: string;
+    bodyRoot: string;
 };
 
 export type AttesterSlashing = {
-    attestation_1: IndexedAttestation;
-    attestation_2: IndexedAttestation;
+    attestation1: IndexedAttestation;
+    attestation2: IndexedAttestation;
 };
 
 export type IndexedAttestation = {
-    attesting_indices: string[];
+    attestingIndices: string[];
     signature: string;
     data: AttestationData;
 };
 
 export type Attestation = {
-    aggregation_bits: string;
+    aggregationBits: string;
     data: AttestationData;
     signature: string;
 };
 
 export type AttestationData = {
     slot: string;
-    committee_index: string;
-    beacon_block_root: string;
+    committeeIndex: string;
+    beaconBlockRoot: string;
     source: Checkpoint;
     target: Checkpoint;
 };
@@ -120,8 +118,8 @@ export type Checkpoint = {
 export type Deposit = {
     proof: string[];
     data: {
-        public_key: string;
-        withdrawal_credentials: string;
+        publicKey: string;
+        withdrawalCredentials: string;
         amount: string;
         signature: string;
     };
@@ -134,7 +132,7 @@ export type SignedVoluntaryExit = {
 
 export type VoluntaryExit = {
     epoch: string;
-    validator_index: string;
+    validatorIndex: string;
 };
 
 export type SignedBeaconBlock = {
@@ -143,9 +141,9 @@ export type SignedBeaconBlock = {
 };
 
 export type AggregateAttestationAndProof = {
-    aggregator_index: string;
+    aggregatorIndex: string;
     aggregate: Attestation;
-    selection_proof: string;
+    selectionProof: string;
 };
 
 export type SignedAggregateAttestationAndProof = {
@@ -154,31 +152,31 @@ export type SignedAggregateAttestationAndProof = {
 };
 
 export type ChainHead = {
-    head_slot: string;
-    head_epoch: string;
-    head_block_root: string;
+    headSlot: string;
+    headEpoch: string;
+    headBlockRoot: string;
 
-    finalized_slot: string;
-    finalized_epoch: string;
-    finalized_block_root: string;
+    finalizedSlot: string;
+    finalizedEpoch: string;
+    finalizedBlockRoot: string;
 
-    justified_slot: string;
-    justified_epoch: string;
-    justified_block_root: string;
+    justifiedSlot: string;
+    justifiedEpoch: string;
+    justifiedBlockRoot: string;
 
-    previous_justified_slot: string;
-    previous_justified_epoch: string;
-    previous_justified_block_root: string;
+    previousJustifiedSlot: string;
+    previousJustifiedEpoch: string;
+    previousJustifiedBlockRoot: string;
 };
 
 export type ListBlocksResponse = {
     blockContainers: BeaconBlockContainer[];
-    next_page_token: string;
-    total_size: number;
+    nextPageToken: string;
+    totalSize: number;
 };
 
 export type BeaconBlockContainer = {
     block: SignedBeaconBlock;
-    block_root: string;
+    blockRoot: string;
     canonical: boolean;
 };

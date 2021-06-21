@@ -31,8 +31,8 @@ export class CgPrysmEth2BeaconBlocksApi extends CgEth2BeaconBlocksApi {
         const slot = await (async (): Promise<number> => {
             if (typeof blockId === "string") {
                 const data = await this.httpClient.get<ChainHead>("/eth/v1alpha1/beacon/chainhead");
-                if (blockId === "head" || blockId === "genesis") return Number(data.head_slot);
-                if (blockId === "finalized") return Number(data.finalized_slot);
+                if (blockId === "head" || blockId === "genesis") return Number(data.headSlot);
+                if (blockId === "finalized") return Number(data.finalizedSlot);
                 throw new Error(`block id: ${blockId} dose not exist`);
             }
             return blockId;

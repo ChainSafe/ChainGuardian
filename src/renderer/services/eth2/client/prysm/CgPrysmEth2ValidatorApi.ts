@@ -42,9 +42,9 @@ export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
         super(config, httpClient);
 
         const url = new URL(`/eth/v1alpha1/beacon/attestations/stream`, httpClient.getBaseUrl());
-        this.stream = new PrysmStreamReader<Attestation, {result: PrysmAttestation}>(url, {
+        this.stream = new PrysmStreamReader<Attestation, PrysmAttestation>(url, {
             transformer: (data): Attestation =>
-                this.config.types.Attestation.fromJson((mapAttestation(data.result) as unknown) as Json, {
+                this.config.types.Attestation.fromJson((mapAttestation(data) as unknown) as Json, {
                     case: "snake",
                 }),
             maxElements: 128,
@@ -59,26 +59,26 @@ export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
                 ),
             )
         )
-            .map(({public_key: pubkey}) => `&public_keys=${encodeURIComponent(pubkey)}`)
+            .map(({publicKey}) => `&public_keys=${encodeURIComponent(publicKey)}`)
             .join("");
         const duties = await this.httpClient.get<DutiesResponse>(
             `/eth/v1alpha1/validator/duties?epoch=${Number(epoch.toString()) - 1}${pubkeyQuery}`,
         );
         const transformed: Json[] = [];
-        for (const duty of duties.next_epoch_duties) {
+        for (const duty of duties.nextEpochDuties) {
             transformed.push({
-                pubkey: base64ToHex(duty.public_key),
+                pubkey: base64ToHex(duty.publicKey),
                 // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                validator_index: duty.validator_index,
+                validator_index: duty.validatorIndex,
                 // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                committee_index: duty.committee_index,
+                committee_index: duty.committeeIndex,
                 // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
                 committee_length: duty.committee.length,
                 // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                committees_at_slot: duty.committee.findIndex((validator) => validator === duty.validator_index) + 1,
+                committees_at_slot: duty.committee.findIndex((validator) => validator === duty.validatorIndex) + 1,
                 // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                validator_committee_index: duty.committee_index,
-                slot: duty.attester_slot,
+                validator_committee_index: duty.committeeIndex,
+                slot: duty.attesterSlot,
             });
         }
         return transformed.map((value) => this.config.types.AttesterDuty.fromJson(value, {case: "snake"}));
@@ -89,11 +89,11 @@ export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
         const responseData = await this.httpClient.get<Assignments>(url);
         const transformed: Json[] = [];
         for (const assignment of responseData.assignments) {
-            for (const slot of assignment.proposer_slots) {
+            for (const slot of assignment.proposerSlots) {
                 transformed.push({
-                    pubkey: base64ToHex(assignment.public_key),
+                    pubkey: base64ToHex(assignment.publicKey),
                     // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-                    validator_index: assignment.validator_index,
+                    validator_index: assignment.validatorIndex,
                     slot: slot,
                 });
             }
