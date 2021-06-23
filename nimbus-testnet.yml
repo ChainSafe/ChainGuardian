@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   beacon_node:
-    image: "${DOCKER_NIMBUS_IMAGE:-statusim/nimbus-eth2:amd64-v1.3.0}"
+    image: "${DOCKER_NIMBUS_IMAGE:-statusim/nimbus-eth2:amd64-v1.4.0}"
     container_name: "eth2_testnet_beacon_nimbus"
     entrypoint: "/bin/bash"
     ports:
