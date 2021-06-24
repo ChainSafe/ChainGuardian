@@ -12,6 +12,24 @@ export const getClientParams = ({
 }: Omit<IConfigureBNSubmitOptions, "memory" | "image">): Partial<Omit<IDockerRunParams, "name">> => {
     const eth1QueryLimit = 200;
     switch (client) {
+        case "nimbus": {
+            const cmd = [
+                `--network=${network}`,
+                `--data-dir=/data`,
+                `--tcp-port=${libp2pPort}`,
+                `--udp-port=${discoveryPort}`,
+                `--rest`,
+                `--rest-address=0.0.0.0`,
+                `--rest-port=${rpcPort}`,
+                // TODO: add CORS for dev
+                `--web3-url=${eth1Url}`,
+            ].join(" ");
+            console.log(cmd, eth1Url);
+            return {
+                cmd,
+                volume: `${chainDataDir}:/data`,
+            };
+        }
         case "prysm": {
             const networkEnvironment = network !== "mainet" ? " --" + network : "";
             const cmd = [

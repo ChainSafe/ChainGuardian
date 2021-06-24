@@ -27,7 +27,7 @@ export const isCurrentOrNewerVersion = (current: string, comparingWith: string):
     return true;
 };
 
-export const getAvailableClientReleases = async (client: string): Promise<string[]> => {
+export const getAvailableClientReleases = async (client: string, versionPrefix: string): Promise<string[]> => {
     const {
         beacon: {dockerImage, owner, repo},
     } = getDefaultsForClient(client);
@@ -36,11 +36,10 @@ export const getAvailableClientReleases = async (client: string): Promise<string
     return (
         response.data
             .filter(
-                // eslint-disable-next-line camelcase, @typescript-eslint/camelcase
-                ({tag_name, draft, prerelease}) =>
-                    !draft && !prerelease && isCurrentOrNewerVersion(currentTag, tag_name),
+                ({tag_name: tag, draft, prerelease}) =>
+                    !draft && !prerelease && isCurrentOrNewerVersion(currentTag, versionPrefix + tag),
             )
             // eslint-disable-next-line camelcase, @typescript-eslint/camelcase
-            .map(({tag_name}) => dockerImage.split(":")[0] + ":" + tag_name)
+            .map(({tag_name}) => dockerImage.split(":")[0] + ":" + versionPrefix + tag_name)
     );
 };

@@ -8,6 +8,7 @@ export interface IDropdownProps {
     label?: string;
     onChange?: (selected: number) => void;
     verifiedIndex?: number;
+    className?: string;
 }
 
 export const Dropdown: React.FunctionComponent<IDropdownProps> = ({
@@ -16,6 +17,7 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = ({
     label,
     onChange,
     verifiedIndex,
+    className = "",
 }) => {
     const [visible, setVisible] = useState("none");
     options = Array.isArray(options) ? {...options} : options;
@@ -50,7 +52,7 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = ({
     }
 
     return (
-        <div>
+        <div className={className}>
             {label && <h3>{label}</h3>}
             <div onClick={(): void => hide()} className='dropdown-screen'>
                 <div className='dropdown-container'>

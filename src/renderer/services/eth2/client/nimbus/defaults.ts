@@ -5,8 +5,9 @@ export const beaconNode: IDefaultBeaconNodeConfig = {
     libp2pPort: 9000,
     discoveryPort: 9000,
     memory: "3500m",
-    owner: "statusim",
+    owner: "status-im",
     repo: "nimbus-eth2",
+    versionPrefix: "amd64-",
     dockerImage: process.env.DOCKER_NIMBUS_IMAGE,
 };
 
