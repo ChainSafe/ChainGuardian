@@ -163,7 +163,7 @@ export class CgNimbusEth2EventsApi extends CgEth2EventsApi {
                     } catch (e) {
                         push({type: CGBeaconEventType.ERROR});
                     }
-                }, 1000);
+                }, 1000) as NodeJS.Timeout;
             })();
             return (): void => {
                 if (interval) clearInterval(interval);
