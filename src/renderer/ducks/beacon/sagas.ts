@@ -47,7 +47,7 @@ import {ValidatorStatus} from "../../constants/validatorStatus";
 import {cgLogger, createLogger, getBeaconLogfileFromURL, mainLogger} from "../../../main/logger";
 import {setInitialBeacons} from "../settings/actions";
 import {DockerRegistry} from "../../services/docker/docker-registry";
-import {CgEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client/module";
+import {CgEth2ApiClient, getBeaconNodeEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client/module";
 import {getClientParams} from "../../services/docker/getClientParams";
 
 export function* pullDockerImage(
@@ -238,10 +238,12 @@ export function* watchOnHead(
         (INetworkConfig | null) &
         Beacon &
         SyncingStatus &
+        typeof CgEth2ApiClient &
         boolean
 > {
     const config = yield retry(30, 1000, readBeaconChainNetwork, url);
-    const client = new CgEth2ApiClient(config?.eth2Config || mainnetConfig, url);
+    const ApiClient: typeof CgEth2ApiClient = yield call(getBeaconNodeEth2ApiClient, url);
+    const client = new ApiClient(config?.eth2Config || mainnetConfig, url);
     const eventStream = client.events.getEventStream([BeaconEventType.HEAD]);
 
     const beacon = yield select(getBeaconByKey, {key: url});
