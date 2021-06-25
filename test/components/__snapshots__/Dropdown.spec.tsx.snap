@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Dropdown renders correctly with array of options 1`] = `
-<div>
+<div
+  className=""
+>
   <div
     className="dropdown-screen"
     onClick={[Function]}
@@ -63,7 +65,9 @@ exports[`Dropdown renders correctly with array of options 1`] = `
 `;
 
 exports[`Dropdown renders correctly with options object 1`] = `
-<div>
+<div
+  className=""
+>
   <div
     className="dropdown-screen"
     onClick={[Function]}

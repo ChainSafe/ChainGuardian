@@ -86,7 +86,7 @@ export class CgNimbusEth2EventsApi extends CgEth2EventsApi {
                     }
                 }
 
-                interval = setInterval(async () => {
+                interval = (setInterval(async () => {
                     try {
                         const result = await httpClient.get<BlockResponse>("headers/head");
                         const slot = Number(result.data.header.message.slot);
@@ -163,7 +163,7 @@ export class CgNimbusEth2EventsApi extends CgEth2EventsApi {
                     } catch (e) {
                         push({type: CGBeaconEventType.ERROR});
                     }
-                }, 1000) as NodeJS.Timeout;
+                }, 1000) as unknown) as NodeJS.Timeout;
             })();
             return (): void => {
                 if (interval) clearInterval(interval);
