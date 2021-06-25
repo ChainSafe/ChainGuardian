@@ -7,6 +7,7 @@ export const beaconNode: IDefaultBeaconNodeConfig = {
     memory: "3500m",
     owner: "ConsenSys",
     repo: "teku",
+    versionPrefix: "",
     dockerImage: process.env.DOCKER_TEKU_IMAGE,
 };
 

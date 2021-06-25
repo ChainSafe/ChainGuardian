@@ -27,17 +27,17 @@ interface IConfigureBNProps {
     clientName?: string;
 }
 
-const clients = ["teku", "lighthouse"];
+const clients = ["nimbus", "teku", "lighthouse"];
 
 export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (props: IConfigureBNProps) => {
     // TODO: refactor to use list from src/renderer/services/eth2/networks/index.ts
     const [networkIndex, setNetworkIndex] = useState(0);
     const [clientIndex, setClientIndex] = useState(0);
-    const defaults = getDefaultsForClient(props.clientName);
+    const defaults = getDefaultsForClient(clients[clientIndex]);
 
     const [images, setImages] = useState([]);
     useEffect(() => {
-        getAvailableClientReleases(clients[clientIndex]).then((imageList) => {
+        getAvailableClientReleases(clients[clientIndex], defaults.beacon.versionPrefix).then((imageList) => {
             setImages(imageList);
             setImageIndex(imageList.length - 1);
         });
@@ -139,6 +139,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                         onChange={setImageIndex}
                         options={images}
                         verifiedIndex={images.length - 1}
+                        className='beacon-config'
                     />
                 </div>
 

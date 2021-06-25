@@ -1,0 +1,41 @@
+version: '3.6'
+
+services:
+  prysm_beacon:
+    image: "${DOCKER_PRYSM_IMAGE:-gcr.io/prysmaticlabs/prysm/beacon-chain:v1.3.11}"
+    container_name: "eth2_testnet_prysm_beacon"
+    volumes:
+      - ./testnet/prysm/data:/data
+    ports:
+      - '5050:5050'
+      - '4000:4000'
+      - '13000:13000'
+      - '12000:12000'
+    network_mode: "host"
+    env_file: ./testnet/prysm/vars.env
+    command: >
+          --accept-terms-of-use
+          --disable-monitoring
+          --force-clear-db
+          --datadir=/data
+          --grpc-gateway-port=5050
+          --min-sync-peers=0
+          --bootstrap-node=
+          --disable-sync
+          --interop-genesis-state /data/genesis.ssz
+          --interop-eth1data-votes
+
+  prysm_validator:
+    image: "${DOCKER_PRYSM_VALIDATOR_IMAGE:-gcr.io/prysmaticlabs/prysm/validator:v1.3.11}"
+    container_name: "eth2_testnet_prysm_validator"
+    volumes:
+      - ./testnet/prysm/data:/data
+    network_mode: "host"
+    env_file: ./testnet/prysm/vars.env
+    command: >
+          --accept-terms-of-use
+          --disable-monitoring
+          --force-clear-db
+          --datadir=/data
+          --interop-start-index=0
+          --interop-num-validators=15

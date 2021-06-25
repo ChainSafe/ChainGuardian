@@ -1,12 +1,52 @@
-import {DockerPort, IDockerRunParams} from "./type";
+import {IDockerRunParams} from "./type";
 import {IConfigureBNSubmitOptions} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 
-export const getClientParams = (
-    ports: DockerPort[],
-    {network, libp2pPort, discoveryPort, rpcPort, eth1Url, chainDataDir, client, memory}: IConfigureBNSubmitOptions,
-): Partial<Exclude<IDockerRunParams, "name">> => {
+export const getClientParams = ({
+    network,
+    libp2pPort,
+    discoveryPort,
+    rpcPort,
+    eth1Url,
+    chainDataDir,
+    client,
+}: Omit<IConfigureBNSubmitOptions, "memory" | "image">): Partial<Omit<IDockerRunParams, "name">> => {
     const eth1QueryLimit = 200;
     switch (client) {
+        case "nimbus": {
+            const cmd = [
+                `--network=${network}`,
+                `--data-dir=/data`,
+                `--tcp-port=${libp2pPort}`,
+                `--udp-port=${discoveryPort}`,
+                `--rest`,
+                `--rest-address=0.0.0.0`,
+                `--rest-port=${rpcPort}`,
+                // TODO: add CORS for dev
+                `--web3-url=${eth1Url}`,
+            ].join(" ");
+            console.log(cmd, eth1Url);
+            return {
+                cmd,
+                volume: `${chainDataDir}:/data`,
+            };
+        }
+        case "prysm": {
+            const networkEnvironment = network !== "mainet" ? " --" + network : "";
+            const cmd = [
+                `--accept-terms-of-use`,
+                `--datadir=/data${networkEnvironment}`,
+                `--p2p-tcp-port=${libp2pPort}`,
+                `--p2p-udp-port=${discoveryPort}`,
+                `--grpc-gateway-host=0.0.0.0`,
+                `--grpc-gateway-port=${rpcPort}`,
+                `--http-web3provider=${eth1Url}`,
+                // --fallback-web3provider=<PROVIDER 1> --fallback-web3provider=<PROVIDER 2>
+            ].join(" ");
+            return {
+                cmd,
+                volume: `${chainDataDir}:/data`,
+            };
+        }
         case "teku": {
             const cors =
                 process.env.NODE_ENV !== "production" ? " --rest-api-cors-origins=http://localhost:2003 " : " ";
@@ -21,9 +61,7 @@ export const getClientParams = (
                 `--log-destination=CONSOLE`,
             ].join(" ");
             return {
-                ports,
                 cmd,
-                memory,
                 volume: `${chainDataDir}:/opt/teku/.local/share/teku/beacon`,
             };
         }
@@ -39,9 +77,7 @@ export const getClientParams = (
                 `--eth1-blocks-per-log-query ${eth1QueryLimit}`,
             ].join(" ");
             return {
-                ports,
                 cmd,
-                memory,
                 volume: `${chainDataDir}:/root/.lighthouse`,
             };
         }

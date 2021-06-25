@@ -7,8 +7,8 @@ import logger from "electron-log";
 import {cgLogger} from "../../../../../main/logger";
 
 export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
-    private readonly httpClient: HttpClient;
-    private readonly config: IBeaconConfig;
+    protected readonly httpClient: HttpClient;
+    protected readonly config: IBeaconConfig;
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
         this.config = config;
         this.httpClient = httpClient;

@@ -7,6 +7,8 @@
 export * from "./eth2ApiClient";
 export * from "./lighthouse";
 export * from "./teku";
+export * from "./nimbus";
+export * from "./prysm";
 
 // as you wish
 export * from "./utils";

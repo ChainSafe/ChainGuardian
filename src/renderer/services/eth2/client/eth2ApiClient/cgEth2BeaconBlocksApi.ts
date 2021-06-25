@@ -7,8 +7,8 @@ import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
 import {matomo} from "../../../tracking";
 
 export class CgEth2BeaconBlocksApi implements ICGETH2BeaconBlocksApi {
-    private readonly httpClient: HttpClient;
-    private readonly config: IBeaconConfig;
+    protected readonly httpClient: HttpClient;
+    protected readonly config: IBeaconConfig;
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
         this.config = config;
         this.httpClient = httpClient;
@@ -19,8 +19,8 @@ export class CgEth2BeaconBlocksApi implements ICGETH2BeaconBlocksApi {
             "/eth/v1/beacon/blocks",
             this.config.types.SignedBeaconBlock.toJson(block, {case: "snake"}),
         );
-        if (process.env.NODE_ENV !== "validator-test")
-            if (matomo) matomo.trackEvent({category: "block", action: "proposed", value: block.message.slot});
+        if (process.env.NODE_ENV !== "validator-test" && matomo)
+            matomo.trackEvent({category: "block", action: "proposed", value: block.message.slot});
     };
 
     public getBlock = async (blockId: "head" | "genesis" | "finalized" | number): Promise<SignedBeaconBlock> => {
@@ -28,6 +28,7 @@ export class CgEth2BeaconBlocksApi implements ICGETH2BeaconBlocksApi {
         return this.config.types.SignedBeaconBlock.fromJson(blocksResponse.data, {case: "snake"});
     };
 
+    // TODO: rewrite this to more generic way and then overwrite for the needed cases?
     public getBlockAttestations = async (
         blockId: "head" | "genesis" | "finalized" | number,
     ): Promise<List<Attestation> | null> => {

@@ -6,6 +6,7 @@ export interface IDefaultBeaconNodeConfig {
     owner: string;
     repo: string;
     dockerImage: string;
+    versionPrefix: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -53,6 +54,7 @@ export const getDefaultsForClient = (clientName: string): IDefaults =>
             owner: "none",
             repo: "none",
             dockerImage: "none",
+            versionPrefix: "",
         },
         validator: {},
     };

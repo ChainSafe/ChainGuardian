@@ -5,7 +5,7 @@ version: "3.0"
 
 services:
   beacon_node:
-    image: "${DOCKER_LIGHTHOUSE_IMAGE:-sigp/lighthouse:v1.1.1}"
+    image: "${DOCKER_LIGHTHOUSE_IMAGE:-sigp/lighthouse:v1.3.0}"
     container_name: "eth2_testnet_beacon_lighthouse"
     volumes:
       - ./testnet/lighthouse/data:/root/testnet
@@ -16,7 +16,7 @@ services:
     command: sh /root/scripts/start-beacon-node.sh
 
   second_beacon_node:
-    image: "${DOCKER_LIGHTHOUSE_IMAGE:-sigp/lighthouse:v1.1.1}"
+    image: "${DOCKER_LIGHTHOUSE_IMAGE:-sigp/lighthouse:v1.3.0}"
     container_name: "eth2_testnet_second_beacon_lighthouse"
     volumes:
       - ./testnet/lighthouse/data:/root/testnet
@@ -30,7 +30,7 @@ services:
     command: sh /root/scripts/start-second-beacon-node.sh
 
   validator_client:
-    image: "${DOCKER_LIGHTHOUSE_IMAGE:-sigp/lighthouse:v1.1.1}"
+    image: "${DOCKER_LIGHTHOUSE_IMAGE:-sigp/lighthouse:v1.3.0}"
     container_name: "eth2_testnet_validator_lighthouse"
     network_mode: "host"
     volumes:

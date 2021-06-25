@@ -7,6 +7,7 @@ export const beaconNode: IDefaultBeaconNodeConfig = {
     memory: "3500m",
     owner: "sigp",
     repo: "lighthouse",
+    versionPrefix: "",
     dockerImage: process.env.DOCKER_LIGHTHOUSE_IMAGE,
 };
 

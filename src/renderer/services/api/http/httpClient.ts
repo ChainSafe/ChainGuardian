@@ -15,6 +15,10 @@ export class HttpClient {
         });
     }
 
+    public getBaseUrl(): string {
+        return this.client.defaults.baseURL;
+    }
+
     /**
      * Method that handles GET
      * @param url endpoint url

@@ -31,4 +31,6 @@ if (typeof module.hot !== "undefined") {
     );
 }
 
+(window as any).store = store;
+
 export default store;

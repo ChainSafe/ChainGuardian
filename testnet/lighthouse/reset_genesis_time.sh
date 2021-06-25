@@ -6,6 +6,9 @@
 
 source ./vars.env
 
+find ./data/validators/ -maxdepth 1 -type f -delete
+sudo rm -rf ./data/beacon ./data/beacon2
+
 NOW=$(date +%s)
 
 docker run -v $TESTNET_DIR:/root/testnet $DOCKER_LCLI_IMAGE lcli \
