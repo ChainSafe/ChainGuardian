@@ -424,12 +424,13 @@ export function* getAttestationEffectiveness({
 }: ReturnType<typeof signedNewAttestation>): Generator<
     SelectEffect | TakeEffect | AllEffect<CallEffect> | CallEffect,
     void,
-    IValidatorComplete & ReturnType<typeof updateSlot> & (Attestation[] | null)[]
+    IValidatorComplete & ReturnType<typeof updateSlot> & (Attestation[] | null)[] & typeof CgEth2ApiClient
 > {
     const validator = yield select(getValidator, {publicKey: meta});
     const config = getNetworkConfig(validator.network)?.eth2Config || mainnetConfig;
 
-    const eth2API = new CgEth2ApiClient(config, validator.beaconNodes[0]);
+    const ApiClient = yield call(getBeaconNodeEth2ApiClient, validator.beaconNodes[0]);
+    const eth2API = new ApiClient(config, validator.beaconNodes[0]);
 
     let lastSlot = payload.slot,
         empty = 0,
