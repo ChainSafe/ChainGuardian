@@ -6,6 +6,7 @@ export const AttestationDutyType = new ContainerType<AttestationDuty>({
         epoch: new NumberUintType({byteLength: 32}),
         slot: new NumberUintType({byteLength: 32}),
         status: new NumberUintType({byteLength: 8}),
+        timestamp: new NumberUintType({byteLength: 32}),
     },
 });
 export const AttestationDutiesTypeType = new ContainerType<AttestationDuties>({

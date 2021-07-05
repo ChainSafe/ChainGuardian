@@ -16,3 +16,15 @@ export const linkBeaconToValidator = createAction<StartBeaconChain>(
     "beacon/linkBeaconToValidator",
     (network: string, ports?: DockerPort[]) => ({payload: {network, ports}}),
 );
+
+export type UpdateEpoch = (
+    epoch: number,
+    publicKey: string,
+) => {
+    payload: number;
+    meta: string;
+};
+export const updateEpoch = createAction<UpdateEpoch>("beacon/updateEpoch", (epoch: number, publicKey: string) => ({
+    payload: epoch,
+    meta: publicKey,
+}));

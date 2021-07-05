@@ -107,3 +107,5 @@ export const exportValidator = createAction<ExportValidator>(
     "validator/exportValidator",
     (path: string, publicKey: string) => ({payload: path, meta: publicKey}),
 );
+
+export const startValidatorDutiesWatcher = createAction<string>("validator/startValidatorDutiesWatcher");

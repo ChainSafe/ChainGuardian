@@ -4,6 +4,7 @@ export type PropositionDuty = {
     epoch: number;
     slot: number;
     status: DutyStatus;
+    timestamp: number;
 };
 
 export interface IPropositionDuties {
@@ -21,7 +22,7 @@ export class PropositionDuties implements IPropositionDuties {
         for (const record of records) {
             const index = this.records.findIndex(({slot}) => slot === record.slot);
             if (index !== -1) {
-                this.records[index] = record;
+                if (record.status > this.records[index].status) this.records[index] = record;
             } else {
                 this.records.unshift(record);
             }

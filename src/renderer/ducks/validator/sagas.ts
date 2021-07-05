@@ -16,6 +16,7 @@ import {
     ForkEffect,
     CallEffect,
     call,
+    takeLatest,
 } from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
 import {deleteKeystore, saveValidatorData} from "../../services/utils/account";
@@ -44,11 +45,12 @@ import {
     signedNewAttestation,
     exportValidator,
     setValidatorIsRunning,
+    startValidatorDutiesWatcher,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
 import {Validator} from "@chainsafe/lodestar-validator";
-import {Genesis} from "@chainsafe/lodestar-types";
+import {AttesterDuty, BLSPubkey, Genesis, ProposerDuty} from "@chainsafe/lodestar-types";
 import {getAuthAccount} from "../auth/selectors";
 import {getValidator, getValidatorsByBeaconNode, BeaconValidators} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
@@ -59,8 +61,8 @@ import {CGSlashingProtection} from "../../services/eth2/client/slashingProtectio
 import {readFileSync} from "fs";
 import {ValidatorStatus} from "../../constants/validatorStatus";
 import {getNetworkConfig} from "../../services/eth2/networks";
-import {updateSlot} from "../beacon/actions";
-import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
+import {addBeacons, updateEpoch, updateSlot} from "../beacon/actions";
+import {computeEpochAtSlot, computeTimeAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
 import {getBeaconByKey} from "../beacon/selectors";
 import {Beacon, BeaconStatus} from "../beacon/slice";
 import {updateStatus} from "../beacon/actions";
@@ -78,6 +80,9 @@ import {
     ValidatorLogger,
 } from "../../services/eth2/client/module";
 import store from "../store";
+import {fromHexString} from "@chainsafe/ssz";
+import {ICGValidatorResponse} from "../../services/eth2/client/interface";
+import {DutyStatus} from "../../constants/dutyStatus";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -92,6 +97,7 @@ function* loadValidatorsSaga(): Generator<
     | Promise<ValidatorBeaconNodes[]>
     | Promise<IValidator[]>
     | AllEffect<ForkEffect>
+    | AllEffect<PutEffect>
     | AllEffect<CallEffect>,
     void,
     ICGKeystore[] & (CGAccount | null) & ValidatorBeaconNodes[] & IValidator[]
@@ -135,6 +141,8 @@ function* loadValidatorsSaga(): Generator<
         yield put(loadValidators(validatorArray));
         yield put(setInitialValidators(false));
         yield all(validatorArray.map(({publicKey, network}) => spawn(validatorInfoUpdater, publicKey, network)));
+
+        yield all(validatorArray.map(({publicKey}) => put(startValidatorDutiesWatcher(publicKey))));
     }
 }
 
@@ -500,6 +508,85 @@ export function* getAttestationEffectiveness({
     });
 }
 
+export function* watchValidatorDuties({
+    payload,
+}: ReturnType<typeof startValidatorDutiesWatcher>): Generator<
+    SelectEffect | TakeEffect | CallEffect,
+    void,
+    IValidatorComplete & typeof CgEth2ApiClient & ICGValidatorResponse & ReturnType<typeof updateEpoch> & Beacon
+> {
+    const validator = yield select(getValidator, {publicKey: payload});
+    const config = getNetworkConfig(validator.network)?.eth2Config || mainnetConfig;
+    const {genesisTime} = getNetworkConfig(validator.network);
+
+    const ApiClient = yield call(getBeaconNodeEth2ApiClient, validator.beaconNodes[0]);
+    const eth2API = new ApiClient(config, validator.beaconNodes[0]);
+
+    const validatorId = fromHexString(payload);
+    const validatorState = yield call(eth2API.beacon.state.getStateValidator, "head", validatorId);
+
+    function* processDuties(
+        epoch: number,
+    ): Generator<CallEffect | AllEffect<CallEffect>, void, AttesterDuty[] & ProposerDuty[]> {
+        const attestations = yield call(eth2API.validator.getAttesterDuties, epoch, [validatorState.index]);
+        const propositions = yield call(
+            async (epoch: number, validatorId: BLSPubkey): Promise<ProposerDuty[]> => {
+                const duties: ProposerDuty[] = [];
+                try {
+                    for (let i = 0; ; i++) {
+                        const result = await eth2API.validator.getProposerDuties(epoch + i, [validatorId]);
+                        duties.push(...result);
+                    }
+                } catch {
+                    return duties;
+                }
+            },
+            epoch,
+            validatorId,
+        );
+
+        // store data to database
+        yield all([
+            call(
+                database.validator.attestationDuties.putRecords,
+                payload,
+                attestations
+                    .filter(({validatorIndex}) => validatorIndex === validatorState.index)
+                    .map(({slot}) => ({
+                        slot,
+                        epoch: computeEpochAtSlot(config, slot),
+                        status: DutyStatus.scheduled,
+                        timestamp: computeTimeAtSlot(config, slot, genesisTime) * 1000,
+                    })),
+            ),
+            call(
+                database.validator.propositionDuties.putRecords,
+                payload,
+                propositions
+                    .filter(({validatorIndex}) => validatorIndex === validatorState.index)
+                    .map(({slot}) => ({
+                        slot,
+                        epoch: computeEpochAtSlot(config, slot),
+                        status: DutyStatus.scheduled,
+                        timestamp: computeTimeAtSlot(config, slot, genesisTime) * 1000,
+                    })),
+            ),
+        ]);
+    }
+
+    let beaconNode = yield select(getBeaconByKey, {key: validator.beaconNodes[0]});
+    if (!beaconNode) {
+        yield take(addBeacons);
+        beaconNode = yield select(getBeaconByKey, {key: validator.beaconNodes[0]});
+    }
+    yield call(processDuties, computeEpochAtSlot(config, beaconNode.slot));
+    while (true) {
+        const newEpoch = yield take(updateEpoch);
+        if (newEpoch.meta !== validator.beaconNodes[0]) continue;
+        yield call(processDuties, newEpoch.payload);
+    }
+}
+
 export function* validatorSagaWatcher(): Generator {
     yield all([
         takeEvery(loadValidatorsAction, loadValidatorsSaga),
@@ -511,5 +598,6 @@ export function* validatorSagaWatcher(): Generator {
         takeEvery(updateStatus, onBeaconNodeStatusChangeUpdateValidatorState),
         takeEvery(signedNewAttestation, getAttestationEffectiveness),
         takeEvery(exportValidator, exportValidatorData),
+        takeLatest(startValidatorDutiesWatcher, watchValidatorDuties),
     ]);
 }
