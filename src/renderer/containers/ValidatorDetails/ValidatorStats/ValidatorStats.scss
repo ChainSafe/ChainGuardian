@@ -11,3 +11,40 @@
     margin-left: 10px;
   }
 }
+
+.validator-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    color: $neutral-400;
+    font-family: Fira Code;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0.04em;
+    text-align: left;
+    padding: 8px 16px;
+    border-bottom: 1px solid $neutral-500;
+  }
+
+  td {
+    color: $neutral-100;
+    font-family: Fira Code;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    padding: 8px 16px;
+    border-bottom: 1px solid $neutral-500;
+  }
+
+  tr:last-child {
+    td {
+      border-bottom: none;
+    }
+  }
+}

@@ -13,6 +13,8 @@ import {getBeaconByKey} from "../../../ducks/beacon/selectors";
 import {IRootState} from "../../../ducks/reducers";
 import {useDispatch} from "react-redux";
 import {exportValidator} from "../../../ducks/validator/actions";
+import {ValidatorAttestationsTable} from "./ValidatorAttestationsTable";
+import {ValidatorPropositionsTable} from "./ValidatorPropositionsTable";
 
 interface IValidatorStatsProps {
     validator: IValidator;
@@ -89,8 +91,10 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
                 />
                 <ValidatorAttestationEfficiencyChart data={attestationData} />
             </div>
-            <br />
-            <p>Performance statistics are coming soon!</p>
+            <div className='beacon-node-charts-container'>
+                <ValidatorAttestationsTable publicKey={validator.publicKey} slot={beaconNode.slot} />
+                <ValidatorPropositionsTable publicKey={validator.publicKey} slot={beaconNode.slot} />
+            </div>
         </div>
     );
 };
