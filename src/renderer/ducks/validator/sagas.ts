@@ -46,11 +46,12 @@ import {
     exportValidator,
     setValidatorIsRunning,
     startValidatorDutiesWatcher,
+    publishNewBlock,
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
 import {Validator} from "@chainsafe/lodestar-validator";
-import {AttesterDuty, BLSPubkey, Genesis, ProposerDuty, ValidatorIndex} from "@chainsafe/lodestar-types";
+import {AttesterDuty, Genesis, ProposerDuty} from "@chainsafe/lodestar-types";
 import {getAuthAccount} from "../auth/selectors";
 import {getValidator, getValidatorsByBeaconNode, BeaconValidators} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
@@ -440,6 +441,16 @@ export function* getAttestationEffectiveness({
     const ApiClient = yield call(getBeaconNodeEth2ApiClient, validator.beaconNodes[0]);
     const eth2API = new ApiClient(config, validator.beaconNodes[0]);
 
+    const {genesisTime} = getNetworkConfig(validator.network);
+    yield call(database.validator.attestationDuties.putRecords, meta, [
+        {
+            slot: payload.slot,
+            epoch: computeEpochAtSlot(config, payload.slot),
+            status: DutyStatus.attested,
+            timestamp: computeTimeAtSlot(config, payload.slot, genesisTime) * 1000,
+        },
+    ]);
+
     let lastSlot = payload.slot,
         empty = 0,
         skipped = 0,
@@ -528,17 +539,8 @@ export function* watchValidatorDuties({
     function* processDuties(
         epoch: number,
     ): Generator<CallEffect | AllEffect<CallEffect>, void, AttesterDuty[] & ProposerDuty[]> {
-        const attestations = yield call(async (epoch: number): Promise<AttesterDuty[]> => {
-            const duties: AttesterDuty[] = [];
-            try {
-                for (let i = 0; ; i++) {
-                    const result = await eth2API.validator.getAttesterDuties(epoch + i, [validatorState.index]);
-                    duties.push(...result);
-                }
-            } catch {
-                return duties;
-            }
-        }, epoch);
+        const attestations = yield call(eth2API.validator.getAttesterDuties, epoch, [validatorState.index]);
+        const attestationsFuture = yield call(eth2API.validator.getAttesterDuties, epoch + 1, [validatorState.index]);
         const propositions = yield call(async (epoch: number): Promise<ProposerDuty[]> => {
             const duties: ProposerDuty[] = [];
             try {
@@ -556,7 +558,7 @@ export function* watchValidatorDuties({
             call(
                 database.validator.attestationDuties.putRecords,
                 payload,
-                attestations
+                [...attestations, ...attestationsFuture]
                     .filter(({validatorIndex}) => validatorIndex === validatorState.index)
                     .map(({slot}) => ({
                         slot,
@@ -593,6 +595,39 @@ export function* watchValidatorDuties({
     }
 }
 
+function* updateDutiesStatus({
+    payload,
+    meta,
+}: ReturnType<typeof updateSlot>): Generator<SelectEffect | AllEffect<AllEffect<CallEffect>>, void, BeaconValidators> {
+    const validatorsByBeaconNode = yield select(getValidatorsByBeaconNode);
+    yield all(
+        validatorsByBeaconNode[meta].map(({publicKey}) =>
+            all([
+                call(database.validator.propositionDuties.updateMissed, publicKey, payload),
+                call(database.validator.attestationDuties.updateMissed, publicKey, payload),
+            ]),
+        ),
+    );
+}
+
+function* onPublishedBlock({
+    payload,
+    meta,
+}: ReturnType<typeof publishNewBlock>): Generator<CallEffect | SelectEffect, void, IValidatorComplete> {
+    const validator = yield select(getValidator, {publicKey: meta});
+    const config = getNetworkConfig(validator.network)?.eth2Config || mainnetConfig;
+
+    const {genesisTime} = getNetworkConfig(validator.network);
+    yield call(database.validator.propositionDuties.putRecords, meta, [
+        {
+            slot: payload.slot,
+            epoch: computeEpochAtSlot(config, payload.slot),
+            status: DutyStatus.proposed,
+            timestamp: computeTimeAtSlot(config, payload.slot, genesisTime) * 1000,
+        },
+    ]);
+}
+
 export function* validatorSagaWatcher(): Generator {
     yield all([
         takeEvery(loadValidatorsAction, loadValidatorsSaga),
@@ -605,5 +640,7 @@ export function* validatorSagaWatcher(): Generator {
         takeEvery(signedNewAttestation, getAttestationEffectiveness),
         takeEvery(exportValidator, exportValidatorData),
         takeLatest(startValidatorDutiesWatcher, watchValidatorDuties),
+        takeEvery(updateSlot, updateDutiesStatus),
+        takeEvery(publishNewBlock, onPublishedBlock),
     ]);
 }

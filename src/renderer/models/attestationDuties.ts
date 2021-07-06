@@ -32,4 +32,12 @@ export class AttestationDuties implements IAttestationDuties {
             this.records.splice(19);
         }
     }
+
+    public updateMissed(slot: number): void {
+        this.records = this.records.map((record) => {
+            if ((record.status === DutyStatus.scheduled || record.status === DutyStatus.unknown) && record.slot < slot)
+                return {...record, status: DutyStatus.missed};
+            return record;
+        });
+    }
 }

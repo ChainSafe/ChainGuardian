@@ -27,5 +27,11 @@ export class ValidatorAttestationDutiesRepository extends Repository<Attestation
         await this.set(id, duties);
     };
 
+    public updateMissed = async (id: string, slot: number): Promise<void> => {
+        const duties = await this.get(id);
+        duties.updateMissed(slot);
+        await this.set(id, duties);
+    };
+
     private getKeyName = (key: string): string => `${DEFAULT_ACCOUNT}-${key}`;
 }
