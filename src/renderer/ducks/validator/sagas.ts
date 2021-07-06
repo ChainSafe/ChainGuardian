@@ -541,17 +541,9 @@ export function* watchValidatorDuties({
     ): Generator<CallEffect | AllEffect<CallEffect>, void, AttesterDuty[] & ProposerDuty[]> {
         const attestations = yield call(eth2API.validator.getAttesterDuties, epoch, [validatorState.index]);
         const attestationsFuture = yield call(eth2API.validator.getAttesterDuties, epoch + 1, [validatorState.index]);
-        const propositions = yield call(async (epoch: number): Promise<ProposerDuty[]> => {
-            const duties: ProposerDuty[] = [];
-            try {
-                for (let i = 0; ; i++) {
-                    const result = await eth2API.validator.getProposerDuties(epoch + i, [validatorId]);
-                    duties.push(...result);
-                }
-            } catch {
-                return duties;
-            }
-        }, epoch);
+        const propositions = yield call(eth2API.validator.getProposerDuties, epoch, [validatorId]);
+        const propositionsFuture = yield call(eth2API.validator.getProposerDuties, epoch + 1, [validatorId]);
+        const propositionsSuperFuture = yield call(eth2API.validator.getProposerDuties, epoch + 2, [validatorId]);
 
         // store data to database
         yield all([
@@ -570,7 +562,7 @@ export function* watchValidatorDuties({
             call(
                 database.validator.propositionDuties.putRecords,
                 payload,
-                propositions
+                [...propositions, ...propositionsFuture, ...propositionsSuperFuture]
                     .filter(({validatorIndex}) => validatorIndex === validatorState.index)
                     .map(({slot}) => ({
                         slot,
