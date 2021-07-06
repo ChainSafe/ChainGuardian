@@ -50,7 +50,7 @@ import {
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
 import {Validator} from "@chainsafe/lodestar-validator";
-import {AttesterDuty, BLSPubkey, Genesis, ProposerDuty} from "@chainsafe/lodestar-types";
+import {AttesterDuty, BLSPubkey, Genesis, ProposerDuty, ValidatorIndex} from "@chainsafe/lodestar-types";
 import {getAuthAccount} from "../auth/selectors";
 import {getValidator, getValidatorsByBeaconNode, BeaconValidators} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
@@ -528,22 +528,28 @@ export function* watchValidatorDuties({
     function* processDuties(
         epoch: number,
     ): Generator<CallEffect | AllEffect<CallEffect>, void, AttesterDuty[] & ProposerDuty[]> {
-        const attestations = yield call(eth2API.validator.getAttesterDuties, epoch, [validatorState.index]);
-        const propositions = yield call(
-            async (epoch: number, validatorId: BLSPubkey): Promise<ProposerDuty[]> => {
-                const duties: ProposerDuty[] = [];
-                try {
-                    for (let i = 0; ; i++) {
-                        const result = await eth2API.validator.getProposerDuties(epoch + i, [validatorId]);
-                        duties.push(...result);
-                    }
-                } catch {
-                    return duties;
+        const attestations = yield call(async (epoch: number): Promise<AttesterDuty[]> => {
+            const duties: AttesterDuty[] = [];
+            try {
+                for (let i = 0; ; i++) {
+                    const result = await eth2API.validator.getAttesterDuties(epoch + i, [validatorState.index]);
+                    duties.push(...result);
                 }
-            },
-            epoch,
-            validatorId,
-        );
+            } catch {
+                return duties;
+            }
+        }, epoch);
+        const propositions = yield call(async (epoch: number): Promise<ProposerDuty[]> => {
+            const duties: ProposerDuty[] = [];
+            try {
+                for (let i = 0; ; i++) {
+                    const result = await eth2API.validator.getProposerDuties(epoch + i, [validatorId]);
+                    duties.push(...result);
+                }
+            } catch {
+                return duties;
+            }
+        }, epoch);
 
         // store data to database
         yield all([
