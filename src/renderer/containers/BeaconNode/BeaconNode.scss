@@ -26,3 +26,19 @@
     padding-right: 5px;
   }
 }
+
+.beacon-node-metrics {
+  .node-graph-container {
+    width: 300px;
+    height: auto;
+    margin-left: 20px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  .graph-content {
+    padding-bottom: 5px;
+  }
+}

@@ -86,35 +86,35 @@ export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) =
     }, []);
 
     return (
-        <div className='row space-between'>
+        <div className='row space-between beacon-node-metrics'>
             <div className='flex-column'>
                 <div className='row space-between' style={{paddingTop: "25px"}}>
                     <h2>Pool</h2>
                 </div>
 
                 <div className='beacon-node-charts-container'>
-                    <div className='node-graph-container' style={{width: 300}}>
+                    <div className='node-graph-container'>
                         <div className='graph-header'>
                             <div className='graph-title'>Attestations</div>
                             <div className='graph-title'>
-                                {pool.attestations[pool.attestations.length - 1].value || 0}
+                                {pool.attestations[pool.attestations.length - 1]?.value || 0}
                             </div>
                         </div>
                         <div className='graph-content'>
-                            <ResponsiveContainer width='100%' height={150}>
+                            <ResponsiveContainer width='100%' height={175}>
                                 <SimpleLineChart data={pool.attestations} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
                     </div>
-                    <div className='node-graph-container' style={{width: 300, marginLeft: "20px"}}>
+                    <div className='node-graph-container'>
                         <div className='graph-header'>
                             <div className='graph-title'>Attester slashings</div>
                             <div className='graph-title'>
-                                {pool.attesterSlashings[pool.attesterSlashings.length - 1].value || 0}
+                                {pool.attesterSlashings[pool.attesterSlashings.length - 1]?.value || 0}
                             </div>
                         </div>
                         <div className='graph-content'>
-                            <ResponsiveContainer width='100%' height={150}>
+                            <ResponsiveContainer width='100%' height={175}>
                                 <SimpleLineChart data={pool.attesterSlashings} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
@@ -122,28 +122,28 @@ export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) =
                 </div>
 
                 <div className='beacon-node-charts-container'>
-                    <div className='node-graph-container' style={{width: 300}}>
+                    <div className='node-graph-container'>
                         <div className='graph-header'>
                             <div className='graph-title'>Voluntary exits</div>
                             <div className='graph-title'>
-                                {pool.voluntaryExits[pool.voluntaryExits.length - 1].value || 0}
+                                {pool.voluntaryExits[pool.voluntaryExits.length - 1]?.value || 0}
                             </div>
                         </div>
                         <div className='graph-content'>
-                            <ResponsiveContainer width='100%' height={150}>
+                            <ResponsiveContainer width='100%' height={175}>
                                 <SimpleLineChart data={pool.voluntaryExits} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
                     </div>
-                    <div className='node-graph-container' style={{width: 300, marginLeft: "20px"}}>
+                    <div className='node-graph-container'>
                         <div className='graph-header'>
                             <div className='graph-title'>Proposer slashings</div>
                             <div className='graph-title'>
-                                {pool.proposerSlashings[pool.proposerSlashings.length - 1].value || 0}
+                                {pool.proposerSlashings[pool.proposerSlashings.length - 1]?.value || 0}
                             </div>
                         </div>
                         <div className='graph-content'>
-                            <ResponsiveContainer width='100%' height={150}>
+                            <ResponsiveContainer width='100%' height={175}>
                                 <SimpleLineChart data={pool.proposerSlashings} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
@@ -156,26 +156,26 @@ export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) =
                 </div>
 
                 <div className='beacon-node-charts-container'>
-                    <div className='node-graph-container' style={{width: 300}}>
+                    <div className='node-graph-container'>
                         <div className='graph-header'>
                             <div className='graph-title'>Connected</div>
-                            <div className='graph-title'>{peers.connected[peers.connected.length - 1].value || 0}</div>
+                            <div className='graph-title'>{peers.connected[peers.connected.length - 1]?.value || 0}</div>
                         </div>
                         <div className='graph-content'>
-                            <ResponsiveContainer width='100%' height={150}>
+                            <ResponsiveContainer width='100%' height={175}>
                                 <SimpleLineChart data={peers.connected} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
                     </div>
-                    <div className='node-graph-container' style={{width: 300}}>
+                    <div className='node-graph-container'>
                         <div className='graph-header'>
                             <div className='graph-title'>Disconnected</div>
                             <div className='graph-title'>
-                                {peers.disconnected[peers.disconnected.length - 1].value || 0}
+                                {peers.disconnected[peers.disconnected.length - 1]?.value || 0}
                             </div>
                         </div>
                         <div className='graph-content'>
-                            <ResponsiveContainer width='100%' height={150}>
+                            <ResponsiveContainer width='100%' height={175}>
                                 <SimpleLineChart data={peers.disconnected} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
@@ -183,28 +183,28 @@ export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) =
                 </div>
 
                 <div className='beacon-node-charts-container'>
-                    <div className='node-graph-container' style={{width: 300}}>
+                    <div className='node-graph-container'>
                         <div className='graph-header'>
                             <div className='graph-title'>Connecting</div>
                             <div className='graph-title'>
-                                {peers.connecting[peers.connecting.length - 1].value || 0}
+                                {peers.connecting[peers.connecting.length - 1]?.value || 0}
                             </div>
                         </div>
                         <div className='graph-content'>
-                            <ResponsiveContainer width='100%' height={150}>
+                            <ResponsiveContainer width='100%' height={175}>
                                 <SimpleLineChart data={peers.connecting} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
                     </div>
-                    <div className='node-graph-container' style={{width: 300, marginLeft: "20px"}}>
+                    <div className='node-graph-container'>
                         <div className='graph-header'>
                             <div className='graph-title'>Disconnecting</div>
                             <div className='graph-title'>
-                                {peers.disconnecting[peers.disconnecting.length - 1].value || 0}
+                                {peers.disconnecting[peers.disconnecting.length - 1]?.value || 0}
                             </div>
                         </div>
                         <div className='graph-content'>
-                            <ResponsiveContainer width='100%' height={150}>
+                            <ResponsiveContainer width='100%' height={175}>
                                 <SimpleLineChart data={peers.disconnecting} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
