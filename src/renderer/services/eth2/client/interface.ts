@@ -1,7 +1,12 @@
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {ILogger, IStoppableEventIterable} from "@chainsafe/lodestar-utils";
 import {IApiClient} from "@chainsafe/lodestar-validator/lib";
-import {IBeaconApi, IBeaconBlocksApi, IBeaconStateApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
+import {
+    IBeaconApi,
+    IBeaconBlocksApi,
+    IBeaconPoolApi,
+    IBeaconStateApi,
+} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {INodeApi} from "@chainsafe/lodestar-validator/lib/api/interface/node";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
 import {
@@ -48,12 +53,29 @@ export interface ICGBeaconStateApi extends Omit<IBeaconStateApi, "getStateValida
     getCommittees(stateId?: "head" | number): Promise<BeaconCommitteeResponse[]>;
 }
 
-export interface ICGEth2BeaconApi extends Omit<IBeaconApi, "blocks" | "state"> {
+export interface ICGEth2BeaconApi extends Omit<IBeaconApi, "blocks" | "state" | "pool"> {
     blocks: ICGETH2BeaconBlocksApi;
     state: ICGBeaconStateApi;
+    pool: ICGBeaconPoolApi;
 }
 
-export type ICGEth2NodeApi = INodeApi;
+export type PeerCount = {
+    disconnected: number;
+    connecting: number;
+    connected: number;
+    disconnecting: number;
+};
+export type PeerCountResult = {
+    disconnected: string;
+    connecting: string;
+    connected: string;
+    disconnecting: string;
+};
+
+export interface ICGEth2NodeApi extends INodeApi {
+    getPeerCount: () => Promise<PeerCount>;
+}
+
 export type ICGEth2ValidatorApi = IValidatorApi;
 
 export enum CGBeaconEventType {
@@ -119,4 +141,15 @@ export interface IBeaconClientOptions {
     baseUrl: string;
     logger: ILogger;
     config: IBeaconConfig;
+}
+
+export type PoolStatus = {
+    attestations: number;
+    attesterSlashings: number;
+    voluntaryExits: number;
+    proposerSlashings: number;
+};
+
+export interface ICGBeaconPoolApi extends IBeaconPoolApi {
+    getPoolStatus(): Promise<PoolStatus>;
 }
