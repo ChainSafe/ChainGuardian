@@ -13,6 +13,7 @@ import {Container} from "../../services/docker/container";
 import OnBoardModal from "../Onboard/OnBoardModal";
 import {addBeacon, startLocalBeacon} from "../../ducks/beacon/actions";
 import {ConfigureDockerPath} from "../../components/ConfigureBeaconNode/ConfigureDockerPath";
+import {BeaconNodeSelector} from "../../components/BeaconNodeCard/BeaconNodeSelector";
 
 export const AddBeaconNodeContainer: React.FunctionComponent = () => {
     const isPullingImage = useSelector(getPullingDockerImage);
@@ -20,6 +21,7 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
     const history = useHistory();
     const [currentStep, setCurrentStep] = useState<number>(0);
     const [hasDocker, setHasDocker] = useState<boolean | undefined>();
+    const [selectedNode, setSelectedNode] = useState("");
 
     useEffect(() => {
         onDockerPathNext();
@@ -40,6 +42,21 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
         return <InputBeaconNode onGoSubmit={onGoSubmit} onRunNodeSubmit={onRunNodeSubmit} />;
     };
 
+    const renderSecondStep = (): React.ReactElement => {
+        const onBeaconChange = (name: string): void => setSelectedNode(name);
+        const onBeaconNodeSelectorSubmit = async (): Promise<void> => {
+            setCurrentStep(2);
+        };
+
+        return (
+            <BeaconNodeSelector
+                selected={selectedNode}
+                onChane={onBeaconChange}
+                onSubmit={onBeaconNodeSelectorSubmit}
+            />
+        );
+    };
+
     const onDockerRunSubmit = useCallback(async (config: IConfigureBNSubmitOptions): Promise<void> => {
         dispatch(startLocalBeacon(config, () => history.push(Routes.BEACON_NODES)));
     }, []);
@@ -57,14 +74,15 @@ export const AddBeaconNodeContainer: React.FunctionComponent = () => {
         Container.isDockerInstalled().then(setHasDocker);
     };
 
-    const renderSecondStep = (): React.ReactElement => {
+    const renderThirdStep = (): React.ReactElement => {
         if (!hasDocker) return <ConfigureDockerPath onNext={onDockerPathNext} />;
-        return <ConfigureBeaconNode onSubmit={onDockerRunSubmit} />;
+        return <ConfigureBeaconNode onSubmit={onDockerRunSubmit} clientName={selectedNode} />;
     };
 
     const renderStepScreen = (): React.ReactElement => {
         if (currentStep === 0) return renderFirstStep();
         if (currentStep === 1) return renderSecondStep();
+        if (currentStep === 2) return renderThirdStep();
     };
 
     return (

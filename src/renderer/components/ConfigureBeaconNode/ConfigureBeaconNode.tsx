@@ -24,24 +24,21 @@ export interface IConfigureBNSubmitOptions {
 
 interface IConfigureBNProps {
     onSubmit: (values: IConfigureBNSubmitOptions) => void;
-    clientName?: string;
+    clientName: string;
 }
-
-const clients = ["nimbus", "teku", "lighthouse"];
 
 export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (props: IConfigureBNProps) => {
     // TODO: refactor to use list from src/renderer/services/eth2/networks/index.ts
     const [networkIndex, setNetworkIndex] = useState(0);
-    const [clientIndex, setClientIndex] = useState(0);
-    const defaults = getDefaultsForClient(clients[clientIndex]);
+    const defaults = getDefaultsForClient(props.clientName);
 
     const [images, setImages] = useState([]);
     useEffect(() => {
-        getAvailableClientReleases(clients[clientIndex], defaults.beacon.versionPrefix).then((imageList) => {
+        getAvailableClientReleases(props.clientName, defaults.beacon.versionPrefix).then((imageList) => {
             setImages(imageList);
             setImageIndex(imageList.length - 1);
         });
-    }, [clientIndex]);
+    }, [props.clientName]);
     const [imageIndex, setImageIndex] = useState(0);
 
     const defaultChainDataDir = path.join(getConfig(remote.app).storage.dataDir, "beacon");
@@ -71,7 +68,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
             rpcPort,
             memory,
             network: networksList[networkIndex],
-            client: clients[clientIndex],
+            client: props.clientName,
             image: images[imageIndex],
         });
     };
@@ -101,13 +98,6 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
         <>
             <h1>Configure Beacon node settings</h1>
             <p>You can skip customizing this data if you want to use the default values.</p>
-
-            <div className='configure-port'>
-                <div className='row'>
-                    <h3>Client</h3>
-                </div>
-                <Dropdown current={clientIndex} onChange={setClientIndex} options={clients} />
-            </div>
 
             <div className='configure-port'>
                 <div className='row'>
