@@ -10,19 +10,34 @@ interface IBeaconNodeProps {
     beacon: Beacon;
 }
 
+type PoolState = {
+    attestations: SimpleLineChartRecord[];
+    attesterSlashings: SimpleLineChartRecord[];
+    voluntaryExits: SimpleLineChartRecord[];
+    proposerSlashings: SimpleLineChartRecord[];
+};
+
+type PeersState = {
+    connected: SimpleLineChartRecord[];
+    connecting: SimpleLineChartRecord[];
+    disconnected: SimpleLineChartRecord[];
+    disconnecting: SimpleLineChartRecord[];
+};
+
 const noData: SimpleLineChartRecord[] = new Array(100).fill({label: ""});
 export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) => {
-    // Pool
-    const [attestations, setAttestations] = useState<SimpleLineChartRecord[]>([...noData]);
-    const [attesterSlashings, setAttesterSlashings] = useState<SimpleLineChartRecord[]>([...noData]);
-    const [voluntaryExits, setVoluntaryExits] = useState<SimpleLineChartRecord[]>([...noData]);
-    const [proposerSlashings, setProposerSlashings] = useState<SimpleLineChartRecord[]>([...noData]);
-
-    // Peers
-    const [connected, setConnected] = useState<SimpleLineChartRecord[]>([...noData]);
-    const [connecting, setConnecting] = useState<SimpleLineChartRecord[]>([...noData]);
-    const [disconnected, setDisconnected] = useState<SimpleLineChartRecord[]>([...noData]);
-    const [disconnecting, setDisconnecting] = useState<SimpleLineChartRecord[]>([...noData]);
+    const [pool, setPool] = useState<PoolState>({
+        attestations: [...noData],
+        attesterSlashings: [...noData],
+        voluntaryExits: [...noData],
+        proposerSlashings: [...noData],
+    });
+    const [peers, setPeers] = useState<PeersState>({
+        connected: [...noData],
+        connecting: [...noData],
+        disconnected: [...noData],
+        disconnecting: [...noData],
+    });
 
     useEffect(() => {
         let canUpdate = true;
@@ -36,38 +51,30 @@ export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) =
             const peerCount = await eth2API.node.getPeerCount();
 
             if (canUpdate) {
-                setAttestations((oldState) => {
-                    oldState.shift();
-                    return [...oldState, {label, value: poolState.attestations}];
-                });
-                setAttesterSlashings((oldState) => {
-                    oldState.shift();
-                    return [...oldState, {label, value: poolState.attesterSlashings}];
-                });
-                setVoluntaryExits((oldState) => {
-                    oldState.shift();
-                    return [...oldState, {label, value: poolState.voluntaryExits}];
-                });
-                setProposerSlashings((oldState) => {
-                    oldState.shift();
-                    return [...oldState, {label, value: poolState.proposerSlashings}];
+                setPool((oldState) => {
+                    oldState.attestations.shift();
+                    oldState.attesterSlashings.shift();
+                    oldState.voluntaryExits.shift();
+                    oldState.proposerSlashings.shift();
+                    return {
+                        attestations: [...oldState.attestations, {label, value: poolState.attestations}],
+                        attesterSlashings: [...oldState.attesterSlashings, {label, value: poolState.attesterSlashings}],
+                        voluntaryExits: [...oldState.voluntaryExits, {label, value: poolState.voluntaryExits}],
+                        proposerSlashings: [...oldState.proposerSlashings, {label, value: poolState.proposerSlashings}],
+                    };
                 });
 
-                setConnected((oldState) => {
-                    oldState.shift();
-                    return [...oldState, {label, value: peerCount.connected}];
-                });
-                setConnecting((oldState) => {
-                    oldState.shift();
-                    return [...oldState, {label, value: peerCount.connecting}];
-                });
-                setDisconnected((oldState) => {
-                    oldState.shift();
-                    return [...oldState, {label, value: peerCount.disconnected}];
-                });
-                setDisconnecting((oldState) => {
-                    oldState.shift();
-                    return [...oldState, {label, value: peerCount.disconnecting}];
+                setPeers((oldState) => {
+                    oldState.connected.shift();
+                    oldState.connecting.shift();
+                    oldState.disconnected.shift();
+                    oldState.disconnecting.shift();
+                    return {
+                        connected: [...oldState.connected, {label, value: peerCount.connected}],
+                        connecting: [...oldState.connecting, {label, value: peerCount.connecting}],
+                        disconnected: [...oldState.disconnected, {label, value: peerCount.disconnected}],
+                        disconnecting: [...oldState.disconnecting, {label, value: peerCount.disconnecting}],
+                    };
                 });
             }
         }, 1000);
@@ -89,11 +96,13 @@ export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) =
                     <div className='node-graph-container' style={{width: 300}}>
                         <div className='graph-header'>
                             <div className='graph-title'>Attestations</div>
-                            <div className='graph-title'>{attestations[attestations.length - 1].value || 0}</div>
+                            <div className='graph-title'>
+                                {pool.attestations[pool.attestations.length - 1].value || 0}
+                            </div>
                         </div>
                         <div className='graph-content'>
                             <ResponsiveContainer width='100%' height={150}>
-                                <SimpleLineChart data={attestations} isAnimationActive={false} hideTooltip />
+                                <SimpleLineChart data={pool.attestations} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
                     </div>
@@ -101,12 +110,12 @@ export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) =
                         <div className='graph-header'>
                             <div className='graph-title'>Attester slashings</div>
                             <div className='graph-title'>
-                                {attesterSlashings[attesterSlashings.length - 1].value || 0}
+                                {pool.attesterSlashings[pool.attesterSlashings.length - 1].value || 0}
                             </div>
                         </div>
                         <div className='graph-content'>
                             <ResponsiveContainer width='100%' height={150}>
-                                <SimpleLineChart data={attesterSlashings} isAnimationActive={false} hideTooltip />
+                                <SimpleLineChart data={pool.attesterSlashings} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
                     </div>
@@ -116,11 +125,13 @@ export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) =
                     <div className='node-graph-container' style={{width: 300}}>
                         <div className='graph-header'>
                             <div className='graph-title'>Voluntary exits</div>
-                            <div className='graph-title'>{voluntaryExits[voluntaryExits.length - 1].value || 0}</div>
+                            <div className='graph-title'>
+                                {pool.voluntaryExits[pool.voluntaryExits.length - 1].value || 0}
+                            </div>
                         </div>
                         <div className='graph-content'>
                             <ResponsiveContainer width='100%' height={150}>
-                                <SimpleLineChart data={voluntaryExits} isAnimationActive={false} hideTooltip />
+                                <SimpleLineChart data={pool.voluntaryExits} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
                     </div>
@@ -128,12 +139,12 @@ export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) =
                         <div className='graph-header'>
                             <div className='graph-title'>Proposer slashings</div>
                             <div className='graph-title'>
-                                {proposerSlashings[proposerSlashings.length - 1].value || 0}
+                                {pool.proposerSlashings[pool.proposerSlashings.length - 1].value || 0}
                             </div>
                         </div>
                         <div className='graph-content'>
                             <ResponsiveContainer width='100%' height={150}>
-                                <SimpleLineChart data={proposerSlashings} isAnimationActive={false} hideTooltip />
+                                <SimpleLineChart data={pool.proposerSlashings} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
                     </div>
@@ -148,22 +159,24 @@ export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) =
                     <div className='node-graph-container' style={{width: 300}}>
                         <div className='graph-header'>
                             <div className='graph-title'>Connected</div>
-                            <div className='graph-title'>{connected[connected.length - 1].value || 0}</div>
+                            <div className='graph-title'>{peers.connected[peers.connected.length - 1].value || 0}</div>
                         </div>
                         <div className='graph-content'>
                             <ResponsiveContainer width='100%' height={150}>
-                                <SimpleLineChart data={connected} isAnimationActive={false} hideTooltip />
+                                <SimpleLineChart data={peers.connected} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
                     </div>
                     <div className='node-graph-container' style={{width: 300}}>
                         <div className='graph-header'>
                             <div className='graph-title'>Disconnected</div>
-                            <div className='graph-title'>{disconnected[disconnected.length - 1].value || 0}</div>
+                            <div className='graph-title'>
+                                {peers.disconnected[peers.disconnected.length - 1].value || 0}
+                            </div>
                         </div>
                         <div className='graph-content'>
                             <ResponsiveContainer width='100%' height={150}>
-                                <SimpleLineChart data={disconnected} isAnimationActive={false} hideTooltip />
+                                <SimpleLineChart data={peers.disconnected} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
                     </div>
@@ -173,22 +186,26 @@ export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) =
                     <div className='node-graph-container' style={{width: 300}}>
                         <div className='graph-header'>
                             <div className='graph-title'>Connecting</div>
-                            <div className='graph-title'>{connecting[connecting.length - 1].value || 0}</div>
+                            <div className='graph-title'>
+                                {peers.connecting[peers.connecting.length - 1].value || 0}
+                            </div>
                         </div>
                         <div className='graph-content'>
                             <ResponsiveContainer width='100%' height={150}>
-                                <SimpleLineChart data={connecting} isAnimationActive={false} hideTooltip />
+                                <SimpleLineChart data={peers.connecting} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
                     </div>
                     <div className='node-graph-container' style={{width: 300, marginLeft: "20px"}}>
                         <div className='graph-header'>
                             <div className='graph-title'>Disconnecting</div>
-                            <div className='graph-title'>{disconnecting[disconnecting.length - 1].value || 0}</div>
+                            <div className='graph-title'>
+                                {peers.disconnecting[peers.disconnecting.length - 1].value || 0}
+                            </div>
                         </div>
                         <div className='graph-content'>
                             <ResponsiveContainer width='100%' height={150}>
-                                <SimpleLineChart data={disconnecting} isAnimationActive={false} hideTooltip />
+                                <SimpleLineChart data={peers.disconnecting} isAnimationActive={false} hideTooltip />
                             </ResponsiveContainer>
                         </div>
                     </div>
