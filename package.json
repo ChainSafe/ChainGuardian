@@ -233,6 +233,7 @@
   },
   "resolutions": {
     "@chainsafe/bls": "5.1.1",
+    "@chainsafe/bls-hd-key": "0.2.1",
     "terser": "4.6.3",
     "bcrypto": "5.3.0",
     "serialize-javascript": "4.0.0"

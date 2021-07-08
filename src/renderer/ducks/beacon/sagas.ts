@@ -23,7 +23,7 @@ import {
     checkDockerDemonIsOnline,
     setDockerDemonIsOffline,
 } from "../network/actions";
-import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, updateStatus} from "./actions";
+import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, updateStatus, updateEpoch} from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import database from "../../services/db/api/database";
@@ -303,6 +303,7 @@ export function* watchOnHead(
                 beaconLogger.info("Beacon on epoch:", headEpoch);
                 epoch = headEpoch;
                 yield put(getNewValidatorBalance(url, payload.value.message.slot, headEpoch));
+                yield put(updateEpoch(headEpoch, url));
             }
         } catch (err) {
             beaconLogger.error("Event error:", err.message);

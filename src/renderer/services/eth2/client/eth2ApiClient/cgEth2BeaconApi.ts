@@ -20,7 +20,7 @@ export class CgEth2BeaconApi implements ICGEth2BeaconApi {
         this.config = config;
         this.httpClient = httpClient;
 
-        this.blocks = new CgEth2BeaconBlocksApi(config, httpClient);
+        this.blocks = new CgEth2BeaconBlocksApi(config, httpClient, publicKey, dispatch);
         this.state = new CgEth2BeaconStateApi(config, httpClient);
         this.pool = new CgEth2BeaconPoolApi(config, httpClient, publicKey, dispatch);
     }

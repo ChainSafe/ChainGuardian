@@ -96,6 +96,22 @@ export const signedNewAttestation = createAction<SignedNewAttestation>(
     }),
 );
 
+export type PublishNewBlock = (
+    publicKey: string,
+    index: number,
+    slot: number,
+) => {
+    payload: {index: number; slot: number};
+    meta: string;
+};
+export const publishNewBlock = createAction<PublishNewBlock>(
+    "validator/publishNewBlock",
+    (publicKey: string, index: number, slot: number) => ({
+        payload: {index, slot},
+        meta: publicKey,
+    }),
+);
+
 export type ExportValidator = (
     path: string,
     publicKey: string,
@@ -107,3 +123,5 @@ export const exportValidator = createAction<ExportValidator>(
     "validator/exportValidator",
     (path: string, publicKey: string) => ({payload: path, meta: publicKey}),
 );
+
+export const startValidatorDutiesWatcher = createAction<string>("validator/startValidatorDutiesWatcher");
