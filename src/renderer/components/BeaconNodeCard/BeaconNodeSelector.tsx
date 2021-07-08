@@ -46,7 +46,7 @@ export const BeaconNodeSelector: React.FC<IBeaconNodeSelector> = ({selected, onC
             </div>
 
             <ButtonPrimary onClick={onSubmit} buttonId='next' disabled={!selected}>
-                CHOSE
+                CHOOSE
             </ButtonPrimary>
         </>
     );
