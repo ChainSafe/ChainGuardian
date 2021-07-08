@@ -1,4 +1,4 @@
-import {ICGEth2NodeApi} from "../interface";
+import {ICGEth2NodeApi, PeerCount, PeerCountResult} from "../interface";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {SyncingStatus} from "@chainsafe/lodestar-types";
@@ -20,5 +20,15 @@ export class CgEth2NodeApi implements ICGEth2NodeApi {
     public getVersion = async (): Promise<string> => {
         const versionResponse = await this.httpClient.get<{data: {version: string}}>("/eth/v1/node/version");
         return versionResponse.data.version;
+    };
+
+    public getPeerCount = async (): Promise<PeerCount> => {
+        const peerCount = await this.httpClient.get<{data: PeerCountResult}>("/eth/v1/node/peer_count");
+        return {
+            disconnected: Number(peerCount.data.disconnected),
+            connecting: Number(peerCount.data.connecting),
+            connected: Number(peerCount.data.connected),
+            disconnecting: Number(peerCount.data.disconnecting),
+        };
     };
 }

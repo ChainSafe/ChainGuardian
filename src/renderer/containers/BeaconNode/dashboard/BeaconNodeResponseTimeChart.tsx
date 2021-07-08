@@ -19,6 +19,7 @@ export const BeaconNodeResponseTimeChart: React.FC<IProps> = ({data, ticks}) => 
             <div className='graph-content'>
                 <ResponsiveContainer width='100%' height={200}>
                     <SimpleLineChart
+                        lineType='natural'
                         data={data}
                         xAxis={{ticks, tickCount: 24, interval: 1}}
                         tooltip={{formatter, labelFormatter, separator: " "}}

@@ -1,12 +1,13 @@
-import {IBeaconPoolApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Attestation, SignedVoluntaryExit} from "@chainsafe/lodestar-types";
 import {signedNewAttestation} from "../../../../ducks/validator/actions";
 import {toHex} from "@chainsafe/lodestar-utils";
 import {Dispatch} from "redux";
+import {ICGBeaconPoolApi, PoolStatus} from "../interface";
+import {Json} from "@chainsafe/ssz";
 
-export class CgEth2BeaconPoolApi implements IBeaconPoolApi {
+export class CgEth2BeaconPoolApi implements ICGBeaconPoolApi {
     protected readonly httpClient: HttpClient;
     protected readonly config: IBeaconConfig;
     protected readonly publicKey?: string;
@@ -43,5 +44,21 @@ export class CgEth2BeaconPoolApi implements IBeaconPoolApi {
             "/pool/voluntary_exits",
             this.config.types.SignedVoluntaryExit.toJson(signedVoluntaryExit, {case: "snake"}),
         );
+    }
+
+    public async getPoolStatus(): Promise<PoolStatus> {
+        const [attestations, attesterSlashings, voluntaryExits, proposerSlashings] = await Promise.all([
+            this.httpClient.get<{data: Json[]}>("/eth/v1/beacon/pool/attestations"),
+            this.httpClient.get<{data: Json[]}>("/eth/v1/beacon/pool/attester_slashings"),
+            this.httpClient.get<{data: Json[]}>("/eth/v1/beacon/pool/proposer_slashings"),
+            this.httpClient.get<{data: Json[]}>("/eth/v1/beacon/pool/voluntary_exits"),
+        ]);
+
+        return {
+            attestations: attestations.data.length,
+            attesterSlashings: attesterSlashings.data.length,
+            voluntaryExits: voluntaryExits.data.length,
+            proposerSlashings: proposerSlashings.data.length,
+        };
     }
 }
