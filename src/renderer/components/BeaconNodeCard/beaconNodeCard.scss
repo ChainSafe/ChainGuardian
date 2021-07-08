@@ -1,0 +1,78 @@
+.beacon-node-card {
+  position: relative;
+
+  img {
+    width: auto;
+    height: 125px;
+  }
+
+  .ribbon_wrapper {
+    left: 0;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+
+  .ribbon {
+    left: -70px;
+    z-index: 1;
+    position: absolute;
+    top: 20px;
+    height: 24px;
+    width: 206px;
+    transform: rotate(-45deg);
+    background-color: rgba(0, 0, 0, 0.4);
+    text-align: center;
+  }
+}
+
+.beacon-node-selector {
+  margin-top: 30px;
+  margin-bottom: 40px;
+  display: flex;
+  width: 100%;
+
+  .card-container {
+    box-sizing: border-box;
+    margin-left: 5px;
+    margin-right: 5px;
+    display: flex;
+    justify-content: center;
+    padding-top: 13px;
+    padding-bottom: 5px;
+    width: 100%;
+    border: solid 2px transparent;
+    border-radius: 15px;
+
+    &:hover {
+      background-color: $neutral-600;
+    }
+  }
+
+  .selected-card {
+    border: solid 2px $primary-blue-500;
+  }
+}
+
+.disabled-node {
+  img {
+    filter: grayscale(100%);
+  }
+
+  .ribbon {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  &:hover {
+    background-color: transparent !important;
+  }
+}
+
+.beta-node {
+  .ribbon {
+    color: rgb(252, 204, 126);
+  }
+}
