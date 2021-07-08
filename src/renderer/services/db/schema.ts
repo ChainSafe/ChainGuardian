@@ -16,6 +16,8 @@ export enum Bucket {
     validatorBeaconNodes,
     networkMetrics,
     validatorBalance,
+    propositionDuties,
+    attestationDuties,
 }
 
 export enum Key {}
