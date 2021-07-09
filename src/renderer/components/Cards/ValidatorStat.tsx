@@ -1,10 +1,19 @@
 import * as React from "react";
 import {utils} from "ethers";
 
+export enum Performance {
+    unknown,
+    offline,
+    excellent,
+    good,
+    fair,
+    poor,
+}
+
 export interface IValidatorStatProps {
     title: string;
     type: string;
-    value?: bigint | number | boolean;
+    value?: bigint | number | boolean | Performance;
 }
 const renderROI = (props: IValidatorStatProps): React.ReactElement => {
     return (
@@ -48,6 +57,30 @@ const renderUptime = (props: IValidatorStatProps): React.ReactElement => {
         </div>
     );
 };
+const performanceText = (value: Performance): React.ReactElement => {
+    switch (value) {
+        case Performance.excellent:
+            return <h1 className='plus'>Great</h1>;
+        case Performance.good:
+            return <h1 className='plus'>Good</h1>;
+        case Performance.fair:
+            return <h1 className='minus'>Fair</h1>;
+        case Performance.poor:
+            return <h1 className='minus'>Poor</h1>;
+        case Performance.offline:
+            return <h1>Offline</h1>;
+        default:
+            return <h1>N/A</h1>;
+    }
+};
+const renderPerformance = (props: IValidatorStatProps): React.ReactElement => {
+    return (
+        <div className='validator-card-container'>
+            <h5>{props.title}</h5>
+            {performanceText(props.value as Performance)}
+        </div>
+    );
+};
 export const ValidatorStat: React.FunctionComponent<IValidatorStatProps> = (props: IValidatorStatProps) => {
     switch (props.type) {
         case "ROI":
@@ -56,6 +89,8 @@ export const ValidatorStat: React.FunctionComponent<IValidatorStatProps> = (prop
             return renderBalance(props);
         case "Status":
             return renderUptime(props);
+        case "Performance":
+            return renderPerformance(props);
         default:
             return (
                 <div className='validator-card-container'>

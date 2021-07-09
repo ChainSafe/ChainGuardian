@@ -40,4 +40,11 @@ export class AttestationDuties implements IAttestationDuties {
             return record;
         });
     }
+
+    public countMissed(): number {
+        return this.records
+            .filter(({status}) => status !== DutyStatus.scheduled && status !== DutyStatus.unknown)
+            .slice(0, 10)
+            .reduce((previous, {status}) => previous + Number(status === DutyStatus.missed), 0);
+    }
 }
