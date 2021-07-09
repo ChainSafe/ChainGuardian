@@ -15,6 +15,7 @@ import {useDispatch} from "react-redux";
 import {exportValidator} from "../../../ducks/validator/actions";
 import {ValidatorAttestationsTable} from "./ValidatorAttestationsTable";
 import {ValidatorPropositionsTable} from "./ValidatorPropositionsTable";
+import {PrivateKeyPromp} from "../../../components/PrivateKeyPromp/PrivateKeyPromp";
 
 interface IValidatorStatsProps {
     validator: IValidator;
@@ -24,6 +25,7 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
     const [epochData, setEpochData] = useState<SimpleLineChartRecord[]>([]);
     const [dateData, setDateData] = useState<AttestationRecord[]>([]);
     const [useDate, setUseDate] = useState(false);
+    const [showPK, setShowPK] = useState(false);
 
     const [attestationData, setAttestationData] = useState<SimpleLineChartRecord[]>([]);
 
@@ -46,6 +48,13 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
         if (savePath && savePath.length) {
             dispatch(exportValidator(savePath[0], validator.publicKey));
         }
+    };
+
+    const onPrimaryKeyClick = (): void => {
+        setShowPK(true);
+    };
+    const onPrimaryKeyClose = (): void => {
+        setShowPK(false);
     };
 
     useEffect(() => {
@@ -77,6 +86,9 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
                             Go to explorer
                         </ButtonSecondary>
                     )}
+                    <ButtonPrimitive onClick={onPrimaryKeyClick} data-tip='Display private key promp'>
+                        PrivateKey
+                    </ButtonPrimitive>
                     <ButtonPrimitive onClick={onExportValidator} data-tip='Export validator keystore and slashing db'>
                         Export
                     </ButtonPrimitive>
@@ -95,6 +107,7 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
                 <ValidatorAttestationsTable publicKey={validator.publicKey} slot={beaconNode.slot} />
                 <ValidatorPropositionsTable publicKey={validator.publicKey} slot={beaconNode.slot} />
             </div>
+            <PrivateKeyPromp keystore={validator.keystore} display={showPK} onClose={onPrimaryKeyClose} />
         </div>
     );
 };
