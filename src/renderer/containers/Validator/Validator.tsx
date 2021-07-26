@@ -1,12 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {PasswordPrompt} from "../../components/Prompt/PasswordPrompt";
 import {Routes} from "../../constants/routes";
 import {calculateROI} from "../../services/utils/math";
 import {EditButton} from "../../components/Button/ButtonAction";
 import {ButtonDestructive, ButtonPrimary} from "../../components/Button/ButtonStandard";
-import {ValidatorStat} from "../../components/Cards/ValidatorStat";
-import {PrivateKeyField} from "../../components/PrivateKeyField/PrivateKeyField";
+import {Performance, ValidatorStat} from "../../components/Cards/ValidatorStat";
 import {InputForm} from "../../components/Input/InputForm";
 import {NodeCard} from "../../components/Cards/NodeCard";
 import {IRootState} from "../../ducks/reducers";
@@ -22,6 +21,8 @@ import {BeaconStatus} from "../../ducks/beacon/slice";
 import {BlsKeypair} from "../../types";
 import {SlashingDBUpload} from "./SlashingDBUpload";
 import {ValidatorStatus} from "../../constants/validatorStatus";
+import database from "../../services/db/api/database";
+import {subDays} from "date-fns";
 
 export interface IValidatorSimpleProps {
     publicKey: string;
@@ -53,10 +54,42 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
     const nodes = useSelector((state: IRootState) => getValidatorBeaconNodes(state, props));
     const validator = useSelector((state: IRootState) => getValidator(state, props));
     const roi = calculateROI(validator.balance, network);
+    const [performance, setPerformance] = useState(Performance.unknown);
 
     useEffect(() => {
         dispatch(updateValidatorChainData(props.publicKey));
     }, [props.publicKey]);
+
+    const intervalRef = useRef<NodeJS.Timeout>();
+    useEffect(() => {
+        let isVisible = true;
+        const calculatePerformance = async (): Promise<void> => {
+            const [attestations, effectiveness] = await Promise.all([
+                database.validator.attestationDuties.get(props.publicKey),
+                database.validator.attestationEffectiveness.get(props.publicKey),
+            ]);
+            if (isVisible && validator.isRunning) {
+                const score =
+                    0 -
+                    attestations.countMissed() * 10 +
+                    effectiveness.getAverageAttestationEfficiency(subDays(new Date(), 1));
+                if (score > 90) setPerformance(Performance.excellent);
+                else if (score > 80) setPerformance(Performance.good);
+                else if (score > 60) setPerformance(Performance.fair);
+                else setPerformance(Performance.poor);
+            } else if (!validator.isRunning) {
+                setPerformance(Performance.offline);
+            }
+        };
+        calculatePerformance();
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        const interval = setInterval(calculatePerformance, 60 * 1000);
+        intervalRef.current = interval;
+        return (): void => {
+            isVisible = false;
+            clearInterval(interval);
+        };
+    }, [validator.isRunning]);
 
     const renderBeaconNodes = (): React.ReactElement => {
         return (
@@ -129,21 +162,18 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
         <>
             <div className='validator-container'>
                 <div className='validator-simple-keys'>
-                    <div className='row'>
+                    <div className='row validator-name'>
                         <h2>{validator.name}</h2>
                         {renderValidatorButtons()}
                     </div>
-                    <h3>Status: {validator.status || "N/A"}</h3>
-
-                    <br />
+                    <h3 className='key-status'>Status: {validator.status || "N/A"}</h3>
 
                     <div className='row validator-stat-container '>
                         <ValidatorStat title='Balance' type='ETH' value={validator.balance} />
                         <ValidatorStat title='Return (ETH)' type='ROI' value={roi} />
                         <ValidatorStat title='Validator' type='Status' value={validator.isRunning} />
+                        <ValidatorStat title='Performance' type='Performance' value={performance} />
                     </div>
-
-                    <br />
 
                     <InputForm
                         label='PUBLIC KEY'
@@ -152,8 +182,6 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
                         readOnly={true}
                         type='text'
                     />
-
-                    <PrivateKeyField label='PRIVATE KEY' keystore={validator.keystore} />
                 </div>
                 <div className='validator-status'>
                     {renderBeaconNodes()}
