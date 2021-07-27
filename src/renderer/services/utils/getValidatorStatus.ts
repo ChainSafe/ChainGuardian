@@ -61,6 +61,20 @@ const getValidatorStatusFromString = (status: string): ValidatorStatus => {
      * - "withdrawal_possible"
      * - "withdrawal_done"
      */
+    /** PRYSM -.-
+     * "PENDING_INITIALIZED"
+     * "PENDING_QUEUED"
+     * "ACTIVE_ONGOING"
+     * "ACTIVE_EXITING"
+     * "ACTIVE_SLASHED"
+     * "EXITED_UNSLASHED"
+     * "EXITED_SLASHED"
+     * "WITHDRAWAL_POSSIBLE"
+     * "WITHDRAWAL_DONE"
+     * "ACTIVE"
+     * "PENDING"
+     * "EXITED"
+     */
 
     // TODO: implement v1 spec
     switch (status) {
@@ -70,29 +84,41 @@ const getValidatorStatusFromString = (status: string): ValidatorStatus => {
             return ValidatorStatus.DEPOSITED;
         case "waiting_in_queue":
         case "pending_initialized":
+        case "PENDING_INITIALIZED":
             return ValidatorStatus.QUEUE;
         case "standby_for_active":
         case "pending_queued":
+        case "PENDING":
+        case "PENDING_QUEUED":
             return ValidatorStatus.PENDING;
         case "active":
         case "active_ongoing":
+        case "ACTIVE":
+        case "ACTIVE_ONGOING":
             return ValidatorStatus.ACTIVE;
         case "active_awaiting_voluntary_exit":
         case "active_exiting":
+        case "ACTIVE_EXITING":
             return ValidatorStatus.GOOD_BOY_EXITING;
         case "active_awaiting_slashed_exit":
         case "active_slashed":
+        case "ACTIVE_SLASHED":
             return ValidatorStatus.SLASHED_EXITING;
         case "exited_voluntarily":
         case "exited_unslashed":
+        case "EXITED":
+        case "EXITED_UNSLASHED":
             return ValidatorStatus.VOLUNTARILY_EXITED;
         case "exited_slashed":
+        case "EXITED_SLASHED":
             return ValidatorStatus.SLASHED;
         case "withdrawable":
         case "withdrawal_possible":
+        case "WITHDRAWAL_POSSIBLE":
             return ValidatorStatus.WITHDRAWABLE;
         case "withdrawn":
         case "withdrawal_done":
+        case "WITHDRAWAL_DONE":
             return ValidatorStatus.WITHDRAWNED;
         default:
             logger.error(`Status: "${status}" not found`);
