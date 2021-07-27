@@ -524,9 +524,24 @@ export function* watchValidatorDuties({
 }: ReturnType<typeof startValidatorDutiesWatcher>): Generator<
     SelectEffect | TakeEffect | CallEffect,
     void,
-    IValidatorComplete & typeof CgEth2ApiClient & ICGValidatorResponse & ReturnType<typeof updateEpoch> & Beacon
+    IValidatorComplete &
+        typeof CgEth2ApiClient &
+        ICGValidatorResponse &
+        ReturnType<typeof updateEpoch> &
+        Beacon &
+        ReturnType<typeof setValidatorBeaconNode>
 > {
-    const validator = yield select(getValidator, {publicKey: payload});
+    let validator = yield select(getValidator, {publicKey: payload});
+    if (!validator.beaconNodes.length) {
+        while (true) {
+            const updatedValidator = yield take(setValidatorBeaconNode);
+            if (updatedValidator.payload.length && validator.publicKey === updatedValidator.meta) {
+                validator = yield select(getValidator, {publicKey: payload});
+                break;
+            }
+        }
+    }
+
     const config = getNetworkConfig(validator.network)?.eth2Config || mainnetConfig;
     const {genesisTime} = getNetworkConfig(validator.network);
 
@@ -579,6 +594,15 @@ export function* watchValidatorDuties({
         yield take(addBeacons);
         beaconNode = yield select(getBeaconByKey, {key: validator.beaconNodes[0]});
     }
+    if (beaconNode.status !== BeaconStatus.starting) {
+        while (true) {
+            const newStatus = yield take(updateStatus);
+            if (newStatus.payload === BeaconStatus.starting && newStatus.meta === beaconNode.url) {
+                beaconNode = yield select(getBeaconByKey, {key: validator.beaconNodes[0]});
+            }
+        }
+    }
+
     yield call(processDuties, computeEpochAtSlot(config, beaconNode.slot));
     while (true) {
         const newEpoch = yield take(updateEpoch);
