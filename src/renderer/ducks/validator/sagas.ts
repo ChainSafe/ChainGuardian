@@ -163,6 +163,7 @@ export function* addNewValidatorSaga(action: ReturnType<typeof addNewValidator>)
     yield put(addValidator(validator));
     yield put(setLoadingValidator(false));
     yield spawn(validatorInfoUpdater, validator.publicKey, validator.network);
+    yield put(startValidatorDutiesWatcher(validator.publicKey));
 }
 
 function* removeValidatorSaga(
@@ -594,12 +595,10 @@ export function* watchValidatorDuties({
         yield take(addBeacons);
         beaconNode = yield select(getBeaconByKey, {key: validator.beaconNodes[0]});
     }
-    if (beaconNode.status !== BeaconStatus.starting) {
+    if (beaconNode.status !== BeaconStatus.active) {
         while (true) {
             const newStatus = yield take(updateStatus);
-            if (newStatus.payload === BeaconStatus.starting && newStatus.meta === beaconNode.url) {
-                beaconNode = yield select(getBeaconByKey, {key: validator.beaconNodes[0]});
-            }
+            if (newStatus.payload === BeaconStatus.active && newStatus.meta === beaconNode.url) break;
         }
     }
 
