@@ -531,12 +531,12 @@ export function* watchValidatorDuties({
         Beacon &
         ReturnType<typeof setValidatorBeaconNode>
 > {
-    let validator = yield select(getValidator, {publicKey: payload});
+    let validator: IValidatorComplete = yield select(getValidator, {publicKey: payload});
     if (!validator.beaconNodes.length) {
         while (true) {
             const updatedValidator = yield take(setValidatorBeaconNode);
             if (updatedValidator.payload.length && validator.publicKey === updatedValidator.meta) {
-                validator = yield select(getValidator, {publicKey: payload});
+                validator = {...validator, beaconNodes: updatedValidator.payload};
                 break;
             }
         }

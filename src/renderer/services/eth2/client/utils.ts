@@ -16,13 +16,14 @@ export function getEth2ApiClient(url: string, network: string): ICgEth2ApiClient
     }
 }
 
-export async function readBeaconChainNetwork(url: string): Promise<INetworkConfig | null> {
+export async function readBeaconChainNetwork(url: string, throwOnEmpty = false): Promise<INetworkConfig | null> {
     // eslint-disable-next-line camelcase
     type GenesisResponseType = {data: {genesis_fork_version: string}};
     try {
         const genesisResponse = await new HttpClient(url).get<GenesisResponseType>("/eth/v1/beacon/genesis");
         return getNetworkConfigByGenesisVersion(genesisResponse.data.genesis_fork_version);
-    } catch {
+    } catch (error) {
+        if (throwOnEmpty) throw error;
         return null;
     }
 }

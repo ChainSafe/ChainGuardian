@@ -241,7 +241,7 @@ export function* watchOnHead(
         typeof CgEth2ApiClient &
         boolean
 > {
-    const config = yield retry(30, 1000, readBeaconChainNetwork, url);
+    const config = yield retry(30, 1000, readBeaconChainNetwork, url, true);
     const ApiClient: typeof CgEth2ApiClient = yield call(getBeaconNodeEth2ApiClient, url);
     const client = new ApiClient(config?.eth2Config || mainnetConfig, url);
     const eventStream = client.events.getEventStream([BeaconEventType.HEAD]);
