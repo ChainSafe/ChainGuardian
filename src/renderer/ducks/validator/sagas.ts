@@ -616,14 +616,15 @@ function* updateDutiesStatus({
     meta,
 }: ReturnType<typeof updateSlot>): Generator<SelectEffect | AllEffect<AllEffect<CallEffect>>, void, BeaconValidators> {
     const validatorsByBeaconNode = yield select(getValidatorsByBeaconNode);
-    yield all(
-        validatorsByBeaconNode[meta].map(({publicKey}) =>
-            all([
-                call(database.validator.propositionDuties.updateMissed, publicKey, payload),
-                call(database.validator.attestationDuties.updateMissed, publicKey, payload),
-            ]),
-        ),
-    );
+    if (validatorsByBeaconNode[meta])
+        yield all(
+            validatorsByBeaconNode[meta].map(({publicKey}) =>
+                all([
+                    call(database.validator.propositionDuties.updateMissed, publicKey, payload),
+                    call(database.validator.attestationDuties.updateMissed, publicKey, payload),
+                ]),
+            ),
+        );
 }
 
 function* onPublishedBlock({
