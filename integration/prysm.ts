@@ -7,7 +7,7 @@ import {CgPrysmEth2Api} from "../src/renderer/services/eth2/client/module";
 (async function (): Promise<void> {
     const {proposer, attestation} = await restValidation({
         baseUrl: "http://localhost:5050",
-        getValidatorPrivateKey: async () => getInteropKey(7),
+        getValidatorPrivateKey: async () => getInteropKey(15),
         limit: 5,
         config,
         ApiClient: CgPrysmEth2Api,
