@@ -559,7 +559,12 @@ export function* watchValidatorDuties({
         const attestationsFuture = yield call(eth2API.validator.getAttesterDuties, epoch + 1, [validatorState.index]);
         const propositions = yield call(eth2API.validator.getProposerDuties, epoch, [validatorId]);
         const propositionsFuture = yield call(eth2API.validator.getProposerDuties, epoch + 1, [validatorId]);
-        const propositionsSuperFuture = yield call(eth2API.validator.getProposerDuties, epoch + 2, [validatorId]);
+        let propositionsSuperFuture: ProposerDuty[];
+        try {
+            propositionsSuperFuture = yield call(eth2API.validator.getProposerDuties, epoch + 2, [validatorId]);
+        } catch {
+            propositionsSuperFuture = [];
+        }
 
         // store data to database
         yield all([
