@@ -180,3 +180,25 @@ export type BeaconBlockContainer = {
     blockRoot: string;
     canonical: boolean;
 };
+
+export type AttestationEvent = {
+    // eslint-disable-next-line camelcase
+    aggregation_bits: string;
+    data: {
+        // eslint-disable-next-line camelcase
+        beacon_block_root: string;
+        index: string;
+        slot: string;
+        source: Checkpoint;
+        target: Checkpoint;
+    };
+    signature: string;
+};
+
+export type AttestationEventV2 = {
+    // eslint-disable-next-line camelcase
+    aggregator_index: string;
+    aggregate: AttestationEvent;
+    // eslint-disable-next-line camelcase
+    selection_proof: string;
+};

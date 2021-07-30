@@ -8,6 +8,7 @@ import {
     ProposerSlashing as PrysmProposerSlashing,
     SignedBeaconBlockHeader as PrysmSignedBeaconBlockHeader,
     SignedVoluntaryExit as PrysmSignedVoluntaryExit,
+    AttestationEvent,
 } from "./types";
 import {base64ToHex} from "./utils";
 import {
@@ -112,4 +113,22 @@ export const mapVoluntaryExit = (voluntaryExit: PrysmSignedVoluntaryExit): Volun
         validator_index: voluntaryExit.exit.epoch,
     },
     signature: base64ToHex(voluntaryExit.signature),
+});
+
+export const mapAttestationEvent = (attestation: AttestationEvent): Attestation => ({
+    aggregation_bits: base64ToHex(attestation.aggregation_bits),
+    signature: base64ToHex(attestation.signature),
+    data: {
+        slot: attestation.data.slot,
+        index: attestation.data.index,
+        beacon_block_root: base64ToHex(attestation.data.beacon_block_root),
+        source: {
+            epoch: attestation.data.source.epoch,
+            root: base64ToHex(attestation.data.source.root),
+        },
+        target: {
+            epoch: attestation.data.target.epoch,
+            root: base64ToHex(attestation.data.target.root),
+        },
+    },
 });
