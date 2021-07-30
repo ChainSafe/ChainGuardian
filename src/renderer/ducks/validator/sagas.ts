@@ -17,6 +17,7 @@ import {
     CallEffect,
     call,
     takeLatest,
+    retry,
 } from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
 import {deleteKeystore, saveValidatorData} from "../../services/utils/account";
@@ -555,14 +556,23 @@ export function* watchValidatorDuties({
     function* processDuties(
         epoch: number,
     ): Generator<CallEffect | AllEffect<CallEffect>, void, AttesterDuty[] & ProposerDuty[]> {
-        const attestations = yield call(eth2API.validator.getAttesterDuties, epoch, [validatorState.index]);
-        const attestationsFuture = yield call(eth2API.validator.getAttesterDuties, epoch + 1, [validatorState.index]);
-        const propositions = yield call(eth2API.validator.getProposerDuties, epoch, [validatorId]);
-        const propositionsFuture = yield call(eth2API.validator.getProposerDuties, epoch + 1, [validatorId]);
-        let propositionsSuperFuture: ProposerDuty[];
+        let attestations: AttesterDuty[], attestationsFuture: AttesterDuty[];
         try {
+            attestations = yield retry(2, 0, eth2API.validator.getAttesterDuties, epoch, [validatorState.index]);
+            attestationsFuture = yield call(eth2API.validator.getAttesterDuties, epoch + 1, [validatorState.index]);
+        } catch {
+            attestations = attestations || [];
+            attestationsFuture = [];
+        }
+
+        let propositions: ProposerDuty[], propositionsFuture: ProposerDuty[], propositionsSuperFuture: ProposerDuty[];
+        try {
+            propositions = yield call(eth2API.validator.getProposerDuties, epoch, [validatorId]);
+            propositionsFuture = yield call(eth2API.validator.getProposerDuties, epoch + 1, [validatorId]);
             propositionsSuperFuture = yield call(eth2API.validator.getProposerDuties, epoch + 2, [validatorId]);
         } catch {
+            propositions = propositions || [];
+            propositionsFuture = propositionsFuture || [];
             propositionsSuperFuture = [];
         }
 
