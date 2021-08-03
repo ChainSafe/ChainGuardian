@@ -20,16 +20,21 @@ export class CgPrysmEth2BeaconApi extends CgEth2BeaconApi {
 
     public getGenesis = async (): Promise<Genesis | null> => {
         try {
-            const {genesisTime, genesisValidatorsRoot} = await this.httpClient.get<{
-                genesisTime: string;
-                genesisValidatorsRoot: string;
-            }>("/eth/v1alpha1/node/genesis");
+            const genesisResponse = await this.httpClient.get<{
+                data: {
+                    // eslint-disable-next-line camelcase
+                    genesis_time: string;
+                    // eslint-disable-next-line camelcase
+                    genesis_validators_root: string;
+                    // eslint-disable-next-line camelcase
+                    genesis_fork_version: string;
+                };
+            }>("/eth/v1/beacon/genesis");
 
             const result = {
-                genesisTime: Math.round(new Date(genesisTime).getTime() / 1000).toString(),
-                genesisValidatorsRoot: base64ToHex(genesisValidatorsRoot),
-                // TODO: change mocked data with real
-                genesisForkVersion: "0x00000000",
+                genesisTime: Math.round(new Date(genesisResponse.data.genesis_time).getTime() / 1000).toString(),
+                genesisValidatorsRoot: base64ToHex(genesisResponse.data.genesis_validators_root),
+                genesisForkVersion: base64ToHex(genesisResponse.data.genesis_fork_version),
             };
 
             return this.config.types.Genesis.fromJson(result, {case: "camel"});

@@ -23,11 +23,13 @@ import {
     BeaconBlock as PrysmBeaconBlock,
     AttestationData as PrysmAttestationData,
     Attestation as PrysmAttestation,
+    AttestationEvent,
+    AttestationEventV2,
 } from "./types";
 import {SignedAggregateAndProof as SignedAggregateAndProofDto} from "./map.types";
 import querystring from "querystring";
 import {
-    mapAttestation,
+    mapAttestationEvent,
     mapAttestationData,
     mapProduceBlockResponseToStandardProduceBlock,
 } from "./mapProduceBlockResponseToStandardProduceBlock";
@@ -41,12 +43,16 @@ export class CgPrysmEth2ValidatorApi extends CgEth2ValidatorApi {
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
         super(config, httpClient);
 
-        const url = new URL(`/eth/v1alpha1/beacon/attestations/stream`, httpClient.getBaseUrl());
-        this.stream = new PrysmStreamReader<Attestation, PrysmAttestation>(url, {
-            transformer: (data): Attestation =>
-                this.config.types.Attestation.fromJson((mapAttestation(data) as unknown) as Json, {
-                    case: "snake",
-                }),
+        const url = new URL(`/eth/v1/events?topics=attestation`, httpClient.getBaseUrl());
+        this.stream = new PrysmStreamReader<Attestation, AttestationEvent | AttestationEventV2>(url, {
+            transformer: (data): Attestation => {
+                return this.config.types.Attestation.fromJson(
+                    (mapAttestationEvent("aggregate" in data ? data.aggregate : data) as unknown) as Json,
+                    {
+                        case: "snake",
+                    },
+                );
+            },
             maxElements: 128,
         });
     }

@@ -1,6 +1,5 @@
 import {EventEmitter} from "events";
-import axios from "axios";
-import {IncomingMessage} from "http";
+import EventSource from "eventsource";
 
 type Options<T, R> = {
     maxElements?: number;
@@ -20,17 +19,12 @@ export class PrysmStreamReader<T, R = T> extends EventEmitter {
         this.max = maxElements;
 
         try {
-            axios
-                .get(url.href, {
-                    responseType: "stream",
-                })
-                .then((r) => {
-                    const event = r.data as IncomingMessage;
-                    event.on("data", (buffer) => {
-                        const data: R = JSON.parse(buffer.toString());
-                        this.push(transformer(data));
-                    });
-                });
+            const eventSource = new EventSource(url.href);
+            eventSource.addEventListener("message", (event: Event) => {
+                const data: R & {"@type": string} = JSON.parse((event as MessageEvent).data);
+                delete data["@type"];
+                this.push(transformer(data));
+            });
         } catch (e) {
             this.emit("error", e);
         }

@@ -19,9 +19,12 @@ export const BeaconNodeContainer: React.FC = () => {
 
     const tabs = [{tabId: 0, tabName: "Dashboard", index: 0}];
     if (beacon.docker) {
-        tabs.push({tabId: 1, tabName: "Logs", index: 0}, {tabId: 2, tabName: "Performance", index: 0});
+        tabs.push(
+            {tabId: 1, tabName: "Logs", index: 0},
+            {tabId: 2, tabName: "Performance", index: 0},
+            {tabId: 3, tabName: "Metrics", index: 0},
+        );
     }
-    tabs.push({tabId: 3, tabName: "Metrics", index: 0});
 
     return (
         <Background scrollable={true}>

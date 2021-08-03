@@ -21,6 +21,9 @@ export class CgEth2BeaconPoolApi implements ICGBeaconPoolApi {
     }
 
     public submitAttestation = async (attestation: Attestation): Promise<void> => {
+        await this.httpClient.post("/eth/v1/beacon/pool/attestations", [
+            this.config.types.Attestation.toJson(attestation, {case: "snake"}),
+        ]);
         if (this.publicKey && this.dispatch) {
             const validatorIndexInCommittee = attestation.aggregationBits.findIndex((bit) => bit);
             if (validatorIndexInCommittee !== -1)
@@ -34,9 +37,6 @@ export class CgEth2BeaconPoolApi implements ICGBeaconPoolApi {
                     ),
                 );
         }
-        await this.httpClient.post("/eth/v1/beacon/pool/attestations", [
-            this.config.types.Attestation.toJson(attestation, {case: "snake"}),
-        ]);
     };
 
     public async submitVoluntaryExit(signedVoluntaryExit: SignedVoluntaryExit): Promise<void> {
