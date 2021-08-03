@@ -6,7 +6,7 @@ import {Attestation, SignedVoluntaryExit} from "@chainsafe/lodestar-types";
 import {signedNewAttestation} from "../../../../ducks/validator/actions";
 import {toHex} from "@chainsafe/lodestar-utils";
 import {hexToBase64} from "./utils";
-import {Attestation as PrysmAttestation} from "./types";
+import {Attestation as PrysmAttestation} from "./map.types";
 
 type AttestationData = {
     aggregationBits: string;
@@ -32,6 +32,28 @@ export class CgPrysmEth2BeaconPoolApi extends CgEth2BeaconPoolApi {
     }
 
     public submitAttestation = async (attestation: Attestation): Promise<void> => {
+        const data = this.config.types.Attestation.toJson(attestation) as AttestationData;
+        const mapped: PrysmAttestation = {
+            // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+            aggregation_bits: hexToBase64(data.aggregationBits),
+            data: {
+                slot: data.data.slot,
+                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+                index: data.data.index,
+                // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+                beacon_block_root: hexToBase64(data.data.beaconBlockRoot),
+                source: {
+                    epoch: data.data.source.epoch,
+                    root: hexToBase64(data.data.source.root),
+                },
+                target: {
+                    epoch: data.data.target.epoch,
+                    root: hexToBase64(data.data.target.root),
+                },
+            },
+            signature: hexToBase64(data.signature),
+        };
+        await this.httpClient.post("/eth/v1/beacon/pool/attestations", {data: [mapped]});
         if (this.publicKey && this.dispatch) {
             const validatorIndexInCommittee = attestation.aggregationBits.findIndex((bit) => bit);
             if (validatorIndexInCommittee !== -1)
@@ -45,25 +67,6 @@ export class CgPrysmEth2BeaconPoolApi extends CgEth2BeaconPoolApi {
                     ),
                 );
         }
-        const data = this.config.types.Attestation.toJson(attestation) as AttestationData;
-        const mapped: PrysmAttestation = {
-            aggregationBits: hexToBase64(data.aggregationBits),
-            data: {
-                slot: data.data.slot,
-                committeeIndex: data.data.index,
-                beaconBlockRoot: hexToBase64(data.data.beaconBlockRoot),
-                source: {
-                    epoch: data.data.source.epoch,
-                    root: hexToBase64(data.data.source.root),
-                },
-                target: {
-                    epoch: data.data.target.epoch,
-                    root: hexToBase64(data.data.target.root),
-                },
-            },
-            signature: hexToBase64(data.signature),
-        };
-        await this.httpClient.post("/eth/v1alpha1/validator/attestation", mapped);
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
