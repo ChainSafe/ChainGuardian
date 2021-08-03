@@ -560,9 +560,10 @@ export function* watchValidatorDuties({
         try {
             attestations = yield retry(2, 0, eth2API.validator.getAttesterDuties, epoch, [validatorState.index]);
             attestationsFuture = yield call(eth2API.validator.getAttesterDuties, epoch + 1, [validatorState.index]);
-        } catch {
+        } catch (e) {
             attestations = attestations || [];
             attestationsFuture = [];
+            cgLogger.warn("processDuties attestations", e);
         }
 
         let propositions: ProposerDuty[], propositionsFuture: ProposerDuty[], propositionsSuperFuture: ProposerDuty[];
@@ -570,10 +571,11 @@ export function* watchValidatorDuties({
             propositions = yield call(eth2API.validator.getProposerDuties, epoch, [validatorId]);
             propositionsFuture = yield call(eth2API.validator.getProposerDuties, epoch + 1, [validatorId]);
             propositionsSuperFuture = yield call(eth2API.validator.getProposerDuties, epoch + 2, [validatorId]);
-        } catch {
+        } catch (e) {
             propositions = propositions || [];
             propositionsFuture = propositionsFuture || [];
             propositionsSuperFuture = [];
+            cgLogger.warn("processDuties propositions", e);
         }
 
         // store data to database
