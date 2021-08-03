@@ -9,6 +9,7 @@ import {TabNavigation} from "../../components/TabNavigation/TabNavigation";
 import {BeaconNodeDashboard} from "./dashboard/BeaconNodeDashboard";
 import {BeaconNodeLogs} from "./BeaconNodeLogs";
 import {BeaconNodePerformance} from "./BeaconNodePerformance";
+import {BeaconNodeMetrics} from "./BeaconNodeMetrics";
 
 export const BeaconNodeContainer: React.FC = () => {
     const history = useHistory();
@@ -18,7 +19,11 @@ export const BeaconNodeContainer: React.FC = () => {
 
     const tabs = [{tabId: 0, tabName: "Dashboard", index: 0}];
     if (beacon.docker) {
-        tabs.push({tabId: 1, tabName: "Logs", index: 0}, {tabId: 2, tabName: "Performance", index: 0});
+        tabs.push(
+            {tabId: 1, tabName: "Logs", index: 0},
+            {tabId: 2, tabName: "Performance", index: 0},
+            {tabId: 3, tabName: "Metrics", index: 0},
+        );
     }
 
     return (
@@ -32,6 +37,7 @@ export const BeaconNodeContainer: React.FC = () => {
                     {currentTab === tabs[0]?.tabId && <BeaconNodeDashboard beacon={beacon} />}
                     {currentTab === tabs[1]?.tabId && <BeaconNodeLogs beacon={beacon} />}
                     {currentTab === tabs[2]?.tabId && <BeaconNodePerformance beacon={beacon} />}
+                    {currentTab === tabs[3]?.tabId && <BeaconNodeMetrics beacon={beacon} />}
                 </div>
             </div>
         </Background>

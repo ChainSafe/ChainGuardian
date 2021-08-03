@@ -17,8 +17,8 @@ export const BeaconNodePerformance: React.FC<IBeaconNodeProps> = ({beacon: {dock
     if (!container) return null;
 
     const [stats, setStats] = useState<Stats>();
-    const [cpu, setCpu] = useState<SimpleLineChartRecord[]>(noData);
-    const [ram, setRam] = useState<SimpleLineChartRecord[]>(noData);
+    const [cpu, setCpu] = useState<SimpleLineChartRecord[]>([...noData]);
+    const [ram, setRam] = useState<SimpleLineChartRecord[]>([...noData]);
 
     useEffect(() => {
         (async function (): Promise<void> {

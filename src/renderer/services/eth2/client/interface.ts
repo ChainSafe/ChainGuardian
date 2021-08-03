@@ -1,7 +1,12 @@
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {ILogger, IStoppableEventIterable} from "@chainsafe/lodestar-utils";
 import {IApiClient} from "@chainsafe/lodestar-validator/lib";
-import {IBeaconApi, IBeaconBlocksApi, IBeaconStateApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
+import {
+    IBeaconApi,
+    IBeaconBlocksApi,
+    IBeaconPoolApi,
+    IBeaconStateApi,
+} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
 import {INodeApi} from "@chainsafe/lodestar-validator/lib/api/interface/node";
 import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
 import {
@@ -18,6 +23,7 @@ import {
     ValidatorStatus,
     SignedBeaconBlock,
     Fork,
+    BeaconCommitteeResponse,
 } from "@chainsafe/lodestar-types";
 import {List} from "@chainsafe/ssz";
 import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
@@ -44,14 +50,32 @@ export interface ICGBeaconStateApi extends Omit<IBeaconStateApi, "getStateValida
         validatorId: ValidatorIndex | BLSPubkey,
     ): Promise<ICGValidatorResponse | null>;
     getLastEpoch(): Promise<bigint | null>;
+    getCommittees(stateId?: "head" | number): Promise<BeaconCommitteeResponse[]>;
 }
 
-export interface ICGEth2BeaconApi extends Omit<IBeaconApi, "blocks" | "state"> {
+export interface ICGEth2BeaconApi extends Omit<IBeaconApi, "blocks" | "state" | "pool"> {
     blocks: ICGETH2BeaconBlocksApi;
     state: ICGBeaconStateApi;
+    pool: ICGBeaconPoolApi;
 }
 
-export type ICGEth2NodeApi = INodeApi;
+export type PeerCount = {
+    disconnected: number;
+    connecting: number;
+    connected: number;
+    disconnecting: number;
+};
+export type PeerCountResult = {
+    disconnected: string;
+    connecting: string;
+    connected: string;
+    disconnecting: string;
+};
+
+export interface ICGEth2NodeApi extends INodeApi {
+    getPeerCount: () => Promise<PeerCount>;
+}
+
 export type ICGEth2ValidatorApi = IValidatorApi;
 
 export enum CGBeaconEventType {
@@ -59,6 +83,7 @@ export enum CGBeaconEventType {
     CHAIN_REORG = "chain_reorg",
     HEAD = "head",
     FINALIZED_CHECKPOINT = "finalized_checkpoint",
+    ATTESTATION = "attestation",
     ERROR = "error",
 }
 
@@ -67,11 +92,21 @@ export declare type FinalizedCheckpointEvent = {
     message: FinalizedCheckpoint;
 };
 
+export declare type AttestationEvent = {
+    type: typeof CGBeaconEventType.ATTESTATION;
+    message: Attestation;
+};
+
 export declare type ErrorEvent = {
     type: typeof CGBeaconEventType.ERROR;
 };
 
-export type CGBeaconEvent = BeaconBlockEvent | BeaconChainReorgEvent | HeadEvent | FinalizedCheckpointEvent;
+export type CGBeaconEvent =
+    | BeaconBlockEvent
+    | BeaconChainReorgEvent
+    | HeadEvent
+    | FinalizedCheckpointEvent
+    | AttestationEvent;
 
 export interface ICGEventsApi extends Omit<IEventsApi, "getEventStream"> {
     getEventStream(topics: CGBeaconEventType[]): IStoppableEventIterable<CGBeaconEvent | ErrorEvent>;
@@ -106,4 +141,15 @@ export interface IBeaconClientOptions {
     baseUrl: string;
     logger: ILogger;
     config: IBeaconConfig;
+}
+
+export type PoolStatus = {
+    attestations: number;
+    attesterSlashings: number;
+    voluntaryExits: number;
+    proposerSlashings: number;
+};
+
+export interface ICGBeaconPoolApi extends IBeaconPoolApi {
+    getPoolStatus(): Promise<PoolStatus>;
 }

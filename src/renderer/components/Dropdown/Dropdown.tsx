@@ -1,17 +1,26 @@
 import * as React from "react";
 import {useState} from "react";
+import cgLogo from "../../assets/ico/app_icon.png";
 
 export interface IDropdownProps {
     options: Array<string> | {[id: number]: string};
     current: number;
     label?: string;
     onChange?: (selected: number) => void;
+    verifiedIndex?: number;
+    className?: string;
 }
 
-export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdownProps) => {
+export const Dropdown: React.FunctionComponent<IDropdownProps> = ({
+    options,
+    current,
+    label,
+    onChange,
+    verifiedIndex,
+    className = "",
+}) => {
     const [visible, setVisible] = useState("none");
-
-    const options = Array.isArray(props.options) ? {...props.options} : props.options;
+    options = Array.isArray(options) ? {...options} : options;
 
     function showHide(): void {
         visible === "none" ? setVisible("block") : setVisible("none");
@@ -22,7 +31,6 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdo
     }
 
     function onOptionClick(key: number): void {
-        const {onChange} = props;
         if (onChange) {
             onChange(key);
             showHide();
@@ -36,19 +44,20 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = (props: IDropdo
                 onClick={(): void => onOptionClick(key)}
                 className={`dropdown-item
                 ${visible}
-                ${key === props.current ? "selected" : ""}`}>
+                ${key === current ? "selected" : ""}`}>
                 {options[key]}
+                {verifiedIndex === key && <img alt='ChainGuardian Logo' src={cgLogo} />}
             </div>
         );
     }
 
     return (
-        <div>
-            {props.label && <h3>{props.label}</h3>}
+        <div className={className}>
+            {label && <h3>{label}</h3>}
             <div onClick={(): void => hide()} className='dropdown-screen'>
                 <div className='dropdown-container'>
-                    <div onClick={(): void => props.onChange && showHide()} className='dropdown-selected'>
-                        <div>{props.options[props.current]}</div>
+                    <div onClick={(): void => onChange && showHide()} className='dropdown-selected'>
+                        <div>{options[current]}</div>
                     </div>
                     <div className='dropdown-items-container'>
                         <div className='dropdown-items'>

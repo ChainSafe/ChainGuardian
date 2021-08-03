@@ -9,10 +9,9 @@ import {passwordFormSchema} from "./validation";
 import {joiValidationToErrorMessages} from "../../../services/validation/util";
 import {connect} from "react-redux";
 import {bindActionCreators, Dispatch} from "redux";
-import {OnBoardingRoutes, Routes} from "../../../constants/routes";
+import {Routes} from "../../../constants/routes";
 import {IRootState} from "../../../ducks/reducers";
 import {afterConfirmPassword, afterCreatePassword} from "../../../ducks/register/actions";
-import {getAuthAccount} from "../../../ducks/auth/selectors";
 import {getKeystorePath} from "../../../ducks/register/selectors";
 import {setLoadingValidator} from "../../../ducks/settings/actions";
 
@@ -27,7 +26,6 @@ export interface IState {
 }
 
 interface IStateProps {
-    isFirstTimeRegistration: boolean;
     fromMnemonic: boolean;
 }
 
@@ -141,13 +139,8 @@ export class CreatePassword extends Component<Pick<RouteComponentProps, "history
 
     private finalizeSubmitOrSkip = (): void => {
         this.setState({loading: false});
-
-        if (this.props.isFirstTimeRegistration) {
-            this.props.history.push(Routes.ONBOARD_ROUTE_EVALUATE(OnBoardingRoutes.CONSENT));
-        } else {
-            this.props.setLoadingValidator(true);
-            this.props.history.push(Routes.DASHBOARD_ROUTE);
-        }
+        this.props.setLoadingValidator(true);
+        this.props.history.push(Routes.DASHBOARD_ROUTE);
     };
 }
 
@@ -162,7 +155,6 @@ const mapDispatchToProps = (dispatch: Dispatch): IInjectedProps =>
     );
 
 const mapStateToProps = (state: IRootState): IStateProps => ({
-    isFirstTimeRegistration: !getAuthAccount(state),
     fromMnemonic: !getKeystorePath(state),
 });
 

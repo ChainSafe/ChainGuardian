@@ -1,18 +1,24 @@
 import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
 import database from "../../db/api/database";
 
+const axiosConfigDefault: AxiosRequestConfig = {timeout: 3000};
+
 export class HttpClient {
     private client: AxiosInstance;
 
     public constructor(baseURL: string, options: {axios?: AxiosRequestConfig} = {}) {
         if (!options) {
             // eslint-disable-next-line no-param-reassign
-            options = {axios: {}};
+            options = {axios: axiosConfigDefault};
         }
         this.client = axios.create({
             baseURL,
-            ...options.axios,
+            ...{...axiosConfigDefault, ...options.axios},
         });
+    }
+
+    public getBaseUrl(): string {
+        return this.client.defaults.baseURL;
     }
 
     /**
@@ -59,20 +65,22 @@ export class HttpClient {
         const start = Date.now();
         return {
             onComplete: ({request, status, config}: AxiosResponse): void => {
-                database.networkMetrics.addRecord(config.baseURL, {
-                    url: request.responseURL,
-                    code: status,
-                    latency: Date.now() - start,
-                    time: Date.now(),
-                });
+                if (process.env.NODE_ENV !== "validator-test")
+                    database.networkMetrics.addRecord(config.baseURL, {
+                        url: request.responseURL,
+                        code: status,
+                        latency: Date.now() - start,
+                        time: Date.now(),
+                    });
             },
             onError: ({response, config}: AxiosError): void => {
-                database.networkMetrics.addRecord(config.baseURL, {
-                    url: config.url,
-                    code: response?.status || 0,
-                    latency: Date.now() - start,
-                    time: Date.now(),
-                });
+                if (process.env.NODE_ENV !== "validator-test")
+                    database.networkMetrics.addRecord(config.baseURL, {
+                        url: config.url,
+                        code: response?.status || 0,
+                        latency: Date.now() - start,
+                        time: Date.now(),
+                    });
             },
         };
     };

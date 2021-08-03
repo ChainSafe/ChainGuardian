@@ -9,7 +9,7 @@ import {cgLogger} from "../../../main/logger";
 export class BeaconChain extends Container {
     public static async startBeaconChain(
         network: SupportedNetworks,
-        params: Partial<Exclude<IDockerRunParams, "name">> = {},
+        params: Partial<Omit<IDockerRunParams, "name">> = {},
         waitUntilReady = false,
     ): Promise<BeaconChain> {
         const imageName = BeaconChain.getContainerName(network);

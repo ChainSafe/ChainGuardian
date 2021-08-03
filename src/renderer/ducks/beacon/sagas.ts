@@ -15,7 +15,6 @@ import {
     select,
     SelectEffect,
 } from "redux-saga/effects";
-import {getNetworkConfig} from "../../services/eth2/networks";
 import {liveProcesses} from "../../services/utils/cmd";
 import {
     cancelDockerPull,
@@ -24,7 +23,7 @@ import {
     checkDockerDemonIsOnline,
     setDockerDemonIsOffline,
 } from "../network/actions";
-import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, updateStatus} from "./actions";
+import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, updateStatus, updateEpoch} from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import database from "../../services/db/api/database";
@@ -32,11 +31,9 @@ import {Beacons} from "../../models/beacons";
 import {postInit} from "../store";
 import {Beacon, BeaconStatus} from "./slice";
 import {Action} from "redux";
-import {CgEth2ApiClient} from "../../services/eth2/client/eth2ApiClient";
 import {mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {BeaconEventType, HeadEvent} from "@chainsafe/lodestar-validator/lib/api/interface/events";
 import {AllEffect, CancelEffect, ForkEffect} from "@redux-saga/core/effects";
-import {readBeaconChainNetwork} from "../../services/eth2/client";
 import {INetworkConfig} from "../../services/interfaces";
 import {CGBeaconEvent, CGBeaconEventType, ErrorEvent} from "../../services/eth2/client/interface";
 import {getBeaconByKey} from "./selectors";
@@ -47,17 +44,18 @@ import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
 import {createNotification} from "../notification/actions";
 import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
 import {ValidatorStatus} from "../../constants/validatorStatus";
-import {cgLogger, createLogger, getBeaconLogfileFromURL} from "../../../main/logger";
+import {cgLogger, createLogger, getBeaconLogfileFromURL, mainLogger} from "../../../main/logger";
 import {setInitialBeacons} from "../settings/actions";
 import {DockerRegistry} from "../../services/docker/docker-registry";
+import {CgEth2ApiClient, getBeaconNodeEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client/module";
+import {getClientParams} from "../../services/docker/getClientParams";
 
 export function* pullDockerImage(
-    network: string,
+    image: string,
 ): Generator<PutEffect | RaceEffect<CallEffect | TakeEffect>, boolean, [boolean, Action]> {
     yield put(startDockerImagePull());
     cgLogger.info("Start beacon node image pull");
     try {
-        const image = getNetworkConfig(network).dockerConfig.image;
         cgLogger.info("image:", image);
         const [pullSuccess, effect] = yield race([call(BeaconChain.pullImage, image), take(cancelDockerPull)]);
         if (effect) {
@@ -67,21 +65,26 @@ export function* pullDockerImage(
 
         return effect !== undefined ? false : pullSuccess;
     } catch (e) {
-        const message = e.stderr.includes("daemon is not running")
-            ? "Seems Docker is offline, start it and try again"
-            : "Error while pulling Docker image, try again later";
-        yield put(createNotification({title: message, source: "pullDockerImage"}));
+        if (e.stderr) {
+            const message = e.stderr.includes("daemon is not running")
+                ? "Seems Docker is offline, start it and try again"
+                : "Error while pulling Docker image, try again later";
+            yield put(createNotification({title: message, source: "pullDockerImage"}));
+            cgLogger.error(e.stderr);
+        } else {
+            yield put(createNotification({title: e.message, source: "pullDockerImage"}));
+            mainLogger.error(e.message);
+        }
         yield put(endDockerImagePull());
-        cgLogger.error(e.stderr);
         return false;
     }
 }
 
 function* startLocalBeaconSaga({
-    payload: {network, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort},
+    payload: {network, client, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort, memory, image},
     meta: {onComplete},
 }: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
-    const pullSuccess = yield call(pullDockerImage, network);
+    const pullSuccess = yield call(pullDockerImage, image);
 
     const ports = [
         {local: String(libp2pPort), host: String(libp2pPort)},
@@ -92,28 +95,31 @@ function* startLocalBeaconSaga({
     }
 
     cgLogger.info("Starting local docker beacon node & http://localhost:", rpcPort);
-    const eth1QueryLimit = 200;
     if (pullSuccess) {
-        const cors = process.env.NODE_ENV !== "production" ? " --http-allow-origin http://localhost:2003 " : " ";
-        switch (network) {
-            default:
-                yield put(
-                    addBeacon(`http://localhost:${rpcPort}`, network, {
-                        id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, {
-                            ports,
-                            // eslint-disable-next-line max-len
-                            cmd: `lighthouse beacon_node --network ${network} --port ${libp2pPort} --discovery-port ${discoveryPort} --http --http-address 0.0.0.0 --http-port ${rpcPort}${cors}--eth1-endpoints ${eth1Url} --eth1-blocks-per-log-query ${eth1QueryLimit}`,
-                            volume: `${chainDataDir}:/root/.lighthouse`,
-                        })).getParams().name,
+        yield put(
+            addBeacon(`http://localhost:${rpcPort}`, network, {
+                id: (yield call(BeaconChain.startBeaconChain, SupportedNetworks.LOCALHOST, {
+                    ...getClientParams({
                         network,
-                        chainDataDir,
-                        eth1Url,
-                        discoveryPort,
                         libp2pPort,
+                        discoveryPort,
                         rpcPort,
+                        client,
+                        eth1Url,
+                        chainDataDir,
                     }),
-                );
-        }
+                    memory,
+                    ports,
+                    image,
+                })).getParams().name,
+                network,
+                chainDataDir,
+                eth1Url,
+                discoveryPort,
+                libp2pPort,
+                rpcPort,
+            }),
+        );
         onComplete();
     }
 }
@@ -179,10 +185,12 @@ function* initializeBeaconsFromStore(): Generator<
         if (beacons.some(({docker}) => docker.id)) {
             if (!(yield BeaconChain.isDockerDemonRunning())) {
                 yield put(setDockerDemonIsOffline(true));
+                yield put(setInitialBeacons(false));
                 while (true) {
                     yield take(checkDockerDemonIsOnline);
                     if (yield BeaconChain.isDockerDemonRunning()) {
                         yield put(setDockerDemonIsOffline(false));
+                        yield put(setInitialBeacons(true));
                         break;
                     }
                 }
@@ -230,10 +238,12 @@ export function* watchOnHead(
         (INetworkConfig | null) &
         Beacon &
         SyncingStatus &
+        typeof CgEth2ApiClient &
         boolean
 > {
-    const config = yield retry(30, 1000, readBeaconChainNetwork, url);
-    const client = new CgEth2ApiClient(config?.eth2Config || mainnetConfig, url);
+    const config = yield retry(30, 1000, readBeaconChainNetwork, url, true);
+    const ApiClient: typeof CgEth2ApiClient = yield call(getBeaconNodeEth2ApiClient, url);
+    const client = new ApiClient(config?.eth2Config || mainnetConfig, url);
     const eventStream = client.events.getEventStream([BeaconEventType.HEAD]);
 
     const beacon = yield select(getBeaconByKey, {key: url});
@@ -269,7 +279,6 @@ export function* watchOnHead(
                 const isRunning = beacon.docker?.id
                     ? yield DockerRegistry.getContainer(beacon.docker?.id).isRunning()
                     : true;
-                console.warn(isRunning);
                 if (isOnline && !isStarting) {
                     yield put(updateStatus(BeaconStatus.offline, url));
                     isOnline = false;
@@ -294,6 +303,7 @@ export function* watchOnHead(
                 beaconLogger.info("Beacon on epoch:", headEpoch);
                 epoch = headEpoch;
                 yield put(getNewValidatorBalance(url, payload.value.message.slot, headEpoch));
+                yield put(updateEpoch(headEpoch, url));
             }
         } catch (err) {
             beaconLogger.error("Event error:", err.message);

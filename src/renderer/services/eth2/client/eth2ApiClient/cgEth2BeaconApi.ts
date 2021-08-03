@@ -1,5 +1,4 @@
-import {ICGEth2BeaconApi, ICGETH2BeaconBlocksApi, ICGBeaconStateApi} from "../interface";
-import {IBeaconPoolApi} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
+import {ICGEth2BeaconApi, ICGETH2BeaconBlocksApi, ICGBeaconStateApi, ICGBeaconPoolApi} from "../interface";
 import {Genesis} from "@chainsafe/lodestar-types";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
@@ -8,21 +7,22 @@ import {CgEth2BeaconBlocksApi} from "./cgEth2BeaconBlocksApi";
 import {CgEth2BeaconStateApi} from "./cgEth2BeaconStateApi";
 import {CgEth2BeaconPoolApi} from "./cgEth2BeaconPoolApi";
 import logger from "electron-log";
+import {Dispatch} from "redux";
 
 export class CgEth2BeaconApi implements ICGEth2BeaconApi {
     public blocks: ICGETH2BeaconBlocksApi;
     public state: ICGBeaconStateApi;
-    public pool: IBeaconPoolApi;
+    public pool: ICGBeaconPoolApi;
 
-    private readonly httpClient: HttpClient;
-    private readonly config: IBeaconConfig;
-    public constructor(config: IBeaconConfig, httpClient: HttpClient, publicKey?: string) {
+    protected readonly httpClient: HttpClient;
+    protected readonly config: IBeaconConfig;
+    public constructor(config: IBeaconConfig, httpClient: HttpClient, publicKey?: string, dispatch?: Dispatch) {
         this.config = config;
         this.httpClient = httpClient;
 
-        this.blocks = new CgEth2BeaconBlocksApi(config, httpClient);
+        this.blocks = new CgEth2BeaconBlocksApi(config, httpClient, publicKey, dispatch);
         this.state = new CgEth2BeaconStateApi(config, httpClient);
-        this.pool = new CgEth2BeaconPoolApi(config, httpClient, publicKey);
+        this.pool = new CgEth2BeaconPoolApi(config, httpClient, publicKey, dispatch);
     }
 
     public getGenesis = async (): Promise<Genesis | null> => {

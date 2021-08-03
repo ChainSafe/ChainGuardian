@@ -1,4 +1,4 @@
-import {BLSPubkey, Fork, ValidatorIndex} from "@chainsafe/lodestar-types";
+import {BeaconCommitteeResponse, BLSPubkey, Fork, ValidatorIndex} from "@chainsafe/lodestar-types";
 import {HttpClient} from "../../../api";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Json} from "@chainsafe/ssz";
@@ -7,8 +7,8 @@ import logger from "electron-log";
 import {cgLogger} from "../../../../../main/logger";
 
 export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
-    private readonly httpClient: HttpClient;
-    private readonly config: IBeaconConfig;
+    protected readonly httpClient: HttpClient;
+    protected readonly config: IBeaconConfig;
     public constructor(config: IBeaconConfig, httpClient: HttpClient) {
         this.config = config;
         this.httpClient = httpClient;
@@ -57,5 +57,13 @@ export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
                 cgLogger.error("Failed to fetch validator", {validatorId: id, error: e.message});
             return null;
         }
+    };
+
+    public getCommittees = async (stateId: "head" | number = "head"): Promise<BeaconCommitteeResponse[]> => {
+        const url = `/eth/v1/beacon/states/${stateId}/committees`;
+        const committeesResponse = await this.httpClient.get<any>(url);
+        return committeesResponse.data.map((data: Json) =>
+            this.config.types.BeaconCommitteeResponse.fromJson(data, {case: "snake"}),
+        );
     };
 }

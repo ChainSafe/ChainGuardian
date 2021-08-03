@@ -1,8 +1,8 @@
 .validator-container{
     background-color: $neutral-700;
-    box-shadow: 0px 2px 56px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 56px rgba(0, 0, 0, 0.3);
     border-radius: 24px;
-    padding: 32px;
+    padding: 32px 32px 18px;
     display: flex;
     flex: 1;
     max-width: 1280px;
@@ -76,11 +76,22 @@
     flex-direction: column;
     justify-content: space-between;
 
+    .key-status {
+        margin-top: -15px;
+    }
+
+    .validator-name {
+        height: 54px;
+    }
+
     .validator-stat-container {
         justify-content: space-evenly;
 
         .validator-card-container:nth-child(2) {
             margin: 75px 0 0;
+        }
+        .validator-card-container:nth-child(4) {
+            margin: 75px 25px 0 0;
         }
     }
 
@@ -106,6 +117,7 @@
 
 .validator-buttons{
     margin-top: 25px;
+    margin-bottom: 20px;
     display: flex;
     justify-content: flex-end;
     .button:nth-child(1){

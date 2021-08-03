@@ -27,6 +27,7 @@
 @import '../components/CheckBox/checkBox.scss';
 @import '../components/Accordion/accordion.scss';
 @import '../components/Switch/switch.scss';
+@import '../components/BeaconNodeCard/beaconNodeCard';
 
 @import '../containers/Onboard/index';
 @import '../containers/Dashboard/DashboardContainer.scss';
@@ -36,5 +37,7 @@
 @import '../containers/BeaconNodes/beacon-nodes.scss';
 @import '../containers/AddBeaconNode/addbeaconNode.scss';
 @import '../containers/AssignBeaconNode/assignBeaconNode.scss';
+@import '../containers/Settings/settings.scss';
+@import '../containers/Consent/consent.scss';
 
 @import url('https://fonts.googleapis.com/css?family=Fira+Code|Lato|Palanquin+Dark:400,500,600,700|Palanquin:400,500&display=swap&subset=latin-ext');

@@ -1,8 +1,7 @@
 import {ValidatorStatus} from "../../constants/validatorStatus";
-import {CgEth2ApiClient} from "../eth2/client/eth2ApiClient";
 import {fromHexString} from "@chainsafe/ssz";
-import {readBeaconChainNetwork} from "../eth2/client";
 import logger from "electron-log";
+import {readBeaconChainNetwork, getBeaconNodeEth2ApiClient} from "../eth2/client/module";
 
 export const getValidatorStatus = async (publicKey: string, beaconNodeUrl?: string): Promise<ValidatorStatus> => {
     if (!beaconNodeUrl) return ValidatorStatus.NO_BEACON_NODE;
@@ -10,7 +9,8 @@ export const getValidatorStatus = async (publicKey: string, beaconNodeUrl?: stri
     const config = await readBeaconChainNetwork(beaconNodeUrl);
     if (!config) return ValidatorStatus.BEACON_NODE_OFFLINE;
 
-    const client = new CgEth2ApiClient(config?.eth2Config, beaconNodeUrl);
+    const ApiClient = await getBeaconNodeEth2ApiClient(beaconNodeUrl);
+    const client = new ApiClient(config?.eth2Config, beaconNodeUrl);
 
     const validatorId = fromHexString(publicKey);
     const stateValidator = await client.beacon.state.getStateValidator("head", validatorId);
@@ -61,6 +61,20 @@ const getValidatorStatusFromString = (status: string): ValidatorStatus => {
      * - "withdrawal_possible"
      * - "withdrawal_done"
      */
+    /** PRYSM -.-
+     * "PENDING_INITIALIZED"
+     * "PENDING_QUEUED"
+     * "ACTIVE_ONGOING"
+     * "ACTIVE_EXITING"
+     * "ACTIVE_SLASHED"
+     * "EXITED_UNSLASHED"
+     * "EXITED_SLASHED"
+     * "WITHDRAWAL_POSSIBLE"
+     * "WITHDRAWAL_DONE"
+     * "ACTIVE"
+     * "PENDING"
+     * "EXITED"
+     */
 
     // TODO: implement v1 spec
     switch (status) {
@@ -69,22 +83,42 @@ const getValidatorStatusFromString = (status: string): ValidatorStatus => {
         case "waiting_for_finality":
             return ValidatorStatus.DEPOSITED;
         case "waiting_in_queue":
+        case "pending_initialized":
+        case "PENDING_INITIALIZED":
             return ValidatorStatus.QUEUE;
         case "standby_for_active":
+        case "pending_queued":
+        case "PENDING":
+        case "PENDING_QUEUED":
             return ValidatorStatus.PENDING;
         case "active":
+        case "active_ongoing":
+        case "ACTIVE":
+        case "ACTIVE_ONGOING":
             return ValidatorStatus.ACTIVE;
         case "active_awaiting_voluntary_exit":
+        case "active_exiting":
+        case "ACTIVE_EXITING":
             return ValidatorStatus.GOOD_BOY_EXITING;
         case "active_awaiting_slashed_exit":
+        case "active_slashed":
+        case "ACTIVE_SLASHED":
             return ValidatorStatus.SLASHED_EXITING;
         case "exited_voluntarily":
+        case "exited_unslashed":
+        case "EXITED":
+        case "EXITED_UNSLASHED":
             return ValidatorStatus.VOLUNTARILY_EXITED;
         case "exited_slashed":
+        case "EXITED_SLASHED":
             return ValidatorStatus.SLASHED;
         case "withdrawable":
+        case "withdrawal_possible":
+        case "WITHDRAWAL_POSSIBLE":
             return ValidatorStatus.WITHDRAWABLE;
         case "withdrawn":
+        case "withdrawal_done":
+        case "WITHDRAWAL_DONE":
             return ValidatorStatus.WITHDRAWNED;
         default:
             logger.error(`Status: "${status}" not found`);
