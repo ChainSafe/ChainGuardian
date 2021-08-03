@@ -7,6 +7,7 @@ const env = process.env;
 export interface IConfig {
     storage: {
         dataDir: string;
+        beaconDir: string;
         accountsDir: string;
     };
     db: {
@@ -22,6 +23,7 @@ export function getConfig(app?: App): IConfig {
     }
     const storageConfig = {
         dataDir: app.getPath("userData"),
+        beaconDir: path.join(app.getPath("home"), "beacon"),
         accountsDir: path.join(app.getPath("userData"), "accounts"),
     };
 
