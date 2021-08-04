@@ -10,6 +10,13 @@ import {getDefaultsForClient} from "../../services/eth2/client/defaults";
 import {Accordion} from "../Accordion/Accordion";
 import {getAvailableClientReleases} from "../../services/utils/githubReleases";
 
+export enum WeakSubjectivityCheckpoint {
+    none = "None",
+    beaconScan = "BeaconScan",
+    infura = "Infura",
+    beaconChain = "BeaconChain",
+}
+
 export interface IConfigureBNSubmitOptions {
     network: string;
     client: string;
@@ -20,12 +27,20 @@ export interface IConfigureBNSubmitOptions {
     rpcPort: string;
     memory: string;
     image: string;
+    weakSubjectivityCheckpoint: WeakSubjectivityCheckpoint;
 }
 
 interface IConfigureBNProps {
     onSubmit: (values: IConfigureBNSubmitOptions) => void;
     clientName: string;
 }
+
+const wscOptions: WeakSubjectivityCheckpoint[] = [
+    WeakSubjectivityCheckpoint.none,
+    WeakSubjectivityCheckpoint.beaconScan,
+    WeakSubjectivityCheckpoint.infura,
+    WeakSubjectivityCheckpoint.beaconChain,
+];
 
 export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (props: IConfigureBNProps) => {
     // TODO: refactor to use list from src/renderer/services/eth2/networks/index.ts
@@ -59,6 +74,8 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
     const defaultMemory = defaults.beacon.memory;
     const [memory, setMemory] = useState(defaultMemory);
 
+    const [wscIndex, setWscIndex] = useState(0);
+
     const onSubmit = (): void => {
         props.onSubmit({
             chainDataDir,
@@ -70,6 +87,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
             network: networksList[networkIndex],
             client: props.clientName,
             image: images[imageIndex],
+            weakSubjectivityCheckpoint: wscOptions[wscIndex],
         });
     };
 
@@ -104,6 +122,14 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                     <h3>Network</h3>
                 </div>
                 <Dropdown current={networkIndex} onChange={setNetworkIndex} options={networksList} />
+            </div>
+
+            <div className='configure-port'>
+                <div className='row'>
+                    <h3>Weak Subjectivity Checkpoint</h3>
+                    <p>(reduces sync time)</p>
+                </div>
+                <Dropdown current={wscIndex} onChange={setWscIndex} options={wscOptions} />
             </div>
 
             <div className='configure-port'>

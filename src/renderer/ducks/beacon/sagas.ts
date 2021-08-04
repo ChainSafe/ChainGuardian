@@ -1,29 +1,29 @@
 import {
     all,
     call,
-    put,
-    spawn,
-    takeEvery,
-    PutEffect,
     CallEffect,
-    RaceEffect,
-    TakeEffect,
-    race,
-    take,
     cancel,
+    put,
+    PutEffect,
+    race,
+    RaceEffect,
     retry,
     select,
     SelectEffect,
+    spawn,
+    take,
+    TakeEffect,
+    takeEvery,
 } from "redux-saga/effects";
 import {liveProcesses} from "../../services/utils/cmd";
 import {
     cancelDockerPull,
-    endDockerImagePull,
-    startDockerImagePull,
     checkDockerDemonIsOnline,
+    endDockerImagePull,
     setDockerDemonIsOffline,
+    startDockerImagePull,
 } from "../network/actions";
-import {startLocalBeacon, removeBeacon, addBeacon, addBeacons, updateSlot, updateStatus, updateEpoch} from "./actions";
+import {addBeacon, addBeacons, removeBeacon, startLocalBeacon, updateEpoch, updateSlot, updateStatus} from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import database from "../../services/db/api/database";
@@ -49,6 +49,9 @@ import {setInitialBeacons} from "../settings/actions";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 import {CgEth2ApiClient, getBeaconNodeEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client/module";
 import {getClientParams} from "../../services/docker/getClientParams";
+import {WeakSubjectivityCheckpoint} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
+import {shell} from "electron";
+import {HttpClient} from "../../services/api";
 
 export function* pullDockerImage(
     image: string,
@@ -80,10 +83,32 @@ export function* pullDockerImage(
     }
 }
 
+type BeaconScanWSC = {
+    // eslint-disable-next-line camelcase
+    current_epoch: number;
+    // eslint-disable-next-line camelcase
+    is_safe: boolean;
+    // eslint-disable-next-line camelcase
+    ws_checkpoint: string;
+    // eslint-disable-next-line camelcase
+    ws_period: number;
+};
+
 function* startLocalBeaconSaga({
-    payload: {network, client, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort, memory, image},
+    payload: {
+        network,
+        client,
+        chainDataDir,
+        eth1Url,
+        discoveryPort,
+        libp2pPort,
+        rpcPort,
+        memory,
+        image,
+        weakSubjectivityCheckpoint,
+    },
     meta: {onComplete},
-}: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
+}: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain & BeaconScanWSC> {
     const pullSuccess = yield call(pullDockerImage, image);
 
     const ports = [
@@ -92,6 +117,15 @@ function* startLocalBeaconSaga({
     ];
     if (libp2pPort !== discoveryPort) {
         ports.push({local: String(discoveryPort), host: String(discoveryPort)});
+    }
+
+    let wsc = "";
+    if (weakSubjectivityCheckpoint !== WeakSubjectivityCheckpoint.none) {
+        if (weakSubjectivityCheckpoint === WeakSubjectivityCheckpoint.beaconScan) {
+            const httpClient = new HttpClient(`https://beaconscan.com/${network !== "mainnet" ? network : ""}`);
+            const ws = yield call(httpClient.get, `ws_checkpoint`);
+            if (ws) wsc = `${ws.ws_checkpoint}:${ws.current_epoch}`;
+        }
     }
 
     cgLogger.info("Starting local docker beacon node & http://localhost:", rpcPort);
@@ -107,6 +141,7 @@ function* startLocalBeaconSaga({
                         client,
                         eth1Url,
                         chainDataDir,
+                        wsc,
                     }),
                     memory,
                     ports,
