@@ -51,7 +51,7 @@ export const BeaconNodeDashboard: React.FC<IBeaconNodeProps> = ({
             </div>
 
             <div className='row space-between'>
-                <h2>{capitalize(network)}</h2>
+                <h3>{version}</h3>
                 <div className='row slot-container'>
                     <h3>slot</h3>
                     <h2>
@@ -74,10 +74,12 @@ export const BeaconNodeDashboard: React.FC<IBeaconNodeProps> = ({
                             />
                         </>
                     ) : null}
+                    <div className='row slot-container'>
+                        <h3 style={{marginLeft: "10px"}}>on</h3>
+                        <h2>{capitalize(network)}</h2>
+                    </div>
                 </div>
             </div>
-
-            <h5 className='beacon-version'>{version}</h5>
 
             <div className='beacon-node-charts-container'>
                 <BeaconNodeResponseTimeChart data={avgLatency} ticks={avgLatencyTicks} />
