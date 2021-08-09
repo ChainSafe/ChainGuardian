@@ -13,7 +13,9 @@ interface IBeaconNodeProps {
     beacon: Beacon;
 }
 
-export const BeaconNodeDashboard: React.FC<IBeaconNodeProps> = ({beacon: {url, network, slot, status, docker}}) => {
+export const BeaconNodeDashboard: React.FC<IBeaconNodeProps> = ({
+    beacon: {url, network, slot, status, version, docker},
+}) => {
     const [avgLatency, setAvgLatency] = useState<SimpleLineChartRecord[]>([]);
     const [avgLatencyTicks, setAvgLatencyTicks] = useState<string[]>([]);
     const [pieData, setPieData] = useState<ResponseErrorPieData>([
@@ -74,6 +76,8 @@ export const BeaconNodeDashboard: React.FC<IBeaconNodeProps> = ({beacon: {url, n
                     ) : null}
                 </div>
             </div>
+
+            <h5 className='beacon-version'>{version}</h5>
 
             <div className='beacon-node-charts-container'>
                 <BeaconNodeResponseTimeChart data={avgLatency} ticks={avgLatencyTicks} />
