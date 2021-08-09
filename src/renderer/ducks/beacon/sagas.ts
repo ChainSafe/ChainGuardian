@@ -60,7 +60,7 @@ import {
     CgEth2ApiClient,
     getBeaconNodeEth2ApiClient,
     getBeaconNodeVersion,
-    readBeaconChainNetwork
+    readBeaconChainNetwork,
 } from "../../services/eth2/client/module";
 import {getClientParams} from "../../services/docker/getClientParams";
 
