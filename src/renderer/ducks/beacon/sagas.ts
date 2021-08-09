@@ -50,7 +50,6 @@ import {DockerRegistry} from "../../services/docker/docker-registry";
 import {CgEth2ApiClient, getBeaconNodeEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client/module";
 import {getClientParams} from "../../services/docker/getClientParams";
 import {WeakSubjectivityCheckpoint} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
-import {shell} from "electron";
 import {HttpClient} from "../../services/api";
 
 export function* pullDockerImage(
