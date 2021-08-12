@@ -1966,7 +1966,7 @@
     bls-eth-wasm "^0.4.4"
     randombytes "^2.1.0"
 
-"@chainsafe/lodestar-api@^0.28.0":
+"@chainsafe/lodestar-api@0.28.0", "@chainsafe/lodestar-api@^0.28.0":
   version "0.28.0"
   resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-api/-/lodestar-api-0.28.0.tgz#70fd88b31798942a1423b3720ed7dcd3da5146fe"
   integrity sha512-bGYZEB0Fden+nU27dJ8G3wBP3ZZfJed29KOwHXocFlpI7c6j1F6AbS+yaipD+qKWJsLcNMiXFg9oLwOWgw82AA==
@@ -2019,7 +2019,7 @@
     level "^6.0.1"
     levelup "^4.4.0"
 
-"@chainsafe/lodestar-params@^0.28.0":
+"@chainsafe/lodestar-params@0.28.0", "@chainsafe/lodestar-params@^0.28.0":
   version "0.28.0"
   resolved "https://registry.yarnpkg.com/@chainsafe/lodestar-params/-/lodestar-params-0.28.0.tgz#6967e91c53df7eceaf90fcb19af1082ba46a3330"
   integrity sha512-0CbHgvwpnlAmynjQ1uDrLQDjOHrEmCDsppmK3+b9DRRlGcSgHHpRHpdEqKHxIYXyCqHP3FDBjSq19RiW5J8Aqg==

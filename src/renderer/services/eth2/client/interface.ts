@@ -1,32 +1,27 @@
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
-import {ILogger, IStoppableEventIterable} from "@chainsafe/lodestar-utils";
-import {IApiClient} from "@chainsafe/lodestar-validator/lib";
-import {
-    IBeaconApi,
-    IBeaconBlocksApi,
-    IBeaconPoolApi,
-    IBeaconStateApi,
-} from "@chainsafe/lodestar-validator/lib/api/interface/beacon";
-import {INodeApi} from "@chainsafe/lodestar-validator/lib/api/interface/node";
-import {IValidatorApi} from "@chainsafe/lodestar-validator/lib/api/interface/validators";
-import {
-    BeaconBlockEvent,
-    BeaconChainReorgEvent,
-    HeadEvent,
-    IEventsApi,
-} from "@chainsafe/lodestar-validator/lib/api/interface/events";
-import {
-    BLSPubkey,
-    FinalizedCheckpoint,
-    ValidatorIndex,
-    ValidatorResponse,
-    ValidatorStatus,
-    SignedBeaconBlock,
-    Fork,
-    BeaconCommitteeResponse,
-} from "@chainsafe/lodestar-types";
+import {ILogger} from "@chainsafe/lodestar-utils";
 import {List} from "@chainsafe/ssz";
-import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
+
+// ETH2 client for validator
+import {Api as BeaconApi} from "@chainsafe/lodestar-api/lib/routes/beacon";
+import {Api as ConfigApi} from "@chainsafe/lodestar-api/lib/routes/config";
+import {Api as DebugApi} from "@chainsafe/lodestar-api/lib/routes/debug";
+import {Api as EventsApi} from "@chainsafe/lodestar-api/lib/routes/events";
+import {Api as NodeApi} from "@chainsafe/lodestar-api/lib/routes/node";
+import {Api as ValidatorApi} from "@chainsafe/lodestar-api/lib/routes/validator";
+// import {Api as LodestarApi} from "@chainsafe/lodestar-api/lib/routes/lodestar";
+// import {Api as LightclientApi} from "@chainsafe/lodestar-api/lib/routes/lightclient";
+
+export type Eth2Api = {
+    beacon: BeaconApi;
+    config: ConfigApi;
+    debug: DebugApi;
+    events: EventsApi;
+    node: NodeApi;
+    validator: ValidatorApi;
+    // lightclient: LightclientApi;
+    // lodestar: LodestarApi;
+};
 
 export interface ICGETH2BeaconBlocksApi extends IBeaconBlocksApi {
     getBlock(blockId: "head" | "genesis" | "finalized" | number): Promise<SignedBeaconBlock>;

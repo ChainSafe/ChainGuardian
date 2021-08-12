@@ -22,7 +22,6 @@ import {
 import {CGAccount} from "../../models/account";
 import {deleteKeystore, saveValidatorData} from "../../services/utils/account";
 import database, {cgDbController} from "../../services/db/api/database";
-import {config as mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {IValidator, IValidatorComplete} from "./slice";
 import {
     addNewValidator,
@@ -52,7 +51,6 @@ import {
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
 import {Validator} from "@chainsafe/lodestar-validator";
-import {AttesterDuty, Genesis, ProposerDuty} from "@chainsafe/lodestar-types";
 import {getAuthAccount} from "../auth/selectors";
 import {getValidator, getValidatorsByBeaconNode, BeaconValidators} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
@@ -69,7 +67,6 @@ import {getBeaconByKey} from "../beacon/selectors";
 import {Beacon, BeaconStatus} from "../beacon/slice";
 import {updateStatus} from "../beacon/actions";
 import {cgLogger} from "../../../main/logger";
-import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
 import {toHex} from "@chainsafe/lodestar-utils";
 import {Interchange} from "@chainsafe/lodestar-validator/lib/slashingProtection/interchange";
 import {createNotification} from "../notification/actions";
@@ -262,7 +259,7 @@ function* startService(
         const logger = new ValidatorLogger(undefined, undefined, publicKey);
 
         if (!validatorServices[publicKey]) {
-            validatorServices[publicKey] = new Validator({
+            validatorServices[publicKey] = yield Validator.initializeFromBeaconNode({
                 slashingProtection,
                 api: eth2API,
                 config,
