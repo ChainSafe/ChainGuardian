@@ -5,7 +5,7 @@ productName: ChainGuardian
 buildDependenciesFromSource: true
 npmRebuild: true
 copyright: 'Copyright © 2021 ${author}'
-appId: io.nodefactory.chainguardian
+appId: io.chainsafe.chainguardian
 afterSign: 'electron-builder-notarize'
 asar: true
 asarUnpack:
