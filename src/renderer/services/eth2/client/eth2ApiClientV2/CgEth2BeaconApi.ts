@@ -1,4 +1,4 @@
-import {CgEth2Base} from "./base";
+import {CgEth2Base} from "./CgEth2Base";
 import {
     Api,
     CommitteesFilters,
@@ -60,14 +60,6 @@ export class CgEth2BeaconApi extends CgEth2Base implements Api {
         fields: {
             index: ssz.ValidatorIndex,
             balance: ssz.Gwei,
-        },
-    });
-
-    private epochCommitteeResponseContainerType = new ContainerType<EpochCommitteeResponse>({
-        fields: {
-            index: ssz.CommitteeIndex,
-            slot: ssz.Slot,
-            validators: ssz.phase0.CommitteeIndices,
         },
     });
 

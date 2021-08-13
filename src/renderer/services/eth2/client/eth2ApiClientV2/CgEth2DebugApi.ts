@@ -1,4 +1,4 @@
-import {CgEth2Base} from "./base";
+import {CgEth2Base} from "./CgEth2Base";
 import {Api} from "@chainsafe/lodestar-api/lib/routes/debug";
 import {Json, ContainerType} from "@chainsafe/ssz";
 import {StateId} from "@chainsafe/lodestar-api/lib/routes/beacon";
@@ -34,7 +34,7 @@ export class CgEth2DebugApi extends CgEth2Base implements Api {
     }
 
     public async getStateV2(stateId: StateId): Promise<{data: allForks.BeaconState; version: ForkName}> {
-        const response = await this.get<{data: Json, version: ForkName}>(`/eth/v2/debug/beacon/states/${stateId}`);
+        const response = await this.get<{data: Json; version: ForkName}>(`/eth/v2/debug/beacon/states/${stateId}`);
         return {data: ssz[response.version].BeaconState.fromJson(response.data), version: response.version};
     }
 }

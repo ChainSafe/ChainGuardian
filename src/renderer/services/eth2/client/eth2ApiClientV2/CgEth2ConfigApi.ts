@@ -1,4 +1,4 @@
-import {CgEth2Base} from "./base";
+import {CgEth2Base} from "./CgEth2Base";
 import {Api, DepositContract, ISpec} from "@chainsafe/lodestar-api/lib/routes/config";
 import {Json, ContainerType, ByteVectorType} from "@chainsafe/ssz";
 import {ssz, phase0} from "@chainsafe/lodestar-types";

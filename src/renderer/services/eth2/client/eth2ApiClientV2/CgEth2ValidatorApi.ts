@@ -1,4 +1,4 @@
-import {CgEth2Base} from "./base";
+import {CgEth2Base} from "./CgEth2Base";
 import {
     Api,
     SyncCommitteeSubscription,
