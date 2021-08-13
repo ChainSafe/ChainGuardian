@@ -3,7 +3,7 @@ import {Dispatch} from "redux";
 import {HttpClient} from "../../../api";
 
 export class CgEth2Base {
-    protected httpClient: HttpClient;
+    protected readonly httpClient: HttpClient;
     protected readonly config: IBeaconConfig;
     protected readonly publicKey?: string;
     protected readonly dispatch?: Dispatch;
@@ -13,6 +13,7 @@ export class CgEth2Base {
         url: string,
         {publicKey, dispatch}: {publicKey?: string; dispatch?: Dispatch} = {},
     ) {
+        this.httpClient = new HttpClient(url);
         this.config = config;
         this.publicKey = publicKey;
         this.dispatch = dispatch;
