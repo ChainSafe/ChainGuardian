@@ -1,6 +1,6 @@
 import {ContainerType, BooleanType} from "@chainsafe/ssz";
-import {StringType} from "./basic";
 import {CGAccount} from "../account";
+import {StringType} from "@chainsafe/lodestar-types";
 
 export const AccountType = new ContainerType<CGAccount>({
     fields: {

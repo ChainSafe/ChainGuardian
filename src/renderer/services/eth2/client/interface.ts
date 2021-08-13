@@ -4,8 +4,8 @@ import {Api as DebugApi} from "@chainsafe/lodestar-api/lib/routes/debug";
 import {Api as EventsApi} from "@chainsafe/lodestar-api/lib/routes/events";
 import {Api as NodeApi} from "@chainsafe/lodestar-api/lib/routes/node";
 import {Api as ValidatorApi} from "@chainsafe/lodestar-api/lib/routes/validator";
-// import {Api as LodestarApi} from "@chainsafe/lodestar-api/lib/routes/lodestar";
-// import {Api as LightclientApi} from "@chainsafe/lodestar-api/lib/routes/lightclient";
+import {Api as LodestarApi} from "@chainsafe/lodestar-api/lib/routes/lodestar";
+import {Api as LightclientApi} from "@chainsafe/lodestar-api/lib/routes/lightclient";
 
 export type Eth2Api = {
     beacon: BeaconApi;
@@ -14,6 +14,7 @@ export type Eth2Api = {
     events: EventsApi;
     node: NodeApi;
     validator: ValidatorApi;
-    // lightclient: LightclientApi;
-    // lodestar: LodestarApi;
+    //
+    lightclient: LightclientApi;
+    lodestar: LodestarApi;
 };

@@ -1,15 +1,15 @@
-import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Dispatch} from "redux";
 import {HttpClient} from "../../../api";
+import {IChainForkConfig} from "@chainsafe/lodestar-config/lib/beaconConfig";
 
 export class CgEth2Base {
     protected readonly httpClient: HttpClient;
-    protected readonly config: IBeaconConfig;
+    protected readonly config: IChainForkConfig;
     protected readonly publicKey?: string;
     protected readonly dispatch?: Dispatch;
 
     public constructor(
-        config: IBeaconConfig,
+        config: IChainForkConfig,
         url: string,
         {publicKey, dispatch}: {publicKey?: string; dispatch?: Dispatch} = {},
     ) {

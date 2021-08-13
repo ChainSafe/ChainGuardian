@@ -1,6 +1,6 @@
 import {ContainerType, ListType, NumberUintType} from "@chainsafe/ssz";
 import {BeaconNode, BeaconNodes} from "../beaconNode";
-import {StringType} from "./basic";
+import {StringType} from "@chainsafe/lodestar-types";
 
 export const BeaconNodeType = new ContainerType<BeaconNode>({
     fields: {
