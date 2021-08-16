@@ -1,9 +1,9 @@
 # ChainGuardian
 
-[![Build Status](https://travis-ci.org/NodeFactoryIo/ChainGuardian.svg?branch=master)](https://travis-ci.org/NodeFactoryIo/ChainGuardian)
-[![codecov](https://codecov.io/gh/NodeFactoryIo/ChainGuardian/branch/master/graph/badge.svg)](https://codecov.io/gh/NodeFactoryIo/ChainGuardian)
+[![Build Status](https://travis-ci.org/chainsafe/ChainGuardian.svg?branch=master)](https://travis-ci.org/chainsafe/ChainGuardian)
+[![codecov](https://codecov.io/gh/chainsafe/ChainGuardian/branch/master/graph/badge.svg)](https://codecov.io/gh/chainsafe/ChainGuardian)
 [![Discord](https://img.shields.io/discord/608204864593461248?color=blue&label=Discord&logo=discord)](https://discord.gg/7Kd4FZq)
-[![GitHub](https://img.shields.io/github/license/NodeFactoryIo/ChainGuardian)](./LICENSE)
+[![GitHub](https://img.shields.io/github/license/chainsafe/ChainGuardian)](./LICENSE)
 
 Eth2.0 desktop validator client.
 
@@ -11,7 +11,7 @@ Eth2.0 desktop validator client.
 Clone the repository with Git:
 
 ```bash
-git clone git@github.com:nodefactoryio/ChainGuardian.git
+git clone git@github.com:chainsafe/ChainGuardian.git
 ```
 
 And then install the dependencies:
@@ -87,13 +87,3 @@ npm run dist -- -mwl
 [![Electron](docs/img/electron.png)](https://electronjs.org/)
 [![Redux](docs/img/redux.png)](https://redux.js.org/)
 [![Jest](docs/img/jest.png)](https://facebook.github.io/jest/)
-
-## Donations
-
-We are blockchain development agency from Croatia, our open source work is funded by grants.
-This project is funded by MolochDAO. If you like our work and find this project useful, you can donate to 
-this address: 
-[0xbD9f96663E07a83ff18915c9074d9dc04d8E64c9](https://etherscan.io/address/0xbD9f96663E07a83ff18915c9074d9dc04d8E64c9)
-
-
-[![NodeFactory](docs/img/nodefactory.png)](https://nodefactory.io)

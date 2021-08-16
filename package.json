@@ -13,22 +13,22 @@
   ],
   "main": "./dist/main.js",
   "author": {
-    "name": "NodeFactory",
-    "email": "info@nodefactory.io",
-    "url": "https://nodefactory.io"
+    "name": "ChainSafe",
+    "email": "info@chainsafe.io",
+    "url": "https://chainsafe.io"
   },
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/nodefactoryio/ChainGuardian/issues"
+    "url": "https://github.com/chainsafe/ChainGuardian/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:nodefactoryio/ChainGuardian.git"
+    "url": "git+ssh://git@github.com:chainsafe/ChainGuardian.git"
   },
   "engines": {
     "node": "^12.4.0"
   },
-  "homepage": "https://github.com/nodefactoryio/ChainGuardian",
+  "homepage": "https://chainguardian.nodefactory.io",
   "scripts": {
     "build-main": "cross-env NODE_ENV=production webpack --config webpack.main.prod.config.js",
     "build-renderer": "cross-env NODE_ENV=production webpack --config webpack.renderer.prod.config.js",
