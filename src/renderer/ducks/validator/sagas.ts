@@ -256,7 +256,7 @@ function* startService(
             }
         }
 
-        const logger = new ValidatorLogger(undefined, undefined, publicKey);
+        const logger = new ValidatorLogger(undefined, publicKey);
 
         if (!validatorServices[publicKey]) {
             validatorServices[publicKey] = yield Validator.initializeFromBeaconNode({
