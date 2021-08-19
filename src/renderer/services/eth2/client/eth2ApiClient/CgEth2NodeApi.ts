@@ -1,6 +1,5 @@
 import {CgEth2Base} from "./CgEth2Base";
 import {
-    Api,
     NetworkIdentity,
     NodePeer,
     PeerCount,
@@ -11,8 +10,9 @@ import {ContainerType, Json} from "@chainsafe/ssz";
 import {ssz, StringType} from "@chainsafe/lodestar-types";
 import {ArrayOf} from "@chainsafe/lodestar-api/lib/utils";
 import querystring from "querystring";
+import {CgNodeApi} from "../interface";
 
-export class CgEth2NodeApi extends CgEth2Base implements Api {
+export class CgEth2NodeApi extends CgEth2Base implements CgNodeApi {
     private networkIdentityContainerType = new ContainerType<NetworkIdentity>({
         fields: {
             peerId: new StringType(),

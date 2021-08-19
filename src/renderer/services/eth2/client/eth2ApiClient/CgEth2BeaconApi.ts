@@ -1,6 +1,5 @@
 import {CgEth2Base} from "./CgEth2Base";
 import {
-    Api,
     CommitteesFilters,
     StateId,
     EpochCommitteeResponse,
@@ -21,8 +20,9 @@ import {publishNewBlock, signedNewAttestation} from "../../../../ducks/validator
 import {matomo} from "../../../tracking";
 import querystring from "querystring";
 import {ArrayOf} from "@chainsafe/lodestar-api/lib/utils";
+import {CgBeaconApi, PoolStatus} from "../interface";
 
-export class CgEth2BeaconApi extends CgEth2Base implements Api {
+export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
     private blockHeaderContainerType = new ContainerType<BlockHeaderResponse>({
         fields: {
             root: ssz.Root,
@@ -147,7 +147,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements Api {
 
     public async getGenesis(): Promise<{data: phase0.Genesis}> {
         const response = await this.get<{data: Json}>("/eth/v1/beacon/genesis");
-        return {data: ssz.phase0.Genesis.fromJson(response.data)};
+        return {data: ssz.phase0.Genesis.fromJson(response.data, {case: "snake"})};
     }
 
     public async getEpochCommittees(
@@ -280,5 +280,21 @@ export class CgEth2BeaconApi extends CgEth2Base implements Api {
     public async submitPoolSyncCommitteeSignatures(signatures: altair.SyncCommitteeMessage[]): Promise<void> {
         const data = signatures.map((signature) => ssz.altair.SyncCommitteeMessage.toJson(signature));
         await this.post("/eth/v1/beacon/pool/sync_committees", data);
+    }
+
+    public async getPoolStatus(): Promise<PoolStatus> {
+        const [attestations, attesterSlashings, voluntaryExits, proposerSlashings] = await Promise.all([
+            this.get<{data: Json[]}>("/eth/v1/beacon/pool/attestations"),
+            this.get<{data: Json[]}>("/eth/v1/beacon/pool/attester_slashings"),
+            this.get<{data: Json[]}>("/eth/v1/beacon/pool/proposer_slashings"),
+            this.get<{data: Json[]}>("/eth/v1/beacon/pool/voluntary_exits"),
+        ]);
+
+        return {
+            attestations: attestations.data.length,
+            attesterSlashings: attesterSlashings.data.length,
+            voluntaryExits: voluntaryExits.data.length,
+            proposerSlashings: proposerSlashings.data.length,
+        };
     }
 }

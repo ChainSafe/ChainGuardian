@@ -1,5 +1,6 @@
-import {Attestation, AttestationData, CommitteeIndex, Epoch, Slot} from "@chainsafe/lodestar-types";
+import {CommitteeIndex, Epoch, Slot} from "@chainsafe/lodestar-types";
 import crypto from "crypto";
+import {AttestationData, Attestation} from "@chainsafe/lodestar-types/phase0";
 
 /**
  * Generates a fake attestation data for test purposes.

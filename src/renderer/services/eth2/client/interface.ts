@@ -7,14 +7,30 @@ import {Api as ValidatorApi} from "@chainsafe/lodestar-api/lib/routes/validator"
 import {Api as LodestarApi} from "@chainsafe/lodestar-api/lib/routes/lodestar";
 import {Api as LightclientApi} from "@chainsafe/lodestar-api/lib/routes/lightclient";
 
+export type CgBeaconApi = BeaconApi & {getPoolStatus(): Promise<PoolStatus>};
+export type CgConfigApi = ConfigApi;
+export type CgDebugApi = DebugApi;
+export type CgEventsApi = EventsApi;
+export type CgNodeApi = NodeApi;
+export type CgValidatorApi = ValidatorApi;
+export type CgLodestarApi = LodestarApi;
+export type CgLightclientApi = LightclientApi;
+
 export type Eth2Api = {
-    beacon: BeaconApi;
-    config: ConfigApi;
-    debug: DebugApi;
-    events: EventsApi;
-    node: NodeApi;
-    validator: ValidatorApi;
+    beacon: CgBeaconApi;
+    config: CgConfigApi;
+    debug: CgDebugApi;
+    events: CgEventsApi;
+    node: CgNodeApi;
+    validator: CgValidatorApi;
     //
-    lightclient: LightclientApi;
-    lodestar: LodestarApi;
+    lightclient: CgLightclientApi;
+    lodestar: CgLodestarApi;
+};
+
+export type PoolStatus = {
+    attestations: number;
+    attesterSlashings: number;
+    voluntaryExits: number;
+    proposerSlashings: number;
 };

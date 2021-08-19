@@ -1,11 +1,12 @@
 import {CgEth2Base} from "./CgEth2Base";
-import {Api, DepositContract, ISpec} from "@chainsafe/lodestar-api/lib/routes/config";
+import {DepositContract, ISpec} from "@chainsafe/lodestar-api/lib/routes/config";
 import {Json, ContainerType, ByteVectorType} from "@chainsafe/ssz";
 import {ssz, phase0} from "@chainsafe/lodestar-types";
 import {ChainConfig} from "@chainsafe/lodestar-config";
 import {BeaconPreset} from "@chainsafe/lodestar-params";
+import {CgConfigApi} from "../interface";
 
-export class CgEth2ConfigApi extends CgEth2Base implements Api {
+export class CgEth2ConfigApi extends CgEth2Base implements CgConfigApi {
     private depositContractContainerType = new ContainerType<DepositContract>({
         fields: {
             chainId: ssz.Number64,

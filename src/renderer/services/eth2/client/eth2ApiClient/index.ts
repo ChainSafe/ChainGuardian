@@ -1,12 +1,14 @@
-import {Eth2Api} from "../interface";
-import {Api as BeaconApi} from "@chainsafe/lodestar-api/lib/routes/beacon";
-import {Api as ConfigApi} from "@chainsafe/lodestar-api/lib/routes/config";
-import {Api as DebugApi} from "@chainsafe/lodestar-api/lib/routes/debug";
-import {Api as EventsApi} from "@chainsafe/lodestar-api/lib/routes/events";
-import {Api as NodeApi} from "@chainsafe/lodestar-api/lib/routes/node";
-import {Api as ValidatorApi} from "@chainsafe/lodestar-api/lib/routes/validator";
-import {Api as LightclientApi} from "@chainsafe/lodestar-api/lib/routes/lightclient";
-import {Api as LodestarApi} from "@chainsafe/lodestar-api/lib/routes/lodestar";
+import {
+    CgBeaconApi,
+    Eth2Api,
+    CgConfigApi,
+    CgDebugApi,
+    CgEventsApi,
+    CgNodeApi,
+    CgValidatorApi,
+    CgLodestarApi,
+    CgLightclientApi,
+} from "../interface";
 import {Dispatch} from "redux";
 import {CgEth2BeaconApi} from "./CgEth2BeaconApi";
 import {CgEth2ConfigApi} from "./CgEth2ConfigApi";
@@ -17,16 +19,18 @@ import {CgEth2EventsApi} from "./CgEth2EventsApi";
 import {CgEth2LightclientApi} from "./CgEth2LightclientApi";
 import {CgEth2LodestarApi} from "./CgEth2LodestarApi";
 import {IChainForkConfig} from "@chainsafe/lodestar-config/lib/beaconConfig";
+import axios from "axios";
+import {getNetworkConfigByGenesisVersion} from "../../networks";
 
 export class CgEth2ApiClient implements Eth2Api {
-    public beacon: BeaconApi;
-    public config: ConfigApi;
-    public debug: DebugApi;
-    public events: EventsApi;
-    public node: NodeApi;
-    public validator: ValidatorApi;
-    public lightclient: LightclientApi;
-    public lodestar: LodestarApi;
+    public beacon: CgBeaconApi;
+    public config: CgConfigApi;
+    public debug: CgDebugApi;
+    public events: CgEventsApi;
+    public node: CgNodeApi;
+    public validator: CgValidatorApi;
+    public lightclient: CgLightclientApi;
+    public lodestar: CgLodestarApi;
 
     public constructor(
         config: IChainForkConfig,
@@ -44,4 +48,21 @@ export class CgEth2ApiClient implements Eth2Api {
         this.lightclient = new CgEth2LightclientApi(config, url);
         this.lodestar = new CgEth2LodestarApi(config, url);
     }
+
+    public static getBeaconURLNetworkName = async (url: string): Promise<string> => {
+        try {
+            // eslint-disable-next-line camelcase
+            const response = await axios.get<{data: {genesis_fork_version: string}}>(`/eth/v1/beacon/genesis`, {
+                baseURL: url,
+                timeout: 1000,
+            });
+            const network = await getNetworkConfigByGenesisVersion(response.data.data.genesis_fork_version);
+            if (!network) {
+                throw new Error("Beacon chain network not supported");
+            }
+            return network.networkName;
+        } catch (e) {
+            throw new Error("Beacon chain not found");
+        }
+    };
 }

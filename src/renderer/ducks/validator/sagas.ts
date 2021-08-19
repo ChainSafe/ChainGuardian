@@ -67,7 +67,6 @@ import {getBeaconByKey} from "../beacon/selectors";
 import {Beacon, BeaconStatus} from "../beacon/slice";
 import {updateStatus} from "../beacon/actions";
 import {cgLogger} from "../../../main/logger";
-import {toHex} from "@chainsafe/lodestar-utils";
 import {Interchange} from "@chainsafe/lodestar-validator/lib/slashingProtection/interchange";
 import {createNotification} from "../notification/actions";
 import {Level} from "../../components/Notification/NotificationEnums";
@@ -80,8 +79,13 @@ import {
 } from "../../services/eth2/client/module";
 import store from "../store";
 import {fromHexString} from "@chainsafe/ssz";
-import {ICGValidatorResponse} from "../../services/eth2/client/interface";
 import {DutyStatus} from "../../constants/dutyStatus";
+import {Attestation, Genesis} from "@chainsafe/lodestar-types/altair";
+import {config as mainnetConfig} from "../../services/eth2/config/mainet";
+import {SLOTS_PER_EPOCH} from "@chainsafe/lodestar-params";
+import {ssz} from "@chainsafe/lodestar-types";
+import {AttesterDuty, ProposerDuty} from "@chainsafe/lodestar-api/lib/routes/validator";
+import { ValidatorResponse } from "@chainsafe/lodestar-api/lib/routes/beacon";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -190,17 +194,19 @@ function* startService(
     | Promise<void>
     | Promise<boolean>
     | Promise<INetworkConfig | null>
-    | Promise<Genesis | null>
+    | Promise<{data: Genesis} | null>
     | RaceEffect<TakeEffect>
     | Promise<typeof CgEth2ApiClient>
-    | CancelEffect,
+    | CancelEffect
+    | Promise<Validator>,
     void,
     IValidatorComplete &
         [ReturnType<typeof slashingProtectionUpload> | undefined, ReturnType<typeof slashingProtectionCancel>] &
         [ReturnType<typeof stopActiveValidatorService> | undefined, ReturnType<typeof setValidatorStatus>] &
         (INetworkConfig | null) &
-        (Genesis | null) &
+        ({data: Genesis} | null) &
         typeof CgEth2ApiClient &
+        Validator &
         boolean
 > {
     try {
@@ -237,7 +243,9 @@ function* startService(
                 throw new Error("canceled by user");
             }
             if (upload) {
-                const {genesisValidatorsRoot} = yield eth2API.beacon.getGenesis();
+                const {
+                    data: {genesisValidatorsRoot},
+                } = yield eth2API.beacon.getGenesis();
                 const interchange = JSON.parse(
                     readFileSync(
                         ((upload as unknown) as ReturnType<typeof slashingProtectionUpload>).payload,
@@ -432,7 +440,7 @@ export function* getAttestationEffectiveness({
 }: ReturnType<typeof signedNewAttestation>): Generator<
     SelectEffect | TakeEffect | AllEffect<CallEffect> | CallEffect,
     void,
-    IValidatorComplete & ReturnType<typeof updateSlot> & (Attestation[] | null)[] & typeof CgEth2ApiClient
+    IValidatorComplete & ReturnType<typeof updateSlot> & ({data: Attestation}[] | null)[] & typeof CgEth2ApiClient
 > {
     const validator = yield select(getValidator, {publicKey: meta});
     const config = getNetworkConfig(validator.network)?.eth2Config || mainnetConfig;
@@ -444,7 +452,7 @@ export function* getAttestationEffectiveness({
     yield call(database.validator.attestationDuties.putRecords, meta, [
         {
             slot: payload.slot,
-            epoch: computeEpochAtSlot(config, payload.slot),
+            epoch: computeEpochAtSlot(payload.slot),
             status: DutyStatus.attested,
             timestamp: computeTimeAtSlot(config, payload.slot, genesisTime) * 1000,
         },
@@ -455,7 +463,7 @@ export function* getAttestationEffectiveness({
         skipped = 0,
         skippedQue = 0,
         inclusion = 0;
-    const timeoutSlot = config.params.SLOTS_PER_EPOCH + payload.slot;
+    const timeoutSlot = SLOTS_PER_EPOCH + payload.slot;
     while (true) {
         const newSlot = yield take(updateSlot);
         if (newSlot.meta !== validator.beaconNodes[0]) continue;
@@ -463,7 +471,7 @@ export function* getAttestationEffectiveness({
 
         // get all block information from last to current (mostly is only one but is important to get every block)
         const range = new Array(newSlot.payload - lastSlot).fill(null).map((_, index) => lastSlot + index + 1);
-        const results = yield all(range.map((slot) => call(eth2API.beacon.blocks.getBlockAttestations, slot)));
+        const results = yield all(range.map((slot) => call(eth2API.beacon.getBlockAttestations, slot)));
 
         results.forEach((result, index) => {
             /** the main logic for collecting when is attestation may be included and the number of skipped blocks */
@@ -471,8 +479,8 @@ export function* getAttestationEffectiveness({
                 skippedQue++;
             } else {
                 const sanitizedAttestations = result.filter(
-                    ({data, aggregationBits}) =>
-                        payload.block === toHex(data.beaconBlockRoot) &&
+                    ({data: {data, aggregationBits}}) =>
+                        payload.block === ssz.Root.toJson(data.beaconBlockRoot) &&
                         data.index === payload.index &&
                         data.slot === payload.slot &&
                         aggregationBits[payload.validatorIndexInCommittee],
@@ -510,7 +518,7 @@ export function* getAttestationEffectiveness({
     const efficiency = (payload.slot + 1 + skipped - payload.slot) / (inclusion - payload.slot);
 
     yield call(database.validator.attestationEffectiveness.addRecord, meta, {
-        epoch: computeEpochAtSlot(config, payload.slot),
+        epoch: computeEpochAtSlot(payload.slot),
         inclusion,
         slot: payload.slot,
         efficiency: efficiency > 1 ? 100 : efficiency > 0 ? Math.floor(efficiency * 100) : 0,
@@ -525,7 +533,7 @@ export function* watchValidatorDuties({
     void,
     IValidatorComplete &
         typeof CgEth2ApiClient &
-        ICGValidatorResponse &
+        ValidatorResponse &
         ReturnType<typeof updateEpoch> &
         Beacon &
         ReturnType<typeof setValidatorBeaconNode>
@@ -547,8 +555,7 @@ export function* watchValidatorDuties({
     const ApiClient = yield call(getBeaconNodeEth2ApiClient, validator.beaconNodes[0]);
     const eth2API = new ApiClient(config, validator.beaconNodes[0]);
 
-    const validatorId = fromHexString(payload);
-    const validatorState = yield call(eth2API.beacon.state.getStateValidator, "head", validatorId);
+    const validatorState = yield call(eth2API.beacon.getStateValidator, "head", payload);
 
     function* processDuties(
         epoch: number,
@@ -565,9 +572,10 @@ export function* watchValidatorDuties({
 
         let propositions: ProposerDuty[], propositionsFuture: ProposerDuty[], propositionsSuperFuture: ProposerDuty[];
         try {
-            propositions = yield call(eth2API.validator.getProposerDuties, epoch, [validatorId]);
-            propositionsFuture = yield call(eth2API.validator.getProposerDuties, epoch + 1, [validatorId]);
-            propositionsSuperFuture = yield call(eth2API.validator.getProposerDuties, epoch + 2, [validatorId]);
+            // TODO: validate!!!!
+            propositions = yield call(eth2API.validator.getProposerDuties, epoch);
+            propositionsFuture = yield call(eth2API.validator.getProposerDuties, epoch + 1);
+            propositionsSuperFuture = yield call(eth2API.validator.getProposerDuties, epoch + 2);
         } catch (e) {
             propositions = propositions || [];
             propositionsFuture = propositionsFuture || [];
@@ -584,7 +592,7 @@ export function* watchValidatorDuties({
                     .filter(({validatorIndex}) => validatorIndex === validatorState.index)
                     .map(({slot}) => ({
                         slot,
-                        epoch: computeEpochAtSlot(config, slot),
+                        epoch: computeEpochAtSlot(slot),
                         status: DutyStatus.scheduled,
                         timestamp: computeTimeAtSlot(config, slot, genesisTime) * 1000,
                     })),
@@ -596,7 +604,7 @@ export function* watchValidatorDuties({
                     .filter(({validatorIndex}) => validatorIndex === validatorState.index)
                     .map(({slot}) => ({
                         slot,
-                        epoch: computeEpochAtSlot(config, slot),
+                        epoch: computeEpochAtSlot(slot),
                         status: DutyStatus.scheduled,
                         timestamp: computeTimeAtSlot(config, slot, genesisTime) * 1000,
                     })),
@@ -616,7 +624,7 @@ export function* watchValidatorDuties({
         }
     }
 
-    yield call(processDuties, computeEpochAtSlot(config, beaconNode.slot));
+    yield call(processDuties, computeEpochAtSlot(beaconNode.slot));
     while (true) {
         const newEpoch = yield take(updateEpoch);
         if (newEpoch.meta !== validator.beaconNodes[0]) continue;
@@ -651,7 +659,7 @@ function* onPublishedBlock({
     yield call(database.validator.propositionDuties.putRecords, meta, [
         {
             slot: payload.slot,
-            epoch: computeEpochAtSlot(config, payload.slot),
+            epoch: computeEpochAtSlot(payload.slot),
             status: DutyStatus.proposed,
             timestamp: computeTimeAtSlot(config, payload.slot, genesisTime) * 1000,
         },

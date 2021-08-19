@@ -31,13 +31,9 @@ import {Beacons} from "../../models/beacons";
 import {postInit} from "../store";
 import {Beacon, BeaconStatus} from "./slice";
 import {Action} from "redux";
-import {mainnetConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
-import {BeaconEventType, HeadEvent} from "@chainsafe/lodestar-validator/lib/api/interface/events";
 import {AllEffect, CancelEffect, ForkEffect} from "@redux-saga/core/effects";
 import {INetworkConfig} from "../../services/interfaces";
-import {CGBeaconEvent, CGBeaconEventType, ErrorEvent} from "../../services/eth2/client/interface";
 import {getBeaconByKey} from "./selectors";
-import {SyncingStatus} from "@chainsafe/lodestar-types";
 import {BeaconValidators, getValidatorsByBeaconNode} from "../validator/selectors";
 import {getNewValidatorBalance, setValidatorStatus, storeValidatorBeaconNodes} from "../validator/actions";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
@@ -49,6 +45,8 @@ import {setInitialBeacons} from "../settings/actions";
 import {DockerRegistry} from "../../services/docker/docker-registry";
 import {CgEth2ApiClient, getBeaconNodeEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client/module";
 import {getClientParams} from "../../services/docker/getClientParams";
+import {config as mainnetConfig} from "../../services/eth2/config/mainet";
+import {EventType} from "@chainsafe/lodestar-api/lib/routes/events";
 
 export function* pullDockerImage(
     image: string,
@@ -159,7 +157,7 @@ const getBeaconStatus = async (url: string): Promise<{syncing: boolean; slot: nu
     try {
         const client = new CgEth2ApiClient(mainnetConfig, url);
         const result = await client.node.getSyncingStatus();
-        return {slot: Number(result.headSlot), syncing: result.syncDistance > 10};
+        return {slot: Number(result.data.headSlot), syncing: result.data.syncDistance > 10};
     } catch {
         return null;
     }
@@ -244,7 +242,7 @@ export function* watchOnHead(
     const config = yield retry(30, 1000, readBeaconChainNetwork, url, true);
     const ApiClient: typeof CgEth2ApiClient = yield call(getBeaconNodeEth2ApiClient, url);
     const client = new ApiClient(config?.eth2Config || mainnetConfig, url);
-    const eventStream = client.events.getEventStream([BeaconEventType.HEAD]);
+    const eventStream = client.events.eventstream([EventType.HEAD]);
 
     const beacon = yield select(getBeaconByKey, {key: url});
     let isSyncing =
@@ -298,7 +296,7 @@ export function* watchOnHead(
                 if (beacon.docker?.id) DockerRegistry.getContainer(beacon.docker?.id).startDockerLogger();
             }
             beaconLogger.info("Beacon on slot:", payload.value.message.slot);
-            const headEpoch = computeEpochAtSlot(config?.eth2Config || mainnetConfig, payload.value.message.slot);
+            const headEpoch = computeEpochAtSlot(payload.value.message.slot);
             if (epoch !== headEpoch) {
                 beaconLogger.info("Beacon on epoch:", headEpoch);
                 epoch = headEpoch;

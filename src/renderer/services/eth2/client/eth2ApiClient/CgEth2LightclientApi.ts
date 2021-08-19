@@ -1,9 +1,9 @@
 import {CgEth2Base} from "./CgEth2Base";
-import {Api} from "@chainsafe/lodestar-api/lib/routes/lightclient";
 import {altair, Epoch, SyncPeriod} from "@chainsafe/lodestar-types";
 import {Path} from "@chainsafe/ssz";
+import {CgLightclientApi} from "../interface";
 
-export class CgEth2LightclientApi extends CgEth2Base implements Api {
+export class CgEth2LightclientApi extends CgEth2Base implements CgLightclientApi {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async getBestUpdates(from: SyncPeriod, to: SyncPeriod): Promise<{data: altair.LightClientUpdate[]}> {
         throw new Error("getBestUpdates not implemented");

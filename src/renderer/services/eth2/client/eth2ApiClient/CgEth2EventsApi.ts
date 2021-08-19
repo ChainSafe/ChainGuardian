@@ -1,11 +1,12 @@
-import {Api, BeaconEvent, EventType, getEventSerdes} from "@chainsafe/lodestar-api/lib/routes/events";
+import {BeaconEvent, EventType, getEventSerdes} from "@chainsafe/lodestar-api/lib/routes/events";
 import {stringifyQuery} from "@chainsafe/lodestar-api/lib/client/utils/format";
 import EventSource from "eventsource";
 import {IChainForkConfig} from "@chainsafe/lodestar-config/lib/beaconConfig";
+import {CgEventsApi} from "../interface";
 
 type EventSourceError = {status: number; message: string};
 
-export class CgEth2EventsApi implements Api {
+export class CgEth2EventsApi implements CgEventsApi {
     private readonly eventSerdes = getEventSerdes();
     private readonly url: string;
     private readonly config: IChainForkConfig;

@@ -5,9 +5,9 @@ import {updateSlot} from "../../../../../src/renderer/ducks/beacon/actions";
 import {IValidatorComplete} from "../../../../../src/renderer/ducks/validator/slice";
 import {V4Keystore} from "../../../../../src/renderer/services/keystore";
 import {ValidatorStatus} from "../../../../../src/renderer/constants/validatorStatus";
-import {Attestation} from "@chainsafe/lodestar-types/lib/types/operations";
 import {BitList} from "@chainsafe/ssz";
 import {CgEth2ApiClient} from "../../../../../src/renderer/services/eth2/client/eth2ApiClient";
+import {Attestation} from "@chainsafe/lodestar-types/altair";
 
 const publicKey = "0x9331f1ec6672748ca7b080faff7038da35838f57d223db4f2cb5020246e6c31695c3fb3db0d78db13d266476e34e4e65";
 const block = "0xc3687c87021f5b7855465caf6501b3f742f20f26b65cc7a107ff7a78f0b28b79";

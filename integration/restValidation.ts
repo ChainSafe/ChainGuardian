@@ -4,18 +4,17 @@ import {Validator} from "@chainsafe/lodestar-validator";
 import {CGSlashingProtection} from "../src/renderer/services/eth2/client/slashingProtection";
 import sinon from "sinon";
 import {computeEpochAtSlot} from "@chainsafe/lodestar-beacon-state-transition";
-import {BeaconCommitteeResponse, BLSPubkey, ProposerDuty} from "@chainsafe/lodestar-types";
-import {AttestationEvent, CGBeaconEventType, ICgEth2ApiClient} from "../src/renderer/services/eth2/client/interface";
-import {BeaconBlockEvent, BeaconEventType} from "@chainsafe/lodestar-validator/lib/api/interface/events";
+import {BLSPubkey} from "@chainsafe/lodestar-types";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {CgEth2ApiClient} from "../src/renderer/services/eth2/client/module";
+import {Eth2Api} from "../src/renderer/services/eth2/client/interface";
 
-const getCommitteesFactory = (apiClient: ICgEth2ApiClient) => async (
+const getCommitteesFactory = (apiClient: Eth2Api) => async (
     validatorIndex: number,
     blockSlot: number,
     ignoreBefore?: number,
 ): Promise<BeaconCommitteeResponse[]> => {
-    const response = await apiClient.beacon.state.getCommittees(blockSlot);
+    const response = await apiClient.beacon.getEpochCommittees();
     return response.filter(({validators, slot}: BeaconCommitteeResponse) =>
         [...validators].some(
             (index) => index === validatorIndex && (slot > ignoreBefore || ignoreBefore === undefined),
@@ -121,7 +120,7 @@ export const restValidation = ({
             const slashingProtection = sinon.createStubInstance(CGSlashingProtection);
 
             const eth2API = new ApiClient(config, baseUrl);
-            const validatorService = new Validator({
+            const validatorService = await Validator.initializeFromBeaconNode({
                 slashingProtection,
                 api: eth2API,
                 config,
@@ -129,7 +128,7 @@ export const restValidation = ({
                 logger,
                 graffiti: "ChainGuardian",
             });
-            const validator = await eth2API.beacon.state.getStateValidator("head", validatorPublicKeyBytes);
+            const validator = await eth2API.beacon.getStateValidator("head", validatorPublicKey.toHex());
             await validatorService.start();
 
             let firstSlot: number | undefined;
@@ -138,7 +137,7 @@ export const restValidation = ({
             let lastEpoch = 1;
 
             const onFirstBlock = ({slot}: BeaconBlockEvent["message"]): void => {
-                const epoch = computeEpochAtSlot(config, slot);
+                const epoch = computeEpochAtSlot(slot);
                 if (!firstSlot) {
                     firstSlot = slot;
                     startEpoch = epoch;

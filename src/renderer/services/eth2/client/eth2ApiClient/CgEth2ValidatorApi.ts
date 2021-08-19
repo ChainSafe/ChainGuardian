@@ -1,6 +1,5 @@
 import {CgEth2Base} from "./CgEth2Base";
 import {
-    Api,
     SyncCommitteeSubscription,
     BeaconCommitteeSubscription,
     ProposerDuty,
@@ -23,8 +22,9 @@ import {ForkName} from "@chainsafe/lodestar-params";
 import {ContainerType, Json, toHexString} from "@chainsafe/ssz";
 import querystring from "querystring";
 import {ArrayOf} from "@chainsafe/lodestar-api/lib/utils";
+import {CgValidatorApi} from "../interface";
 
-export class CgEth2ValidatorApi extends CgEth2Base implements Api {
+export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
     private beaconCommitteeSubscriptionContainerType = new ContainerType<BeaconCommitteeSubscription>({
         fields: {
             validatorIndex: ssz.ValidatorIndex,

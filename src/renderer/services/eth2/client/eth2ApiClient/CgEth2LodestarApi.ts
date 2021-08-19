@@ -1,14 +1,14 @@
 import {CgEth2Base} from "./CgEth2Base";
 import {
-    Api,
     BlockProcessorQueueItem,
     GossipQueueItem,
     RegenQueueItem,
     SyncChainDebugState,
 } from "@chainsafe/lodestar-api/lib/routes/lodestar";
 import {Epoch} from "@chainsafe/lodestar-types";
+import {CgLodestarApi} from "../interface";
 
-export class CgEth2LodestarApi extends CgEth2Base implements Api {
+export class CgEth2LodestarApi extends CgEth2Base implements CgLodestarApi {
     public getBlockProcessorQueueItems(): Promise<BlockProcessorQueueItem[]> {
         throw new Error(" not implemented");
     }

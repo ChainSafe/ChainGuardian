@@ -1,13 +1,13 @@
 import {CgEth2Base} from "./CgEth2Base";
-import {Api} from "@chainsafe/lodestar-api/lib/routes/debug";
 import {Json, ContainerType} from "@chainsafe/ssz";
 import {StateId} from "@chainsafe/lodestar-api/lib/routes/beacon";
 import {ForkName} from "@chainsafe/lodestar-params";
 import {allForks, ssz, Slot, Root} from "@chainsafe/lodestar-types";
+import {CgDebugApi} from "../interface";
 
 type SlotRoot = {slot: Slot; root: Root};
 
-export class CgEth2DebugApi extends CgEth2Base implements Api {
+export class CgEth2DebugApi extends CgEth2Base implements CgDebugApi {
     private slotRootContainerType = new ContainerType<SlotRoot>({
         fields: {
             slot: ssz.Slot,

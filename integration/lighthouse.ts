@@ -1,6 +1,5 @@
 import {SecretKey} from "@chainsafe/bls";
 import {Keystore} from "@chainsafe/bls-keystore";
-import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import assert from "assert";
 
 import {restValidation} from "./restValidation";
