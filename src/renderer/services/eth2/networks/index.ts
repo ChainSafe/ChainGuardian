@@ -1,6 +1,7 @@
 import {INetworkConfig} from "../../interfaces";
 import {LocalhostConfig} from "./local";
 import {PyrmontConfig} from "./pyrmont";
+import {fromHex} from "@chainsafe/lodestar-utils";
 
 const networks: INetworkConfig[] = [PyrmontConfig];
 
@@ -19,8 +20,10 @@ const getNetworkConfig = (name: string): INetworkConfig => {
 const networksList = networks.map((contract) => contract.networkName);
 
 const getNetworkConfigByGenesisVersion = (genesisVersion: string): null | INetworkConfig => {
-    const genesisBuffer = Buffer.from(genesisVersion);
-    const result = networks.filter((network) => genesisBuffer.equals(network.eth2Config.GENESIS_FORK_VERSION));
+    const genesisBuffer = fromHex(genesisVersion);
+    const result = networks.filter((network) => {
+        return genesisBuffer.every((e, i) => network.eth2Config.GENESIS_FORK_VERSION[i] === e);
+    });
     return result.length ? result[0] : null;
 };
 

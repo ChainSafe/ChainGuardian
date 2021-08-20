@@ -14,6 +14,7 @@ import {
     retry,
     select,
     SelectEffect,
+    ChannelTakeEffect,
 } from "redux-saga/effects";
 import {liveProcesses} from "../../services/utils/cmd";
 import {
@@ -46,7 +47,10 @@ import {DockerRegistry} from "../../services/docker/docker-registry";
 import {CgEth2ApiClient, getBeaconNodeEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client/module";
 import {getClientParams} from "../../services/docker/getClientParams";
 import {config as mainnetConfig} from "../../services/eth2/config/mainet";
-import {EventType} from "@chainsafe/lodestar-api/lib/routes/events";
+import {eventChannel, EventChannel} from "redux-saga";
+import {BeaconEvent, EventData} from "../../services/eth2/client/interface";
+import {SyncingStatus} from "@chainsafe/lodestar-api/lib/routes/node";
+import {EventType} from "../../services/eth2/client/enums";
 
 export function* pullDockerImage(
     image: string,
@@ -226,23 +230,30 @@ export function* watchOnHead(
 ): Generator<
     | PutEffect
     | CancelEffect
-    | RaceEffect<Promise<IteratorResult<CGBeaconEvent | ErrorEvent>> | TakeEffect>
+    | RaceEffect<ChannelTakeEffect<BeaconEvent> | TakeEffect>
     | CallEffect
     | SelectEffect
-    | Promise<SyncingStatus>
+    | EventChannel<BeaconEvent>
+    | Promise<{data: SyncingStatus}>
     | Promise<boolean>,
     void,
-    [IteratorResult<HeadEvent | ErrorEvent>, ReturnType<typeof removeBeacon>] &
-        (INetworkConfig | null) &
+    [{type: EventType; message: EventData[EventType.head]}, ReturnType<typeof removeBeacon>] &
+        EventChannel<BeaconEvent> & {data: SyncingStatus} & (INetworkConfig | null) &
         Beacon &
-        SyncingStatus &
         typeof CgEth2ApiClient &
         boolean
 > {
     const config = yield retry(30, 1000, readBeaconChainNetwork, url, true);
     const ApiClient: typeof CgEth2ApiClient = yield call(getBeaconNodeEth2ApiClient, url);
     const client = new ApiClient(config?.eth2Config || mainnetConfig, url);
-    const eventStream = client.events.eventstream([EventType.HEAD]);
+    const event = yield eventChannel<BeaconEvent>((emit) => {
+        const controller = new AbortController();
+        client.events.eventstream([EventType.head], controller.signal, emit, true);
+
+        return (): void => {
+            controller.abort();
+        };
+    });
 
     const beacon = yield select(getBeaconByKey, {key: url});
     let isSyncing =
@@ -261,19 +272,16 @@ export function* watchOnHead(
     const beaconLogger = createLogger(url, getBeaconLogfileFromURL(url));
     while (true) {
         try {
-            const [payload, cancelAction] = yield race([
-                eventStream[Symbol.asyncIterator]().next(),
-                take(removeBeacon),
-            ]);
-            if (cancelAction || payload.done) {
+            const [payload, cancelAction] = yield race([take(event), take(removeBeacon)]);
+            if (cancelAction) {
                 if (cancelAction.payload === url) {
                     cgLogger.info("Stopping beacon watching on", url);
-                    eventStream.stop();
+                    event.close();
                     yield cancel();
                 }
                 continue;
             }
-            if (payload.value.type === CGBeaconEventType.ERROR) {
+            if (payload.type === EventType.error) {
                 const isRunning = beacon.docker?.id
                     ? yield DockerRegistry.getContainer(beacon.docker?.id).isRunning()
                     : true;
@@ -286,21 +294,21 @@ export function* watchOnHead(
                 }
                 continue;
             }
-            yield put(updateSlot(payload.value.message.slot, url));
+            yield put(updateSlot(payload.message.slot, url));
             if (isSyncing || !isOnline) {
                 const result = yield client.node.getSyncingStatus();
-                isSyncing = result.syncDistance > 10;
+                isSyncing = result.data.syncDistance > 10;
                 isOnline = true;
                 isStarting = false;
                 yield put(updateStatus(isSyncing ? BeaconStatus.syncing : BeaconStatus.active, url));
                 if (beacon.docker?.id) DockerRegistry.getContainer(beacon.docker?.id).startDockerLogger();
             }
-            beaconLogger.info("Beacon on slot:", payload.value.message.slot);
-            const headEpoch = computeEpochAtSlot(payload.value.message.slot);
+            beaconLogger.info("Beacon on slot:", payload.message.slot);
+            const headEpoch = computeEpochAtSlot(payload.message.slot);
             if (epoch !== headEpoch) {
                 beaconLogger.info("Beacon on epoch:", headEpoch);
                 epoch = headEpoch;
-                yield put(getNewValidatorBalance(url, payload.value.message.slot, headEpoch));
+                yield put(getNewValidatorBalance(url, payload.message.slot, headEpoch));
                 yield put(updateEpoch(headEpoch, url));
             }
         } catch (err) {

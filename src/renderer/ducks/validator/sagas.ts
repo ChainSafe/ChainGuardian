@@ -17,7 +17,6 @@ import {
     CallEffect,
     call,
     takeLatest,
-    retry,
 } from "redux-saga/effects";
 import {CGAccount} from "../../models/account";
 import {deleteKeystore, saveValidatorData} from "../../services/utils/account";
@@ -78,14 +77,14 @@ import {
     ValidatorLogger,
 } from "../../services/eth2/client/module";
 import store from "../store";
-import {fromHexString} from "@chainsafe/ssz";
 import {DutyStatus} from "../../constants/dutyStatus";
 import {Attestation, Genesis} from "@chainsafe/lodestar-types/altair";
 import {config as mainnetConfig} from "../../services/eth2/config/mainet";
 import {SLOTS_PER_EPOCH} from "@chainsafe/lodestar-params";
-import {ssz} from "@chainsafe/lodestar-types";
+import {Root, ssz} from "@chainsafe/lodestar-types";
 import {AttesterDuty, ProposerDuty} from "@chainsafe/lodestar-api/lib/routes/validator";
-import { ValidatorResponse } from "@chainsafe/lodestar-api/lib/routes/beacon";
+import {ValidatorResponse} from "@chainsafe/lodestar-api/lib/routes/beacon";
+import {Api as LodestarApi} from "@chainsafe/lodestar-api";
 
 interface IValidatorServices {
     [validatorAddress: string]: Validator;
@@ -269,7 +268,7 @@ function* startService(
         if (!validatorServices[publicKey]) {
             validatorServices[publicKey] = yield Validator.initializeFromBeaconNode({
                 slashingProtection,
-                api: eth2API,
+                api: eth2API as LodestarApi,
                 config,
                 secretKeys: [action.payload.privateKey],
                 logger,
@@ -529,12 +528,10 @@ export function* getAttestationEffectiveness({
 export function* watchValidatorDuties({
     payload,
 }: ReturnType<typeof startValidatorDutiesWatcher>): Generator<
-    SelectEffect | TakeEffect | CallEffect,
+    SelectEffect | TakeEffect | CallEffect | Promise<typeof CgEth2ApiClient> | Promise<{data: ValidatorResponse}>,
     void,
     IValidatorComplete &
-        typeof CgEth2ApiClient &
-        ValidatorResponse &
-        ReturnType<typeof updateEpoch> &
+        typeof CgEth2ApiClient & {data: ValidatorResponse} & ReturnType<typeof updateEpoch> &
         Beacon &
         ReturnType<typeof setValidatorBeaconNode>
 > {
@@ -552,18 +549,29 @@ export function* watchValidatorDuties({
     const config = getNetworkConfig(validator.network)?.eth2Config || mainnetConfig;
     const {genesisTime} = getNetworkConfig(validator.network);
 
-    const ApiClient = yield call(getBeaconNodeEth2ApiClient, validator.beaconNodes[0]);
+    const ApiClient = yield getBeaconNodeEth2ApiClient(validator.beaconNodes[0]);
     const eth2API = new ApiClient(config, validator.beaconNodes[0]);
 
-    const validatorState = yield call(eth2API.beacon.getStateValidator, "head", payload);
+    const validatorState = yield eth2API.beacon.getStateValidator("head", payload);
 
     function* processDuties(
         epoch: number,
-    ): Generator<CallEffect | AllEffect<CallEffect>, void, AttesterDuty[] & ProposerDuty[]> {
+    ): Generator<
+        | AllEffect<CallEffect>
+        | Promise<{data: AttesterDuty[]; dependentRoot: Root}>
+        | Promise<{data: ProposerDuty[]; dependentRoot: Root}>,
+        void,
+        {data: AttesterDuty[]; dependentRoot: Root} & {data: ProposerDuty[]; dependentRoot: Root}
+    > {
         let attestations: AttesterDuty[], attestationsFuture: AttesterDuty[];
         try {
-            attestations = yield retry(2, 0, eth2API.validator.getAttesterDuties, epoch, [validatorState.index]);
-            attestationsFuture = yield call(eth2API.validator.getAttesterDuties, epoch + 1, [validatorState.index]);
+            try {
+                attestations = (yield eth2API.validator.getAttesterDuties(epoch, [validatorState.data.index])).data;
+            } catch {
+                attestations = (yield eth2API.validator.getAttesterDuties(epoch, [validatorState.data.index])).data;
+            }
+            attestationsFuture = (yield eth2API.validator.getAttesterDuties(epoch + 1, [validatorState.data.index]))
+                .data;
         } catch (e) {
             attestations = attestations || [];
             attestationsFuture = [];
@@ -573,9 +581,9 @@ export function* watchValidatorDuties({
         let propositions: ProposerDuty[], propositionsFuture: ProposerDuty[], propositionsSuperFuture: ProposerDuty[];
         try {
             // TODO: validate!!!!
-            propositions = yield call(eth2API.validator.getProposerDuties, epoch);
-            propositionsFuture = yield call(eth2API.validator.getProposerDuties, epoch + 1);
-            propositionsSuperFuture = yield call(eth2API.validator.getProposerDuties, epoch + 2);
+            propositions = (yield eth2API.validator.getProposerDuties(epoch)).data;
+            propositionsFuture = (yield eth2API.validator.getProposerDuties(epoch + 1)).data;
+            propositionsSuperFuture = (yield eth2API.validator.getProposerDuties(epoch + 2)).data;
         } catch (e) {
             propositions = propositions || [];
             propositionsFuture = propositionsFuture || [];
@@ -589,7 +597,7 @@ export function* watchValidatorDuties({
                 database.validator.attestationDuties.putRecords,
                 payload,
                 [...attestations, ...attestationsFuture]
-                    .filter(({validatorIndex}) => validatorIndex === validatorState.index)
+                    .filter(({validatorIndex}) => validatorIndex === validatorState.data.index)
                     .map(({slot}) => ({
                         slot,
                         epoch: computeEpochAtSlot(slot),
@@ -601,7 +609,7 @@ export function* watchValidatorDuties({
                 database.validator.propositionDuties.putRecords,
                 payload,
                 [...propositions, ...propositionsFuture, ...propositionsSuperFuture]
-                    .filter(({validatorIndex}) => validatorIndex === validatorState.index)
+                    .filter(({validatorIndex}) => validatorIndex === validatorState.data.index)
                     .map(({slot}) => ({
                         slot,
                         epoch: computeEpochAtSlot(slot),

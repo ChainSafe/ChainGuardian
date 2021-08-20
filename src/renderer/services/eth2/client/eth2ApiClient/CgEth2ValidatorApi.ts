@@ -90,10 +90,10 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
         // eslint-disable-next-line camelcase
         const response = await this.post<Json, {data: Json[]; dependent_root: Json}>(
             `/eth/v1/validator/duties/attester/${epoch}`,
-            validatorIndices,
+            validatorIndices.map(String),
         );
         return {
-            data: response.data.map((data) => this.attesterDutyContainerType.fromJson(data)),
+            data: response.data.map((data) => this.attesterDutyContainerType.fromJson(data, {case: "snake"})),
             dependentRoot: ssz.Root.fromJson(response.dependent_root),
         };
     }
@@ -104,7 +104,7 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
             `/eth/v1/validator/duties/proposer/${epoch}`,
         );
         return {
-            data: response.data.map((data) => this.proposerDutyContainerType.fromJson(data)),
+            data: response.data.map((data) => this.proposerDutyContainerType.fromJson(data, {case: "snake"})),
             dependentRoot: ssz.Root.fromJson(response.dependent_root),
         };
     }

@@ -216,7 +216,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
 
     public async getStateValidator(stateId: StateId, validatorId: ValidatorId): Promise<{data: ValidatorResponse}> {
         const response = await this.get<{data: Json}>(`/eth/v1/beacon/states/${stateId}/validators/${validatorId}`);
-        return {data: this.validatorResponseContainerType.fromJson(response.data)};
+        return {data: this.validatorResponseContainerType.fromJson(response.data, {case: "snake"})};
     }
 
     public async getStateValidatorBalances(
@@ -226,6 +226,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
         const query = querystring.stringify({
             id: indices,
         });
+        console.warn(stateId);
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/validator_balances?${query}`);
         return {data: response.data.map((data) => this.validatorBalanceContainerType.fromJson(data))};
     }
