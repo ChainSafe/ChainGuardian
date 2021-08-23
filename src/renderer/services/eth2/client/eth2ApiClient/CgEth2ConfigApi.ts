@@ -23,16 +23,16 @@ export class CgEth2ConfigApi extends CgEth2Base implements CgConfigApi {
 
     public async getDepositContract(): Promise<{data: DepositContract}> {
         const response = await this.get<{data: Json}>("/eth/v1/config/deposit_contract");
-        return {data: this.depositContractContainerType.fromJson(response.data)};
+        return {data: this.depositContractContainerType.fromJson(response.data, {case: "snake"})};
     }
 
     public async getForkSchedule(): Promise<{data: phase0.Fork[]}> {
         const response = await this.get<{data: Json[]}>("/eth/v1/config/fork_schedule");
-        return {data: response.data.map((data) => ssz.phase0.Fork.fromJson(data))};
+        return {data: response.data.map((data) => ssz.phase0.Fork.fromJson(data, {case: "snake"}))};
     }
 
     public async getSpec(): Promise<{data: ISpec}> {
         const response = await this.get<{data: Json}>("/eth/v1/config/spec");
-        return {data: this.specContainerType.fromJson(response.data)};
+        return {data: this.specContainerType.fromJson(response.data, {case: "snake"})};
     }
 }

@@ -25,16 +25,19 @@ export class CgEth2DebugApi extends CgEth2Base implements CgDebugApi {
 
     public async getHeads(): Promise<{data: SlotRoot[]}> {
         const response = await this.get<{data: Json[]}>("/eth/v1/debug/beacon/heads");
-        return {data: response.data.map((data) => this.slotRootContainerType.fromJson(data))};
+        return {data: response.data.map((data) => this.slotRootContainerType.fromJson(data, {case: "snake"}))};
     }
 
     public async getState(stateId: StateId): Promise<{data: allForks.BeaconState}> {
         const response = await this.get<{data: Json}>(`/eth/v1/debug/beacon/states/${stateId}`);
-        return {data: ssz.phase0.BeaconState.fromJson(response.data)};
+        return {data: ssz.phase0.BeaconState.fromJson(response.data, {case: "snake"})};
     }
 
     public async getStateV2(stateId: StateId): Promise<{data: allForks.BeaconState; version: ForkName}> {
         const response = await this.get<{data: Json; version: ForkName}>(`/eth/v2/debug/beacon/states/${stateId}`);
-        return {data: ssz[response.version].BeaconState.fromJson(response.data), version: response.version};
+        return {
+            data: ssz[response.version].BeaconState.fromJson(response.data, {case: "snake"}),
+            version: response.version,
+        };
     }
 }

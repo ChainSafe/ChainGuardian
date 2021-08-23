@@ -49,7 +49,7 @@ import {
 } from "./actions";
 import {ICGKeystore} from "../../services/keystore";
 import {unsubscribeToBlockListening} from "../network/actions";
-import {Validator} from "@chainsafe/lodestar-validator";
+import {Validator, waitForGenesis} from "@chainsafe/lodestar-validator";
 import {getAuthAccount} from "../auth/selectors";
 import {getValidator, getValidatorsByBeaconNode, BeaconValidators} from "./selectors";
 import {ValidatorBeaconNodes} from "../../models/validatorBeaconNodes";
@@ -197,7 +197,7 @@ function* startService(
     | RaceEffect<TakeEffect>
     | Promise<typeof CgEth2ApiClient>
     | CancelEffect
-    | Promise<Validator>,
+    | CallEffect,
     void,
     IValidatorComplete &
         [ReturnType<typeof slashingProtectionUpload> | undefined, ReturnType<typeof slashingProtectionCancel>] &
@@ -205,7 +205,7 @@ function* startService(
         (INetworkConfig | null) &
         ({data: Genesis} | null) &
         typeof CgEth2ApiClient &
-        Validator &
+        Genesis &
         boolean
 > {
     try {
@@ -264,16 +264,20 @@ function* startService(
         }
 
         const logger = new ValidatorLogger(undefined, publicKey);
+        const genesis = yield call(waitForGenesis, eth2API as LodestarApi, logger);
 
         if (!validatorServices[publicKey]) {
-            validatorServices[publicKey] = yield Validator.initializeFromBeaconNode({
-                slashingProtection,
-                api: eth2API as LodestarApi,
-                config,
-                secretKeys: [action.payload.privateKey],
-                logger,
-                graffiti: "ChainGuardian",
-            });
+            validatorServices[publicKey] = new Validator(
+                {
+                    slashingProtection,
+                    api: eth2API as LodestarApi,
+                    config,
+                    secretKeys: [action.payload.privateKey],
+                    logger,
+                    graffiti: "ChainGuardian",
+                },
+                genesis,
+            );
         }
         cgLogger.info("Starting validator", publicKey);
         yield validatorServices[publicKey].start();

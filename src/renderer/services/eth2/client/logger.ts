@@ -10,8 +10,8 @@ export class ValidatorLogger extends WinstonLogger {
     public constructor(options?: Partial<ILoggerOptions>, publicKey?: string) {
         const stream = new PassThrough();
         const transports: TransportOpts[] = [
-            {type: TransportType.stream, stream: stream, level: options.level},
-            {type: TransportType.console, level: options.level},
+            {type: TransportType.stream, stream: stream, level: options?.level || undefined},
+            {type: TransportType.console, level: options?.level || undefined},
         ];
         super(options, transports);
         this.bufferedLogger = new BufferedLogger({maxCache: 1000, transformer: this.transformer});

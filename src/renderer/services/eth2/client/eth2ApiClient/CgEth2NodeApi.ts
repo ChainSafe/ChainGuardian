@@ -29,7 +29,7 @@ export class CgEth2NodeApi extends CgEth2Base implements CgNodeApi {
 
     public async getNetworkIdentity(): Promise<{data: NetworkIdentity}> {
         const response = await this.get<{data: Json}>("/eth/v1/node/identity");
-        return {data: this.networkIdentityContainerType.fromJson(response.data)};
+        return {data: this.networkIdentityContainerType.fromJson(response.data, {case: "snake"})};
     }
 
     public async getNodeVersion(): Promise<{data: {version: string}}> {

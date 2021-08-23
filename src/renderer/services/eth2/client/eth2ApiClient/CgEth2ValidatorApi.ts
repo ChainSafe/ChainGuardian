@@ -79,7 +79,7 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
         });
         const response = await this.get<{data: Json}>(`/eth/v1/validator/aggregate_attestation?${query}`);
         return {
-            data: ssz.phase0.Attestation.fromJson(response.data),
+            data: ssz.phase0.Attestation.fromJson(response.data, {case: "snake"}),
         };
     }
 
@@ -119,18 +119,23 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
             validatorIndices,
         );
         return {
-            data: response.data.map((data) => this.syncDutyContainerType.fromJson(data)),
+            data: response.data.map((data) => this.syncDutyContainerType.fromJson(data, {case: "snake"})),
             dependentRoot: ssz.Root.fromJson(response.dependent_root),
         };
     }
 
     public async prepareBeaconCommitteeSubnet(subscriptions: BeaconCommitteeSubscription[]): Promise<void> {
-        const data = subscriptions.map((data) => this.beaconCommitteeSubscriptionContainerType.toJson(data));
+        const data = subscriptions.map((data) =>
+            this.beaconCommitteeSubscriptionContainerType.toJson(data, {case: "snake"}),
+        );
+        console.warn(data);
         await this.post<Json, {data: Json}>(`/eth/v1/validator/beacon_committee_subscriptions`, data);
     }
 
     public async prepareSyncCommitteeSubnets(subscriptions: SyncCommitteeSubscription[]): Promise<void> {
-        const data = subscriptions.map((data) => this.syncCommitteeSubscriptionContainerType.toJson(data));
+        const data = subscriptions.map((data) =>
+            this.syncCommitteeSubscriptionContainerType.toJson(data, {case: "snake"}),
+        );
         await this.post<Json, {data: Json}>(`/eth/v1/validator/sync_committee_subscriptions`, data);
     }
 
@@ -142,7 +147,7 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
         });
         const response = await this.get<{data: Json}>(`/eth/v1/validator/attestation_data?${query}`);
         return {
-            data: ssz.phase0.AttestationData.fromJson(response.data),
+            data: ssz.phase0.AttestationData.fromJson(response.data, {case: "snake"}),
         };
     }
 
@@ -158,7 +163,7 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
         });
         const response = await this.get<{data: Json; version: ForkName}>(`/eth/v1/validator/blocks/${slot}?${query}`);
         return {
-            data: ssz[response.version].BeaconBlock.fromJson(response.data),
+            data: ssz[response.version].BeaconBlock.fromJson(response.data, {case: "snake"}),
             version: response.version,
         };
     }
@@ -177,19 +182,23 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
         });
         const response = await this.get<{data: Json}>(`/eth/v1/validator/sync_committee_contribution?${query}`);
         return {
-            data: ssz.altair.SyncCommitteeContribution.fromJson(response.data),
+            data: ssz.altair.SyncCommitteeContribution.fromJson(response.data, {case: "snake"}),
         };
     }
 
     public async publishAggregateAndProofs(signedAggregateAndProofs: phase0.SignedAggregateAndProof[]): Promise<void> {
-        const data = signedAggregateAndProofs.map((data) => ssz.phase0.SignedAggregateAndProof.toJson(data));
+        const data = signedAggregateAndProofs.map((data) =>
+            ssz.phase0.SignedAggregateAndProof.toJson(data, {case: "snake"}),
+        );
         await this.post<Json, {data: Json}>(`/eth/v1/validator/aggregate_and_proofs`, data);
     }
 
     public async publishContributionAndProofs(
         contributionAndProofs: altair.SignedContributionAndProof[],
     ): Promise<void> {
-        const data = contributionAndProofs.map((data) => ssz.altair.SignedContributionAndProof.toJson(data));
+        const data = contributionAndProofs.map((data) =>
+            ssz.altair.SignedContributionAndProof.toJson(data, {case: "snake"}),
+        );
         await this.post<Json, {data: Json}>(`/eth/v1/validator/contribution_and_proofs`, data);
     }
 }

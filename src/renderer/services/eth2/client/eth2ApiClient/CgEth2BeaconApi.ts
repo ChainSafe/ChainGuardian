@@ -76,7 +76,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
         data: allForks.SignedBeaconBlock;
     }> {
         const response = await this.get<{data: Json}>(`/eth/v1/beacon/blocks/${blockId}`);
-        return {data: ssz.phase0.SignedBeaconBlock.fromJson(response.data)};
+        return {data: ssz.phase0.SignedBeaconBlock.fromJson(response.data, {case: "snake"})};
     }
 
     public async getBlockV2(
@@ -86,7 +86,10 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
         version: ForkName;
     }> {
         const response = await this.get<{data: Json; version: ForkName}>(`/eth/v2/beacon/blocks/${blockId}`);
-        return {data: ssz[response.version].SignedBeaconBlock.fromJson(response.data), version: response.version};
+        return {
+            data: ssz[response.version].SignedBeaconBlock.fromJson(response.data, {case: "snake"}),
+            version: response.version,
+        };
     }
 
     public async getBlockAttestations(
@@ -95,7 +98,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
         data: phase0.Attestation[];
     }> {
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/blocks/${blockId}/attestations`);
-        return {data: response.data.map((data) => ssz.phase0.Attestation.fromJson(data))};
+        return {data: response.data.map((data) => ssz.phase0.Attestation.fromJson(data, {case: "snake"}))};
     }
 
     public async getBlockHeader(
@@ -105,7 +108,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
     }> {
         const response = await this.get<{data: Json}>(`/eth/v1/beacon/headers/${blockId}`);
         return {
-            data: this.blockHeaderContainerType.fromJson(response.data),
+            data: this.blockHeaderContainerType.fromJson(response.data, {case: "snake"}),
         };
     }
 
@@ -123,7 +126,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
             parent_root: filters.parentRoot,
         });
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/headers?${query}`);
-        return {data: response.data.map((data) => this.blockHeaderContainerType.fromJson(data))};
+        return {data: response.data.map((data) => this.blockHeaderContainerType.fromJson(data, {case: "snake"}))};
     }
 
     public async getBlockRoot(
@@ -160,7 +163,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
             index: filters.index,
         });
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/committees?${query}`);
-        return {data: response.data.map((data) => this.epochCommitteeContainerType.fromJson(data))};
+        return {data: response.data.map((data) => this.epochCommitteeContainerType.fromJson(data, {case: "snake"}))};
     }
 
     public async getEpochSyncCommittees(
@@ -169,7 +172,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
     ): Promise<{data: EpochSyncCommitteeResponse}> {
         const query = querystring.stringify({epoch});
         const response = await this.get<{data: Json}>(`/eth/v1/beacon/states/${stateId}/sync_committees?${query}`);
-        return {data: this.epochSyncCommitteesResponseContainerType.fromJson(response)};
+        return {data: this.epochSyncCommitteesResponseContainerType.fromJson(response, {case: "snake"})};
     }
 
     public async getPoolAttestations(
@@ -181,32 +184,32 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
             committee_index: filters.committeeIndex,
         });
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/pool/attestations?${query}`);
-        return {data: response.data.map((data) => ssz.phase0.Attestation.fromJson(data))};
+        return {data: response.data.map((data) => ssz.phase0.Attestation.fromJson(data, {case: "snake"}))};
     }
 
     public async getPoolAttesterSlashings(): Promise<{data: phase0.AttesterSlashing[]}> {
         const response = await this.get<{data: Json[]}>("/eth/v1/beacon/pool/attester_slashings");
-        return {data: response.data.map((data) => ssz.phase0.AttesterSlashing.fromJson(data))};
+        return {data: response.data.map((data) => ssz.phase0.AttesterSlashing.fromJson(data, {case: "snake"}))};
     }
 
     public async getPoolProposerSlashings(): Promise<{data: phase0.ProposerSlashing[]}> {
         const response = await this.get<{data: Json[]}>("/eth/v1/beacon/pool/proposer_slashings");
-        return {data: response.data.map((data) => ssz.phase0.ProposerSlashing.fromJson(data))};
+        return {data: response.data.map((data) => ssz.phase0.ProposerSlashing.fromJson(data, {case: "snake"}))};
     }
 
     public async getPoolVoluntaryExits(): Promise<{data: phase0.SignedVoluntaryExit[]}> {
         const response = await this.get<{data: Json[]}>("/eth/v1/beacon/pool/voluntary_exits");
-        return {data: response.data.map((data) => ssz.phase0.SignedVoluntaryExit.fromJson(data))};
+        return {data: response.data.map((data) => ssz.phase0.SignedVoluntaryExit.fromJson(data, {case: "snake"}))};
     }
 
     public async getStateFinalityCheckpoints(stateId: StateId): Promise<{data: FinalityCheckpoints}> {
         const response = await this.get<{data: Json}>(`/eth/v1/beacon/states/${stateId}/finality_checkpoints`);
-        return {data: this.finalityCheckpointsContainerType.fromJson(response.data)};
+        return {data: this.finalityCheckpointsContainerType.fromJson(response.data, {case: "snake"})};
     }
 
     public async getStateFork(stateId: StateId): Promise<{data: phase0.Fork}> {
         const response = await this.get<{data: Json}>(`/eth/v1/beacon/states/${stateId}/fork`);
-        return {data: ssz.phase0.Fork.fromJson(response.data)};
+        return {data: ssz.phase0.Fork.fromJson(response.data, {case: "snake"})};
     }
 
     public async getStateRoot(stateId: StateId): Promise<{data: Root}> {
@@ -226,9 +229,8 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
         const query = querystring.stringify({
             id: indices,
         });
-        console.warn(stateId);
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/validator_balances?${query}`);
-        return {data: response.data.map((data) => this.validatorBalanceContainerType.fromJson(data))};
+        return {data: response.data.map((data) => this.validatorBalanceContainerType.fromJson(data, {case: "snake"}))};
     }
 
     public async getStateValidators(
@@ -240,11 +242,12 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
             status: filters.statuses,
         });
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/validators?${query}`);
-        return {data: response.data.map((data) => this.validatorResponseContainerType.fromJson(data))};
+        return {data: response.data.map((data) => this.validatorResponseContainerType.fromJson(data, {case: "snake"}))};
     }
 
     public async submitPoolAttestations(attestations: phase0.Attestation[]): Promise<void> {
-        const data = attestations.map((attestation) => ssz.phase0.Attestation.toJson(attestation));
+        const data = attestations.map((attestation) => ssz.phase0.Attestation.toJson(attestation, {case: "snake"}));
+        console.error(attestations, data);
         await this.post("/eth/v1/beacon/pool/attestations", data);
         if (this.publicKey && this.dispatch) {
             attestations.forEach((attestation) => {
@@ -264,22 +267,22 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
     }
 
     public async submitPoolAttesterSlashing(slashing: phase0.AttesterSlashing): Promise<void> {
-        const data = ssz.phase0.AttesterSlashing.toJson(slashing);
+        const data = ssz.phase0.AttesterSlashing.toJson(slashing, {case: "snake"});
         await this.post("/eth/v1/beacon/pool/attester_slashings", data);
     }
 
     public async submitPoolProposerSlashing(slashing: phase0.ProposerSlashing): Promise<void> {
-        const data = ssz.phase0.ProposerSlashing.toJson(slashing);
+        const data = ssz.phase0.ProposerSlashing.toJson(slashing, {case: "snake"});
         await this.post("/eth/v1/beacon/pool/proposer_slashings", data);
     }
 
     public async submitPoolVoluntaryExit(exit: phase0.SignedVoluntaryExit): Promise<void> {
-        const data = ssz.phase0.SignedVoluntaryExit.toJson(exit);
+        const data = ssz.phase0.SignedVoluntaryExit.toJson(exit, {case: "snake"});
         await this.post("/eth/v1/beacon/pool/voluntary_exits", data);
     }
 
     public async submitPoolSyncCommitteeSignatures(signatures: altair.SyncCommitteeMessage[]): Promise<void> {
-        const data = signatures.map((signature) => ssz.altair.SyncCommitteeMessage.toJson(signature));
+        const data = signatures.map((signature) => ssz.altair.SyncCommitteeMessage.toJson(signature, {case: "snake"}));
         await this.post("/eth/v1/beacon/pool/sync_committees", data);
     }
 
