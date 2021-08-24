@@ -10,66 +10,25 @@ import {
     ValidatorResponse,
     ValidatorBalance,
     ValidatorFilters,
-    ValidatorStatus,
 } from "@chainsafe/lodestar-api/lib/routes/beacon";
-import {phase0, allForks, Slot, Root, Epoch, altair, ssz, StringType} from "@chainsafe/lodestar-types";
+import {phase0, allForks, Slot, Root, Epoch, altair, ssz} from "@chainsafe/lodestar-types";
 import {BlockHeaderResponse, BlockId} from "@chainsafe/lodestar-api/lib/routes/beacon/block";
 import {ForkName} from "@chainsafe/lodestar-params";
-import {ContainerType, Json} from "@chainsafe/ssz";
+import {Json} from "@chainsafe/ssz";
 import {publishNewBlock, signedNewAttestation} from "../../../../ducks/validator/actions";
 import {matomo} from "../../../tracking";
 import querystring from "querystring";
-import {ArrayOf} from "@chainsafe/lodestar-api/lib/utils";
 import {CgBeaconApi, PoolStatus} from "../interface";
+import {
+    blockHeaderContainerType,
+    epochCommitteeContainerType,
+    epochSyncCommitteesResponseContainerType,
+    finalityCheckpointsContainerType,
+    validatorResponseContainerType,
+    validatorBalanceContainerType,
+} from "../ssz";
 
 export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
-    private blockHeaderContainerType = new ContainerType<BlockHeaderResponse>({
-        fields: {
-            root: ssz.Root,
-            canonical: ssz.Boolean,
-            header: ssz.phase0.SignedBeaconBlockHeader,
-        },
-    });
-
-    private epochCommitteeContainerType = new ContainerType<EpochCommitteeResponse>({
-        fields: {
-            index: ssz.CommitteeIndex,
-            slot: ssz.Slot,
-            validators: ssz.phase0.CommitteeIndices,
-        },
-    });
-
-    private finalityCheckpointsContainerType = new ContainerType<FinalityCheckpoints>({
-        fields: {
-            previousJustified: ssz.phase0.Checkpoint,
-            currentJustified: ssz.phase0.Checkpoint,
-            finalized: ssz.phase0.Checkpoint,
-        },
-    });
-
-    private validatorResponseContainerType = new ContainerType<ValidatorResponse>({
-        fields: {
-            index: ssz.ValidatorIndex,
-            balance: ssz.Gwei,
-            status: new StringType<ValidatorStatus>(),
-            validator: ssz.phase0.Validator,
-        },
-    });
-
-    private validatorBalanceContainerType = new ContainerType<ValidatorBalance>({
-        fields: {
-            index: ssz.ValidatorIndex,
-            balance: ssz.Gwei,
-        },
-    });
-
-    private epochSyncCommitteesResponseContainerType = new ContainerType<EpochSyncCommitteeResponse>({
-        fields: {
-            validators: ArrayOf(ssz.ValidatorIndex),
-            validatorAggregates: ArrayOf(ssz.ValidatorIndex),
-        },
-    });
-
     public async getBlock(
         blockId: BlockId,
     ): Promise<{
@@ -108,7 +67,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
     }> {
         const response = await this.get<{data: Json}>(`/eth/v1/beacon/headers/${blockId}`);
         return {
-            data: this.blockHeaderContainerType.fromJson(response.data, {case: "snake"}),
+            data: blockHeaderContainerType.fromJson(response.data, {case: "snake"}),
         };
     }
 
@@ -126,7 +85,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
             parent_root: filters.parentRoot,
         });
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/headers?${query}`);
-        return {data: response.data.map((data) => this.blockHeaderContainerType.fromJson(data, {case: "snake"}))};
+        return {data: response.data.map((data) => blockHeaderContainerType.fromJson(data, {case: "snake"}))};
     }
 
     public async getBlockRoot(
@@ -163,7 +122,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
             index: filters.index,
         });
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/committees?${query}`);
-        return {data: response.data.map((data) => this.epochCommitteeContainerType.fromJson(data, {case: "snake"}))};
+        return {data: response.data.map((data) => epochCommitteeContainerType.fromJson(data, {case: "snake"}))};
     }
 
     public async getEpochSyncCommittees(
@@ -172,7 +131,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
     ): Promise<{data: EpochSyncCommitteeResponse}> {
         const query = querystring.stringify({epoch});
         const response = await this.get<{data: Json}>(`/eth/v1/beacon/states/${stateId}/sync_committees?${query}`);
-        return {data: this.epochSyncCommitteesResponseContainerType.fromJson(response, {case: "snake"})};
+        return {data: epochSyncCommitteesResponseContainerType.fromJson(response, {case: "snake"})};
     }
 
     public async getPoolAttestations(
@@ -204,7 +163,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
 
     public async getStateFinalityCheckpoints(stateId: StateId): Promise<{data: FinalityCheckpoints}> {
         const response = await this.get<{data: Json}>(`/eth/v1/beacon/states/${stateId}/finality_checkpoints`);
-        return {data: this.finalityCheckpointsContainerType.fromJson(response.data, {case: "snake"})};
+        return {data: finalityCheckpointsContainerType.fromJson(response.data, {case: "snake"})};
     }
 
     public async getStateFork(stateId: StateId): Promise<{data: phase0.Fork}> {
@@ -219,7 +178,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
 
     public async getStateValidator(stateId: StateId, validatorId: ValidatorId): Promise<{data: ValidatorResponse}> {
         const response = await this.get<{data: Json}>(`/eth/v1/beacon/states/${stateId}/validators/${validatorId}`);
-        return {data: this.validatorResponseContainerType.fromJson(response.data, {case: "snake"})};
+        return {data: validatorResponseContainerType.fromJson(response.data, {case: "snake"})};
     }
 
     public async getStateValidatorBalances(
@@ -230,7 +189,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
             id: indices,
         });
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/validator_balances?${query}`);
-        return {data: response.data.map((data) => this.validatorBalanceContainerType.fromJson(data, {case: "snake"}))};
+        return {data: response.data.map((data) => validatorBalanceContainerType.fromJson(data, {case: "snake"}))};
     }
 
     public async getStateValidators(
@@ -242,7 +201,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
             status: filters.statuses,
         });
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/validators?${query}`);
-        return {data: response.data.map((data) => this.validatorResponseContainerType.fromJson(data, {case: "snake"}))};
+        return {data: response.data.map((data) => validatorResponseContainerType.fromJson(data, {case: "snake"}))};
     }
 
     public async submitPoolAttestations(attestations: phase0.Attestation[]): Promise<void> {

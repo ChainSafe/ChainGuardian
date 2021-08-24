@@ -19,58 +19,18 @@ import {
     ssz,
 } from "@chainsafe/lodestar-types";
 import {ForkName} from "@chainsafe/lodestar-params";
-import {ContainerType, Json, toHexString} from "@chainsafe/ssz";
+import {Json, toHexString} from "@chainsafe/ssz";
 import querystring from "querystring";
-import {ArrayOf} from "@chainsafe/lodestar-api/lib/utils";
 import {CgValidatorApi} from "../interface";
+import {
+    proposerDutyContainerType,
+    attesterDutyContainerType,
+    syncDutyContainerType,
+    beaconCommitteeSubscriptionContainerType,
+    syncCommitteeSubscriptionContainerType,
+} from "../ssz";
 
 export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
-    private beaconCommitteeSubscriptionContainerType = new ContainerType<BeaconCommitteeSubscription>({
-        fields: {
-            validatorIndex: ssz.ValidatorIndex,
-            committeeIndex: ssz.CommitteeIndex,
-            committeesAtSlot: ssz.Slot,
-            slot: ssz.Slot,
-            isAggregator: ssz.Boolean,
-        },
-    });
-
-    private syncCommitteeSubscriptionContainerType = new ContainerType<SyncCommitteeSubscription>({
-        fields: {
-            validatorIndex: ssz.ValidatorIndex,
-            syncCommitteeIndices: ArrayOf(ssz.CommitteeIndex),
-            untilEpoch: ssz.Epoch,
-        },
-    });
-
-    private attesterDutyContainerType = new ContainerType<AttesterDuty>({
-        fields: {
-            pubkey: ssz.BLSPubkey,
-            validatorIndex: ssz.ValidatorIndex,
-            committeeIndex: ssz.CommitteeIndex,
-            committeeLength: ssz.Number64,
-            committeesAtSlot: ssz.Number64,
-            validatorCommitteeIndex: ssz.Number64,
-            slot: ssz.Slot,
-        },
-    });
-
-    private proposerDutyContainerType = new ContainerType<ProposerDuty>({
-        fields: {
-            slot: ssz.Slot,
-            validatorIndex: ssz.ValidatorIndex,
-            pubkey: ssz.BLSPubkey,
-        },
-    });
-
-    private syncDutyContainerType = new ContainerType<SyncDuty>({
-        fields: {
-            pubkey: ssz.BLSPubkey,
-            validatorIndex: ssz.ValidatorIndex,
-            validatorSyncCommitteeIndices: ArrayOf(ssz.Number64),
-        },
-    });
-
     public async getAggregatedAttestation(attestationDataRoot: Root, slot: Slot): Promise<{data: phase0.Attestation}> {
         const query = querystring.stringify({
             slot: slot,
@@ -93,7 +53,7 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
             validatorIndices.map(String),
         );
         return {
-            data: response.data.map((data) => this.attesterDutyContainerType.fromJson(data, {case: "snake"})),
+            data: response.data.map((data) => attesterDutyContainerType.fromJson(data, {case: "snake"})),
             dependentRoot: ssz.Root.fromJson(response.dependent_root),
         };
     }
@@ -104,7 +64,7 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
             `/eth/v1/validator/duties/proposer/${epoch}`,
         );
         return {
-            data: response.data.map((data) => this.proposerDutyContainerType.fromJson(data, {case: "snake"})),
+            data: response.data.map((data) => proposerDutyContainerType.fromJson(data, {case: "snake"})),
             dependentRoot: ssz.Root.fromJson(response.dependent_root),
         };
     }
@@ -119,23 +79,20 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
             validatorIndices,
         );
         return {
-            data: response.data.map((data) => this.syncDutyContainerType.fromJson(data, {case: "snake"})),
+            data: response.data.map((data) => syncDutyContainerType.fromJson(data, {case: "snake"})),
             dependentRoot: ssz.Root.fromJson(response.dependent_root),
         };
     }
 
     public async prepareBeaconCommitteeSubnet(subscriptions: BeaconCommitteeSubscription[]): Promise<void> {
         const data = subscriptions.map((data) =>
-            this.beaconCommitteeSubscriptionContainerType.toJson(data, {case: "snake"}),
+            beaconCommitteeSubscriptionContainerType.toJson(data, {case: "snake"}),
         );
-        console.warn(data);
         await this.post<Json, {data: Json}>(`/eth/v1/validator/beacon_committee_subscriptions`, data);
     }
 
     public async prepareSyncCommitteeSubnets(subscriptions: SyncCommitteeSubscription[]): Promise<void> {
-        const data = subscriptions.map((data) =>
-            this.syncCommitteeSubscriptionContainerType.toJson(data, {case: "snake"}),
-        );
+        const data = subscriptions.map((data) => syncCommitteeSubscriptionContainerType.toJson(data, {case: "snake"}));
         await this.post<Json, {data: Json}>(`/eth/v1/validator/sync_committee_subscriptions`, data);
     }
 
