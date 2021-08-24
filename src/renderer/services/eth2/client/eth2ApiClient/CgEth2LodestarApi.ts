@@ -4,6 +4,7 @@ import {
     GossipQueueItem,
     RegenQueueItem,
     SyncChainDebugState,
+    StateCacheItem,
 } from "@chainsafe/lodestar-api/lib/routes/lodestar";
 import {Epoch} from "@chainsafe/lodestar-types";
 import {CgLodestarApi} from "../interface";
@@ -36,6 +37,14 @@ export class CgEth2LodestarApi extends CgEth2Base implements CgLodestarApi {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public writeHeapdump(dirpath?: string): Promise<{data: {filepath: string}}> {
+        throw new Error(" not implemented");
+    }
+
+    public getCheckpointStateCacheItems(): Promise<StateCacheItem[]> {
+        throw new Error(" not implemented");
+    }
+
+    public getStateCacheItems(): Promise<StateCacheItem[]> {
         throw new Error(" not implemented");
     }
 }
