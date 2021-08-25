@@ -89,3 +89,5 @@ export type PoolStatus = {
     voluntaryExits: number;
     proposerSlashings: number;
 };
+
+export type SlotRoot = {slot: Slot; root: Root};

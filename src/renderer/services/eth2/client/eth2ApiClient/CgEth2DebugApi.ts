@@ -1,20 +1,12 @@
 import {CgEth2Base} from "./CgEth2Base";
-import {Json, ContainerType} from "@chainsafe/ssz";
+import {Json} from "@chainsafe/ssz";
 import {StateId} from "@chainsafe/lodestar-api/lib/routes/beacon";
 import {ForkName} from "@chainsafe/lodestar-params";
-import {allForks, ssz, Slot, Root} from "@chainsafe/lodestar-types";
-import {CgDebugApi} from "../interface";
-
-type SlotRoot = {slot: Slot; root: Root};
+import {allForks, ssz} from "@chainsafe/lodestar-types";
+import {CgDebugApi, SlotRoot} from "../interface";
+import {slotRootContainerType} from "../ssz";
 
 export class CgEth2DebugApi extends CgEth2Base implements CgDebugApi {
-    private slotRootContainerType = new ContainerType<SlotRoot>({
-        fields: {
-            slot: ssz.Slot,
-            root: ssz.Root,
-        },
-    });
-
     public async connectToPeer(peerIdStr: string, multiaddr: string[]): Promise<void> {
         await this.post(`/eth/v1/debug/connect/${peerIdStr}`, multiaddr);
     }
@@ -25,7 +17,7 @@ export class CgEth2DebugApi extends CgEth2Base implements CgDebugApi {
 
     public async getHeads(): Promise<{data: SlotRoot[]}> {
         const response = await this.get<{data: Json[]}>("/eth/v1/debug/beacon/heads");
-        return {data: response.data.map((data) => this.slotRootContainerType.fromJson(data, {case: "snake"}))};
+        return {data: response.data.map((data) => slotRootContainerType.fromJson(data, {case: "snake"}))};
     }
 
     // @ts-ignore // TODO: implement other implementations

@@ -20,7 +20,6 @@ import {
 } from "@chainsafe/lodestar-types";
 import {ForkName} from "@chainsafe/lodestar-params";
 import {Json, toHexString} from "@chainsafe/ssz";
-import querystring from "querystring";
 import {CgValidatorApi} from "../interface";
 import {
     proposerDutyContainerType,
@@ -32,12 +31,11 @@ import {
 
 export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
     public async getAggregatedAttestation(attestationDataRoot: Root, slot: Slot): Promise<{data: phase0.Attestation}> {
-        const query = querystring.stringify({
+        const response = await this.get<{data: Json}>(`/eth/v1/validator/aggregate_attestation`, {
             slot: slot,
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
             attestation_data_root: toHexString(attestationDataRoot),
         });
-        const response = await this.get<{data: Json}>(`/eth/v1/validator/aggregate_attestation?${query}`);
         return {
             data: ssz.phase0.Attestation.fromJson(response.data, {case: "snake"}),
         };
@@ -97,12 +95,11 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
     }
 
     public async produceAttestationData(index: CommitteeIndex, slot: Slot): Promise<{data: phase0.AttestationData}> {
-        const query = querystring.stringify({
+        const response = await this.get<{data: Json}>(`/eth/v1/validator/attestation_data`, {
             slot: slot,
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
             committee_index: index,
         });
-        const response = await this.get<{data: Json}>(`/eth/v1/validator/attestation_data?${query}`);
         return {
             data: ssz.phase0.AttestationData.fromJson(response.data, {case: "snake"}),
         };
@@ -113,12 +110,11 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
         randaoReveal: BLSSignature,
         graffiti: string,
     ): Promise<{data: allForks.BeaconBlock; version: ForkName}> {
-        const query = querystring.stringify({
+        const response = await this.get<{data: Json; version: ForkName}>(`/eth/v1/validator/blocks/${slot}`, {
             grafitti: graffiti,
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
             randao_reveal: toHexString(randaoReveal),
         });
-        const response = await this.get<{data: Json; version: ForkName}>(`/eth/v1/validator/blocks/${slot}?${query}`);
         return {
             data: ssz[response.version].BeaconBlock.fromJson(response.data, {case: "snake"}),
             version: response.version,
@@ -130,14 +126,13 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
         subcommitteeIndex: number,
         beaconBlockRoot: Root,
     ): Promise<{data: altair.SyncCommitteeContribution}> {
-        const query = querystring.stringify({
+        const response = await this.get<{data: Json}>(`/eth/v1/validator/sync_committee_contribution`, {
             slot: slot,
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
             subcommittee_index: subcommitteeIndex,
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
             beacon_block_root: toHexString(beaconBlockRoot),
         });
-        const response = await this.get<{data: Json}>(`/eth/v1/validator/sync_committee_contribution?${query}`);
         return {
             data: ssz.altair.SyncCommitteeContribution.fromJson(response.data, {case: "snake"}),
         };

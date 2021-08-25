@@ -17,7 +17,6 @@ import {ForkName} from "@chainsafe/lodestar-params";
 import {Json} from "@chainsafe/ssz";
 import {publishNewBlock, signedNewAttestation} from "../../../../ducks/validator/actions";
 import {matomo} from "../../../tracking";
-import querystring from "querystring";
 import {CgBeaconApi, PoolStatus} from "../interface";
 import {
     blockHeaderContainerType,
@@ -79,12 +78,11 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
     ): Promise<{
         data: BlockHeaderResponse[];
     }> {
-        const query = querystring.stringify({
+        const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/headers`, {
             slot: filters.slot,
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
             parent_root: filters.parentRoot,
         });
-        const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/headers?${query}`);
         return {data: response.data.map((data) => blockHeaderContainerType.fromJson(data, {case: "snake"}))};
     }
 
@@ -116,12 +114,11 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
         stateId: StateId,
         filters: CommitteesFilters | undefined,
     ): Promise<{data: EpochCommitteeResponse[]}> {
-        const query = querystring.stringify({
+        const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/committees`, {
             slot: filters.slot,
             epoch: filters.epoch,
             index: filters.index,
         });
-        const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/committees?${query}`);
         return {data: response.data.map((data) => epochCommitteeContainerType.fromJson(data, {case: "snake"}))};
     }
 
@@ -129,20 +126,18 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
         stateId: StateId,
         epoch: Epoch | undefined,
     ): Promise<{data: EpochSyncCommitteeResponse}> {
-        const query = querystring.stringify({epoch});
-        const response = await this.get<{data: Json}>(`/eth/v1/beacon/states/${stateId}/sync_committees?${query}`);
+        const response = await this.get<{data: Json}>(`/eth/v1/beacon/states/${stateId}/sync_committees`, {epoch});
         return {data: epochSyncCommitteesResponseContainerType.fromJson(response, {case: "snake"})};
     }
 
     public async getPoolAttestations(
         filters: Partial<AttestationFilters> | undefined,
     ): Promise<{data: phase0.Attestation[]}> {
-        const query = querystring.stringify({
+        const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/pool/attestations`, {
             slot: filters.slot,
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
             committee_index: filters.committeeIndex,
         });
-        const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/pool/attestations?${query}`);
         return {data: response.data.map((data) => ssz.phase0.Attestation.fromJson(data, {case: "snake"}))};
     }
 
@@ -185,10 +180,9 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
         stateId: StateId,
         indices: ValidatorId[] | undefined,
     ): Promise<{data: ValidatorBalance[]}> {
-        const query = querystring.stringify({
+        const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/validator_balances`, {
             id: indices,
         });
-        const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/validator_balances?${query}`);
         return {data: response.data.map((data) => validatorBalanceContainerType.fromJson(data, {case: "snake"}))};
     }
 
@@ -196,11 +190,10 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
         stateId: StateId,
         filters: ValidatorFilters | undefined,
     ): Promise<{data: ValidatorResponse[]}> {
-        const query = querystring.stringify({
+        const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/validators`, {
             id: filters.indices,
             status: filters.statuses,
         });
-        const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/validators?${query}`);
         return {data: response.data.map((data) => validatorResponseContainerType.fromJson(data, {case: "snake"}))};
     }
 

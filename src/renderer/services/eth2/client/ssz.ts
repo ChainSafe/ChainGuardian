@@ -21,6 +21,7 @@ import {
     SyncCommitteeSubscription,
     SyncDuty,
 } from "@chainsafe/lodestar-api/lib/routes/validator";
+import { SlotRoot } from "./interface";
 
 export const blockHeaderContainerType = new ContainerType<BlockHeaderResponse>({
     fields: {
@@ -136,5 +137,12 @@ export const syncDutyContainerType = new ContainerType<SyncDuty>({
         pubkey: ssz.BLSPubkey,
         validatorIndex: ssz.ValidatorIndex,
         validatorSyncCommitteeIndices: ArrayOf(ssz.Number64),
+    },
+});
+
+export const slotRootContainerType = new ContainerType<SlotRoot>({
+    fields: {
+        slot: ssz.Slot,
+        root: ssz.Root,
     },
 });

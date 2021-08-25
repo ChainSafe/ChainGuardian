@@ -15,6 +15,7 @@ import {
 export class MockEth2ApiClient extends EventEmitter implements CgEth2ApiClient {
     public beacon: SinonStubbedInstance<CgBeaconApi>;
     public config: SinonStubbedInstance<CgConfigApi>;
+    // @ts-ignore - there is some node_modules/@chainsafe/lodestar-api/lib/routes/debug.d.ts:28:9 type error
     public debug: SinonStubbedInstance<CgDebugApi>;
     public events: SinonStubbedInstance<CgEventsApi>;
     public node: SinonStubbedInstance<CgNodeApi>;
