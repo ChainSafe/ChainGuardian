@@ -76,9 +76,11 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
             `/eth/v1/validator/duties/sync/${epoch}`,
             validatorIndices,
         );
+        // TODO: remove ts ignore
+        // @ts-ignore
         return {
             data: response.data.map((data) => syncDutyContainerType.fromJson(data, {case: "snake"})),
-            dependentRoot: ssz.Root.fromJson(response.dependent_root),
+            // dependentRoot: ssz.Root.fromJson(response.dependent_root),
         };
     }
 
