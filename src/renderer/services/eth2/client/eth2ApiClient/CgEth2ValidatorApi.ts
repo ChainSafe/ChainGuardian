@@ -118,8 +118,8 @@ export class CgEth2ValidatorApi extends CgEth2Base implements CgValidatorApi {
             randao_reveal: toHexString(randaoReveal),
         });
         return {
-            data: ssz[response.version].BeaconBlock.fromJson(response.data, {case: "snake"}),
-            version: response.version,
+            data: ssz[response.version || ForkName.phase0].BeaconBlock.fromJson(response.data, {case: "snake"}),
+            version: response.version || ForkName.phase0,
         };
     }
 

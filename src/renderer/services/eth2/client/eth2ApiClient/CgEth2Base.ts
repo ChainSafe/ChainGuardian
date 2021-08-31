@@ -16,7 +16,8 @@ export class CgEth2Base {
     ) {
         const paramsSerializer = (params: Record<string, any>): string => {
             for (const param in params) {
-                if (!params[param] || params[param].length === 0) delete params[param];
+                if (params[param] === undefined || params[param] === null || params[param].length === 0)
+                    delete params[param];
             }
             return querystring.stringify(params);
         };

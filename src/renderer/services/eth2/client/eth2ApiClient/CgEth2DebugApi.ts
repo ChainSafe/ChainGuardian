@@ -30,8 +30,8 @@ export class CgEth2DebugApi extends CgEth2Base implements CgDebugApi {
     public async getStateV2(stateId: StateId): Promise<{data: allForks.BeaconState; version: ForkName}> {
         const response = await this.get<{data: Json; version: ForkName}>(`/eth/v2/debug/beacon/states/${stateId}`);
         return {
-            data: ssz[response.version].BeaconState.fromJson(response.data, {case: "snake"}),
-            version: response.version,
+            data: ssz[response.version || ForkName.phase0].BeaconState.fromJson(response.data, {case: "snake"}),
+            version: response.version || ForkName.phase0,
         };
     }
 }

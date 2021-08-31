@@ -45,8 +45,8 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
     }> {
         const response = await this.get<{data: Json; version: ForkName}>(`/eth/v2/beacon/blocks/${blockId}`);
         return {
-            data: ssz[response.version].SignedBeaconBlock.fromJson(response.data, {case: "snake"}),
-            version: response.version,
+            data: ssz[response.version || ForkName.phase0].SignedBeaconBlock.fromJson(response.data, {case: "snake"}),
+            version: response.version || ForkName.phase0,
         };
     }
 
@@ -96,7 +96,8 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
     }
 
     public async publishBlock(block: allForks.SignedBeaconBlock): Promise<void> {
-        await this.post("/eth/v1/beacon/blocks", block);
+        const data = this.config.getForkTypes(block.message.slot).SignedBeaconBlock.toJson(block, {case: "snake"});
+        await this.post("/eth/v1/beacon/blocks", data);
 
         if (this.publicKey && this.dispatch) {
             this.dispatch(publishNewBlock(this.publicKey, block.message.proposerIndex, block.message.slot));
@@ -199,7 +200,6 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
 
     public async submitPoolAttestations(attestations: phase0.Attestation[]): Promise<void> {
         const data = attestations.map((attestation) => ssz.phase0.Attestation.toJson(attestation, {case: "snake"}));
-        console.error(attestations, data);
         await this.post("/eth/v1/beacon/pool/attestations", data);
         if (this.publicKey && this.dispatch) {
             attestations.forEach((attestation) => {
