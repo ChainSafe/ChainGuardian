@@ -1,6 +1,7 @@
 import {SecretKey} from "@chainsafe/bls";
 import {Keystore} from "@chainsafe/bls-keystore";
 import assert from "assert";
+import {config} from "../src/renderer/services/eth2/config/local";
 
 import {restValidation} from "./restValidation";
 import keystore from "./lighthouse-keystore.json";

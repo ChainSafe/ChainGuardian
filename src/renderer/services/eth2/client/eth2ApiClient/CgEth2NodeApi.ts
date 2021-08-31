@@ -7,7 +7,6 @@ import {
     SyncingStatus,
 } from "@chainsafe/lodestar-api/lib/routes/node";
 import {Json} from "@chainsafe/ssz";
-import querystring from "querystring";
 import {CgNodeApi} from "../interface";
 import {networkIdentityContainerType} from "../ssz";
 
@@ -34,8 +33,7 @@ export class CgEth2NodeApi extends CgEth2Base implements CgNodeApi {
     }
 
     public async getPeers(filters?: FilterGetPeers): Promise<{data: NodePeer[]; meta: {count: number}}> {
-        const query = querystring.stringify(filters);
-        return await this.get(`/eth/v1/node/peers?${query}`);
+        return await this.get(`/eth/v1/node/peers`, filters);
     }
 
     public async getSyncingStatus(): Promise<{data: SyncingStatus}> {

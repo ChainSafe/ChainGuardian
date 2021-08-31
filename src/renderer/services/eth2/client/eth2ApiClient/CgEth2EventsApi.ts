@@ -1,9 +1,9 @@
 import {getEventSerdes, EventType as ChainSafeEventType} from "@chainsafe/lodestar-api/lib/routes/events";
-import {stringifyQuery} from "@chainsafe/lodestar-api/lib/client/utils/format";
 import EventSource from "eventsource";
 import {IChainForkConfig} from "@chainsafe/lodestar-config/lib/beaconConfig";
 import {CgEventsApi, BeaconEvent, Topics} from "../interface";
 import {EventType} from "../enums";
+import {stringifyQuery} from "@chainsafe/lodestar-api/lib/client/utils/format";
 
 type EventSourceError = {status: number; message: string};
 
@@ -11,10 +11,12 @@ export class CgEth2EventsApi implements CgEventsApi {
     private readonly eventSerdes = getEventSerdes();
     private readonly url: string;
     private readonly config: IChainForkConfig;
+    private readonly mergedQuery: boolean;
 
-    public constructor(config: IChainForkConfig, url: string) {
+    public constructor(config: IChainForkConfig, url: string, mergedQuery: boolean) {
         this.url = url;
         this.config = config;
+        this.mergedQuery = mergedQuery;
     }
 
     public async eventstream(
@@ -23,10 +25,12 @@ export class CgEth2EventsApi implements CgEventsApi {
         onEvent: (event: BeaconEvent) => void,
         softErrorHandling = false,
     ): Promise<void> {
-        const query = stringifyQuery({topics});
+        const query = this.mergedQuery ? `topics=${topics.join(",")}` : stringifyQuery({topics});
         // TODO: Use a proper URL formatter
         const url = `${this.url}/eth/v1/events?${query}`;
         const eventSource = new EventSource(url);
+
+        console.log(query, url);
 
         try {
             await new Promise<void>((resolve, reject) => {

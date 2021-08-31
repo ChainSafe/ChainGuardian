@@ -13464,6 +13464,11 @@ no-case@^3.0.3:
     lower-case "^2.0.1"
     tslib "^1.10.0"
 
+node-abort-controller@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/node-abort-controller/-/node-abort-controller-3.0.0.tgz#e7b1f2b72f4c5a74b5594cc23fa8fe3b62010ab5"
+  integrity sha512-IqMCPbihDpbHV4bNws015hU0svIBGyzPjJearwXMGJyungWdblbBcboNojTz9bWOrrJD3zIwmcr5w5c+NH+2+A==
+
 node-addon-api@^2.0.0:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-2.0.2.tgz#432cfa82962ce494b132e9d72a15b29f71ff5d32"

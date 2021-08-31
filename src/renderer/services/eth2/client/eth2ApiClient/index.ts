@@ -40,7 +40,7 @@ export class CgEth2ApiClient implements Eth2Api {
         this.beacon = new CgEth2BeaconApi(config, url, {publicKey, dispatch});
         this.config = new CgEth2ConfigApi(config, url);
         this.debug = (new CgEth2DebugApi(config, url) as unknown) as CgDebugApi;
-        this.events = new CgEth2EventsApi(config, url);
+        this.events = new CgEth2EventsApi(config, url, true);
         this.node = new CgEth2NodeApi(config, url);
         this.validator = new CgEth2ValidatorApi(config, url);
 

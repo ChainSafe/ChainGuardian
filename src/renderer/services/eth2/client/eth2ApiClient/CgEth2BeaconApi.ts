@@ -74,7 +74,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
         filters: Partial<{
             slot: Slot;
             parentRoot: string;
-        }>,
+        }> = {},
     ): Promise<{
         data: BlockHeaderResponse[];
     }> {
@@ -113,7 +113,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
 
     public async getEpochCommittees(
         stateId: StateId,
-        filters: CommitteesFilters | undefined,
+        filters: CommitteesFilters = {},
     ): Promise<{data: EpochCommitteeResponse[]}> {
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/committees`, {
             slot: filters.slot,
@@ -131,9 +131,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
         return {data: epochSyncCommitteesResponseContainerType.fromJson(response, {case: "snake"})};
     }
 
-    public async getPoolAttestations(
-        filters: Partial<AttestationFilters> | undefined,
-    ): Promise<{data: phase0.Attestation[]}> {
+    public async getPoolAttestations(filters: Partial<AttestationFilters> = {}): Promise<{data: phase0.Attestation[]}> {
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/pool/attestations`, {
             slot: filters.slot,
             // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
@@ -189,7 +187,7 @@ export class CgEth2BeaconApi extends CgEth2Base implements CgBeaconApi {
 
     public async getStateValidators(
         stateId: StateId,
-        filters: ValidatorFilters | undefined,
+        filters: ValidatorFilters = {},
     ): Promise<{data: ValidatorResponse[]}> {
         const response = await this.get<{data: Json[]}>(`/eth/v1/beacon/states/${stateId}/validators`, {
             id: filters.indices,
