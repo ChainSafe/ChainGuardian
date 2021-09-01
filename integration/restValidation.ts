@@ -13,13 +13,20 @@ import {EpochCommitteeResponse} from "@chainsafe/lodestar-api/lib/routes/beacon"
 import {ProposerDuty} from "@chainsafe/lodestar-api/lib/routes/validator";
 import {IChainForkConfig} from "@chainsafe/lodestar-config/lib/beaconConfig";
 import {AbortController} from "node-abort-controller";
+import axios from "axios";
+import {
+    createIChainConfig,
+    createIChainForkConfig,
+    IChainConfig,
+    parsePartialIChainConfigJson,
+} from "@chainsafe/lodestar-config";
 
 const getCommitteesFactory = (apiClient: CgEth2ApiClient) => async (
     validatorIndex: number,
     blockSlot: number,
     ignoreBefore?: number,
 ): Promise<EpochCommitteeResponse[]> => {
-    const response = await apiClient.beacon.getEpochCommittees("head");
+    const response = await apiClient.beacon.getEpochCommittees(String(blockSlot));
     return response.data.filter(({validators, slot}: EpochCommitteeResponse) =>
         [...validators].some(
             (index) => index === validatorIndex && (slot > ignoreBefore || ignoreBefore === undefined),
@@ -89,18 +96,22 @@ const processBlock = async (
     return {epoch, lastEpoch, committees};
 };
 
+const createConfig = async (baseURL: string): Promise<IChainForkConfig> => {
+    const cfg = await axios.get<Record<string, unknown>>("/eth/v1/config/spec", {baseURL});
+    const partialChainConfig: Partial<IChainConfig> = parsePartialIChainConfigJson(cfg.data);
+    return createIChainForkConfig(createIChainConfig(partialChainConfig));
+};
+
 export const restValidation = ({
     baseUrl,
     getValidatorPrivateKey,
     limit,
-    config,
     ApiClient,
 }: {
     baseUrl: string;
     getValidatorPrivateKey: () => Promise<SecretKey>;
     limit: number;
     ApiClient: typeof CgEth2ApiClient;
-    config: IChainForkConfig;
 }): Promise<{
     proposer: {
         proposed: number;
@@ -123,6 +134,7 @@ export const restValidation = ({
             const logger = new WinstonLogger({module: "ChainGuardian", level: LogLevel.verbose});
             const slashingProtection = sinon.createStubInstance(CGSlashingProtection);
 
+            const config = await createConfig(baseUrl);
             const eth2API = new ApiClient(config, baseUrl);
             const genesis = await waitForGenesis(eth2API as LodestarApi, logger);
 

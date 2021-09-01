@@ -13,7 +13,7 @@ export class CgEth2EventsApi implements CgEventsApi {
     private readonly config: IChainForkConfig;
     private readonly mergedQuery: boolean;
 
-    public constructor(config: IChainForkConfig, url: string, mergedQuery: boolean) {
+    public constructor(config: IChainForkConfig, url: string, mergedQuery = false) {
         this.url = url;
         this.config = config;
         this.mergedQuery = mergedQuery;
@@ -29,8 +29,6 @@ export class CgEth2EventsApi implements CgEventsApi {
         // TODO: Use a proper URL formatter
         const url = `${this.url}/eth/v1/events?${query}`;
         const eventSource = new EventSource(url);
-
-        console.log(query, url);
 
         try {
             await new Promise<void>((resolve, reject) => {

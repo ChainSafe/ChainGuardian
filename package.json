@@ -68,7 +68,7 @@
     "testnet:prysm:down": "docker-compose -f prysm-testnet.yml down",
     "testnet:all:down": "yarn run testnet:lighthouse:down && yarn run testnet:teku:down && yarn run testnet:nimbus:down && yarn run testnet:prysm:down",
     "integration:lighthouse": "yarn run script integration/lighthouse.ts",
-    "integration:teku": "yarn run script integration/teku.ts",
+    "integration:teku": "cross-env LODESTAR_PRESET=minimal yarn run script integration/teku.ts",
     "integration:prysm": "yarn run script integration/prysm.ts",
     "integration:nimbus": "yarn run script integration/nimbus.ts"
   },

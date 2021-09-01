@@ -5,7 +5,7 @@ version: '3.6'
 
 services:
   teku:
-    image: "${DOCKER_TEKU_IMAGE:-consensys/teku:21.5}"
+    image: "${DOCKER_TEKU_IMAGE:-consensys/teku:21.8.2}"
     user: root
     container_name: "eth2_testnet_teku"
     volumes:
