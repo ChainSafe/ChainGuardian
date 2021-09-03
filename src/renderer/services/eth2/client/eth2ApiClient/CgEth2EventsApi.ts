@@ -8,8 +8,8 @@ import {stringifyQuery} from "@chainsafe/lodestar-api/lib/client/utils/format";
 type EventSourceError = {status: number; message: string};
 
 export class CgEth2EventsApi implements CgEventsApi {
-    private readonly eventSerdes = getEventSerdes();
-    private readonly url: string;
+    protected readonly url: string;
+    protected readonly eventSerdes = getEventSerdes();
     private readonly config: IChainForkConfig;
     private readonly mergedQuery: boolean;
 
