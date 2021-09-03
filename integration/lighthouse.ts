@@ -9,7 +9,7 @@ const keystorePassword = "222222222222222222222222222222222222222222222222222";
 
 (async function (): Promise<void> {
     const {proposer, attestation} = await restValidation({
-        baseUrl: "http://localhost:5052",
+        baseUrl: "http://localhost:4051",
         getValidatorPrivateKey: async () =>
             SecretKey.fromBytes(await Keystore.fromObject(keystore).decrypt(keystorePassword)),
         limit: 2,
