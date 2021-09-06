@@ -27,9 +27,13 @@ export async function readBeaconChainNetwork(url: string, throwOnEmpty = false):
     }
 }
 
-export async function getBeaconNodeEth2ApiClient(beaconNodeUrl: string): Promise<typeof CgEth2ApiClient> {
+export async function getBeaconNodeVersion(beaconNodeUrl: string): Promise<string> {
     const response = await new HttpClient(beaconNodeUrl).get<{data: {version: string}}>(`/eth/v1/node/version`);
-    const version = response.data.version.toLowerCase();
+    return response.data.version;
+}
+
+export async function getBeaconNodeEth2ApiClient(beaconNodeUrl: string): Promise<typeof CgEth2ApiClient> {
+    const version = (await getBeaconNodeVersion(beaconNodeUrl)).toLowerCase();
 
     switch (true) {
         case version.includes("nimbus"):
