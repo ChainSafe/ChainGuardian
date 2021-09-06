@@ -93,7 +93,7 @@ const mockBeaconBlockAttestations = (
     index: number,
     skipped: boolean,
     empty: boolean,
-): Attestation[] | null => {
+): {data: Attestation[]} | null => {
     if (skipped) return null;
     const blocks: Attestation[] = [];
 
@@ -107,7 +107,7 @@ const mockBeaconBlockAttestations = (
         blocks.push(createAttestations(slot, index, block, bitsArray));
     }
 
-    return blocks;
+    return {data: blocks};
 };
 
 const createAttestations = (slot: number, index: number, beaconBlockRoot: string, bits?: boolean[]): Attestation => ({

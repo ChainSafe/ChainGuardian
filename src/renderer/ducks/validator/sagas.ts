@@ -443,7 +443,7 @@ export function* getAttestationEffectiveness({
 }: ReturnType<typeof signedNewAttestation>): Generator<
     SelectEffect | TakeEffect | AllEffect<CallEffect> | CallEffect,
     void,
-    IValidatorComplete & ReturnType<typeof updateSlot> & ({data: Attestation}[] | null)[] & typeof CgEth2ApiClient
+    IValidatorComplete & ReturnType<typeof updateSlot> & ({data: Attestation[]} | null)[] & typeof CgEth2ApiClient
 > {
     const validator = yield select(getValidator, {publicKey: meta});
     const config = getNetworkConfig(validator.network)?.eth2Config || mainnetConfig;
@@ -481,8 +481,8 @@ export function* getAttestationEffectiveness({
             if (result === null) {
                 skippedQue++;
             } else {
-                const sanitizedAttestations = result.filter(
-                    ({data: {data, aggregationBits}}) =>
+                const sanitizedAttestations = result.data.filter(
+                    ({data, aggregationBits}) =>
                         payload.block === ssz.Root.toJson(data.beaconBlockRoot) &&
                         data.index === payload.index &&
                         data.slot === payload.slot &&
