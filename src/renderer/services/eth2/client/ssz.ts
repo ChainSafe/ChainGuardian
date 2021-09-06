@@ -21,7 +21,7 @@ import {
     SyncCommitteeSubscription,
     SyncDuty,
 } from "@chainsafe/lodestar-api/lib/routes/validator";
-import { SlotRoot } from "./interface";
+import {SlotRoot} from "./interface";
 
 export const blockHeaderContainerType = new ContainerType<BlockHeaderResponse>({
     fields: {
