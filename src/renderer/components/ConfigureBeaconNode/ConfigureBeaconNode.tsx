@@ -56,7 +56,7 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
     }, [props.clientName]);
     const [imageIndex, setImageIndex] = useState(0);
 
-    const defaultChainDataDir = path.join(getConfig(remote.app).storage.dataDir, "beacon");
+    const defaultChainDataDir = path.join(getConfig(remote.app).storage.beaconDir, props.clientName);
     const [chainDataDir, setChainDataDir] = useState(defaultChainDataDir);
 
     const defaultEth1URL = "https://goerli.infura.io/v3/73d4045fe98a406faa2334ad7306b313";

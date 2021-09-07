@@ -23,7 +23,16 @@ import {
     setDockerDemonIsOffline,
     startDockerImagePull,
 } from "../network/actions";
-import {addBeacon, addBeacons, removeBeacon, startLocalBeacon, updateEpoch, updateSlot, updateStatus} from "./actions";
+import {
+    startLocalBeacon,
+    removeBeacon,
+    addBeacon,
+    addBeacons,
+    updateSlot,
+    updateStatus,
+    updateEpoch,
+    updateVersion,
+} from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
 import {SupportedNetworks} from "../../services/eth2/supportedNetworks";
 import database from "../../services/db/api/database";
@@ -47,7 +56,12 @@ import {ValidatorStatus} from "../../constants/validatorStatus";
 import {cgLogger, createLogger, getBeaconLogfileFromURL, mainLogger} from "../../../main/logger";
 import {setInitialBeacons} from "../settings/actions";
 import {DockerRegistry} from "../../services/docker/docker-registry";
-import {CgEth2ApiClient, getBeaconNodeEth2ApiClient, readBeaconChainNetwork} from "../../services/eth2/client/module";
+import {
+    CgEth2ApiClient,
+    getBeaconNodeEth2ApiClient,
+    getBeaconNodeVersion,
+    readBeaconChainNetwork,
+} from "../../services/eth2/client/module";
 import {getClientParams} from "../../services/docker/getClientParams";
 import {WeakSubjectivityCheckpoint} from "../../components/ConfigureBeaconNode/ConfigureBeaconNode";
 import {HttpClient} from "../../services/api";
@@ -209,7 +223,7 @@ function* initializeBeaconsFromStore(): Generator<
     | AllEffect<INetworkConfig>
     | TakeEffect,
     void,
-    Beacons & ({syncing: boolean; slot: number} | null)[] & boolean & INetworkConfig[]
+    Beacons & ({syncing: boolean; slot: number} | null)[] & boolean & INetworkConfig[] & string[]
 > {
     const store = yield database.beacons.get();
     if (store !== null) {
@@ -234,6 +248,7 @@ function* initializeBeaconsFromStore(): Generator<
 
         const stats = yield all(beacons.map(({url}) => call(getBeaconStatus, url)));
         const networks = yield all(beacons.map(({url}) => call(readBeaconChainNetwork, url)));
+        const versions = yield all(beacons.map(({url}) => call(getBeaconNodeVersion, url)));
 
         yield all(beacons.map(({url}) => spawn(watchOnHead, url)));
 
@@ -244,6 +259,7 @@ function* initializeBeaconsFromStore(): Generator<
                     network: networks[index]?.networkName || "Unknown",
                     docker: docker.id !== "" ? docker : undefined,
                     slot: stats[index]?.slot || 0,
+                    version: versions[index],
                     status:
                         stats[index] !== null
                             ? stats[index].syncing
@@ -292,6 +308,11 @@ export function* watchOnHead(
     setTimeout(() => {
         isStarting = false;
     }, 30 * 1000);
+
+    if (!beacon.version) {
+        const version = ((yield call(getBeaconNodeVersion, beacon.url)) as unknown) as string;
+        yield put(updateVersion(version, beacon.url));
+    }
 
     cgLogger.info("Watching beacon on URL", url);
     const beaconLogger = createLogger(url, getBeaconLogfileFromURL(url));
