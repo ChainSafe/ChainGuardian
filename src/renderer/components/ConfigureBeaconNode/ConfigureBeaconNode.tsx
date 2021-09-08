@@ -15,6 +15,7 @@ export enum WeakSubjectivityCheckpoint {
     beaconScan = "BeaconScan",
     infura = "Infura",
     beaconChain = "BeaconChain",
+    custom = "Custom",
 }
 
 export interface IConfigureBNSubmitOptions {
@@ -28,6 +29,7 @@ export interface IConfigureBNSubmitOptions {
     memory: string;
     image: string;
     weakSubjectivityCheckpoint: WeakSubjectivityCheckpoint;
+    weakSubjectivityCheckpointMeta: string;
 }
 
 interface IConfigureBNProps {
@@ -38,8 +40,9 @@ interface IConfigureBNProps {
 const wscOptions: WeakSubjectivityCheckpoint[] = [
     WeakSubjectivityCheckpoint.none,
     WeakSubjectivityCheckpoint.beaconScan,
-    WeakSubjectivityCheckpoint.infura,
     WeakSubjectivityCheckpoint.beaconChain,
+    WeakSubjectivityCheckpoint.infura,
+    WeakSubjectivityCheckpoint.custom,
 ];
 
 export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (props: IConfigureBNProps) => {
@@ -76,6 +79,10 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
 
     const [wscIndex, setWscIndex] = useState(0);
 
+    const [infuraBeaconNodeUrl, setInfuraBeaconNodeUrl] = useState("");
+    const [finalizedBlockRoot, setFinalizedBlockRoot] = useState("");
+    const [finalizedEpoch, setFinalizedEpoch] = useState("");
+
     const onSubmit = (): void => {
         props.onSubmit({
             chainDataDir,
@@ -88,6 +95,16 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
             client: props.clientName,
             image: images[imageIndex],
             weakSubjectivityCheckpoint: wscOptions[wscIndex],
+            weakSubjectivityCheckpointMeta: ((): string => {
+                switch (wscOptions[wscIndex]) {
+                    case WeakSubjectivityCheckpoint.infura:
+                        return infuraBeaconNodeUrl;
+                    case WeakSubjectivityCheckpoint.custom:
+                        return `${finalizedBlockRoot}:${finalizedEpoch}`;
+                    default:
+                        return "";
+                }
+            })(),
         });
     };
 
@@ -131,6 +148,46 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
                 </div>
                 <Dropdown current={wscIndex} onChange={setWscIndex} options={wscOptions} />
             </div>
+
+            {/* Weak subjectivity additionally options based on selection */}
+            {wscOptions[wscIndex] === WeakSubjectivityCheckpoint.infura && (
+                <div className='configure-port'>
+                    <div className='row'>
+                        <h3>Infura Beacon Node</h3>
+                        <p>(beacon node url provided by infura)</p>
+                    </div>
+                    <InputForm
+                        onChange={(e): void => setInfuraBeaconNodeUrl(e.currentTarget.value)}
+                        inputValue={infuraBeaconNodeUrl}
+                        onSubmit={onInputSubmit}
+                    />
+                </div>
+            )}
+            {wscOptions[wscIndex] === WeakSubjectivityCheckpoint.custom && (
+                <div className='row' style={{width: "100%"}}>
+                    <div className='configure-port' style={{width: "75%"}}>
+                        <div className='row'>
+                            <h3>Finalized Block Root</h3>
+                            <p>(needs to be Hexadecimal value)</p>
+                        </div>
+                        <InputForm
+                            onChange={(e): void => setFinalizedBlockRoot(e.currentTarget.value)}
+                            inputValue={finalizedBlockRoot}
+                            onSubmit={onInputSubmit}
+                        />
+                    </div>
+                    <div className='configure-port' style={{width: "25%"}}>
+                        <div className='row'>
+                            <h3>Finalized Epoch</h3>
+                        </div>
+                        <InputForm
+                            onChange={(e): void => setFinalizedEpoch(e.currentTarget.value)}
+                            inputValue={finalizedEpoch}
+                            onSubmit={onInputSubmit}
+                        />
+                    </div>
+                </div>
+            )}
 
             <div className='configure-port'>
                 <div className='row'>
