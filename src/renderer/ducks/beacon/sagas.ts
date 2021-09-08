@@ -115,7 +115,7 @@ function* getWeakSubjectivityCheckpoint(
     meta: string,
     network: string,
     // eslint-disable-next-line camelcase
-): Generator<CallEffect, string, BeaconScanWSC & string & {current_finalized_epoch: number}> {
+): Generator<CallEffect | Promise<string>, string, BeaconScanWSC & string & {current_finalized_epoch: number}> {
     if (type !== WeakSubjectivityCheckpoint.none) {
         if (type === WeakSubjectivityCheckpoint.custom) return meta;
         if (type === WeakSubjectivityCheckpoint.infura) {
@@ -126,15 +126,15 @@ function* getWeakSubjectivityCheckpoint(
         if (type === WeakSubjectivityCheckpoint.beaconScan) {
             const httpClient = new HttpClient(`https://beaconscan.com/`);
             if (network === "mainnet") {
-                const ws = yield call(httpClient.get, `ws_checkpoint`);
+                const ws = yield httpClient.get(`ws_checkpoint`);
                 if (ws) return `${ws.ws_checkpoint}:${ws.current_epoch}`;
             }
 
             // TODO: change scraper with api after etherscan implement it
-            const dom = yield call(httpClient.get, network);
+            const dom = yield httpClient.get(network);
             const home = cheerio.load(dom);
             const href = home("#finalizedSlot a")[0].attribs["href"];
-            const domSlot = yield call(httpClient.get, href);
+            const domSlot = yield httpClient.get(href);
             const slot = cheerio.load(domSlot);
             const root = slot("#ContentPlaceHolder1_divDetail > div:nth-child(2) > div.col-md-9.font-size-1").text();
             const epoch = slot(
@@ -146,8 +146,8 @@ function* getWeakSubjectivityCheckpoint(
             // TODO: change scraper with api after beaconcha.in implement it
             const httpClient = new HttpClient(`https://${network !== "mainnet" ? network + "." : ""}beaconcha.in/`);
             // eslint-disable-next-line camelcase
-            const result = yield call(httpClient.get, "/index/data");
-            const dom = yield call(httpClient.get, `/epoch/${result.current_finalized_epoch}`);
+            const result = yield httpClient.get("/index/data");
+            const dom = yield httpClient.get(`/epoch/${result.current_finalized_epoch}`);
             const home = cheerio.load(dom);
             const roots: string[] = [];
             home("tbody i").each((_, el) => {
