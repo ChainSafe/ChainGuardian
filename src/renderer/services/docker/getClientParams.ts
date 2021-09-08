@@ -10,9 +10,10 @@ export const getClientParams = ({
     chainDataDir,
     client,
     wsc,
-}: Omit<IConfigureBNSubmitOptions, "memory" | "image" | "weakSubjectivityCheckpoint"> & {wsc: string}): Partial<
-    Omit<IDockerRunParams, "name">
-> => {
+}: Omit<
+    IConfigureBNSubmitOptions,
+    "memory" | "image" | "weakSubjectivityCheckpoint" | "weakSubjectivityCheckpointMeta"
+> & {wsc: string}): Partial<Omit<IDockerRunParams, "name">> => {
     const eth1QueryLimit = 200;
     switch (client) {
         case "nimbus": {

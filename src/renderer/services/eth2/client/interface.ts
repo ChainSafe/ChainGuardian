@@ -51,6 +51,7 @@ export interface ICGBeaconStateApi extends Omit<IBeaconStateApi, "getStateValida
     ): Promise<ICGValidatorResponse | null>;
     getLastEpoch(): Promise<bigint | null>;
     getCommittees(stateId?: "head" | number): Promise<BeaconCommitteeResponse[]>;
+    getWeakSubjectivityCheckpoint(): Promise<string>;
 }
 
 export interface ICGEth2BeaconApi extends Omit<IBeaconApi, "blocks" | "state" | "pool"> {
