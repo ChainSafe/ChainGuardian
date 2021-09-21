@@ -1,9 +1,8 @@
 import {CgEth2ApiClient} from "../module";
 import {IBeaconConfig} from "@chainsafe/lodestar-config";
 import {Dispatch} from "redux";
+import {CgPrysmEth2EventsApi} from "./CgPrysmEth2EventsApi";
 
-// TODO: implement prysm again -.-
-// note to myself - check git history for previous version
 export class CgPrysmEth2Api extends CgEth2ApiClient {
     public constructor(
         config: IBeaconConfig,
@@ -12,6 +11,6 @@ export class CgPrysmEth2Api extends CgEth2ApiClient {
     ) {
         super(config, url, {publicKey, dispatch});
 
-        throw new Error("NOT IMPLEMENTED!");
+        this.events = new CgPrysmEth2EventsApi(config, url);
     }
 }

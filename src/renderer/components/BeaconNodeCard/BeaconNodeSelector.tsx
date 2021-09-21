@@ -39,9 +39,9 @@ export const BeaconNodeSelector: React.FC<IBeaconNodeSelector> = ({selected, onC
                     <BeaconNodeCard name='Nimbus' logo={nimbusLogo} ribbon='BETA' />
                 </div>
                 <div
-                    // onClick={handleChange("prysm")}
-                    className={"card-container disabled-node" + (selected === "prysm" ? " " + "selected-card" : "")}>
-                    <BeaconNodeCard name='Prysm' logo={prysmLogo} ribbon='TBA' />
+                    onClick={handleChange("prysm")}
+                    className={"card-container beta-node" + (selected === "prysm" ? " " + "selected-card" : "")}>
+                    <BeaconNodeCard name='Prysm' logo={prysmLogo} ribbon='BETA' />
                 </div>
             </div>
 

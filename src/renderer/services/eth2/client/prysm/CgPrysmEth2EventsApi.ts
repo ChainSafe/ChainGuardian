@@ -1,24 +1,13 @@
-import {getEventSerdes, EventType as ChainSafeEventType} from "@chainsafe/lodestar-api/lib/routes/events";
+import {EventType as ChainSafeEventType} from "@chainsafe/lodestar-api/lib/routes/events";
 import EventSource from "eventsource";
-import {IChainForkConfig} from "@chainsafe/lodestar-config/lib/beaconConfig";
-import {CgEventsApi, BeaconEvent, Topics} from "../interface";
+import {BeaconEvent, Topics} from "../interface";
 import {EventType} from "../enums";
 import {stringifyQuery} from "@chainsafe/lodestar-api/lib/client/utils/format";
+import {CgEth2EventsApi} from "../eth2ApiClient/CgEth2EventsApi";
 
 type EventSourceError = {status: number; message: string};
 
-export class CgEth2EventsApi implements CgEventsApi {
-    protected readonly url: string;
-    protected readonly eventSerdes = getEventSerdes();
-    protected readonly mergedQuery: boolean;
-    private readonly config: IChainForkConfig;
-
-    public constructor(config: IChainForkConfig, url: string, mergedQuery = false) {
-        this.url = url;
-        this.config = config;
-        this.mergedQuery = mergedQuery;
-    }
-
+export class CgPrysmEth2EventsApi extends CgEth2EventsApi {
     public async eventstream(
         topics: Topics[],
         signal: AbortSignal,
@@ -30,12 +19,23 @@ export class CgEth2EventsApi implements CgEventsApi {
         const url = `${this.url}/eth/v1/events?${query}`;
         const eventSource = new EventSource(url);
 
+        console.warn(url);
+
         try {
             await new Promise<void>((resolve, reject) => {
                 for (const topic of topics) {
                     eventSource.addEventListener(topic, ((event: MessageEvent) => {
-                        const message = this.eventSerdes.fromJson(topic as ChainSafeEventType, JSON.parse(event.data));
-                        onEvent({type: topic, message} as BeaconEvent);
+                        const data = JSON.parse(event.data);
+                        if (topic === "attestation") {
+                            console.warn(data);
+                            if (data.data !== null) {
+                                const message = this.eventSerdes.fromJson(topic as ChainSafeEventType, data);
+                                onEvent({type: topic, message} as BeaconEvent);
+                            }
+                        } else {
+                            const message = this.eventSerdes.fromJson(topic as ChainSafeEventType, data);
+                            onEvent({type: topic, message} as BeaconEvent);
+                        }
                     }) as EventListener);
                 }
 
