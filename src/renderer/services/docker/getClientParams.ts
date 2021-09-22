@@ -9,7 +9,11 @@ export const getClientParams = ({
     eth1Url,
     chainDataDir,
     client,
-}: Omit<IConfigureBNSubmitOptions, "memory" | "image">): Partial<Omit<IDockerRunParams, "name">> => {
+    wsc,
+}: Omit<
+    IConfigureBNSubmitOptions,
+    "memory" | "image" | "weakSubjectivityCheckpoint" | "weakSubjectivityCheckpointMeta"
+> & {wsc: string}): Partial<Omit<IDockerRunParams, "name">> => {
     const eth1QueryLimit = 200;
     switch (client) {
         case "nimbus": {
@@ -21,63 +25,68 @@ export const getClientParams = ({
                 `--rest`,
                 `--rest-address=0.0.0.0`,
                 `--rest-port=${rpcPort}`,
-                // TODO: add CORS for dev
                 `--web3-url=${eth1Url}`,
-            ].join(" ");
-            console.log(cmd, eth1Url);
+            ];
+            // TODO: add CORS for dev
+            if (wsc) cmd.push(`--weak-subjectivity-checkpoint ${wsc}`);
             return {
-                cmd,
+                cmd: cmd.join(" "),
                 volume: `${chainDataDir}:/data`,
             };
         }
         case "prysm": {
-            const networkEnvironment = network !== "mainet" ? " --" + network : "";
             const cmd = [
                 `--accept-terms-of-use`,
-                `--datadir=/data${networkEnvironment}`,
+                `--datadir=/data`,
                 `--p2p-tcp-port=${libp2pPort}`,
                 `--p2p-udp-port=${discoveryPort}`,
                 `--grpc-gateway-host=0.0.0.0`,
                 `--eth-api-port=${rpcPort}`,
                 `--http-web3provider=${eth1Url}`,
-                // --fallback-web3provider=<PROVIDER 1> --fallback-web3provider=<PROVIDER 2>
-            ].join(" ");
+            ];
+            // --fallback-web3provider=<PROVIDER 1> --fallback-web3provider=<PROVIDER 2>
+            // TODO: add CORS for dev
+            if (network !== "mainet") cmd.push(`--${network}`);
+            if (wsc) cmd.push(`--weak-subjectivity-checkpoint=${wsc}`);
             return {
-                cmd,
+                cmd: cmd.join(" "),
                 volume: `${chainDataDir}:/data`,
             };
         }
         case "teku": {
-            const cors =
-                process.env.NODE_ENV !== "production" ? " --rest-api-cors-origins=http://localhost:2003 " : " ";
             const cmd = [
                 `--network=${network}`,
                 `--p2p-port=${libp2pPort}`,
                 `--p2p-advertised-port=${discoveryPort}`,
                 `--rest-api-enabled=true`,
                 `--rest-api-interface=0.0.0.0`,
-                `--rest-api-port=${rpcPort}${cors}--eth1-endpoint=${eth1Url}`,
+                `--rest-api-port=${rpcPort}`,
+                `--eth1-endpoint=${eth1Url}`,
                 `--eth1-deposit-contract-max-request-size=${eth1QueryLimit}`,
                 `--log-destination=CONSOLE`,
-            ].join(" ");
+            ];
+            if (process.env.NODE_ENV !== "production") cmd.push("--rest-api-cors-origins=http://localhost:2003");
+            if (wsc) cmd.push(`--ws-checkpoint=${wsc}`);
             return {
-                cmd,
+                cmd: cmd.join(" "),
                 volume: `${chainDataDir}:/opt/teku/.local/share/teku/beacon`,
             };
         }
         case "lighthouse": {
-            const cors = process.env.NODE_ENV !== "production" ? " --http-allow-origin http://localhost:2003 " : " ";
             const cmd = [
                 `lighthouse beacon_node`,
                 `--network ${network}`,
                 `--port ${libp2pPort}`,
                 `--discovery-port ${discoveryPort}`,
                 `--http --http-address 0.0.0.0`,
-                `--http-port ${rpcPort}${cors}--eth1-endpoints ${eth1Url}`,
+                `--http-port ${rpcPort}`,
+                `--eth1-endpoints ${eth1Url}`,
                 `--eth1-blocks-per-log-query ${eth1QueryLimit}`,
-            ].join(" ");
+            ];
+            if (process.env.NODE_ENV !== "production") cmd.push("--http-allow-origin http://localhost:2003");
+            if (wsc) cmd.push(`--wss-checkpoint ${wsc}`);
             return {
-                cmd,
+                cmd: cmd.join(" "),
                 volume: `${chainDataDir}:/root/.lighthouse`,
             };
         }

@@ -19,19 +19,19 @@ import {
 import {liveProcesses} from "../../services/utils/cmd";
 import {
     cancelDockerPull,
-    endDockerImagePull,
-    startDockerImagePull,
     checkDockerDemonIsOnline,
+    endDockerImagePull,
     setDockerDemonIsOffline,
+    startDockerImagePull,
 } from "../network/actions";
 import {
-    startLocalBeacon,
-    removeBeacon,
     addBeacon,
     addBeacons,
+    removeBeacon,
+    startLocalBeacon,
+    updateEpoch,
     updateSlot,
     updateStatus,
-    updateEpoch,
     updateVersion,
 } from "./actions";
 import {BeaconChain} from "../../services/docker/chain";
@@ -65,6 +65,7 @@ import {eventChannel, EventChannel} from "redux-saga";
 import {BeaconEvent, EventData} from "../../services/eth2/client/interface";
 import {SyncingStatus} from "@chainsafe/lodestar-api/lib/routes/node";
 import {EventType} from "../../services/eth2/client/enums";
+import {getWeakSubjectivityCheckpoint} from "./getWeakSubjectivityCheckpoint";
 
 export function* pullDockerImage(
     image: string,
@@ -97,9 +98,21 @@ export function* pullDockerImage(
 }
 
 function* startLocalBeaconSaga({
-    payload: {network, client, chainDataDir, eth1Url, discoveryPort, libp2pPort, rpcPort, memory, image},
+    payload: {
+        network,
+        client,
+        chainDataDir,
+        eth1Url,
+        discoveryPort,
+        libp2pPort,
+        rpcPort,
+        memory,
+        image,
+        weakSubjectivityCheckpoint,
+        weakSubjectivityCheckpointMeta,
+    },
     meta: {onComplete},
-}: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain> {
+}: ReturnType<typeof startLocalBeacon>): Generator<CallEffect | PutEffect, void, BeaconChain & string> {
     const pullSuccess = yield call(pullDockerImage, image);
 
     const ports = [
@@ -109,6 +122,13 @@ function* startLocalBeaconSaga({
     if (libp2pPort !== discoveryPort) {
         ports.push({local: String(discoveryPort), host: String(discoveryPort)});
     }
+
+    const wsc = yield call(
+        getWeakSubjectivityCheckpoint,
+        weakSubjectivityCheckpoint,
+        weakSubjectivityCheckpointMeta,
+        network,
+    );
 
     cgLogger.info("Starting local docker beacon node & http://localhost:", rpcPort);
     if (pullSuccess) {
@@ -123,6 +143,7 @@ function* startLocalBeaconSaga({
                         client,
                         eth1Url,
                         chainDataDir,
+                        wsc,
                     }),
                     memory,
                     ports,
