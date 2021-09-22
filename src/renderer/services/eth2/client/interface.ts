@@ -9,7 +9,10 @@ import {Api as LightclientApi} from "@chainsafe/lodestar-api/lib/routes/lightcli
 import {Epoch, Number64, phase0, Root, Slot} from "@chainsafe/lodestar-types";
 import {EventType} from "./enums";
 
-export type CgBeaconApi = BeaconApi & {getPoolStatus(): Promise<PoolStatus>};
+export type CgBeaconApi = BeaconApi & {
+    getPoolStatus(): Promise<PoolStatus>;
+    getWeakSubjectivityCheckpoint(): Promise<string>;
+};
 export type CgConfigApi = ConfigApi;
 export type CgDebugApi = DebugApi;
 export type CgEventsApi = Omit<EventsApi, "eventstream"> & {

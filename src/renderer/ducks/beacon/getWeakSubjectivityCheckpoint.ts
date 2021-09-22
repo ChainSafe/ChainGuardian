@@ -28,7 +28,7 @@ export function* getWeakSubjectivityCheckpoint(
         if (type === WeakSubjectivityCheckpoint.infura) {
             const config = getNetworkConfig(network);
             const api = new CgEth2ApiClient((config as unknown) as IBeaconConfig, meta);
-            return yield call(api.beacon.state.getWeakSubjectivityCheckpoint);
+            return yield call(api.beacon.getWeakSubjectivityCheckpoint);
         }
         if (type === WeakSubjectivityCheckpoint.beaconScan) {
             const httpClient = new HttpClient(`https://beaconscan.com/`);
@@ -47,8 +47,6 @@ export function* getWeakSubjectivityCheckpoint(
             const epoch = slot(
                 "#overview > div > div > div:nth-child(2) > div.col-md-9.js-focus-state.font-size-1 > a",
             ).text();
-
-            console.warn(root, epoch);
             return `${root.replace(/(\r\n|\n|\r)/gm, "")}:${epoch.replace(/(\r\n|\n|\r)/gm, "")}`;
         }
         if (type === WeakSubjectivityCheckpoint.beaconChain) {
