@@ -26,7 +26,7 @@ export class HttpClient {
      * @param url endpoint url
      * @param config
      */
-    public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    public get = async <T>(url: string, config?: AxiosRequestConfig): Promise<T> => {
         const {onComplete, onError} = this.networkMetrics();
         try {
             const result: AxiosResponse<T> = await this.client.get<T>(url, config);
@@ -36,14 +36,14 @@ export class HttpClient {
             onError(reason);
             throw handleError(reason);
         }
-    }
+    };
 
     /**
      * Method that handles POST
      * @param url endpoint url
      * @param data request body
      */
-    public async post<T, T2>(url: string, data: T): Promise<T2> {
+    public post = async <T, T2>(url: string, data: T): Promise<T2> => {
         const {onComplete, onError} = this.networkMetrics();
         try {
             const result: AxiosResponse<T2> = await this.client.post(url, data);
@@ -53,7 +53,7 @@ export class HttpClient {
             onError(reason);
             throw handleError(reason);
         }
-    }
+    };
 
     /**
      * Method that store and handles metrics data
