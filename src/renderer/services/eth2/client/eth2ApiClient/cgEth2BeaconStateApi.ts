@@ -38,6 +38,20 @@ export class CgEth2BeaconStateApi implements ICGBeaconStateApi {
         }
     };
 
+    public getWeakSubjectivityCheckpoint = async (): Promise<string> => {
+        try {
+            const url = `/eth/v1/beacon/states/finalized/finality_checkpoints`;
+            const response = await this.httpClient.get<{
+                // eslint-disable-next-line camelcase
+                data: {finalized: {epoch: string; root: string}};
+            }>(url);
+            return `${response.data.finalized.root}:${response.data.finalized.epoch}`;
+        } catch (e) {
+            logger.error("Failed to fetch finality checkpoints", {error: e.message});
+            return "";
+        }
+    };
+
     public getStateValidator = async (
         stateId: "head" | number,
         validatorId: ValidatorIndex | BLSPubkey,
