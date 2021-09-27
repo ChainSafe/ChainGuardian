@@ -1,5 +1,4 @@
 import {ValidatorStatus} from "../../constants/validatorStatus";
-import {fromHexString} from "@chainsafe/ssz";
 import logger from "electron-log";
 import {readBeaconChainNetwork, getBeaconNodeEth2ApiClient} from "../eth2/client/module";
 
@@ -12,10 +11,9 @@ export const getValidatorStatus = async (publicKey: string, beaconNodeUrl?: stri
     const ApiClient = await getBeaconNodeEth2ApiClient(beaconNodeUrl);
     const client = new ApiClient(config?.eth2Config, beaconNodeUrl);
 
-    const validatorId = fromHexString(publicKey);
-    const stateValidator = await client.beacon.state.getStateValidator("head", validatorId);
+    const stateValidator = await client.beacon.getStateValidator("head", publicKey);
 
-    if (!stateValidator || stateValidator.status === "unknown") {
+    if (!stateValidator || (stateValidator.data.status as string) === "unknown") {
         // // TODO: experiment to see best
         // const currentBlock = await config.eth1Provider.getBlockNumber();
         // const logs = await config.eth1Provider.getLogs({
@@ -27,7 +25,7 @@ export const getValidatorStatus = async (publicKey: string, beaconNodeUrl?: stri
 
         return ValidatorStatus.PENDING_DEPOSIT_OR_ACTIVATION;
     } else {
-        return getValidatorStatusFromString(stateValidator.status);
+        return getValidatorStatusFromString(stateValidator.data.status);
     }
 };
 

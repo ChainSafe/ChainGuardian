@@ -3,8 +3,8 @@ import {Beacon} from "../../ducks/beacon/slice";
 import {ResponsiveContainer} from "recharts";
 import {SimpleLineChart, SimpleLineChartRecord} from "../../components/SimpleLineChart/SimpleLineChart";
 import {format} from "date-fns";
-import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {getBeaconNodeEth2ApiClient} from "../../services/eth2/client/utils";
+import {config} from "../../services/eth2/config/mainet";
 
 interface IBeaconNodeProps {
     beacon: Beacon;
@@ -47,7 +47,7 @@ export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) =
             const ApiClient = await getBeaconNodeEth2ApiClient(url);
             const eth2API = new ApiClient(config, url);
 
-            const poolState = await eth2API.beacon.pool.getPoolStatus();
+            const poolState = await eth2API.beacon.getPoolStatus();
             const peerCount = await eth2API.node.getPeerCount();
 
             if (canUpdate) {
@@ -70,10 +70,10 @@ export const BeaconNodeMetrics: React.FC<IBeaconNodeProps> = ({beacon: {url}}) =
                     oldState.disconnected.shift();
                     oldState.disconnecting.shift();
                     return {
-                        connected: [...oldState.connected, {label, value: peerCount.connected}],
-                        connecting: [...oldState.connecting, {label, value: peerCount.connecting}],
-                        disconnected: [...oldState.disconnected, {label, value: peerCount.disconnected}],
-                        disconnecting: [...oldState.disconnecting, {label, value: peerCount.disconnecting}],
+                        connected: [...oldState.connected, {label, value: peerCount.data.connected}],
+                        connecting: [...oldState.connecting, {label, value: peerCount.data.connecting}],
+                        disconnected: [...oldState.disconnected, {label, value: peerCount.data.disconnected}],
+                        disconnecting: [...oldState.disconnecting, {label, value: peerCount.data.disconnecting}],
                     };
                 });
             }

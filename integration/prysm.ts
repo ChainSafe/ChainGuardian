@@ -1,15 +1,13 @@
 import {getInteropKey} from "../src/renderer/services/validator/interop_keys";
 import assert from "assert";
 import {restValidation} from "./restValidation";
-import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {CgPrysmEth2Api} from "../src/renderer/services/eth2/client/module";
 
 (async function (): Promise<void> {
     const {proposer, attestation} = await restValidation({
-        baseUrl: "http://localhost:5050",
+        baseUrl: "http://localhost:5051",
         getValidatorPrivateKey: async () => getInteropKey(15),
         limit: 2,
-        config,
         ApiClient: CgPrysmEth2Api,
     });
 

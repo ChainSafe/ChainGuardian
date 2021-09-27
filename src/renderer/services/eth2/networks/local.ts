@@ -1,6 +1,6 @@
-import {config} from "@chainsafe/lodestar-config/lib/presets/minimal";
 import {INetworkConfig} from "../../interfaces";
 import {ethers} from "ethers";
+import {config} from "../config/local";
 
 export const LocalhostConfig: INetworkConfig = Object.freeze({
     networkName: "localhost",
@@ -14,13 +14,7 @@ export const LocalhostConfig: INetworkConfig = Object.freeze({
         deployedAtBlock: 0,
     },
     genesisTime: Date.now(),
-    eth2Config: {
-        ...config,
-        params: {
-            ...config.params,
-            GENESIS_FORK_VERSION: Buffer.from("0x00000001"),
-        },
-    },
+    eth2Config: config,
     eth1Provider: new ethers.providers.JsonRpcProvider("http://localhost:8545"),
     dockerConfig: {
         name: "lighthouse_beacon",

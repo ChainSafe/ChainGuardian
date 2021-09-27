@@ -43,10 +43,10 @@ export class HttpClient {
      * @param url endpoint url
      * @param data request body
      */
-    public post = async <T, T2>(url: string, data: T): Promise<T2> => {
+    public post = async <T, T2>(url: string, data: T, config?: AxiosRequestConfig): Promise<T2> => {
         const {onComplete, onError} = this.networkMetrics();
         try {
-            const result: AxiosResponse<T2> = await this.client.post(url, data);
+            const result: AxiosResponse<T2> = await this.client.post(url, data, config);
             onComplete(result);
             return result.data;
         } catch (reason) {

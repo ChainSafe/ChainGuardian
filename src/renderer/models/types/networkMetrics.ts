@@ -1,6 +1,6 @@
 import {ContainerType, NumberUintType, ListType} from "@chainsafe/ssz";
-import {StringType} from "./basic";
 import {NetworkMetric, NetworkMetrics} from "../networkMetrics";
+import {StringType} from "@chainsafe/lodestar-types";
 
 const MILLION = 1000000;
 

@@ -41,7 +41,7 @@ export const getClientParams = ({
                 `--p2p-tcp-port=${libp2pPort}`,
                 `--p2p-udp-port=${discoveryPort}`,
                 `--grpc-gateway-host=0.0.0.0`,
-                `--grpc-gateway-port=${rpcPort}`,
+                `--eth-api-port=${rpcPort}`,
                 `--http-web3provider=${eth1Url}`,
             ];
             // --fallback-web3provider=<PROVIDER 1> --fallback-web3provider=<PROVIDER 2>

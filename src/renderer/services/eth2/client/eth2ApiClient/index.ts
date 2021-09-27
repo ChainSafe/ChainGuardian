@@ -1,43 +1,52 @@
-import {ICGEth2ValidatorApi, ICGEth2BeaconApi, ICGEth2NodeApi, ICgEth2ApiClient, ICGEth2Config} from "../interface";
-import {IBeaconConfig} from "@chainsafe/lodestar-config";
-import {IEventsApi} from "@chainsafe/lodestar-validator/lib/api/interface/events";
-import {CgEth2BeaconApi} from "./cgEth2BeaconApi";
-import {HttpClient} from "../../../api";
-import {AbstractApiClient} from "@chainsafe/lodestar-validator/lib/api/abstract";
-import {WinstonLogger} from "@chainsafe/lodestar-utils";
-import {CgEth2ValidatorApi} from "./cgEth2ValidatorApi";
-import {CgEth2NodeApi} from "./cgEth2NodeApi";
-import {CgEth2EventsApi} from "./cgEth2EventsApi";
-import {CgEth2Config} from "./cgEth2Config";
+import {
+    CgBeaconApi,
+    Eth2Api,
+    CgConfigApi,
+    CgDebugApi,
+    CgEventsApi,
+    CgNodeApi,
+    CgValidatorApi,
+    CgLodestarApi,
+    CgLightclientApi,
+} from "../interface";
+import {Dispatch} from "redux";
+import {CgEth2BeaconApi} from "./CgEth2BeaconApi";
+import {CgEth2ConfigApi} from "./CgEth2ConfigApi";
+import {CgEth2DebugApi} from "./CgEth2DebugApi";
+import {CgEth2NodeApi} from "./CgEth2NodeApi";
+import {CgEth2ValidatorApi} from "./CgEth2ValidatorApi";
+import {CgEth2EventsApi} from "./CgEth2EventsApi";
+import {CgEth2LightclientApi} from "./CgEth2LightclientApi";
+import {CgEth2LodestarApi} from "./CgEth2LodestarApi";
+import {IChainForkConfig} from "@chainsafe/lodestar-config/lib/beaconConfig";
 import axios from "axios";
 import {getNetworkConfigByGenesisVersion} from "../../networks";
-import {Dispatch} from "redux";
 
-export class CgEth2ApiClient extends AbstractApiClient implements ICgEth2ApiClient {
-    public validator: ICGEth2ValidatorApi;
-    public beacon: ICGEth2BeaconApi; //
-    public node: ICGEth2NodeApi;
-    public events: IEventsApi;
-    public configApi: ICGEth2Config;
+export class CgEth2ApiClient implements Eth2Api {
+    public beacon: CgBeaconApi;
+    public config: CgConfigApi;
+    public debug: CgDebugApi;
+    public events: CgEventsApi;
+    public node: CgNodeApi;
+    public validator: CgValidatorApi;
+    public lightclient: CgLightclientApi;
+    public lodestar: CgLodestarApi;
 
-    public url: string;
-
-    protected readonly httpClient: HttpClient;
     public constructor(
-        config: IBeaconConfig,
+        config: IChainForkConfig,
         url: string,
         {publicKey, dispatch}: {publicKey?: string; dispatch?: Dispatch} = {},
     ) {
-        // TODO: logger: create new or get it from outside?
-        super(config, new WinstonLogger());
-        this.url = url;
-        this.httpClient = new HttpClient(url);
+        this.beacon = new CgEth2BeaconApi(config, url, {publicKey, dispatch});
+        this.config = new CgEth2ConfigApi(config, url);
+        this.debug = (new CgEth2DebugApi(config, url) as unknown) as CgDebugApi;
+        this.events = new CgEth2EventsApi(config, url);
+        this.node = new CgEth2NodeApi(config, url);
+        this.validator = new CgEth2ValidatorApi(config, url);
 
-        this.validator = new CgEth2ValidatorApi(config, this.httpClient);
-        this.beacon = new CgEth2BeaconApi(config, this.httpClient, publicKey, dispatch);
-        this.events = (new CgEth2EventsApi(config, url) as unknown) as IEventsApi;
-        this.node = new CgEth2NodeApi(config, this.httpClient);
-        this.configApi = new CgEth2Config(config, this.httpClient);
+        // TODO: checkout what to do with non standard api?
+        this.lightclient = new CgEth2LightclientApi(config, url);
+        this.lodestar = new CgEth2LodestarApi(config, url);
     }
 
     public static getBeaconURLNetworkName = async (url: string): Promise<string> => {

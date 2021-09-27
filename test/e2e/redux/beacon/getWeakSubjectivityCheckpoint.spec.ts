@@ -11,8 +11,7 @@ import {
 } from "../../../../src/renderer/ducks/beacon/getWeakSubjectivityCheckpoint";
 import {CallEffect} from "@redux-saga/core/effects";
 import {CgEth2ApiClient} from "../../../../src/renderer/services/eth2/client/eth2ApiClient";
-import {getNetworkConfig} from "../../../../src/renderer/services/eth2/networks";
-import {IBeaconConfig} from "@chainsafe/lodestar-config";
+import {config} from "../../../../src/renderer/services/eth2/config/pyromont";
 
 const validateWeakSubjectivityCheckpoint = (result: string): void => {
     const [root, epoch] = result.split(":");
@@ -65,9 +64,8 @@ describe("getWeakSubjectivityCheckpoint", () => {
         const infura =
             "https://1wDQcYYEukhUVgfL4QSgW52I5Qf:cf7444934146776605812bc78292f4d1@eth2-beacon-pyrmont.infura.io";
 
-        const config = getNetworkConfig(network);
-        const api = new CgEth2ApiClient((config as unknown) as IBeaconConfig, infura);
-        const response = await api.beacon.state.getWeakSubjectivityCheckpoint();
+        const api = new CgEth2ApiClient(config, infura);
+        const response = await api.beacon.getWeakSubjectivityCheckpoint();
 
         testSaga(getWeakSubjectivityCheckpoint, WeakSubjectivityCheckpoint.infura, "", network)
             .next()

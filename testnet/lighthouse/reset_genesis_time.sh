@@ -12,6 +12,7 @@ sudo rm -rf ./data/beacon ./data/beacon2
 NOW=$(date +%s)
 
 docker run -v $TESTNET_DIR:/root/testnet $DOCKER_LCLI_IMAGE lcli \
+  --testnet-dir /root/testnet \
 	change-genesis-time /root/testnet/genesis.ssz $NOW
 
 echo "Reset genesis time to now ($NOW)"
