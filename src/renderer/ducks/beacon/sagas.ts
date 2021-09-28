@@ -66,6 +66,7 @@ import {BeaconEvent, EventData} from "../../services/eth2/client/interface";
 import {SyncingStatus} from "@chainsafe/lodestar-api/lib/routes/node";
 import {EventType} from "../../services/eth2/client/enums";
 import {getWeakSubjectivityCheckpoint} from "./getWeakSubjectivityCheckpoint";
+import fs from "fs";
 
 export function* pullDockerImage(
     image: string,
@@ -129,6 +130,9 @@ function* startLocalBeaconSaga({
         weakSubjectivityCheckpointMeta,
         network,
     );
+
+    /** fix permission issue caused by docker creating folder for volume */
+    if (!fs.existsSync(chainDataDir)) fs.mkdirSync(chainDataDir, {recursive: true});
 
     cgLogger.info("Starting local docker beacon node & http://localhost:", rpcPort);
     if (pullSuccess) {
