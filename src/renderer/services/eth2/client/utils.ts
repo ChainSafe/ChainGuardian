@@ -28,8 +28,12 @@ export async function readBeaconChainNetwork(url: string, throwOnEmpty = false):
 }
 
 export async function getBeaconNodeVersion(beaconNodeUrl: string): Promise<string> {
-    const response = await new HttpClient(beaconNodeUrl).get<{data: {version: string}}>(`/eth/v1/node/version`);
-    return response.data.version;
+    try {
+        const response = await new HttpClient(beaconNodeUrl).get<{data: {version: string}}>(`/eth/v1/node/version`);
+        return response.data.version;
+    } catch {
+        return "unknown";
+    }
 }
 
 export async function getBeaconNodeEth2ApiClient(beaconNodeUrl: string): Promise<typeof CgEth2ApiClient> {
