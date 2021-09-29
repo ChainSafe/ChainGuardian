@@ -556,7 +556,27 @@ export function* watchValidatorDuties({
     const ApiClient = yield getBeaconNodeEth2ApiClient(validator.beaconNodes[0]);
     const eth2API = new ApiClient(config, validator.beaconNodes[0]);
 
-    const validatorState = yield eth2API.beacon.getStateValidator("head", payload);
+    let beaconNodee = yield select(getBeaconByKey, {key: validator.beaconNodes[0]});
+    if (!beaconNodee) {
+        yield take(addBeacons);
+        beaconNodee = yield select(getBeaconByKey, {key: validator.beaconNodes[0]});
+    }
+    if (beaconNodee.status !== BeaconStatus.active) {
+        while (true) {
+            const newStatus = yield take(updateStatus);
+            if (newStatus.payload === BeaconStatus.active && newStatus.meta === beaconNodee.url) break;
+        }
+    }
+
+    let validatorState: {data: ValidatorResponse};
+    while (true) {
+        try {
+            validatorState = yield eth2API.beacon.getStateValidator("head", payload);
+            break;
+        } catch {
+            yield take(updateEpoch);
+        }
+    }
 
     function* processDuties(
         epoch: number,

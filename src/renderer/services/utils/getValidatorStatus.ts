@@ -1,31 +1,35 @@
 import {ValidatorStatus} from "../../constants/validatorStatus";
 import logger from "electron-log";
-import {readBeaconChainNetwork, getBeaconNodeEth2ApiClient} from "../eth2/client/module";
+import {getBeaconNodeEth2ApiClient, readBeaconChainNetwork} from "../eth2/client/module";
 
 export const getValidatorStatus = async (publicKey: string, beaconNodeUrl?: string): Promise<ValidatorStatus> => {
-    if (!beaconNodeUrl) return ValidatorStatus.NO_BEACON_NODE;
+    try {
+        if (!beaconNodeUrl) return ValidatorStatus.NO_BEACON_NODE;
 
-    const config = await readBeaconChainNetwork(beaconNodeUrl);
-    if (!config) return ValidatorStatus.BEACON_NODE_OFFLINE;
+        const config = await readBeaconChainNetwork(beaconNodeUrl);
+        if (!config) return ValidatorStatus.BEACON_NODE_OFFLINE;
 
-    const ApiClient = await getBeaconNodeEth2ApiClient(beaconNodeUrl);
-    const client = new ApiClient(config?.eth2Config, beaconNodeUrl);
+        const ApiClient = await getBeaconNodeEth2ApiClient(beaconNodeUrl);
+        const client = new ApiClient(config?.eth2Config, beaconNodeUrl);
 
-    const stateValidator = await client.beacon.getStateValidator("head", publicKey);
+        const stateValidator = await client.beacon.getStateValidator("head", publicKey);
 
-    if (!stateValidator || (stateValidator.data.status as string) === "unknown") {
-        // // TODO: experiment to see best
-        // const currentBlock = await config.eth1Provider.getBlockNumber();
-        // const logs = await config.eth1Provider.getLogs({
-        //     address: config.contract.address,
-        //     fromBlock: currentBlock - 6144, // approx 24h before current block
-        //     topics: [ethers.utils.id("DepositEvent(bytes,bytes,bytes,bytes,bytes)")],
-        // });
-        // const containsThisValidator = logs.some(({data}) => data.includes(publicKey.substr(2)));
+        if (!stateValidator || (stateValidator.data.status as string) === "unknown") {
+            // // TODO: experiment to see best
+            // const currentBlock = await config.eth1Provider.getBlockNumber();
+            // const logs = await config.eth1Provider.getLogs({
+            //     address: config.contract.address,
+            //     fromBlock: currentBlock - 6144, // approx 24h before current block
+            //     topics: [ethers.utils.id("DepositEvent(bytes,bytes,bytes,bytes,bytes)")],
+            // });
+            // const containsThisValidator = logs.some(({data}) => data.includes(publicKey.substr(2)));
 
-        return ValidatorStatus.PENDING_DEPOSIT_OR_ACTIVATION;
-    } else {
-        return getValidatorStatusFromString(stateValidator.data.status);
+            return ValidatorStatus.PENDING_DEPOSIT_OR_ACTIVATION;
+        } else {
+            return getValidatorStatusFromString(stateValidator.data.status);
+        }
+    } catch {
+        return ValidatorStatus.ERROR;
     }
 };
 
