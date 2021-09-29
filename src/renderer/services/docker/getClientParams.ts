@@ -64,12 +64,14 @@ export const getClientParams = ({
                 `--eth1-endpoint=${eth1Url}`,
                 `--eth1-deposit-contract-max-request-size=${eth1QueryLimit}`,
                 `--log-destination=CONSOLE`,
+                `--validators-external-signer-slashing-protection-enabled=false`,
+                `--data-base-path=/home/teku`,
             ];
             if (process.env.NODE_ENV !== "production") cmd.push("--rest-api-cors-origins=http://localhost:2003");
             if (wsc) cmd.push(`--ws-checkpoint=${wsc}`);
             return {
                 cmd: cmd.join(" "),
-                volume: `${chainDataDir}:/opt/teku/.local/share/teku/beacon`,
+                volume: `${chainDataDir}:/home/teku`,
             };
         }
         case "lighthouse": {
