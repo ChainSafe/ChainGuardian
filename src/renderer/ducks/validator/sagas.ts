@@ -474,7 +474,9 @@ export function* getAttestationEffectiveness({
 
         // get all block information from last to current (mostly is only one but is important to get every block)
         const range = new Array(newSlot.payload - lastSlot).fill(null).map((_, index) => lastSlot + index + 1);
-        const results = yield all(range.map((slot) => call(() => eth2API.beacon.getBlockAttestations(slot))));
+        const results = yield all(
+            range.map((slot) => call(() => eth2API.beacon.getBlockAttestations(slot).catch(() => null))),
+        );
 
         results.forEach((result, index) => {
             /** the main logic for collecting when is attestation may be included and the number of skipped blocks */
