@@ -204,7 +204,7 @@
     "@reduxjs/toolkit": "^1.4.0",
     "@sentry/electron": "2.0.3",
     "archiver": "^5.2.0",
-    "axios": "0.21.1",
+    "axios": "0.21.2",
     "bigint-buffer": "1.1.5",
     "bip39": "3.0.2",
     "cheerio": "1.0.0-rc.4",
