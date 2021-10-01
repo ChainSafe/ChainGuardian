@@ -474,7 +474,9 @@ export function* getAttestationEffectiveness({
 
         // get all block information from last to current (mostly is only one but is important to get every block)
         const range = new Array(newSlot.payload - lastSlot).fill(null).map((_, index) => lastSlot + index + 1);
-        const results = yield all(range.map((slot) => call(() => eth2API.beacon.getBlockAttestations(slot))));
+        const results = yield all(
+            range.map((slot) => call(() => eth2API.beacon.getBlockAttestations(slot).catch(() => null))),
+        );
 
         results.forEach((result, index) => {
             /** the main logic for collecting when is attestation may be included and the number of skipped blocks */
@@ -556,7 +558,27 @@ export function* watchValidatorDuties({
     const ApiClient = yield getBeaconNodeEth2ApiClient(validator.beaconNodes[0]);
     const eth2API = new ApiClient(config, validator.beaconNodes[0]);
 
-    const validatorState = yield eth2API.beacon.getStateValidator("head", payload);
+    let beaconNodee = yield select(getBeaconByKey, {key: validator.beaconNodes[0]});
+    if (!beaconNodee) {
+        yield take(addBeacons);
+        beaconNodee = yield select(getBeaconByKey, {key: validator.beaconNodes[0]});
+    }
+    if (beaconNodee.status !== BeaconStatus.active) {
+        while (true) {
+            const newStatus = yield take(updateStatus);
+            if (newStatus.payload === BeaconStatus.active && newStatus.meta === beaconNodee.url) break;
+        }
+    }
+
+    let validatorState: {data: ValidatorResponse};
+    while (true) {
+        try {
+            validatorState = yield eth2API.beacon.getStateValidator("head", payload);
+            break;
+        } catch {
+            yield take(updateEpoch);
+        }
+    }
 
     function* processDuties(
         epoch: number,

@@ -11,6 +11,10 @@ export const getValidatorBalance = async (
     const config = getNetworkConfig(network);
     const ApiClient = await getBeaconNodeEth2ApiClient(beaconNode);
     const eth2Client = new ApiClient(config.eth2Config, beaconNode);
-    const validatorState = await eth2Client.beacon.getStateValidator(String(stateId), publicKey);
-    return validatorState?.data.balance || undefined;
+    try {
+        const validatorState = await eth2Client.beacon.getStateValidator(String(stateId), publicKey);
+        return validatorState?.data.balance || undefined;
+    } catch {
+        return undefined;
+    }
 };
