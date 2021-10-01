@@ -43,7 +43,7 @@ const template = [
                                   message: "Chain Guardian",
                                   detail: `Version ${
                                       process.env.npm_package_version
-                                  }${"\n"}${"\n"}Copyright © 2021 NodeFactory`,
+                                  }${"\n"}${"\n"}Copyright © 2021 ChainSafe Systems`,
                                   icon: iconPath,
                               });
                           },
@@ -96,13 +96,13 @@ const template = [
             {
                 label: "Github Repository",
                 click: async (): Promise<void> => {
-                    await shell.openExternal("https://github.com/NodeFactoryIo/ChainGuardian");
+                    await shell.openExternal("https://github.com/chainsafe/ChainGuardian");
                 },
             },
             {
                 label: "Search Issues",
                 click: async (): Promise<void> => {
-                    await shell.openExternal("https://github.com/NodeFactoryIo/ChainGuardian/issues");
+                    await shell.openExternal("https://github.com/chainsafe/ChainGuardian/issues");
                 },
             },
             {type: "separator"},
