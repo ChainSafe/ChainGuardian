@@ -1,6 +1,6 @@
 import {ContainerType} from "@chainsafe/ssz";
-import {StringType} from "./basic";
 import {ValidatorNetwork} from "../network";
+import {StringType} from "@chainsafe/lodestar-types";
 
 export const NetworkType = new ContainerType<ValidatorNetwork>({
     fields: {

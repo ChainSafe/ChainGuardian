@@ -1,4 +1,4 @@
-import {IBeaconConfig} from "@chainsafe/lodestar-config";
+import {IChainForkConfig} from "@chainsafe/lodestar-config";
 import {CGAccount} from "../models/account";
 import {ethers} from "ethers";
 import {IDockerRunParams} from "./docker/type";
@@ -7,11 +7,6 @@ export interface IService {
     start(): Promise<void>;
 
     stop(): Promise<void>;
-}
-
-export interface IInputValidity {
-    isValid: boolean;
-    message: string;
 }
 
 /********************
@@ -52,7 +47,7 @@ export interface IV3Keystore {
 /************************/
 
 export interface INetworkConfig {
-    eth2Config: IBeaconConfig;
+    eth2Config: IChainForkConfig;
     genesisTime: number;
     networkId: number;
     networkName: string;

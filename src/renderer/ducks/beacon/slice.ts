@@ -12,6 +12,7 @@ export type Beacon = {
     url: string;
     status: BeaconStatus;
     network: string;
+    version?: string;
     slot: number;
     docker?: DockerConfig;
 };
@@ -68,6 +69,15 @@ export const beaconSlice = createSlice({
             },
             prepare: (status: BeaconStatus, url: string): {payload: number; meta: string} => ({
                 payload: status,
+                meta: url,
+            }),
+        },
+        updateVersion: {
+            reducer: (state, action: PayloadAction<string, string, string>): void => {
+                state.beacons[action.meta].version = action.payload;
+            },
+            prepare: (version: string, url: string): {payload: string; meta: string} => ({
+                payload: version,
                 meta: url,
             }),
         },

@@ -75,7 +75,7 @@ export const getValidatorBalanceChartData = (
         .forEach((_, index) => {
             const epoch = index + Number(firstEpoch);
             const balancesIndex = index - skipped;
-            const slot = computeStartSlotAtEpoch(eth2Config, epoch);
+            const slot = computeStartSlotAtEpoch(epoch);
             const time = new Date(computeTimeAtSlot(eth2Config, slot, genesisTime) * 1000);
             const date = format(time, "d MMM, yyyy  HH:mm");
 

@@ -1,6 +1,5 @@
 import assert from "assert";
 import {restValidation} from "./restValidation";
-import {config} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {CgNimbusEth2Api} from "../src/renderer/services/eth2/client/module";
 import {SecretKey} from "@chainsafe/bls";
 import {Keystore} from "@chainsafe/bls-keystore";
@@ -14,7 +13,6 @@ const keystorePassword = "4E015C5AF6C9610B0230DBC4FD9714B786F24A28414E49C52D8595
         getValidatorPrivateKey: async () =>
             SecretKey.fromBytes(await Keystore.fromObject(keystore).decrypt(keystorePassword)),
         limit: 5,
-        config,
         ApiClient: CgNimbusEth2Api,
     });
 

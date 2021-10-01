@@ -10,9 +10,9 @@ import {
 } from "../../ducks/validator/actions";
 import {CheckBox} from "../../components/CheckBox/CheckBox";
 import {validateSlashingFile} from "../../services/utils/validateSlashingFile";
-import {IBeaconConfig} from "@chainsafe/lodestar-config";
-import {Root} from "@chainsafe/lodestar-types/lib/types/primitive";
 import {readBeaconChainNetwork, CgEth2ApiClient} from "../../services/eth2/client/module";
+import {Root} from "@chainsafe/lodestar-types";
+import {IChainForkConfig} from "@chainsafe/lodestar-config";
 
 interface IProps {
     visible: boolean;
@@ -25,7 +25,7 @@ export const SlashingDBUpload: React.FC<IProps> = ({visible, url}) => {
     const [fileName, setFileName] = useState<null | string>(null);
     const [isSkippable, setIsSkippable] = useState(false);
 
-    const [config, setConfig] = useState<null | IBeaconConfig>(null);
+    const [config, setConfig] = useState<null | IChainForkConfig>(null);
     const [genesisRoot, setGenesisRoot] = useState<null | Root>(null);
 
     useEffect(() => {
@@ -53,10 +53,10 @@ export const SlashingDBUpload: React.FC<IProps> = ({visible, url}) => {
             if (!validatorGenesisRoot) {
                 const eth2API = new CgEth2ApiClient(validatorConfig, url);
                 const genesis = await eth2API.beacon.getGenesis();
-                validatorGenesisRoot = genesis.genesisValidatorsRoot;
-                setGenesisRoot(genesis.genesisValidatorsRoot);
+                validatorGenesisRoot = genesis.data.genesisValidatorsRoot;
+                setGenesisRoot(genesis.data.genesisValidatorsRoot);
             }
-            if (validateSlashingFile(filePath, validatorConfig, validatorGenesisRoot)) {
+            if (validateSlashingFile(filePath, validatorGenesisRoot)) {
                 setPath(filePath);
             } else {
                 setError("File is incorrect, try again with different file");

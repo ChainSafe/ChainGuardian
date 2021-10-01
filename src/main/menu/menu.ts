@@ -109,8 +109,12 @@ const template = [
             {
                 label: "Open logs directory",
                 click: async (): Promise<void> => {
-                    const error = await shell.openPath(path.join(app.getPath("userData"), "logs"));
-                    if (error) await shell.openPath(app.getPath("userData"));
+                    const error = await shell.openPath(
+                        isMac
+                            ? path.join(app.getPath("logs"), "ChainGuardian")
+                            : path.join(app.getPath("userData"), "logs"),
+                    );
+                    if (error) await shell.openPath(isMac ? app.getPath("logs") : app.getPath("userData"));
                 },
             },
             {
@@ -123,7 +127,9 @@ const template = [
                         properties: ["openDirectory"],
                     });
                     if (savePath && savePath.length) {
-                        const logsPath = path.join(app.getPath("userData"), "logs");
+                        const logsPath = isMac
+                            ? path.join(app.getPath("logs"), "ChainGuardian")
+                            : path.join(app.getPath("userData"), "logs");
                         if (existsSync(logsPath)) {
                             const filename = `logs-${Date.now()}.zip`;
                             const output = createWriteStream(path.join(savePath[0], filename));

@@ -1,6 +1,6 @@
 import {ContainerType, BooleanType, NumberUintType} from "@chainsafe/ssz";
-import {StringType} from "./basic";
 import {Settings} from "../settings";
+import {StringType} from "@chainsafe/lodestar-types";
 
 export const SettingsType = new ContainerType<Settings>({
     fields: {

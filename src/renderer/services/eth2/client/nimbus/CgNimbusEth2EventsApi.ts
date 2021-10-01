@@ -1,10 +1,9 @@
-import {IBeaconConfig} from "@chainsafe/lodestar-config";
-import {CgEth2EventsApi} from "../eth2ApiClient/cgEth2EventsApi";
-import {CGBeaconEvent, CGBeaconEventType, ErrorEvent} from "../interface";
-import {IStoppableEventIterable, LodestarEventIterator} from "@chainsafe/lodestar-utils";
-import {HttpClient} from "../../../api";
-import {computeEpochAtSlot, computeStartSlotAtEpoch} from "@chainsafe/lodestar-beacon-state-transition/lib/util/epoch";
-import {BeaconEventType} from "@chainsafe/lodestar-validator/lib/api/interface/events";
+import {CgEth2EventsApi} from "../eth2ApiClient/CgEth2EventsApi";
+import {BeaconEvent, Topics} from "../interface";
+import {EventType as ChainSafeEventType} from "@chainsafe/lodestar-api/lib/routes/events";
+import {EventType} from "../enums";
+import {HttpClient} from "../../../api/http/httpClient";
+import {computeEpochAtSlot, computeStartSlotAtEpoch} from "@chainsafe/lodestar-beacon-state-transition";
 import {cgLogger} from "../../../../../main/logger";
 
 type BlockState = {
@@ -66,15 +65,18 @@ export class CgNimbusEth2EventsApi extends CgEth2EventsApi {
     private previousDepend: BlockState;
     private pushedAttestation: PushedAttestation[] = [];
 
-    public constructor(config: IBeaconConfig, baseUrl: string) {
-        super(config, baseUrl);
-    }
+    public async eventstream(
+        topics: Topics[],
+        signal: AbortSignal,
+        onEvent: (event: BeaconEvent) => void,
+        softErrorHandling = false,
+    ): Promise<void> {
+        const httpClient = new HttpClient(this.url + "/eth/v1/beacon");
+        let interval: NodeJS.Timeout;
 
-    // topics: head, block, attestation, voluntary_exit, finalized_checkpoint, chain_reorg
-    public getEventStream = (topics: CGBeaconEventType[]): IStoppableEventIterable<CGBeaconEvent | ErrorEvent> => {
-        const httpClient = new HttpClient(this.baseUrl + "/eth/v1/beacon");
-        return new LodestarEventIterator(({push}): (() => void) => {
-            let interval: NodeJS.Timeout;
+        console.warn(topics);
+
+        await new Promise<void>((resolve, reject) => {
             (async (): Promise<void> => {
                 // eslint-disable-next-line no-constant-condition
                 while (true) {
@@ -94,37 +96,42 @@ export class CgNimbusEth2EventsApi extends CgEth2EventsApi {
                         if (this.currentBlock.slot !== slot) {
                             this.pushedAttestation = [];
 
-                            if (topics.some((topic) => topic === CGBeaconEventType.BLOCK))
-                                push({
-                                    type: BeaconEventType.BLOCK,
-                                    message: this.config.types.BlockEventPayload.fromJson({
+                            if (topics.some((topic) => topic === EventType.block))
+                                onEvent({
+                                    type: EventType.block,
+                                    message: this.eventSerdes.fromJson(EventType.block as ChainSafeEventType, {
                                         slot,
                                         block: result.data.root,
                                     }),
-                                });
+                                } as BeaconEvent);
 
-                            const epoch = computeEpochAtSlot(this.config, slot);
+                            const epoch = computeEpochAtSlot(slot);
                             if (this.currentBlock.epoch !== epoch) {
                                 this.previousDepend = this.depend;
                                 this.depend = this.currentBlock;
                             }
 
-                            if (topics.some((topic) => topic === CGBeaconEventType.HEAD))
+                            if (topics.some((topic) => topic === EventType.head))
                                 // root => block
                                 // state => header.message.state_root
                                 // epoch_transition => on epoch changed
                                 // TODO: ⇩ implement after ssz add this fields ⇩
                                 // previous_duty_dependent_root => if epoch_transition then state before
                                 // current_duty_dependent_root => if epoch_transition then state before
-                                push({
-                                    type: BeaconEventType.HEAD,
-                                    message: this.config.types.ChainHead.fromJson({
+                                onEvent({
+                                    type: EventType.head,
+                                    message: this.eventSerdes.fromJson(EventType.head as ChainSafeEventType, {
                                         slot,
                                         block: result.data.root,
                                         state: result.data.header.message.state_root,
-                                        epochTransition: this.currentBlock.epoch !== epoch,
+                                        // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+                                        epoch_transition: this.currentBlock.epoch !== epoch,
+                                        // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+                                        previous_duty_dependent_root: this.previousDepend.state,
+                                        // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+                                        current_duty_dependent_root: this.depend.state,
                                     }),
-                                });
+                                } as BeaconEvent);
 
                             this.currentBlock = {
                                 slot,
@@ -133,7 +140,7 @@ export class CgNimbusEth2EventsApi extends CgEth2EventsApi {
                             };
                         }
 
-                        if (topics.some((topic) => topic === CGBeaconEventType.ATTESTATION)) {
+                        if (topics.some((topic) => topic === EventType.attestation)) {
                             const attestations = await httpClient.get<{data: Attestation[]}>(
                                 `pool/attestations?slot=${slot}`,
                             );
@@ -153,23 +160,42 @@ export class CgNimbusEth2EventsApi extends CgEth2EventsApi {
                                         index,
                                         beaconBlockRoot: attestation.data.beacon_block_root,
                                     });
-                                    push({
-                                        type: CGBeaconEventType.ATTESTATION,
-                                        message: this.config.types.Attestation.fromJson(attestation, {case: "snake"}),
-                                    });
+                                    onEvent({
+                                        type: EventType.attestation,
+                                        message: this.eventSerdes.fromJson(
+                                            EventType.attestation as ChainSafeEventType,
+                                            attestation,
+                                        ),
+                                    } as BeaconEvent);
                                 }
                             }
                         }
-                    } catch (e) {
-                        push({type: CGBeaconEventType.ERROR});
+                    } catch (error) {
+                        console.warn(error);
+                        if (softErrorHandling) onEvent({type: EventType.error, message: error} as BeaconEvent);
+                        else {
+                            // Consider 400 and 500 status errors unrecoverable, close the eventsource
+                            if (error.code === 400) {
+                                reject(Error(`400 Invalid topics: ${error.message}`));
+                            }
+                            if (error.code === 500) {
+                                reject(Error(`500 Internal Server Error: ${error.message}`));
+                            }
+                        }
                     }
                 }, 1000) as unknown) as NodeJS.Timeout;
             })();
-            return (): void => {
-                if (interval) clearInterval(interval);
-            };
+
+            signal.addEventListener(
+                "abort",
+                (): void => {
+                    if (interval) clearInterval(interval);
+                    resolve();
+                },
+                {once: true},
+            );
         });
-    };
+    }
 
     private initializeEventPooling = async (httpClient: HttpClient): Promise<void> => {
         if (!this.currentBlock || !this.depend || !this.previousDepend) {
@@ -178,18 +204,18 @@ export class CgNimbusEth2EventsApi extends CgEth2EventsApi {
                 const slot = Number(result.data.header.message.slot);
                 this.currentBlock = {
                     slot,
-                    epoch: computeEpochAtSlot(this.config, slot),
+                    epoch: computeEpochAtSlot(slot),
                     state: result.data.root,
                 };
             }
             if (!this.depend) {
                 try {
-                    const previousEpochLastSlot = computeStartSlotAtEpoch(this.config, this.currentBlock.epoch) - 1;
+                    const previousEpochLastSlot = computeStartSlotAtEpoch(this.currentBlock.epoch) - 1;
                     const result = await httpClient.get<BlockResponse>(`headers/${previousEpochLastSlot}`);
                     const slot = Number(result.data.header.message.slot);
                     this.depend = {
                         slot,
-                        epoch: computeEpochAtSlot(this.config, slot),
+                        epoch: computeEpochAtSlot(slot),
                         state: result.data.root,
                     };
                 } catch (e) {
@@ -198,12 +224,12 @@ export class CgNimbusEth2EventsApi extends CgEth2EventsApi {
             }
             if (!this.previousDepend) {
                 try {
-                    const previousEpochLastSlot = computeStartSlotAtEpoch(this.config, this.depend.epoch) - 1;
+                    const previousEpochLastSlot = computeStartSlotAtEpoch(this.depend.epoch) - 1;
                     const result = await httpClient.get<BlockResponse>(`headers/${previousEpochLastSlot}`);
                     const slot = Number(result.data.header.message.slot);
                     this.previousDepend = {
                         slot,
-                        epoch: computeEpochAtSlot(this.config, slot),
+                        epoch: computeEpochAtSlot(slot),
                         state: result.data.root,
                     };
                 } catch (e) {

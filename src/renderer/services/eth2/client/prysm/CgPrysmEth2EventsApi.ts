@@ -1,106 +1,64 @@
-import {CgEth2EventsApi} from "../eth2ApiClient/cgEth2EventsApi";
-import {CGBeaconEvent, CGBeaconEventType, ErrorEvent} from "../interface";
-import {IStoppableEventIterable, LodestarEventIterator} from "@chainsafe/lodestar-utils";
+import {EventType as ChainSafeEventType} from "@chainsafe/lodestar-api/lib/routes/events";
 import EventSource from "eventsource";
-import {BeaconEventType} from "@chainsafe/lodestar-validator/lib/api/interface/events";
-import {base64ToHex} from "./utils";
+import {BeaconEvent, Topics} from "../interface";
+import {EventType} from "../enums";
+import {stringifyQuery} from "@chainsafe/lodestar-api/lib/client/utils/format";
+import {CgEth2EventsApi} from "../eth2ApiClient/CgEth2EventsApi";
 
-type PrysmEventData = {
-    "@type": string;
-    slot: string;
-    block: string;
-    state: string;
-    // eslint-disable-next-line camelcase
-    epoch_transition: boolean;
-    // eslint-disable-next-line camelcase
-    previous_duty_dependent_root: string;
-    // eslint-disable-next-line camelcase
-    current_duty_dependent_root: string;
-    // eslint-disable-next-line camelcase
-    aggregation_bits: string;
-    data: {
-        slot: string;
-        index: string;
-        // eslint-disable-next-line camelcase
-        beacon_block_root: string;
-        source: {
-            epoch: string;
-            root: string;
-        };
-        target: {
-            epoch: string;
-            root: string;
-        };
-    };
-    signature: string;
-};
+type EventSourceError = {status: number; message: string};
 
 export class CgPrysmEth2EventsApi extends CgEth2EventsApi {
-    public getEventStream = (topics: CGBeaconEventType[]): IStoppableEventIterable<CGBeaconEvent | ErrorEvent> => {
-        const topicsQuery = topics.filter((topic) => topic !== "chain_reorg").join("&topics=");
-        const url = new URL(`/eth/v1/events?topics=${topicsQuery}`, this.baseUrl);
-        const eventSource = new EventSource(url.href);
-        return new LodestarEventIterator(({push}): (() => void) => {
-            eventSource.addEventListener("message", this.prysmEventListener(push));
-            eventSource.addEventListener("error", () => {
-                push({type: CGBeaconEventType.ERROR});
-            });
-            return (): void => {
-                eventSource.close();
-            };
-        });
-    };
+    public async eventstream(
+        topics: Topics[],
+        signal: AbortSignal,
+        onEvent: (event: BeaconEvent) => void,
+        softErrorHandling = false,
+    ): Promise<void> {
+        const query = this.mergedQuery ? `topics=${topics.join(",")}` : stringifyQuery({topics});
+        // TODO: Use a proper URL formatter
+        const url = `${this.url}/eth/v1/events?${query}`;
+        const eventSource = new EventSource(url);
 
-    private prysmEventListener = (push: (value: CGBeaconEvent) => void) => (event: Event): void => {
-        const data: PrysmEventData = JSON.parse(((event as unknown) as {data: string}).data);
-        switch (data["@type"]) {
-            case "type.googleapis.com/ethereum.eth.v1.EventBlock":
-                push({
-                    type: BeaconEventType.BLOCK,
-                    message: this.config.types.BlockEventPayload.fromJson({
-                        slot: data.slot,
-                        block: base64ToHex(data.block),
-                    }),
-                });
-                break;
-            case "type.googleapis.com/ethereum.eth.v1.EventHead":
-                push({
-                    type: BeaconEventType.HEAD,
-                    message: this.config.types.ChainHead.fromJson({
-                        slot: data.slot,
-                        block: base64ToHex(data.block),
-                        state: base64ToHex(data.state),
-                        epochTransition: data.epoch_transition,
-                        previousDutyDependentRoot: base64ToHex(data.previous_duty_dependent_root),
-                        currentDutyDependentRoot: base64ToHex(data.current_duty_dependent_root),
-                    }),
-                });
-                break;
-            case "type.googleapis.com/ethereum.eth.v1.Attestation":
-                push({
-                    type: CGBeaconEventType.ATTESTATION,
-                    message: this.config.types.Attestation.fromJson({
-                        aggregationBits: base64ToHex(data.aggregation_bits),
-                        data: {
-                            slot: data.data.slot,
-                            index: data.data.index,
-                            beaconBlockRoot: base64ToHex(data.data.beacon_block_root),
-                            source: {
-                                epoch: data.data.source.epoch,
-                                root: base64ToHex(data.data.source.root),
-                            },
-                            target: {
-                                epoch: data.data.target.epoch,
-                                root: base64ToHex(data.data.target.root),
-                            },
-                        },
-                        signature: base64ToHex(data.signature),
-                    }),
-                });
-                break;
-            default:
-                console.log(data);
-                throw new Error("Unsupported beacon event type " + data["@type"]);
+        console.warn(url);
+
+        try {
+            await new Promise<void>((resolve, reject) => {
+                for (const topic of topics) {
+                    eventSource.addEventListener(topic, ((event: MessageEvent) => {
+                        const data = JSON.parse(event.data);
+                        if (topic === "attestation") {
+                            console.warn(data);
+                            if (data.data !== null) {
+                                const message = this.eventSerdes.fromJson(topic as ChainSafeEventType, data);
+                                onEvent({type: topic, message} as BeaconEvent);
+                            }
+                        } else {
+                            const message = this.eventSerdes.fromJson(topic as ChainSafeEventType, data);
+                            onEvent({type: topic, message} as BeaconEvent);
+                        }
+                    }) as EventListener);
+                }
+
+                if (softErrorHandling)
+                    eventSource.onerror = function onerror(error): void {
+                        onEvent({type: EventType.error, message: error} as BeaconEvent);
+                    };
+                else
+                    eventSource.onerror = function onerror(err): void {
+                        const errEs = (err as unknown) as EventSourceError;
+                        // Consider 400 and 500 status errors unrecoverable, close the eventsource
+                        if (errEs.status === 400) {
+                            reject(Error(`400 Invalid topics: ${errEs.message}`));
+                        }
+                        if (errEs.status === 500) {
+                            reject(Error(`500 Internal Server Error: ${errEs.message}`));
+                        }
+                    };
+
+                signal.addEventListener("abort", () => resolve(), {once: true});
+            });
+        } finally {
+            eventSource.close();
         }
-    };
+    }
 }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useState} from "react";
+import {ReactNode, useState} from "react";
 import cgLogo from "../../assets/ico/app_icon.png";
 
 export interface IDropdownProps {
@@ -20,6 +20,7 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = ({
     className = "",
 }) => {
     const [visible, setVisible] = useState("none");
+    // eslint-disable-next-line no-param-reassign
     options = Array.isArray(options) ? {...options} : options;
 
     function showHide(): void {
@@ -37,7 +38,7 @@ export const Dropdown: React.FunctionComponent<IDropdownProps> = ({
         }
     }
 
-    function renderOption(key: number): any {
+    function renderOption(key: number): ReactNode {
         return (
             <div
                 key={options[key]}

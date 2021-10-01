@@ -14,7 +14,6 @@ import {
     stopActiveValidatorService,
     updateValidatorChainData,
 } from "../../ducks/validator/actions";
-import {getSelectedNetwork} from "../../ducks/network/selectors";
 import {getValidator, getValidatorBeaconNodes} from "../../ducks/validator/selectors";
 import {Link} from "react-router-dom";
 import {BeaconStatus} from "../../ducks/beacon/slice";
@@ -50,10 +49,9 @@ export const Validator: React.FunctionComponent<IValidatorSimpleProps> = (props:
     const [askPassword, setAskPassword] = useState<string>(null);
     const [showModal, setShowModal] = useState(false);
     const dispatch = useDispatch();
-    const network = useSelector(getSelectedNetwork);
     const nodes = useSelector((state: IRootState) => getValidatorBeaconNodes(state, props));
     const validator = useSelector((state: IRootState) => getValidator(state, props));
-    const roi = calculateROI(validator.balance, network);
+    const roi = calculateROI(validator.balance);
     const [performance, setPerformance] = useState(Performance.unknown);
 
     useEffect(() => {

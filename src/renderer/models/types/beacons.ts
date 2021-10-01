@@ -1,6 +1,6 @@
 import {ContainerType, ListType} from "@chainsafe/ssz";
-import {StringType} from "./basic";
 import {Beacon, Beacons, DockerConfig} from "../beacons";
+import {StringType} from "@chainsafe/lodestar-types";
 
 export const DockerConfigType = new ContainerType<DockerConfig>({
     fields: {

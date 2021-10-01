@@ -1,19 +1,19 @@
 import {CgEth2ApiClient} from "../module";
-import {IEventsApi} from "@chainsafe/lodestar-validator/lib/api/interface/events";
-import {IBeaconConfig} from "@chainsafe/lodestar-config";
+import {IChainForkConfig} from "@chainsafe/lodestar-config/lib/beaconConfig";
 import {Dispatch} from "redux";
-import {CgNimbusEth2EventsApi} from "./cgNimbusEth2EventsApi";
-import {CgNimbusEth2ValidatorApi} from "./cgNimbusEth2ValidatorApi";
+import {CgNimbusEth2EventsApi} from "./CgNimbusEth2EventsApi";
+import {CgNimbusEth2ValidatorApi} from "./CgNimbusEth2ValidatorApi";
 
+// TODO: check if works with nimbus latest version?
 export class CgNimbusEth2Api extends CgEth2ApiClient {
     public constructor(
-        config: IBeaconConfig,
+        config: IChainForkConfig,
         url: string,
         {publicKey, dispatch}: {publicKey?: string; dispatch?: Dispatch} = {},
     ) {
         super(config, url, {publicKey, dispatch});
 
-        this.validator = new CgNimbusEth2ValidatorApi(config, this.httpClient);
-        this.events = (new CgNimbusEth2EventsApi(config, url) as unknown) as IEventsApi;
+        this.events = new CgNimbusEth2EventsApi(config, url, true);
+        this.validator = new CgNimbusEth2ValidatorApi(config, url);
     }
 }

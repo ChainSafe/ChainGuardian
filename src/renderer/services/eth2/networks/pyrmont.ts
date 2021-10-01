@@ -1,6 +1,6 @@
-import {config as mainnetBeaconConfig} from "@chainsafe/lodestar-config/lib/presets/mainnet";
 import {INetworkConfig} from "../../interfaces";
 import {ethers} from "ethers";
+import {config} from "../config/pyromont";
 
 export const PyrmontConfig: INetworkConfig = Object.freeze({
     networkName: "pyrmont",
@@ -14,13 +14,7 @@ export const PyrmontConfig: INetworkConfig = Object.freeze({
         deployedAtBlock: 0,
     },
     genesisTime: 1605700807,
-    eth2Config: {
-        ...mainnetBeaconConfig,
-        params: {
-            ...mainnetBeaconConfig.params,
-            GENESIS_FORK_VERSION: Buffer.from("0x00002009"),
-        },
-    },
+    eth2Config: config,
     eth1Provider: new ethers.providers.JsonRpcProvider(
         "https://goerli.infura.io/v3/9d117da5b35f4503b142619ad690fc6a",
         5,

@@ -68,7 +68,7 @@
     "testnet:prysm:down": "docker-compose -f prysm-testnet.yml down",
     "testnet:all:down": "yarn run testnet:lighthouse:down && yarn run testnet:teku:down && yarn run testnet:nimbus:down && yarn run testnet:prysm:down",
     "integration:lighthouse": "yarn run script integration/lighthouse.ts",
-    "integration:teku": "yarn run script integration/teku.ts",
+    "integration:teku": "cross-env LODESTAR_PRESET=minimal yarn run script integration/teku.ts",
     "integration:prysm": "yarn run script integration/prysm.ts",
     "integration:nimbus": "yarn run script integration/nimbus.ts"
   },
@@ -160,6 +160,7 @@
     "html-webpack-plugin": "^3.2.0",
     "image-webpack-loader": "^4.6.0",
     "jest": "26.2.2",
+    "node-abort-controller": "^3.0.0",
     "node-loader": "^1.0.2",
     "node-sass": "^4.12.0",
     "prettier": "^2.1.2",
@@ -183,18 +184,19 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@chainsafe/bls": "5.1.1",
+    "@chainsafe/bls": "6.0.1",
     "@chainsafe/bls-keygen": "0.3.0",
     "@chainsafe/bls-keystore": "2.0.0",
-    "@chainsafe/blst": "^0.1.6",
-    "@chainsafe/lodestar-beacon-state-transition": "0.16.0",
-    "@chainsafe/lodestar-config": "0.16.0",
-    "@chainsafe/lodestar-db": "0.16.0",
-    "@chainsafe/lodestar-types": "0.16.0",
-    "@chainsafe/lodestar-utils": "0.16.0",
-    "@chainsafe/lodestar-validator": "0.16.0",
-    "@chainsafe/persistent-ts": "0.16.0",
-    "@chainsafe/ssz": "0.6.13",
+    "@chainsafe/blst": "0.2.0",
+    "@chainsafe/lodestar-api": "0.29.0",
+    "@chainsafe/lodestar-beacon-state-transition": "0.29.0",
+    "@chainsafe/lodestar-config": "0.29.0",
+    "@chainsafe/lodestar-db": "0.29.0",
+    "@chainsafe/lodestar-params": "0.29.0",
+    "@chainsafe/lodestar-types": "0.29.0",
+    "@chainsafe/lodestar-utils": "0.29.0",
+    "@chainsafe/lodestar-validator": "0.29.0",
+    "@chainsafe/ssz": "0.8.13",
     "@datapunt/matomo-tracker-js": "^0.4.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
@@ -205,6 +207,8 @@
     "axios": "0.21.1",
     "bigint-buffer": "1.1.5",
     "bip39": "3.0.2",
+    "cheerio": "1.0.0-rc.4",
+    "cheerio-select": "^1.5.0",
     "date-fns": "^2.16.1",
     "electron-log": "^4.3.1",
     "electron-mock-ipc": "^0.3.9",
@@ -232,10 +236,7 @@
     "winston-transport": "^4.4.0"
   },
   "resolutions": {
-    "@chainsafe/bls": "5.1.1",
-    "@chainsafe/bls-hd-key": "0.2.1",
     "terser": "4.6.3",
-    "bcrypto": "5.3.0",
     "serialize-javascript": "4.0.0"
   }
 }
