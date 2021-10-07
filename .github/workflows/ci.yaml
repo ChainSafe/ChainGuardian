@@ -30,9 +30,7 @@ jobs:
         run: yarn run test:unit && yarn run test:components
 
       - name: Run e2e tests
-        run: |
-          yarn add cheerio-select
-          yarn run test:e2e
+        run: yarn run test:e2e
 
       - name: Publish code coverage
         uses: codecov/codecov-action@v1
