@@ -104,8 +104,8 @@ export const ValidatorStats = ({validator}: IValidatorStatsProps): ReactElement 
                 <ValidatorAttestationEfficiencyChart data={attestationData} />
             </div>
             <div className='beacon-node-charts-container'>
-                <ValidatorAttestationsTable publicKey={validator.publicKey} slot={beaconNode.slot} />
-                <ValidatorPropositionsTable publicKey={validator.publicKey} slot={beaconNode.slot} />
+                <ValidatorAttestationsTable publicKey={validator.publicKey} slot={beaconNode?.slot} />
+                <ValidatorPropositionsTable publicKey={validator.publicKey} slot={beaconNode?.slot} />
             </div>
             <PrivateKeyPromp keystore={validator.keystore} display={showPK} onClose={onPrimaryKeyClose} />
         </div>
