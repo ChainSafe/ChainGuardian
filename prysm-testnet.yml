@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
   prysm_beacon:
-    image: "${DOCKER_PRYSM_IMAGE:-gcr.io/prysmaticlabs/prysm/beacon-chain:v2.0.0-rc.2}"
+    image: "${DOCKER_PRYSM_IMAGE:-gcr.io/prysmaticlabs/prysm/beacon-chain:v2.0.1}"
     container_name: "eth2_testnet_prysm_beacon"
     volumes:
       - ./testnet/prysm/data:/data
@@ -28,7 +28,7 @@ services:
           --interop-eth1data-votes
 
   prysm_validator:
-    image: "${DOCKER_PRYSM_VALIDATOR_IMAGE:-gcr.io/prysmaticlabs/prysm/validator:v2.0.0-rc.2}"
+    image: "${DOCKER_PRYSM_VALIDATOR_IMAGE:-gcr.io/prysmaticlabs/prysm/validator:v2.0.1}"
     container_name: "eth2_testnet_prysm_validator"
     volumes:
       - ./testnet/prysm/data:/data

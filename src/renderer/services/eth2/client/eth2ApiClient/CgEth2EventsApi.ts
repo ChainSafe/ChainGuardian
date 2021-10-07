@@ -5,7 +5,7 @@ import {CgEventsApi, BeaconEvent, Topics} from "../interface";
 import {EventType} from "../enums";
 import {stringifyQuery} from "@chainsafe/lodestar-api/lib/client/utils/format";
 
-type EventSourceError = {status: number; message: string};
+export type EventSourceError = {status: number; message: string};
 
 export class CgEth2EventsApi implements CgEventsApi {
     protected readonly url: string;
