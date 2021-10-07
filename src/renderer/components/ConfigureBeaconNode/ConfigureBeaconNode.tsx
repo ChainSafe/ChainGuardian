@@ -52,12 +52,10 @@ export const ConfigureBeaconNode: React.FunctionComponent<IConfigureBNProps> = (
 
     const [images, setImages] = useState([]);
     useEffect(() => {
-        getAvailableClientReleases(props.clientName, defaults.beacon.versionPrefix, props.clientName === "prysm").then(
-            (imageList) => {
-                setImages(imageList);
-                setImageIndex(imageList.length - 1);
-            },
-        );
+        getAvailableClientReleases(props.clientName, defaults.beacon.versionPrefix).then((imageList) => {
+            setImages(imageList);
+            setImageIndex(imageList.length - 1);
+        });
     }, [props.clientName]);
     const [imageIndex, setImageIndex] = useState(0);
 

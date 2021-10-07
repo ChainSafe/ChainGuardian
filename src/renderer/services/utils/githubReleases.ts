@@ -4,7 +4,7 @@ import {getDefaultsForClient} from "../eth2/client/defaults";
 
 const gitHubReposInstance = axios.create({
     baseURL: "https://api.github.com/repos/",
-    timeout: 1000,
+    timeout: 5000,
 });
 
 export const getReleases = (owner: string, repo: string): Promise<AxiosResponse<IGithubRelease[]>> =>
