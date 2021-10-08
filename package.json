@@ -1,7 +1,7 @@
 {
   "name": "chainguardian",
   "productName": "ChainGuardian",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Eth2.0 desktop validator client",
   "keywords": [
     "eth2",
@@ -28,7 +28,7 @@
   "engines": {
     "node": "^12.4.0"
   },
-  "homepage": "https://chainguardian.nodefactory.io",
+  "homepage": "https://chainguardian.chainsafe.io/",
   "scripts": {
     "build-main": "cross-env NODE_ENV=production webpack --config webpack.main.prod.config.js",
     "build-renderer": "cross-env NODE_ENV=production webpack --config webpack.renderer.prod.config.js",

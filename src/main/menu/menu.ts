@@ -22,13 +22,13 @@ const template = [
             {
                 label: "Homepage",
                 click: async (): Promise<void> => {
-                    await shell.openExternal("https://chainguardian.nodefactory.io/");
+                    await shell.openExternal("https://chainguardian.chainsafe.io/");
                 },
             },
             {
                 label: "Discord",
                 click: async (): Promise<void> => {
-                    await shell.openExternal("https://discord.gg/4GBwH52cFb");
+                    await shell.openExternal("https://discord.gg/ATcsRSN24v");
                 },
             },
             ...(isMac
@@ -90,7 +90,7 @@ const template = [
             {
                 label: "Discord Support",
                 click: async (): Promise<void> => {
-                    await shell.openExternal("https://discord.gg/uM9rZFDefm");
+                    await shell.openExternal("https://discord.gg/ATcsRSN24v");
                 },
             },
             {
