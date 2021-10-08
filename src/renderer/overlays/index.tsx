@@ -12,7 +12,7 @@ import {ipcRenderer} from "electron";
 
 export const Overlays: React.FC = () => {
     const onDiscordClick = (): void => {
-        shell.openExternal("https://discord.gg/uM9rZFDefm");
+        shell.openExternal("https://discord.gg/ATcsRSN24v");
     };
 
     const history = useHistory();
