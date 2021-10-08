@@ -28,7 +28,7 @@
   "engines": {
     "node": "^12.4.0"
   },
-  "homepage": "https://chainguardian.chainsafe.io/",
+  "homepage": "https://chainguardian.nodefactory.io",
   "scripts": {
     "build-main": "cross-env NODE_ENV=production webpack --config webpack.main.prod.config.js",
     "build-renderer": "cross-env NODE_ENV=production webpack --config webpack.renderer.prod.config.js",

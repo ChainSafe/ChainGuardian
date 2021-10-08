@@ -22,7 +22,7 @@ const template = [
             {
                 label: "Homepage",
                 click: async (): Promise<void> => {
-                    await shell.openExternal("https://chainguardian.chainsafe.io/");
+                    await shell.openExternal("https://chainguardian.nodefactory.io/");
                 },
             },
             {
