@@ -1,5 +1,6 @@
 import React from "react";
 import {BeaconNodeCard} from "./BeaconNodeCard";
+import lodestarLogo from "../../assets/img/beacon/lodestar.png";
 import lighthouseLogo from "../../assets/img/beacon/lighthouse.png";
 import tekuLogo from "../../assets/img/beacon/teku.png";
 import nimbusLogo from "../../assets/img/beacon/nimbus.png";
@@ -23,6 +24,11 @@ export const BeaconNodeSelector: React.FC<IBeaconNodeSelector> = ({selected, onC
             <p>Select provider for local Dockerized beacon node.</p>
 
             <div className='beacon-node-selector'>
+                <div
+                    onClick={handleChange("lodestar")}
+                    className={"card-container" + (selected === "lodestar" ? " " + "selected-card" : "")}>
+                    <BeaconNodeCard name='Lodestar' logo={lodestarLogo} />
+                </div>
                 <div
                     onClick={handleChange("lighthouse")}
                     className={"card-container" + (selected === "lighthouse" ? " " + "selected-card" : "")}>

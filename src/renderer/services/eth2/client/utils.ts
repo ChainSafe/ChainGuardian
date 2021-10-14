@@ -1,7 +1,7 @@
 import {INetworkConfig} from "../../interfaces";
 import {getNetworkConfig, getNetworkConfigByGenesisVersion} from "../networks";
 import {HttpClient} from "../../api";
-import {CgLighthouseEth2Api, CgTekuEth2Api, CgEth2ApiClient, CgNimbusEth2Api} from "./module";
+import {CgLighthouseEth2Api, CgTekuEth2Api, CgEth2ApiClient, CgNimbusEth2Api, CgLodestarEth2Api} from "./module";
 import {CgPrysmEth2Api} from "./prysm";
 
 export function getEth2ApiClient(url: string, network: string): typeof CgEth2ApiClient | undefined {
@@ -46,6 +46,8 @@ export async function getBeaconNodeEth2ApiClient(beaconNodeUrl: string): Promise
             return CgPrysmEth2Api;
         case version.includes("lighthouse"):
             return CgLighthouseEth2Api;
+        case version.includes("lodestar"):
+            return CgLodestarEth2Api;
         case version.includes("teku"):
             return CgTekuEth2Api;
         default:

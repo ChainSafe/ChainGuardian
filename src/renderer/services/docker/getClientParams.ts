@@ -16,6 +16,26 @@ export const getClientParams = ({
 > & {wsc: string}): Partial<Omit<IDockerRunParams, "name">> => {
     const eth1QueryLimit = 200;
     switch (client) {
+        case "lodestar": {
+            const cmd = [
+                `beacon`,
+                `--network ${network}`,
+                `--rootDir /home/lodestar`,
+                `--port ${libp2pPort}`,
+                `--discoveryPort ${discoveryPort}`,
+                `--api.rest.enabled true`,
+                `--api.rest.host 0.0.0.0`,
+                `--api.rest.port ${rpcPort}`,
+                `--eth1.providerUrls ${eth1Url}`,
+                // TODO: implement after they implement eth1QueryLimit`,
+            ];
+            if (process.env.NODE_ENV !== "production") cmd.push("--api.rest.cors http://localhost:2003");
+            if (wsc) cmd.push(`--weakSubjectivityCheckpoint ${wsc}`);
+            return {
+                cmd: cmd.join(" "),
+                volume: `${chainDataDir}:/home/lodestar`,
+            };
+        }
         case "nimbus": {
             const cmd = [
                 `--network=${network}`,
