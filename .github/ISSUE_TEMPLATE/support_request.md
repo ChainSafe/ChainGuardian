@@ -15,5 +15,5 @@ A clear and concise description of what the problem is.
 **Desktop:**
 - OS: [e.g. iOS]
 - Version [e.g. 22]
-- Network [e.g. Pyrmont]
+- Network [e.g. Prater]
 - Chain Guardian Version [e.g. 0.5.1]

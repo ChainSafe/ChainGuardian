@@ -11,7 +11,7 @@ import {
 } from "../../../../src/renderer/ducks/beacon/getWeakSubjectivityCheckpoint";
 import {CallEffect} from "@redux-saga/core/effects";
 import {CgEth2ApiClient} from "../../../../src/renderer/services/eth2/client/eth2ApiClient";
-import {config} from "../../../../src/renderer/services/eth2/config/pyromont";
+import {config} from "../../../../src/renderer/services/eth2/config/prater";
 
 const validateWeakSubjectivityCheckpoint = (result: string): void => {
     const [root, epoch] = result.split(":");
@@ -22,7 +22,7 @@ const validateWeakSubjectivityCheckpoint = (result: string): void => {
 };
 
 describe("getWeakSubjectivityCheckpoint", () => {
-    const network = "pyrmont";
+    const network = "prater";
 
     it("None", () => {
         testSaga(getWeakSubjectivityCheckpoint, WeakSubjectivityCheckpoint.none, "", network).next().returns("");

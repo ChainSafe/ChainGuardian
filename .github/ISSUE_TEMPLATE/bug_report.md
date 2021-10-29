@@ -28,7 +28,7 @@ If applicable, add screenshots to help explain your problem.
 **Desktop:**
 - OS: [e.g. iOS]
 - Version [e.g. 22]
-- Network [e.g. Pyrmont]
+- Network [e.g. Prater]
 - Chain Guardian Version [e.g. 0.5.1]
 
 **Additional context**

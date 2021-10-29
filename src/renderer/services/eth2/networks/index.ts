@@ -1,9 +1,9 @@
 import {INetworkConfig} from "../../interfaces";
 import {LocalhostConfig} from "./local";
-import {PyrmontConfig} from "./pyrmont";
 import {fromHex} from "@chainsafe/lodestar-utils";
+import {PraterConfig} from "./prater";
 
-const networks: INetworkConfig[] = [PyrmontConfig];
+const networks: INetworkConfig[] = [PraterConfig];
 
 const isLocal = process.env.NODE_ENV !== "production";
 if (isLocal) {

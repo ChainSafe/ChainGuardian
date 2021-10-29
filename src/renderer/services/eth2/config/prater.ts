@@ -6,19 +6,25 @@ import {
 } from "@chainsafe/lodestar-config";
 
 const partialChainConfig: Partial<IChainConfig> = parsePartialIChainConfigJson({
-    DEPOSIT_CONTRACT_ADDRESS: "0x8c5fecdC472E27Bc447696F431E425D02dd46a8c",
+    DEPOSIT_CONTRACT_ADDRESS: "0xff50ed3d0ec03aC01D4C79aAd74928BFF48a7b2b",
 
     // Ethereum Goerli testnet
     DEPOSIT_CHAIN_ID: 5,
     DEPOSIT_NETWORK_ID: 5,
 
-    MIN_GENESIS_TIME: 1605700800, // Wednesday, November 18, 2020 12:00:00 PM UTC
-    GENESIS_DELAY: 432000,
-    GENESIS_FORK_VERSION: "0x00002009",
+    MIN_GENESIS_TIME: 1614588812, // Wednesday, November 18, 2020 12:00:00 PM UTC
+    GENESIS_DELAY: 1919188,
+    GENESIS_FORK_VERSION: "0x00001020",
 
     // Altair
-    ALTAIR_FORK_VERSION: "0x01002009",
-    ALTAIR_FORK_EPOCH: 61650,
+    ALTAIR_FORK_VERSION: "0x01001020",
+    ALTAIR_FORK_EPOCH: 36660,
+    // Merge
+    // MERGE_FORK_VERSION: "0x02001020",
+    // MERGE_FORK_EPOCH: Infinity,
+    // Sharding
+    // SHARDING_FORK_VERSION: "0x03001020",
+    // SHARDING_FORK_EPOCH: Infinity,
 
     // Validator cycle
     INACTIVITY_SCORE_BIAS: 4,
