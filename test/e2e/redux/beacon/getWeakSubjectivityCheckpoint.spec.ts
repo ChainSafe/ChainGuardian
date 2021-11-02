@@ -29,15 +29,16 @@ describe("getWeakSubjectivityCheckpoint", () => {
     });
 
     describe("BeaconScan", () => {
-        it("mainet", async () => {
-            jest.setTimeout(20000);
-
-            const result = await axios.get<BeaconScanWSC>("https://beaconscan.com/ws_checkpoint");
-            testSaga(getWeakSubjectivityCheckpoint, WeakSubjectivityCheckpoint.beaconScan, "", "mainnet")
-                .next()
-                .next(result.data)
-                .returns(result.data.ws_checkpoint);
-        });
+        // TODO: reimplement after they fix endpoint
+        // it("mainet", async () => {
+        //     jest.setTimeout(20000);
+        //
+        //     const result = await axios.get<BeaconScanWSC>("https://beaconscan.com/ws_checkpoint");
+        //     testSaga(getWeakSubjectivityCheckpoint, WeakSubjectivityCheckpoint.beaconScan, "", "mainnet")
+        //         .next()
+        //         .next(result.data)
+        //         .returns(result.data.ws_checkpoint);
+        // });
 
         it("non implemented ws_checkpoint", async () => {
             jest.setTimeout(20000);
