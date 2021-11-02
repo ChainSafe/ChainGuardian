@@ -5,10 +5,7 @@
 import {testSaga} from "redux-saga-test-plan";
 import {WeakSubjectivityCheckpoint} from "../../../../src/renderer/components/ConfigureBeaconNode/ConfigureBeaconNode";
 import axios from "axios";
-import {
-    BeaconScanWSC,
-    getWeakSubjectivityCheckpoint,
-} from "../../../../src/renderer/ducks/beacon/getWeakSubjectivityCheckpoint";
+import {getWeakSubjectivityCheckpoint} from "../../../../src/renderer/ducks/beacon/getWeakSubjectivityCheckpoint";
 import {CallEffect} from "@redux-saga/core/effects";
 import {CgEth2ApiClient} from "../../../../src/renderer/services/eth2/client/eth2ApiClient";
 import {config} from "../../../../src/renderer/services/eth2/config/prater";
