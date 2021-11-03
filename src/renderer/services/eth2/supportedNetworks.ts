@@ -1,6 +1,5 @@
 export enum SupportedNetworks {
     // MAINNET = 'mainnet',
-    PYRMONT = "pyrmont",
-    // PRATER = "prater",
+    PRATER = "prater",
     LOCALHOST = "localhost",
 }

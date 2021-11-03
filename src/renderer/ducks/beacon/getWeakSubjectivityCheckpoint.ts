@@ -32,13 +32,14 @@ export function* getWeakSubjectivityCheckpoint(
         }
         if (type === WeakSubjectivityCheckpoint.beaconScan) {
             const httpClient = new HttpClient(`https://beaconscan.com/`);
-            if (network === "mainnet") {
-                const ws = yield httpClient.get(`ws_checkpoint`, {timeout: 10000});
-                if (ws) return ws.ws_checkpoint;
-            }
+            // TODO: reimplement after they fix endpoint
+            // if (network === "mainnet") {
+            //     const ws = yield httpClient.get(`ws_checkpoint`, {timeout: 10000});
+            //     if (ws) return ws.ws_checkpoint;
+            // }
 
             // TODO: change scraper with api after etherscan implement it
-            const dom = yield call(httpClient.get, network);
+            const dom = yield call(httpClient.get, network === "mainnet" ? "" : network);
             const home = cheerio.load(dom);
             const href = home("#finalizedSlot a")[0].attribs["href"];
             const domSlot = yield call(httpClient.get, href);
